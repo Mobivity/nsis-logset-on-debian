@@ -1,0 +1,7 @@
+Remove VPatch, package.
+Port to more architectures.
+Switch to non-forked halibut.
+Port makensisw/etc to wxWidgets.
+Create a NEWS file in release.py.
+Get crossmingw.py merged into scons.
+Encourage upstream to add Unicode support.

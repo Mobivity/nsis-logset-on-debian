@@ -1,0 +1,15 @@
+/usr/bin/GenPat /usr/bin/genpat
+/usr/share/man/man1/GenPat.1 /usr/share/man/man1/genpat.1
+/usr/share/doc/nsis/Docs/Banner/Readme.txt /usr/share/doc/nsis/README.Banner
+/usr/share/doc/nsis/Docs/Math/Math.txt /usr/share/doc/nsis/README.Math
+/usr/share/doc/nsis/Docs/Dialer/Dialer.txt /usr/share/doc/nsis/README.Dialer
+/usr/share/doc/nsis/Docs/AdvSplash/advsplash.txt /usr/share/doc/nsis/README.AdvSplash
+/usr/share/doc/nsis/Docs/BgImage/BgImage.txt /usr/share/doc/nsis/README.BgImage
+/usr/share/doc/nsis/Docs/makensisw/Readme.txt /usr/share/doc/nsis/README.makensisw
+/usr/share/doc/nsis/Docs/NSISdl/ReadMe.txt /usr/share/doc/nsis/README.NSISdl
+/usr/share/doc/nsis/Docs/Splash/splash.txt /usr/share/doc/nsis/README.Splash
+/usr/share/doc/nsis/Docs/StartMenu/Readme.txt /usr/share/doc/nsis/README.StartMenu
+/usr/share/doc/nsis/Docs/nsExec/nsExec.txt /usr/share/doc/nsis/README.nsExec
+/usr/share/doc/nsis/Docs/StrFunc/StrFunc.txt /usr/share/doc/nsis/README.StrFunc
+/usr/share/doc/nsis/Docs/InstallOptions/Changelog.txt /usr/share/doc/nsis/changelog.InstallOptions
+/usr/share/doc/nsis/Docs/System/WhatsNew.txt /usr/share/doc/nsis/changelog.System

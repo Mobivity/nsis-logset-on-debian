@@ -1,0 +1,9 @@
+usr/bin/makensis
+usr/bin/GenPat
+usr/bin/LibraryLocal
+usr/share/nsis/Stubs
+usr/share/nsis/Plugins
+usr/share/nsis
+etc/nsisconf.nsh
+usr/i586-mingw32msvc
+usr/share/doc/nsis

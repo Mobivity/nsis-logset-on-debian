@@ -1,0 +1,6 @@
+nsis (2.43-1) experimental; urgency=low
+
+  * This version changes the details for building nsis plugins,
+    please see README.Debian for details of the new system.
+
+ -- Paul Wise <pabs@debian.org>  Thu, 05 Feb 2009 13:11:29 +0900

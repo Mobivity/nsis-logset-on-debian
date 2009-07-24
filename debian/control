@@ -1,0 +1,24 @@
+Source: nsis
+Section: devel
+Priority: optional
+Maintainer: Paul Wise <pabs@debian.org>
+Build-Depends: debhelper (>= 7), scons (>= 0.96.93), g++-multilib [amd64], mingw32, mingw32-runtime, mingw32-binutils, xmlto, html2text, libcppunit-dev [i386]
+Standards-Version: 3.8.1
+Homepage: http://nsis.sourceforge.net/
+
+Package: nsis
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: wine, mingw32
+Description: Nullsoft Scriptable Install System (modified for Debian)
+ NSIS is a tool for creating quick and user friendly installers for
+ Microsoft Windows (Win32) operating systems.
+ .
+ NSIS creates installers that are capable of installing, uninstalling,
+ setting system settings, extracting files, etc. Because it's based on
+ script files, you can fully control every part of your installers. The
+ script language supports variables, functions, string manipulation,
+ just like a normal programming language - but designed for the creation
+ of installers. Even with all these features, NSIS is still the smallest
+ installer system available. With the default options, it has an overhead
+ of only 34 KB.

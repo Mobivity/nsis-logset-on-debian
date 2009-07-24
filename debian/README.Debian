@@ -1,0 +1,22 @@
+The menu thing isn't included because it requires wxWidgets 2.8 to build.
+
+To build nsis plugins you should read the following.
+
+You should include the header like so:
+
+#include <nsis/pluginapi.h>
+
+The mingw32 include dir should be in the include path and it
+usually is there by default, if not, add this to CPPFLAGS:
+
+ -I /usr/i586-mingw32msvc/include
+
+The nsis subdir of the mingw32 library dir should be in the
+linker path, you'll need the following in LDFLAGS:
+
+ -L /usr/i586-mingw32msvc/lib/nsis
+
+The nsis pluginapi static library needs to be linked against,
+you'll need the following in LDFLAGS:
+
+ -lpluginapi

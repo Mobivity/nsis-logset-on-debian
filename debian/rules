@@ -1,0 +1,115 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# Disabled stuff:
+#  the wxWidgets menu item is disabled until it works better
+
+VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
+
+# dpkg doesn't agree with policy yet, so handle commas too
+#DEB_BUILD_OPTIONS := $(shell echo $(DEB_BUILD_OPTIONS) | tr ',' ' ')
+
+# scons hangs in install if we turn this on, so leave it for the moment
+#ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+#NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+#endif
+
+SCONSOPTS = VERSION=$(VERSION) \
+  PREFIX=/usr PREFIX_CONF=/etc \
+  PREFIX_PLUGINAPI_INC=/usr/i586-mingw32msvc/include/ \
+  PREFIX_PLUGINAPI_LIB=/usr/i586-mingw32msvc/lib/ \
+  SKIPUTILS='NSIS Menu' CHMDOCS=0 \
+  APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
+  APPEND_LINKFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)"\
+  STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
+
+SCONSOPTSALL = $(SCONSOPTS) SKIPDOC=COPYING
+
+# we are compiling with -m32 on amd64 and 32-bit cppunit is not available there
+# so only run the makensis test scripts rather than the cppunit tests and the scripts 
+DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH)
+ifeq ($(DEB_HOST_ARCH),i386)
+TEST=test
+else
+TEST=test-scripts
+endif
+
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+TEST=
+endif
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+	scons $(SCONSOPTSALL)
+	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
+	xmlto -o build man debian/makensis.xml
+	xmlto -o build man debian/GenPat.xml
+	xmlto -o build man debian/LibraryLocal.xml
+	html2text -nobs build/*/Docs/html/AppendixF.html | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
+	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
+	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
+	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
+	html2text -style pretty -nobs -o build/README.InstallOptions Contrib/InstallOptions/Readme.html
+	html2text -style pretty -nobs -o build/README.MultiUser Contrib/MultiUser/Readme.html
+	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	[ -x /usr/bin/scons ] && scons -c $(SCONSOPTSALL)
+	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test build-stamp
+	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/tmp install
+	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI/License.txt"
+	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
+	rm debian/tmp/usr/share/doc/nsis/Docs/NSISdl/License.txt
+	rm debian/tmp/usr/share/doc/nsis/Docs/makensisw/License.txt
+	rm -f config.log
+
+binary-indep: install
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_install --sourcedir=debian/tmp --fail-missing
+	find debian/nsis/etc debian/nsis/usr/share/nsis \
+	  debian/nsis/usr/i586-mingw32msvc -type f -perm +111 -exec chmod a-x {} \;
+	# Replaces 05_examples_fixes.dpatch
+	cd debian/nsis/usr/share/doc/nsis/Examples/Modern\ UI/ ; \
+	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
+	dh_lintian
+	dh_installchangelogs ChangeLog
+	# the docs file can't seem to have spaces within the file name(s)
+	dh_installdocs "build/README.Modern UI" "build/README.Modern UI 2"
+	dh_installexamples
+	dh_installman
+	# the links file can't seem to have spaces within the symlink name(s)
+	dh_link "/usr/share/doc/nsis/Docs/Modern UI/Changelog.txt" "/usr/share/doc/nsis/changelog.Modern UI"
+	dh_strip -Xlibpluginapi.a
+	dh_compress
+	# Replaces 03_docs_fixes
+	cd debian/nsis/usr/share/doc/nsis/ ; \
+	find ./ -mindepth 2 -iname \*.gz | \
+	sed -e 's_^\./\(.*\)\.gz$$_\1_g' -e 's/ /%20/g' | \
+	xargs -i88 sh -c 'fgrep -rl "88\"" . | xargs -i{} sed -i -e "s|88\"|88.gz\"|g" "{}"'
+	sed -i -e 's/"Changelog.txt"/"Changelog.txt.gz"/g' debian/nsis/usr/share/doc/nsis/Docs/InstallOptions/Readme.html
+	sed -i -e 's/"Changelog.txt"/"Changelog.txt.gz"/g' 'debian/nsis/usr/share/doc/nsis/Docs/Modern UI/Readme.html'
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install patch unpatch

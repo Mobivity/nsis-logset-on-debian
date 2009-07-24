@@ -1,0 +1,166 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY firstname "<firstname>Paul</firstname>">
+  <!ENTITY surname   "<surname>Wise</surname>">
+  <!ENTITY date      "<date>October 5, 2005</date>">
+  <!ENTITY section   "<manvolnum>1</manvolnum>">
+  <!ENTITY email     "<email>pabs@debian.org</email>">
+  <!ENTITY username  "Paul Wise">
+  <!ENTITY ucpackage "<refentrytitle>NSIS</refentrytitle>">
+  <!ENTITY package   "makensis">
+  <!ENTITY debian    "Debian (TM)">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      &email;
+    </address>
+    <author>
+      &firstname;
+      &surname;
+    </author>
+    <copyright>
+      <year>2005</year>
+      <holder>&username;</holder>
+    </copyright>
+    &date;
+  </refentryinfo>
+  <refmeta>
+    &ucpackage;
+    &section;
+  </refmeta>
+  <refnamediv>
+    <refname>&package;</refname>
+    <refpurpose>A program to create Windows installers.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&package;</command>
+      <arg><option><replaceable>script.nsi</replaceable></option></arg>
+      <arg><option>-CMDHELP <replaceable>item</replaceable></option></arg>
+      <arg><option>-HDRINFO</option></arg>
+      <arg><option>-LICENSE</option></arg>
+      <arg><option>-VERSION</option></arg>
+      <arg><option>-V<replaceable>x</replaceable></option></arg>
+      <arg><option>-O<replaceable>file</replaceable></option></arg>
+      <arg><option>-PAUSE</option></arg>
+      <arg><option>-NOCONFIG</option></arg>
+      <arg><option>-NOCD</option></arg>
+      <arg><option>-D<replaceable>define</replaceable>=<replaceable>value</replaceable></option></arg>
+      <arg><option>-X<replaceable>scriptcmd</replaceable></option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>This manual page documents briefly the
+      <command>&package;</command> command.</para>
+    <para>This manual page was written for the &debian; distribution
+      because the original program does not have a manual page.
+      Instead, it has documentation in the HTML format; see below.</para>
+    <para><command>&package;</command> is a program that creates installer programs for Windows.</para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+    <para>Parameters are processed by order (-Ddef ins.nsi != ins.nsi -Ddef)
+   for script file name, you can use - to read from the standard input.
+   For a complete description, see the HTML files.</para>
+    <variablelist>
+      <varlistentry>
+        <term><option>-V<replaceable>x</replaceable></option></term>
+        <listitem>
+          <para>Verbosity where x is 4=all, 3=no script, 2=no info, 1=no warnings, 0=none.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-O<replaceable>file</replaceable></option></term>
+        <listitem>
+          <para>Specifies a text file to log compiler output (default is stdout).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-PAUSE</option></term>
+        <listitem>
+          <para>Pauses after execution.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-NOCONFIG</option></term>
+        <listitem>
+          <para>Disables inclusion of /etc/nsisconf.nsh.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-NOCD</option></term>
+        <listitem>
+          <para>Disable changing the current directory to that of the .nsi file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-D<replaceable>define</replaceable>=<replaceable>value</replaceable></option></term>
+        <listitem>
+          <para>Defines the symbol "define" for the script to [value].</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-X<replaceable>scriptcmd</replaceable></option></term>
+        <listitem>
+          <para>Executes scriptcmd in the script (i.e. "-XOutFile poop.exe")</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-CMDHELP <replaceable>item</replaceable></option></term>
+        <listitem>
+          <para>Prints out help for 'item', or lists all commands.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-HDRINFO</option></term>
+        <listitem>
+          <para>Prints information about what options makensis was compiled with.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-LICENSE</option></term>
+        <listitem>
+          <para>Prints the makensis software license.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-VERSION</option></term>
+        <listitem>
+          <para>Prints the makensis version and exits.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>FILES</title>
+    <variablelist>
+      <varlistentry>
+        <term>/etc/nsisconf.nsh</term>
+        <listitem>
+          <para>System wide configuration file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>~/.nsisconf.nsh</term>
+        <listitem>
+          <para>Per-user configuration file.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>NSIS is documented more fully in the HTML files in
+    /usr/share/doc/nsis/Docs.</para>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>This manual page was written by &username; &email; for
+      the &debian; system.
+    </para>
+  </refsect1>
+</refentry>
