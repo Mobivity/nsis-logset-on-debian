@@ -1,3 +1,12 @@
+nsis (2.45-1) unstable; urgency=low
+
+  * New upstream release
+  * Build with gcc-mingw32 (4.4.0)
+  * Fixed occurring access violation in Math plugin once the 
+    installer window is closed.
+
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 12 Aug 2009 20:16:00 +0200
+
 nsis (2.44-4) unstable; urgency=low
 
   * Brown paper bag upload

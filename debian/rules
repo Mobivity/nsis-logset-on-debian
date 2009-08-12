@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+include /usr/share/quilt/quilt.make
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -40,7 +42,7 @@ ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 TEST=
 endif
 
-build: build-stamp
+build: patch build-stamp
 build-stamp:
 	dh_testdir
 	scons $(SCONSOPTSALL)
@@ -57,7 +59,7 @@ build-stamp:
 	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
 	touch build-stamp
 
-clean:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	[ -x /usr/bin/scons ] && scons -c $(SCONSOPTSALL)
