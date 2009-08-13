@@ -42,8 +42,8 @@ ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 TEST=
 endif
 
-build: patch build-stamp
-build-stamp:
+build: build-stamp
+build-stamp: $(QUILT_STAMPFN)
 	dh_testdir
 	scons $(SCONSOPTSALL)
 	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
