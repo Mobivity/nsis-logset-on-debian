@@ -2,11 +2,11 @@ nsis (2.45-1) unstable; urgency=low
 
   * New upstream release
   * Adopted package from Paul Wise with his permission
-  * Build with gcc-mingw32 (4.4.0)
+  * Allow building with either gcc-mingw32 (>= 4.4.0-3) or mingw32
   * Fixed occurring access violation in Math plugin once the 
     installer window is closed.
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 12 Aug 2009 20:16:00 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Mon, 17 Aug 2009 19:04:01 +0000
 
 nsis (2.44-4) unstable; urgency=low
 

@@ -2,7 +2,7 @@ Source: nsis
 Section: devel
 Priority: optional
 Maintainer: Thomas Gaugler <thomas@dadie.net>
-Build-Depends: debhelper (>= 7), quilt, scons (>= 0.98), g++-multilib [amd64], gcc-mingw32, mingw32-runtime, mingw32-binutils, xmlto, html2text, libcppunit-dev [i386]
+Build-Depends: debhelper (>= 7), quilt, scons (>= 0.98), g++-multilib [amd64], gcc-mingw32 (>= 4.4.0-3) | mingw32, mingw32-runtime, mingw32-binutils, xmlto, html2text, libcppunit-dev [i386]
 Standards-Version: 3.8.2
 Homepage: http://nsis.sourceforge.net/
 Vcs-Svn: svn://svn.debian.org/collab-maint/ext-maint/nsis/trunk
