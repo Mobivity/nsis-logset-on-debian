@@ -1,8 +1,9 @@
 nsis (2.46-1) unstable; urgency=low
 
   * New upstream release
+  * Switch to 3.0 (quilt) source format
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 09 Dec 2009 21:38:11 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Tue, 15 Dec 2009 20:04:56 +0000
 
 nsis (2.45-1) unstable; urgency=low
 
