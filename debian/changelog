@@ -1,10 +1,12 @@
+
 nsis (2.46-1) unstable; urgency=low
 
   * New upstream release
   * Switch to 3.0 (quilt) source format
   * Use the system provided compression library of zlib
+  * Switch to debhelper 7's minimal rules file mode
 
- -- Thomas Gaugler <thomas@dadie.net>  Tue, 15 Dec 2009 22:18:01 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Mon, 21 Dec 2009 22:23:21 +0000
 
 nsis (2.45-1) unstable; urgency=low
 
