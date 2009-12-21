@@ -1,9 +1,11 @@
-Description: Use the system provided compression library of zlib
+Description: Usage of the zlib compression library provided by the system
+Forwarded: http://sf.net/support/tracker.php?aid=2918870
 Author: Thomas Gaugler <thomas@dadie.net>
 
-diff -ur nsis-2.46.orig/Source/czlib.h nsis-2.46-src/Source/czlib.h
---- nsis-2.46.orig/Source/czlib.h	2009-02-01 15:44:30.000000000 +0100
-+++ nsis-2.46-src/Source/czlib.h	2009-12-15 20:40:20.000000000 +0100
+Index: nsis-2.46/Source/czlib.h
+===================================================================
+--- nsis-2.46/Source/czlib.h	(revision 6015)
++++ nsis-2.46/Source/czlib.h	(working copy)
 @@ -18,7 +18,19 @@
  #define __CZLIB_H__
  
@@ -14,13 +16,13 @@ diff -ur nsis-2.46.orig/Source/czlib.h nsis-2.46-src/Source/czlib.h
 +#  define deflateInit2(strm, level, method, windowBits, memLevel, strategy) \
 +     deflateInit2_(strm, level, method, windowBits, memLevel, strategy, \
 +     NULL, sizeof(z_stream))
-+#  define streamInit(stream)
++#  define streamInit(strm)
 +#else
 +#  include <zlib.h>
-+#  define streamInit(stream) \
-+      stream->zalloc = (alloc_func)Z_NULL; \
-+      stream->zfree = (free_func)Z_NULL; \
-+      stream->opaque = (voidpf)Z_NULL;
++#  define streamInit(strm) { \
++      strm->zalloc = (alloc_func)Z_NULL; \
++      strm->zfree = (free_func)Z_NULL; \
++      strm->opaque = (voidpf)Z_NULL; }
 +#endif
  
  class CZlib : public ICompressor {
@@ -36,9 +38,10 @@ diff -ur nsis-2.46.orig/Source/czlib.h nsis-2.46-src/Source/czlib.h
      }
  
      int End() {
-diff -ur nsis-2.46.orig/Source/SConscript nsis-2.46-src/Source/SConscript
---- nsis-2.46.orig/Source/SConscript	2007-10-03 15:31:56.000000000 +0200
-+++ nsis-2.46-src/Source/SConscript	2009-12-15 20:44:14.000000000 +0100
+Index: nsis-2.46/Source/SConscript
+===================================================================
+--- nsis-2.46/Source/SConscript	(revision 6015)
++++ nsis-2.46/Source/SConscript	(working copy)
 @@ -66,6 +66,8 @@
  	# XXX will cause problems if makensis is cross compiled
  	# on freebsd, libversion.a exists and gives trouble if linked
@@ -59,16 +62,17 @@ diff -ur nsis-2.46.orig/Source/SConscript nsis-2.46-src/Source/SConscript
  
  makensis = env.Program(target, files)
  
-diff -ur nsis-2.46.orig/Source/Tests/SConscript nsis-2.46-src/Source/Tests/SConscript
---- nsis-2.46.orig/Source/Tests/SConscript	2009-02-06 15:15:39.000000000 +0100
-+++ nsis-2.46-src/Source/Tests/SConscript	2009-12-15 20:44:14.000000000 +0100
+Index: nsis-2.46/Source/Tests/SConscript
+===================================================================
+--- nsis-2.46/Source/Tests/SConscript	(revision 6015)
++++ nsis-2.46/Source/Tests/SConscript	(working copy)
 @@ -1,3 +1,5 @@
 +Import('env AddAvailableLibs')
 +
  target = 'test'
  
  tests = Split("""
-@@ -65,7 +69,9 @@
+@@ -65,7 +67,9 @@
  	zlib/INFBLOCK.C
  """)
  
@@ -79,7 +83,7 @@ diff -ur nsis-2.46.orig/Source/Tests/SConscript nsis-2.46-src/Source/Tests/SCons
  required_exehead += zlib_exehead_files
  
  cppunitlibs = Split("""
-@@ -87,8 +93,6 @@
+@@ -87,8 +91,6 @@
  	winver.nsi
  """)
  
@@ -88,7 +92,7 @@ diff -ur nsis-2.46.orig/Source/Tests/SConscript nsis-2.46-src/Source/Tests/SCons
  # Test scripts
  env.TestScript(scripts)
  
-@@ -97,6 +101,8 @@
+@@ -97,6 +99,8 @@
  	# XXX will cause problems if tests are cross compiled
  	# on freebsd, libversion.a exists and gives trouble if linked
  	extralibs += ['version']
