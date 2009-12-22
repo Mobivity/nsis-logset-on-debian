@@ -35,7 +35,6 @@ endif
 
 override_dh_auto_build:
 	scons $(SCONSOPTSALL)
-	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
 	xmlto -o build man debian/makensis.xml
 	xmlto -o build man debian/GenPat.xml
 	xmlto -o build man debian/LibraryLocal.xml
@@ -46,6 +45,9 @@ override_dh_auto_build:
 	html2text -style pretty -nobs -o build/README.InstallOptions Contrib/InstallOptions/Readme.html
 	html2text -style pretty -nobs -o build/README.MultiUser Contrib/MultiUser/Readme.html
 	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
+
+override_dh_auto_test:
+	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
 
 override_dh_auto_install:
 	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/tmp install
