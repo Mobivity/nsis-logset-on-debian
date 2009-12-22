@@ -55,9 +55,8 @@ override_dh_auto_install:
 	rm debian/tmp/usr/share/doc/nsis/Docs/makensisw/License.txt
 
 override_dh_auto_clean:
-	dh_quilt_unpatch
 	scons -c $(SCONSOPTSALL)
-	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test build-stamp
+	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
 override_dh_install:
