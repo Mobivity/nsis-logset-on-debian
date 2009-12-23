@@ -1,9 +1,13 @@
 nsis (2.46-1) unstable; urgency=low
 
+  [ Thomas Gaugler ]
   * New upstream release
   * Switch to 3.0 (quilt) source format
   * Use the system provided compression library of zlib
   * Switch to debhelper 7's minimal rules file mode
+
+  [ Paul Wise ]
+  * Link against the 32-bit zlib on amd64 to prevent FTBFS
 
  -- Thomas Gaugler <thomas@dadie.net>  Tue, 22 Dec 2009 18:53:50 +0000
 
