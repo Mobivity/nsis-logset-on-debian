@@ -3,8 +3,9 @@ nsis (2.46-2) unstable; urgency=low
   * Updated zlib patch with changes from upstream subversion repository
   * Made embedded inflate function compatible with zlib (Closes: #579407)
   * Exclude unneeded win32-only utilities from building
+  * Build makensis and portable utilities natively for amd64
 
- -- Thomas Gaugler <thomas@dadie.net>  Tue, 04 May 2010 18:58:37 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Tue, 04 May 2010 19:27:06 +0000
 
 nsis (2.46-1) unstable; urgency=low
 
