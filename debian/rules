@@ -10,7 +10,7 @@ SCONSOPTS = VERSION=$(VERSION) \
   PREFIX=/usr PREFIX_CONF=/etc \
   PREFIX_PLUGINAPI_INC=$(MINGW32_PATH)/include/ \
   PREFIX_PLUGINAPI_LIB=$(MINGW32_PATH)/lib/ \
-  SKIPUTILS='Makensisw,NSIS Menu,SubStart,zip2exe' CHMDOCS=0 \
+  SKIPUTILS='Makensisw,NSIS Menu,zip2exe' CHMDOCS=0 \
   APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
   APPEND_LINKFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)"\
   STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
@@ -54,9 +54,14 @@ override_dh_auto_install:
 	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI/License.txt"
 	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
 	rm debian/tmp/usr/share/doc/nsis/Docs/NSISdl/License.txt
+	# Remove unneeded win32-only substart utilitiy, exclusion via
+	# SKIPUTILS would break the clean stage because substart 
+	# is provided via patch.
+	rm -f debian/tmp/usr/share/nsis/Bin/substart.exe
+	rm -f debian/tmp/usr/bin/makensis.exe
 
 override_dh_auto_clean:
-	scons -c
+	scons -c $(SCONSOPTSALL)
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
