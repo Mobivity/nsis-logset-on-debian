@@ -1,8 +1,9 @@
 nsis (2.46-3) experimental; urgency=low
 
+  * Removed architecture restrictions
   * Updated to Standards-Version 3.9.1
 
- -- Thomas Gaugler <thomas@dadie.net>  Thu, 16 Sep 2010 20:25:15 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Thu, 16 Sep 2010 20:26:41 +0000
 
 nsis (2.46-2) unstable; urgency=low
 
