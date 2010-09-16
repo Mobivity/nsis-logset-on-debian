@@ -1,3 +1,9 @@
+nsis (2.46-3) experimental; urgency=low
+
+  * Updated to Standards-Version 3.9.1
+
+ -- Thomas Gaugler <thomas@dadie.net>  Thu, 16 Sep 2010 20:25:15 +0000
+
 nsis (2.46-2) unstable; urgency=low
 
   * Updated zlib patch with changes from upstream subversion repository

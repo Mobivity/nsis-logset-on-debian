@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Thomas Gaugler <thomas@dadie.net>
 Build-Depends: debhelper (>= 7.0.50~), scons (>= 1.2.0), gcc-mingw32 (>= 4.4.0-3) | mingw32, mingw32-runtime, mingw32-binutils, xmlto, html2text, libcppunit-dev, zlib1g-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 Homepage: http://nsis.sourceforge.net/
 Vcs-Svn: svn://svn.debian.org/collab-maint/ext-maint/nsis/trunk
 Vcs-Browser: http://svn.debian.org/wsvn/collab-maint/ext-maint/nsis/trunk/?op=log
