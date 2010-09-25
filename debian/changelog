@@ -1,9 +1,10 @@
 nsis (2.46-3) experimental; urgency=low
 
+  * Removed the option to build with the orphaned gcc-mingw32
   * Removed architecture restrictions
   * Updated to Standards-Version 3.9.1
 
- -- Thomas Gaugler <thomas@dadie.net>  Thu, 16 Sep 2010 20:26:41 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 25 Sep 2010 15:00:24 +0000
 
 nsis (2.46-2) unstable; urgency=low
 
