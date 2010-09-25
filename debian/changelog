@@ -1,11 +1,12 @@
 nsis (2.46-3) experimental; urgency=low
 
+  * Use variant_dir instead of build_dir keyword in SConstruct file
   * Run complete set of tests independent of architecture
   * Removed the option to build with the orphaned gcc-mingw32
   * Removed architecture restrictions
   * Updated to Standards-Version 3.9.1
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 25 Sep 2010 15:19:29 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 25 Sep 2010 16:44:37 +0000
 
 nsis (2.46-2) unstable; urgency=low
 
