@@ -17,17 +17,10 @@ SCONSOPTS = VERSION=$(VERSION) \
 
 SCONSOPTSALL = $(SCONSOPTS) SKIPDOC=COPYING
 
-# we are compiling with -m32 on amd64 and 32-bit cppunit is not available there
-# so only run the makensis test scripts rather than the cppunit tests and the scripts
-DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH)
-ifeq ($(DEB_HOST_ARCH),i386)
-TEST=test
-else
-TEST=test-scripts
-endif
-
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 TEST=
+else
+TEST=test
 endif
 
 %:
