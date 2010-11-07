@@ -14,12 +14,15 @@
 
 <refentry>
   <refentryinfo>
+    <title>&package;</title>
+    <productname>&package; manual</productname>
     <address>
       &email;
     </address>
     <author>
       &firstname;
       &surname;
+      <contrib>Created man page</contrib>
     </author>
     <copyright>
       <year>2007</year>
