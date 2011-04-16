@@ -24,3 +24,13 @@ Description: Nullsoft Scriptable Install System (modified for Debian)
  of installers. Even with all these features, NSIS is still the smallest
  installer system available. With the default options, it has an overhead
  of only 34 KB.
+
+Package: nsis-docs
+Architecture: all
+Depends: ${misc:Depends}
+Description: Nullsoft Scriptable Install System documentation
+ NSIS is a tool for creating quick and user friendly installers for
+ Microsoft Windows (Win32) operating systems.
+ .
+ This package contains examples and the documentation in HTML format.
+

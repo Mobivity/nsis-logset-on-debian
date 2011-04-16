@@ -6,4 +6,3 @@ usr/share/nsis/Plugins
 usr/share/nsis
 etc/nsisconf.nsh
 usr/i586-mingw32msvc
-usr/share/doc/nsis

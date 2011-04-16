@@ -1,3 +1,9 @@
+nsis (2.46-4) unstable; urgency=low
+
+  * Put examples and HTML documentation into a separate package.
+
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 16 Apr 2011 17:54:08 +0000
+
 nsis (2.46-3) experimental; urgency=low
 
   * Fixed warnings of missing elements occuring in man page generation

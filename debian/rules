@@ -17,17 +17,26 @@ SCONSOPTS = VERSION=$(VERSION) \
 
 SCONSOPTSALL = $(SCONSOPTS) SKIPDOC=COPYING
 
+DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH)
+ifeq ($(DEB_HOST_ARCH),i386)
+TEST=test
+else
+TEST=test-scripts
+endif
+# Architecture independent targets
+BUILD_TARGETS += Docs/src stubs plugins Contrib/System Contrib/ExDLL
+# Architecture dependent targets
+BUILD_TARGETS += utils makensis
+
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 TEST=
-else
-TEST=test
 endif
 
 %:
 	dh $@ 
 
 override_dh_auto_build:
-	scons $(SCONSOPTSALL)
+	scons $(SCONSOPTSALL) $(BUILD_TARGETS)
 	xmlto -o build man debian/makensis.xml
 	xmlto -o build man debian/GenPat.xml
 	xmlto -o build man debian/LibraryLocal.xml
@@ -43,42 +52,42 @@ override_dh_auto_test:
 	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
 
 override_dh_auto_install:
-	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/tmp install
-	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI/License.txt"
-	rm "debian/tmp/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
-	rm debian/tmp/usr/share/doc/nsis/Docs/NSISdl/License.txt
+	#
+	# Stubs, plugins, plugin API, utils and compiler
+	#
+	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/tmp install-stubs install-plugins install-pluginapi install-data install-utils install-compiler install-conf
+	find $(CURDIR)/debian/tmp/etc $(CURDIR)/debian/tmp/usr/share/nsis \
+		$(CURDIR)/debian/tmp$(MINGW32_PATH) -type f -perm +111 -exec chmod a-x {} \;
 	# Remove unneeded win32-only substart utilitiy, exclusion via
 	# SKIPUTILS would break the clean stage because substart 
 	# is provided via patch.
 	rm -f debian/tmp/usr/share/nsis/Bin/substart.exe
 	rm -f debian/tmp/usr/bin/makensis.exe
+	#
+	# Documentation and examples
+	#
+	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/nsis-docs install-examples install-doc
+	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI/License.txt"
+	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
+	rm debian/nsis-docs/usr/share/doc/nsis/Docs/NSISdl/License.txt
+	# Replaces 05_examples_fixes.dpatch
+	cd $(CURDIR)/debian/nsis-docs/usr/share/doc/nsis/Examples/Modern\ UI/ ; \
+	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
 
 override_dh_auto_clean:
-	scons -c $(SCONSOPTSALL)
+	scons -c $(SCONSOPTSALL) >/dev/null 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
-
-override_dh_install:
-	dh_install --sourcedir=debian/tmp --fail-missing
-	find debian/nsis/etc debian/nsis/usr/share/nsis \
-		debian/nsis$(MINGW32_PATH) -type f -perm +111 -exec chmod a-x {} \;
-	# Replaces 05_examples_fixes.dpatch
-	cd debian/nsis/usr/share/doc/nsis/Examples/Modern\ UI/ ; \
-	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
 
 override_dh_installdocs:
 	# the docs file can't seem to have spaces within the file name(s)
 	dh_installdocs "build/README.Modern UI" "build/README.Modern UI 2"
 
-override_dh_link:
-	# the links file can't seem to have spaces within the symlink name(s)
-	dh_link "/usr/share/doc/nsis/Docs/Modern UI/Changelog.txt" "/usr/share/doc/nsis/changelog.Modern UI"
-
 override_dh_strip:
 	dh_strip -Xlibpluginapi.a
 
 override_dh_compress:
-	dh_compress
+	dh_compress -A -X.nsi
 	# Replaces 03_docs_fixes
 	cd debian/nsis/usr/share/doc/nsis/ ; \
 	find ./ -mindepth 2 -iname \*.gz | \
