@@ -55,14 +55,14 @@ override_dh_auto_install:
 	#
 	# Stubs, plugins, plugin API, utils and compiler
 	#
-	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/tmp install-stubs install-plugins install-pluginapi install-data install-utils install-compiler install-conf
-	find $(CURDIR)/debian/tmp/etc $(CURDIR)/debian/tmp/usr/share/nsis \
-		$(CURDIR)/debian/tmp$(MINGW32_PATH) -type f -perm +111 -exec chmod a-x {} \;
+	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/nsis install-stubs install-plugins install-pluginapi install-data install-utils install-compiler install-conf
+	find $(CURDIR)/debian/nsis/etc $(CURDIR)/debian/nsis/usr/share/nsis \
+		$(CURDIR)/debian/nsis$(MINGW32_PATH) -type f -perm +111 -exec chmod a-x {} \;
 	# Remove unneeded win32-only substart utilitiy, exclusion via
 	# SKIPUTILS would break the clean stage because substart 
 	# is provided via patch.
-	rm -f debian/tmp/usr/share/nsis/Bin/substart.exe
-	rm -f debian/tmp/usr/bin/makensis.exe
+	rm -f debian/nsis/usr/share/nsis/Bin/substart.exe
+	rm -f debian/nsis/usr/bin/makensis.exe
 	#
 	# Documentation and examples
 	#
