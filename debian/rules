@@ -3,6 +3,9 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Exclude .svn directories from packages
+export DH_ALWAYS_EXCLUDE=.svn
+
 VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
 MINGW32_PATH=/usr/i586-mingw32msvc
 
@@ -10,12 +13,38 @@ SCONSOPTS = VERSION=$(VERSION) \
   PREFIX=/usr PREFIX_CONF=/etc \
   PREFIX_PLUGINAPI_INC=$(MINGW32_PATH)/include/ \
   PREFIX_PLUGINAPI_LIB=$(MINGW32_PATH)/lib/ \
-  SKIPUTILS='Makensisw,NSIS Menu,zip2exe' CHMDOCS=0 \
+  CHMDOCS=0 \
   APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
   APPEND_LINKFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)"\
   STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
 
-SCONSOPTSALL = $(SCONSOPTS) SKIPDOC=COPYING
+COMMA := ,
+
+UTILS_ALL = 'Library/LibraryLocal,Library/RegTool,MakeLangId,Makensisw,NSIS Menu,UIs,SubStart,VPatch/Source/GenPat,zip2exe'
+
+IGNORE_UTILS_NSIS  := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
+IGNORE_UTILS_NSIS   := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_NSIS))
+IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA)Library/RegTool$(COMMA),,$(UTILS_ALL))
+IGNORE_UTILS_CLEAN  := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_CLEAN))
+IGNORE_UTILS_COMMON := $(IGNORE_UTILS_CLEAN)
+IGNORE_UTILS_CLEAN  := $(subst $(COMMA)SubStart,,$(IGNORE_UTILS_CLEAN))
+IGNORE_UTILS_CLEAN  := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_CLEAN))
+
+SCONSOPTS_NSIS   := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
+SCONSOPTS_COMMON := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON) \
+			SKIPDOC=COPYING
+SCONSOPTS_CLEAN  := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_CLEAN)
+SCONSOPTS_TEST   := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON)
+
+INSTALL_nsis = install-utils install-compiler install-conf
+INSTALL_nsis-common = install-stubs install-plugins install-data install-utils
+INSTALL_nsis-pluginapi = install-pluginapi
+INSTALL_nsis-docs = install-examples install-doc
+
+define DO_SCONS_INSTALL
+	scons $(1) PREFIX_DEST=$(CURDIR)/debian/$(2) $(INSTALL_$(2)) || exit 1;
+endef
+
 
 DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH)
 ifeq ($(DEB_HOST_ARCH),i386)
@@ -23,24 +52,21 @@ TEST=test
 else
 TEST=test-scripts
 endif
-# Architecture independent targets
-BUILD_TARGETS += Docs/src stubs plugins Contrib/System Contrib/ExDLL
-# Architecture dependent targets
-BUILD_TARGETS += utils makensis
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 TEST=
 endif
 
-%:
-	dh $@ 
+clean build:
+	dh "$@"
 
-override_dh_auto_build:
-	scons $(SCONSOPTSALL) $(BUILD_TARGETS)
-	xmlto -o build man debian/makensis.xml
-	xmlto -o build man debian/GenPat.xml
-	xmlto -o build man debian/LibraryLocal.xml
-	html2text -nobs build/*/Docs/html/AppendixF.html | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
+override_dh_auto_clean:
+	scons -c $(SCONSOPTS_CLEAN) >/dev/null 2>&1
+	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
+	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
+
+build-indep:
+	scons $(SCONSOPTS_COMMON) Docs/src stubs plugins utils
 	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
 	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
@@ -48,49 +74,63 @@ override_dh_auto_build:
 	html2text -style pretty -nobs -o build/README.MultiUser Contrib/MultiUser/Readme.html
 	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
 
-override_dh_auto_test:
-	if [ x$(TEST) != x ] ; then scons $(SCONSOPTS) $(TEST) ; fi
+build-arch:
+	scons $(SCONSOPTS_NSIS) utils makensis
+	xmlto -o build man debian/makensis.xml
+	xmlto -o build man debian/GenPat.xml
+	xmlto -o build man debian/LibraryLocal.xml
+	html2text -nobs build/*/Docs/html/AppendixF.html | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
 
-override_dh_auto_install:
-	#
-	# Stubs, plugins, plugin API, utils and compiler
-	#
-	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/nsis install-stubs install-plugins install-pluginapi install-data install-utils install-compiler install-conf
-	find $(CURDIR)/debian/nsis/etc $(CURDIR)/debian/nsis/usr/share/nsis \
-		$(CURDIR)/debian/nsis$(MINGW32_PATH) -type f -perm +111 -exec chmod a-x {} \;
-	# Remove unneeded win32-only substart utilitiy, exclusion via
-	# SKIPUTILS would break the clean stage because substart 
-	# is provided via patch.
-	rm -f debian/nsis/usr/share/nsis/Bin/substart.exe
-	rm -f debian/nsis/usr/bin/makensis.exe
-	#
-	# Documentation and examples
-	#
-	scons $(SCONSOPTSALL) PREFIX_DEST=$(CURDIR)/debian/nsis-docs install-examples install-doc
+
+test:
+	if [ x$(TEST) != x ] ; then \
+		if [ -d $(CURDIR)/debian/nsis-common ] ; then \
+			scons $(SCONSOPTS_TEST) $(TEST); \
+		fi; \
+	fi
+
+install-indep:
+	dh "install" --before dh_auto_install
+	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
+	# Fix permissions for plugin API
+	find $(CURDIR)/debian/nsis-pluginapi/$(MINGW32_PATH) \
+		$(CURDIR)/debian/nsis-common/usr/share/nsis \
+		-type f -perm +111 -exec chmod a-x {} \;
+	# Clean up examples and documentation
+	# The docs file can't seem to have spaces within the file name(s)
+	dh_installdocs -pnsis-docs "build/README.Modern UI" \
+		"build/README.Modern UI 2"
 	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI/License.txt"
 	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
-	rm debian/nsis-docs/usr/share/doc/nsis/Docs/NSISdl/License.txt
+	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/NSISdl/License.txt"
 	# Replaces 05_examples_fixes.dpatch
 	cd $(CURDIR)/debian/nsis-docs/usr/share/doc/nsis/Examples/Modern\ UI/ ; \
 	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
 
-override_dh_auto_clean:
-	scons -c $(SCONSOPTSALL) >/dev/null 2>&1
-	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
-	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
-
-override_dh_installdocs:
-	# the docs file can't seem to have spaces within the file name(s)
-	dh_installdocs "build/README.Modern UI" "build/README.Modern UI 2"
-
-override_dh_strip:
-	dh_strip -Xlibpluginapi.a
+install-arch:
+	dh "install" --before dh_auto_install
+	$(call DO_SCONS_INSTALL,$(SCONSOPTS_NSIS),nsis)
+	find $(CURDIR)/debian/nsis/etc \
+		-type f -perm +111 -exec chmod a-x {} \;
 
 override_dh_compress:
 	dh_compress -A -X.nsi
 	# Replaces 03_docs_fixes
-	cd debian/nsis/usr/share/doc/nsis/ ; \
-	find ./ -mindepth 2 -iname \*.gz | \
-	sed -e 's_^\./\(.*\)\.gz$$_\1_g' -e 's/ /%20/g' | \
-	xargs -i88 sh -c 'fgrep -rl "88\"" . | xargs -i{} sed -i -e "s|88\"|88.gz\"|g" "{}"'
+	if [ -d debian/nsis-docs/usr/share/doc/nsis ]; then \
+		cd debian/nsis-docs/usr/share/doc/nsis ; \
+		find ./ -mindepth 2 -iname \*.gz | \
+		sed -e 's_^\./\(.*\)\.gz$$_\1_g' -e 's/ /%20/g' | \
+		xargs -i88 sh -c 'fgrep -rl "88\"" . | \
+		xargs -i{} sed -i -e "s|88\"|88.gz\"|g" "{}"'; \
+	fi
 
+binary-indep: PKGS = $(shell dh_listpackages -i)
+binary-indep: build-indep install-indep
+	dh "$@"
+
+binary-arch: build-arch test install-arch
+	dh "$@"
+
+binary: binary-indep binary-arch
+
+.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test

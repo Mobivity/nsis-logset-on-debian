@@ -10,8 +10,8 @@ Vcs-Browser: http://svn.debian.org/wsvn/collab-maint/ext-maint/nsis/trunk/?op=lo
 
 Package: nsis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: wine, gcc-mingw32
+Depends: ${shlibs:Depends}, ${misc:Depends}, nsis-common
+Suggests: nsis-docs, nsis-pluginapi, gcc-mingw32, wine
 Description: Nullsoft Scriptable Install System (modified for Debian)
  NSIS is a tool for creating quick and user friendly installers for
  Microsoft Windows (Win32) operating systems.
@@ -24,6 +24,26 @@ Description: Nullsoft Scriptable Install System (modified for Debian)
  of installers. Even with all these features, NSIS is still the smallest
  installer system available. With the default options, it has an overhead
  of only 34 KB.
+
+Package: nsis-common
+Architecture: all
+Depends: ${misc:Depends}
+Description: Nullsoft Scriptable Install System stubs and plugins
+ NSIS is a tool for creating quick and user friendly installers for
+ Microsoft Windows (Win32) operating systems.
+ .
+ This package contains the stubs and plugins of NSIS.
+
+Package: nsis-pluginapi
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: gcc-mingw32
+Description: Nullsoft Scriptable Install System plugin API
+ NSIS is a tool for creating quick and user friendly installers for
+ Microsoft Windows (Win32) operating systems.
+ .
+ This package contains the header and library files for developing
+ NSIS plugins.
 
 Package: nsis-docs
 Architecture: all

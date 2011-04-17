@@ -1,8 +1,13 @@
 nsis (2.46-4) unstable; urgency=low
 
-  * Put examples and HTML documentation into a separate package.
+  * Run architecture independent build process only when demanded.
+  * Split NSIS package into four packages:
+    - compiler and utilities (architecture dependent)
+    - plugins, stubs and resource files (win32)
+    - header and library files for developing NSIS plugins (win32)
+    - examples and HTML documentation (architecture independent)
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 16 Apr 2011 17:54:08 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Sun, 17 Apr 2011 19:59:19 +0000
 
 nsis (2.46-3) experimental; urgency=low
 
