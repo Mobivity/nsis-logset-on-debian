@@ -46,6 +46,7 @@ Description: Nullsoft Scriptable Install System plugin API
  NSIS plugins.
 
 Package: nsis-docs
+Section: doc
 Architecture: all
 Depends: ${misc:Depends}
 Description: Nullsoft Scriptable Install System documentation

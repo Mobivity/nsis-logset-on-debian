@@ -1,6 +1,7 @@
 The menu thing isn't included because it requires wxWidgets 2.8 to build.
 
-To build nsis plugins you should read the following.
+To build nsis plugins you have to install the nsis-pluginapi package 
+and follow the given below instructions.
 
 You should include the header like so:
 

@@ -42,7 +42,7 @@ INSTALL_nsis-pluginapi = install-pluginapi
 INSTALL_nsis-docs = install-examples install-doc
 
 define DO_SCONS_INSTALL
-	scons $(1) PREFIX_DEST=$(CURDIR)/debian/$(2) $(INSTALL_$(2)) || exit 1;
+	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
 endef
 
 
@@ -84,7 +84,7 @@ build-arch:
 
 test:
 	if [ x$(TEST) != x ] ; then \
-		if [ -d $(CURDIR)/debian/nsis-common ] ; then \
+		if [ -d "$(CURDIR)/debian/nsis-common" ] ; then \
 			scons $(SCONSOPTS_TEST) $(TEST); \
 		fi; \
 	fi
@@ -92,9 +92,11 @@ test:
 install-indep:
 	dh "install" --before dh_auto_install
 	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
+	# Exclude any architecture dependent binaries from nsis-common
+	rm -rf "$(CURDIR)/debian/nsis-common/usr/bin"
 	# Fix permissions for plugin API
-	find $(CURDIR)/debian/nsis-pluginapi/$(MINGW32_PATH) \
-		$(CURDIR)/debian/nsis-common/usr/share/nsis \
+	find "$(CURDIR)/debian/nsis-pluginapi$(MINGW32_PATH)" \
+		"$(CURDIR)/debian/nsis-common/usr/share/nsis" \
 		-type f -perm +111 -exec chmod a-x {} \;
 	# Clean up examples and documentation
 	# The docs file can't seem to have spaces within the file name(s)
@@ -103,23 +105,24 @@ install-indep:
 	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI/License.txt"
 	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
 	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/NSISdl/License.txt"
-	# Replaces 05_examples_fixes.dpatch
-	cd $(CURDIR)/debian/nsis-docs/usr/share/doc/nsis/Examples/Modern\ UI/ ; \
+	# Remove reference to License text file in Modern UI examples
+	# to enable their compilation with makensis
+	cd "$(CURDIR)/debian/nsis-docs/usr/share/doc/nsis/Examples/Modern\ UI/" ; \
 	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
 
 install-arch:
 	dh "install" --before dh_auto_install
-	$(call DO_SCONS_INSTALL,$(SCONSOPTS_NSIS),nsis)
-	find $(CURDIR)/debian/nsis/etc \
+	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_NSIS),$(p)))
+	find "$(CURDIR)/debian/nsis/etc" \
 		-type f -perm +111 -exec chmod a-x {} \;
 
 override_dh_compress:
-	dh_compress -A -X.nsi
-	# Replaces 03_docs_fixes
+	dh_compress -X.nlf -X.nsh -X.nsi -X.dll
+	# Adapt links to documents with those of their compressed version
 	if [ -d debian/nsis-docs/usr/share/doc/nsis ]; then \
 		cd debian/nsis-docs/usr/share/doc/nsis ; \
 		find ./ -mindepth 2 -iname \*.gz | \
-		sed -e 's_^\./\(.*\)\.gz$$_\1_g' -e 's/ /%20/g' | \
+		sed -e 's,.gz$$,,g' -e 's, ,%20,g' | \
 		xargs -i88 sh -c 'fgrep -rl "88\"" . | \
 		xargs -i{} sed -i -e "s|88\"|88.gz\"|g" "{}"'; \
 	fi
@@ -128,6 +131,7 @@ binary-indep: PKGS = $(shell dh_listpackages -i)
 binary-indep: build-indep install-indep
 	dh "$@"
 
+binary-arch: PKGS = $(shell dh_listpackages -a)
 binary-arch: build-arch test install-arch
 	dh "$@"
 
