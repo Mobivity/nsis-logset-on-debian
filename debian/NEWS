@@ -4,7 +4,7 @@ nsis (2.46-4) unstable; urgency=low
     - nsis: compiler and utilities
     - nsis-common: plugins, stubs and resource files
     - nsis-pluginapi: header and library files for developing NSIS plugins
-    - nsis-docs: examples and HTML documentation
+    - nsis-doc: examples and HTML documentation
 
     The details for building nsis plugins are described in README.Debian.
 

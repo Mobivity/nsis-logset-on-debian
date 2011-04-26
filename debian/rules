@@ -7,16 +7,25 @@
 export DH_ALWAYS_EXCLUDE=.svn
 
 VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
-MINGW32_PATH=/usr/i586-mingw32msvc
+PREFIX=/usr
+XGCC_W32 = $(shell which i686-w64-mingw32-gcc || which i586-mingw32msvc-gcc)
+ifneq ($(strip $(XGCC_W32)),)
+	XGCC_W32_PATH = $(abspath $(shell $(XGCC_W32) -print-file-name=libkernel32.a)/../..)
+	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
+endif
 
 SCONSOPTS = VERSION=$(VERSION) \
-  PREFIX=/usr PREFIX_CONF=/etc \
-  PREFIX_PLUGINAPI_INC=$(MINGW32_PATH)/include/ \
-  PREFIX_PLUGINAPI_LIB=$(MINGW32_PATH)/lib/ \
+  PREFIX=$(PREFIX) PREFIX_CONF=/etc \
   CHMDOCS=0 \
   APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
   APPEND_LINKFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)"\
   STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
+
+ifdef XGCC_W32_PATH
+SCONSOPTS := $(SCONSOPTS) \
+  PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
+  PREFIX_PLUGINAPI_LIB=$(XGCC_W32_PATH)/lib/
+endif
 
 COMMA := ,
 
@@ -39,7 +48,14 @@ SCONSOPTS_TEST   := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON)
 INSTALL_nsis = install-utils install-compiler install-conf
 INSTALL_nsis-common = install-stubs install-plugins install-data install-utils
 INSTALL_nsis-pluginapi = install-pluginapi
-INSTALL_nsis-docs = install-examples install-doc
+INSTALL_nsis-doc = install-examples install-doc
+
+# Exclude test scripts not appropriate for POSIX platforms.
+# TODO: Fix Library.nsi|System/System.nsi|nsDialogs/InstallOptions.nsi scripts
+IGNORE_TESTS = makensis.nsi|gfx.nsi|Library.nsi|System/System.nsi|nsDialogs/InstallOptions.nsi
+
+# Path to .nsi scripts
+SCRIPTS_PATH = $(PREFIX)/share/doc/nsis/Examples
 
 define DO_SCONS_INSTALL
 	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
@@ -66,13 +82,15 @@ override_dh_auto_clean:
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
 build-indep:
-	scons $(SCONSOPTS_COMMON) Docs/src stubs plugins utils
+ifdef XGCC_W32_PATH
+	scons Docs/src $(SCONSOPTS_COMMON) stubs plugins utils
 	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
 	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
 	html2text -style pretty -nobs -o build/README.InstallOptions Contrib/InstallOptions/Readme.html
 	html2text -style pretty -nobs -o build/README.MultiUser Contrib/MultiUser/Readme.html
 	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
+endif
 
 build-arch:
 	scons $(SCONSOPTS_NSIS) utils makensis
@@ -86,11 +104,30 @@ test:
 	if [ x$(TEST) != x ] ; then \
 		if [ -d "$(CURDIR)/debian/nsis-common" ] ; then \
 			scons $(SCONSOPTS_TEST) $(TEST); \
+		else \
+			scons $(SCONSOPTS_TEST) PREFIX_DEST="$(CURDIR)/.test" install-compiler install-conf; \
+			for script_path in $(SCRIPTS_PATH)/*.nsi \
+				$(SCRIPTS_PATH)/*/*.nsi; do \
+				script=$${script_path#$(SCRIPTS_PATH)/}; \
+				if [ "$${script%/*}" != "$${script}" ]; then \
+					mkdir -p ".test/$${script%/*}"; \
+				fi; \
+				case $${script} in \
+				$(IGNORE_TESTS)) ;; \
+				*) \
+				if [ -f "$${script_path}" ]; then \
+					".test/$(PREFIX)/bin/makensis" \
+					"$${script_path}" \
+					-X"OutFile \"$(CURDIR)/.test/$${script%.nsi}.exe\"" || exit 1; \
+				fi;; \
+				esac; \
+			done; \
 		fi; \
 	fi
 
 install-indep:
 	dh "install" --before dh_auto_install
+ifdef XGCC_W32_PATH
 	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
 	# Exclude any architecture dependent binaries from nsis-common
 	rm -rf "$(CURDIR)/debian/nsis-common/usr/bin"
@@ -100,15 +137,16 @@ install-indep:
 		-type f -perm +111 -exec chmod a-x {} \;
 	# Clean up examples and documentation
 	# The docs file can't seem to have spaces within the file name(s)
-	dh_installdocs -pnsis-docs "build/README.Modern UI" \
+	dh_installdocs -pnsis-doc "build/README.Modern UI" \
 		"build/README.Modern UI 2"
-	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI/License.txt"
-	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
-	rm "debian/nsis-docs/usr/share/doc/nsis/Docs/NSISdl/License.txt"
+	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/Modern UI/License.txt"
+	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
+	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/NSISdl/License.txt"
 	# Remove reference to License text file in Modern UI examples
 	# to enable their compilation with makensis
-	cd "$(CURDIR)/debian/nsis-docs/usr/share/doc/nsis/Examples/Modern\ UI/" ; \
-	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/'{}/g "{}"
+	cd "$(CURDIR)/debian/nsis-doc/usr/share/doc/nsis/Examples/Modern UI"; \
+	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/{}/g' "{}"
+endif
 
 install-arch:
 	dh "install" --before dh_auto_install
@@ -119,8 +157,8 @@ install-arch:
 override_dh_compress:
 	dh_compress -X.nlf -X.nsh -X.nsi -X.dll
 	# Adapt links to documents with those of their compressed version
-	if [ -d debian/nsis-docs/usr/share/doc/nsis ]; then \
-		cd debian/nsis-docs/usr/share/doc/nsis ; \
+	if [ -d debian/nsis-doc/usr/share/doc/nsis ]; then \
+		cd debian/nsis-doc/usr/share/doc/nsis ; \
 		find ./ -mindepth 2 -iname \*.gz | \
 		sed -e 's,.gz$$,,g' -e 's, ,%20,g' | \
 		xargs -i88 sh -c 'fgrep -rl "88\"" . | \
