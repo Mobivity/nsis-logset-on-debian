@@ -51,11 +51,13 @@ INSTALL_nsis-pluginapi = install-pluginapi
 INSTALL_nsis-doc = install-examples install-doc
 
 # Exclude test scripts not appropriate for POSIX platforms.
-# TODO: Fix Library.nsi|System/System.nsi|nsDialogs/InstallOptions.nsi scripts
-IGNORE_TESTS = makensis.nsi|gfx.nsi|Library.nsi|System/System.nsi|nsDialogs/InstallOptions.nsi
+IGNORE_TESTS = makensis.nsi|gfx.nsi
 
 # Path to .nsi scripts
 SCRIPTS_PATH = $(PREFIX)/share/doc/nsis/Examples
+
+# Release notes 
+NEWS = $(PREFIX)/share/doc/nsis/Docs/AppendixF.html
 
 define DO_SCONS_INSTALL
 	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
@@ -97,15 +99,20 @@ build-arch:
 	xmlto -o build man debian/makensis.xml
 	xmlto -o build man debian/GenPat.xml
 	xmlto -o build man debian/LibraryLocal.xml
-	html2text -nobs build/*/Docs/html/AppendixF.html | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
+	if [ -e "$(NEWS)" ]; then \
+		news_file=$(NEWS); \
+	else \
+		news_file=$(CURDIR)/debian/nsis-doc$(NEWS); \
+	fi; \
+	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
 
 
 test:
 	if [ x$(TEST) != x ] ; then \
-		if [ -d "$(CURDIR)/debian/nsis-common" ] ; then \
+		if [ -d "$(CURDIR)/debian/nsis-common$(PREFIX)/share/nsis" ] ; then \
 			scons $(SCONSOPTS_TEST) $(TEST); \
 		else \
-			scons $(SCONSOPTS_TEST) PREFIX_DEST="$(CURDIR)/.test" install-compiler install-conf; \
+			scons $(SCONSOPTS_NSIS) PREFIX_DEST="$(CURDIR)/.test" $(INSTALL_nsis); \
 			for script_path in $(SCRIPTS_PATH)/*.nsi \
 				$(SCRIPTS_PATH)/*/*.nsi; do \
 				script=$${script_path#$(SCRIPTS_PATH)/}; \
@@ -116,7 +123,7 @@ test:
 				$(IGNORE_TESTS)) ;; \
 				*) \
 				if [ -f "$${script_path}" ]; then \
-					".test/$(PREFIX)/bin/makensis" \
+					PATH=$(PATH):$(CURDIR)/.test$(PREFIX)/bin ".test$(PREFIX)/bin/makensis" \
 					"$${script_path}" \
 					-X"OutFile \"$(CURDIR)/.test/$${script%.nsi}.exe\"" || exit 1; \
 				fi;; \
