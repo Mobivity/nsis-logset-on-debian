@@ -2,7 +2,7 @@ Source: nsis
 Section: devel
 Priority: optional
 Maintainer: Thomas Gaugler <thomas@dadie.net>
-Build-Depends: debhelper (>= 7.0.50~), scons (>= 1.2.0), xmlto, html2text, libcppunit-dev, zlib1g-dev, nsis-common (= 2.46-4) | mingw32, nsis-doc (= 2.46-4) | mingw32
+Build-Depends: debhelper (>= 7.0.50~), scons (>= 1.2.0), xmlto, html2text, libcppunit-dev, zlib1g-dev, nsis-common (= 2.46-4) | mingw-w64 (>= 1.0) |  mingw32, nsis-doc (= 2.46-4) | mingw-w64 (>= 1.0) | mingw32
 Standards-Version: 3.9.2
 Homepage: http://nsis.sourceforge.net/
 Vcs-Svn: svn://svn.debian.org/collab-maint/ext-maint/nsis/trunk
@@ -37,7 +37,7 @@ Description: Nullsoft Scriptable Install System stubs and plugins
 Package: nsis-pluginapi
 Architecture: all
 Depends: ${misc:Depends}
-Recommends: mingw32
+Recommends: mingw-w64 (>= 1.0)
 Enhances: nsis
 Description: Nullsoft Scriptable Install System plugin API
  NSIS is a tool for creating quick and user friendly installers for

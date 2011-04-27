@@ -6,9 +6,11 @@ nsis (2.46-4) unstable; urgency=low
     - plugins, stubs and resource files (win32)
     - header and library files for developing NSIS plugins (win32)
     - examples and HTML documentation (architecture independent)
+  * Updated to Standards-Version 3.9.2
   * Perform test scripts also for binary-only build.
+  * Support building with mingw-w64 (Closes: #620099)
 
- -- Thomas Gaugler <thomas@dadie.net>  Tue, 26 Apr 2011 21:16:12 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 27 Apr 2011 18:28:04 +0000
 
 nsis (2.46-3) experimental; urgency=low
 
