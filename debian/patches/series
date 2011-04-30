@@ -4,3 +4,4 @@ makensis_native_64bit.patch
 sconstruct_variant_dir.patch
 nsi_scripts.patch
 mingw_w64.patch
+parallel_build.patch

@@ -21,7 +21,18 @@ else
 	SUBSTVARS = -Vlocal:XGCCW32="mingw32"
 endif
 
-SCONSOPTS = VERSION=$(VERSION) \
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+TEST=
+else
+TEST=test
+endif
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	SCONSFLAGS = -j $(NUMJOBS)
+endif
+
+SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
   PREFIX=$(PREFIX) PREFIX_CONF=/etc \
   CHMDOCS=0 \
   APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
@@ -33,12 +44,6 @@ SCONSOPTS := $(SCONSOPTS) \
   PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
   PREFIX_PLUGINAPI_LIB=$(XGCC_W32_PATH)/lib/ \
   XGCC_W32_PREFIX=$(XGCC_W32_PREFIX)
-endif
-
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-TEST=
-else
-TEST=test
 endif
 
 COMMA := ,
@@ -193,3 +198,4 @@ binary-arch: build-arch test install-arch
 binary: binary-indep binary-arch
 
 .PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test
+.NOTPARALLEL: binary
