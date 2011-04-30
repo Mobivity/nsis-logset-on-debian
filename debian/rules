@@ -80,7 +80,12 @@ endef
 clean build:
 	dh "$@"
 
-override_dh_auto_clean:
+# Automatically adapt the version of the build dependent nsis packages in
+# the debian/control file.
+debian/control: debian/changelog
+	sed -i -e '/^Build-Depends:/s/\(nsis-[^(]\+\)([^)]\+)/\1(= $(VERSION))/g' $@
+
+override_dh_auto_clean: debian/control
 	scons -c $(SCONSOPTS_CLEAN) >/dev/null 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
