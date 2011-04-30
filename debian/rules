@@ -8,10 +8,17 @@ export DH_ALWAYS_EXCLUDE=.svn
 
 VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
 PREFIX=/usr
+
+# Variables for Win32 cross compiler
 XGCC_W32 = $(shell which i686-w64-mingw32-gcc || which i586-mingw32msvc-gcc)
 ifneq ($(strip $(XGCC_W32)),)
 	XGCC_W32_PATH = $(abspath $(shell $(XGCC_W32) -print-file-name=libkernel32.a)/../..)
 	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
+endif
+ifneq (,$(findstring -w64,$(XGCC_W32)))
+	SUBSTVARS = -Vlocal:XGCCW32="mingw-w64 (>= 1.0)"
+else
+	SUBSTVARS = -Vlocal:XGCCW32="mingw32"
 endif
 
 SCONSOPTS = VERSION=$(VERSION) \
@@ -26,6 +33,12 @@ SCONSOPTS := $(SCONSOPTS) \
   PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
   PREFIX_PLUGINAPI_LIB=$(XGCC_W32_PATH)/lib/ \
   XGCC_W32_PREFIX=$(XGCC_W32_PREFIX)
+endif
+
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+TEST=
+else
+TEST=test
 endif
 
 COMMA := ,
@@ -64,18 +77,6 @@ define DO_SCONS_INSTALL
 	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
 endef
 
-
-DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH)
-ifeq ($(DEB_HOST_ARCH),i386)
-TEST=test
-else
-TEST=test-scripts
-endif
-
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-TEST=
-endif
-
 clean build:
 	dh "$@"
 
@@ -84,9 +85,12 @@ override_dh_auto_clean:
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
+override_dh_gencontrol:
+	dh_gencontrol -- $(SUBSTVARS)
+
 build-indep:
 ifdef XGCC_W32_PATH
-	scons Docs/src $(SCONSOPTS_COMMON) stubs plugins utils
+	scons $(SCONSOPTS_COMMON) Docs/src stubs plugins utils
 	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
 	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
