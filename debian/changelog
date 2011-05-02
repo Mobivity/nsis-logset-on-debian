@@ -15,6 +15,7 @@ nsis (2.46-4) UNRELEASED; urgency=low
   [ Didier Raboud ]
   * Generate the full control file during maintainer (including arch:all
     packages) builds.
+  * Don't hide output from scons in clean.
 
  -- Thomas Gaugler <thomas@dadie.net>  Sat, 30 Apr 2011 21:29:33 +0000
 

@@ -95,7 +95,7 @@ else
 endif
 
 override_dh_auto_clean: debian/control
-	scons -c $(SCONSOPTS_CLEAN) >/dev/null 2>&1
+	scons -c $(SCONSOPTS_CLEAN) 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
