@@ -94,6 +94,20 @@ else
 	sed -e 's/@@NSIS_COMMON_BUILD_DEPS@@//g' $@.in > $@
 endif
 
+build/NEWS:
+	if [ -e "$(NEWS)" ]; then \
+		news_file="$(NEWS)"; \
+	else \
+		if [ -e "$(CURDIR)/debian/nsis-doc$(NEWS)" ]; then \
+			news_file="$(CURDIR)/debian/nsis-doc$(NEWS)"; \
+		else \
+			scons $(SCONS_NSIS) Docs/src; \
+			news_file="build/*/Docs/html/AppendixF.html"; \
+		fi; \
+	fi; \
+	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
+
+
 override_dh_auto_clean: debian/control
 	scons -c $(SCONSOPTS_CLEAN) 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
@@ -118,13 +132,6 @@ build-arch:
 	xmlto -o build man debian/makensis.xml
 	xmlto -o build man debian/GenPat.xml
 	xmlto -o build man debian/LibraryLocal.xml
-	if [ -e "$(NEWS)" ]; then \
-		news_file=$(NEWS); \
-	else \
-		news_file=$(CURDIR)/debian/nsis-doc$(NEWS); \
-	fi; \
-	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > build/NEWS
-
 
 test:
 	if [ x$(TEST) != x ] ; then \
@@ -196,7 +203,7 @@ binary-indep: build-indep install-indep
 	dh "$@"
 
 binary-arch: PKGS = $(shell dh_listpackages -a)
-binary-arch: build-arch test install-arch
+binary-arch: build-arch build/NEWS test install-arch
 	dh "$@"
 
 binary: binary-indep binary-arch
