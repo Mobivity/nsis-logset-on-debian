@@ -88,7 +88,11 @@ clean build:
 # Automatically adapt the version of the build dependent nsis packages in
 # the debian/control file.
 debian/control: debian/changelog
-	sed -i -e '/^Build-Depends:/s/\(nsis-[^(]\+\)([^)]\+)/\1(= $(VERSION))/g' $@
+ifeq (,$(findstring nsis-doc, $(shell dh_listpackages)))
+	sed -e 's/@@NSIS_COMMON_BUILD_DEPS@@/nsis-doc (>= $(VERSION)~), nsis-common (>= $(VERSION)~)/g' $@.in > $@
+else
+	sed -e 's/@@NSIS_COMMON_BUILD_DEPS@@//g' $@.in > $@
+endif
 
 override_dh_auto_clean: debian/control
 	scons -c $(SCONSOPTS_CLEAN) >/dev/null 2>&1
@@ -197,5 +201,5 @@ binary-arch: build-arch test install-arch
 
 binary: binary-indep binary-arch
 
-.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test
+.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test debian/control
 .NOTPARALLEL: binary
