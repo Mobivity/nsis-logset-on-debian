@@ -1,4 +1,4 @@
-nsis (2.46-4) unstable; urgency=low
+nsis (2.46-4) UNRELEASED; urgency=low
 
   * Run architecture independent build process only when demanded.
   * Split NSIS package into four packages:
