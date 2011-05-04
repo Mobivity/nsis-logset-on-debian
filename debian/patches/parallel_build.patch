@@ -6,7 +6,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
 
 --- nsis-2.46.orig/SCons/utils.py
 +++ nsis-2.46/SCons/utils.py
-@@ -28,12 +28,15 @@ def AddZLib(env, platform, alias='instal
+@@ -28,12 +28,15 @@ 
  			print 'Please specify folder of zlib for Win32 via ZLIB_W32'
  			Exit(1)
  
