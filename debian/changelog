@@ -16,6 +16,7 @@ nsis (2.46-4) UNRELEASED; urgency=low
   * Generate the full control file during maintainer (including arch:all
     packages) builds.
   * Don't hide output from scons in clean.
+  * Move packaging from Subversion to Git, update Vcs-* fields.
 
  -- Thomas Gaugler <thomas@dadie.net>  Sat, 30 Apr 2011 21:29:33 +0000
 
