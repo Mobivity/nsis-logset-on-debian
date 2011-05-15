@@ -85,15 +85,6 @@ endef
 clean build:
 	dh "$@"
 
-# Automatically adapt the version of the build dependent nsis packages in
-# the debian/control file.
-debian/control: debian/changelog
-ifeq (,$(findstring nsis-doc, $(shell dh_listpackages)))
-	sed -e 's/@@NSIS_COMMON_BUILD_DEPS@@/nsis-doc (>= $(VERSION)~), nsis-common (>= $(VERSION)~)/g' $@.in > $@
-else
-	sed -e 's/@@NSIS_COMMON_BUILD_DEPS@@//g' $@.in > $@
-endif
-
 build/NEWS:
 	if [ -e "$(NEWS)" ]; then \
 		news_file="$(NEWS)"; \
@@ -108,7 +99,7 @@ build/NEWS:
 	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
 
 
-override_dh_auto_clean: debian/control
+override_dh_auto_clean:
 	scons -c $(SCONSOPTS_CLEAN) 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
@@ -208,5 +199,5 @@ binary-arch: build-arch build/NEWS test install-arch
 
 binary: binary-indep binary-arch
 
-.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test debian/control
+.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test
 .NOTPARALLEL: binary
