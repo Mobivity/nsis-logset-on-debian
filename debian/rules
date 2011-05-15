@@ -10,15 +10,10 @@ VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
 PREFIX=/usr
 
 # Variables for Win32 cross compiler
-XGCC_W32 = $(shell which i686-w64-mingw32-gcc || which i586-mingw32msvc-gcc)
+XGCC_W32 = $(shell which i686-w64-mingw32-gcc)
 ifneq ($(strip $(XGCC_W32)),)
 	XGCC_W32_PATH = $(abspath $(shell $(XGCC_W32) -print-file-name=libkernel32.a)/../..)
 	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
-endif
-ifneq (,$(findstring -w64,$(XGCC_W32)))
-	SUBSTVARS = -Vlocal:XGCCW32="mingw-w64 (>= 1.0)"
-else
-	SUBSTVARS = -Vlocal:XGCCW32="mingw32"
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -103,9 +98,6 @@ override_dh_auto_clean:
 	scons -c $(SCONSOPTS_CLEAN) 2>&1
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
-
-override_dh_gencontrol:
-	dh_gencontrol -- $(SUBSTVARS)
 
 build-indep:
 ifdef XGCC_W32_PATH
