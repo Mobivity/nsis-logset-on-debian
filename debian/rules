@@ -81,15 +81,11 @@ clean build:
 	dh "$@"
 
 build/NEWS:
-	if [ -e "$(NEWS)" ]; then \
-		news_file="$(NEWS)"; \
+	if [ -e "$(CURDIR)/debian/nsis-doc$(NEWS)" ]; then \
+		news_file="$(CURDIR)/debian/nsis-doc$(NEWS)"; \
 	else \
-		if [ -e "$(CURDIR)/debian/nsis-doc$(NEWS)" ]; then \
-			news_file="$(CURDIR)/debian/nsis-doc$(NEWS)"; \
-		else \
-			scons $(SCONS_NSIS) Docs/src; \
-			news_file="build/*/Docs/html/AppendixF.html"; \
-		fi; \
+		scons $(SCONS_NSIS) Docs/src; \
+		news_file="build/*/Docs/html/AppendixF.html"; \
 	fi; \
 	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
 
