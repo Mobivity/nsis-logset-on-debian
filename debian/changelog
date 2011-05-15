@@ -8,7 +8,6 @@ nsis (2.46-4) UNRELEASED; urgency=low
     - header and library files for developing NSIS plugins (win32)
     - examples and HTML documentation (architecture independent)
   * Updated to Standards-Version 3.9.2
-  * Perform test scripts also for binary-only build
   * Support building with mingw-w64 (Closes: #620099)
   * Support parallel build 
 
@@ -18,7 +17,7 @@ nsis (2.46-4) UNRELEASED; urgency=low
   * Don't hide output from scons in clean.
   * Move packaging from Subversion to Git, update Vcs-* fields.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 30 Apr 2011 21:29:33 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Sun, 15 May 2011 14:32:10 +0000
 
 nsis (2.46-3) experimental; urgency=low
 
