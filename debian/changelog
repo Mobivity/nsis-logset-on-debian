@@ -1,4 +1,6 @@
-nsis (2.46-4) UNRELEASED; urgency=low
+nsis (2.46-4~OdyX0) unstable; urgency=low
+
+  * Upload to unstable.
 
   [ Thomas Gaugler ]
   * Run architecture independent build process only when demanded.
@@ -15,7 +17,7 @@ nsis (2.46-4) UNRELEASED; urgency=low
   * Don't hide output from scons in clean.
   * Move packaging from Subversion to Git, update Vcs-* fields.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sun, 15 May 2011 14:32:10 +0000
+ -- Didier Raboud <odyx@debian.org>  Wed, 18 May 2011 12:18:43 +0200
 
 nsis (2.46-3) experimental; urgency=low
 
