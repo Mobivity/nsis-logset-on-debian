@@ -12,8 +12,6 @@ nsis (2.46-4) UNRELEASED; urgency=low
   * Support parallel build 
 
   [ Didier Raboud ]
-  * Generate the full control file during maintainer (including arch:all
-    packages) builds.
   * Don't hide output from scons in clean.
   * Move packaging from Subversion to Git, update Vcs-* fields.
 
