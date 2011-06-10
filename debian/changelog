@@ -16,6 +16,7 @@ nsis (2.46-4) UNRELEASED; urgency=low
   [ Didier Raboud ]
   * Don't hide output from scons in clean.
   * Move packaging from Subversion to Git, update Vcs-* fields.
+  * Add explicit libstdc++6-4.6-dev Build-Depend.
 
  -- Thomas Gaugler <thomas@dadie.net>  Sun, 15 May 2011 14:32:10 +0000
 
