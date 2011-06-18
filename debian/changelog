@@ -1,3 +1,9 @@
+nsis (2.46-5) UNRELEASED; urgency=low
+
+  * Add Replaces/Breaks against nsis to the new packages (Closes: #630620)
+
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 18 Jun 2011 16:41:54 +0000
+
 nsis (2.46-4) unstable; urgency=low
 
   [ Thomas Gaugler ]

@@ -29,6 +29,8 @@ Description: Nullsoft Scriptable Install System (modified for Debian)
 Package: nsis-common
 Architecture: all
 Depends: ${misc:Depends}
+Replaces: nsis (<< 2.46-4)
+Breaks: nsis (<< 2.46-4)
 Description: Nullsoft Scriptable Install System stubs and plugins
  NSIS is a tool for creating quick and user friendly installers for
  Microsoft Windows (Win32) operating systems.
@@ -38,6 +40,8 @@ Description: Nullsoft Scriptable Install System stubs and plugins
 Package: nsis-pluginapi
 Architecture: all
 Depends: ${misc:Depends}
+Replaces: nsis (<< 2.46-4)
+Breaks: nsis (<< 2.46-4)
 Recommends: mingw-w64 (>= 1.0)
 Enhances: nsis (>= ${source:Version})
 Description: Nullsoft Scriptable Install System plugin API
@@ -51,6 +55,8 @@ Package: nsis-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}
+Replaces: nsis (<< 2.46-4)
+Breaks: nsis (<< 2.46-4)
 Description: Nullsoft Scriptable Install System documentation
  NSIS is a tool for creating quick and user friendly installers for
  Microsoft Windows (Win32) operating systems.
