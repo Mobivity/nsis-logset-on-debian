@@ -1,0 +1,47 @@
+Description: Use zmemcpy function of the same calling convention.
+ The zmemcpy function used to be mapped to the standard C library memcpy
+ function for POSIX systems. However the prototype of the standard C
+ library memcpy function differ from the expected one.
+ Therefore zmemcpy is mapped to mini_memcpy for consistency. The
+ NSISCALL define is evaluated for setting the calling convention.
+Author: Thomas Gaugler <thomas@dadie.net>
+
+Index: nsis-2.46/Source/zlib/ZUTIL.H
+===================================================================
+--- nsis-2.46/Source/zlib/ZUTIL.H
++++ nsis-2.46/Source/zlib/ZUTIL.H
+@@ -59,12 +59,8 @@
+ 
+ 
+ #ifdef EXEHEAD
+-#  ifdef _WIN32
+-#    include "../exehead/util.h"
+-#    define zmemcpy mini_memcpy
+-#  else
+-#    define zmemcpy memcpy
+-#  endif
++#  include "../exehead/util.h"
++#  define zmemcpy mini_memcpy
+ #else
+ #  define zmemcpy memcpy
+ #  define zmemzero(a,b) memset(a,0,b)
+Index: nsis-2.46/Source/exehead/util.h
+===================================================================
+--- nsis-2.46/Source/exehead/util.h
++++ nsis-2.46/Source/exehead/util.h
+@@ -19,7 +19,15 @@
+ 
+ #include "../Platform.h"
+ #include "config.h"
++
++#ifdef _WIN32 
+ #include <shlobj.h>
++#else
++typedef LPCSTR LPCTSTR;
++struct _WIN32_FIND_DATAA;
++typedef struct _WIN32_FIND_DATAA WIN32_FIND_DATAA;
++typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
++#endif /* _WIN32 */
+ 
+ extern char ps_tmpbuf[NSIS_MAX_STRLEN*2];
+ char * NSISCALL GetNSISString(char *outbuf, int strtab);
