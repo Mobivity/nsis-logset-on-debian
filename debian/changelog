@@ -1,9 +1,9 @@
-nsis (2.46-6) UNRELEASED; urgency=low
+nsis (2.46-6) unstable; urgency=low
 
   * Corrected command line options passed to scons for build/NEWS target.
   * Use zmemcpy function of the same calling convention. 
 
- -- Thomas Gaugler <thomas@dadie.net>  Thu, 29 Sep 2011 21:22:20 +0000
+ -- Thomas Gaugler <thomas@dadie.net>  Fri, 07 Oct 2011 10:28:21 +0200
 
 nsis (2.46-5) unstable; urgency=low
 
