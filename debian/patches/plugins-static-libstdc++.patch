@@ -1,0 +1,21 @@
+Description: Make plugins not depend on libstdc++-6.dll.
+ .
+ Newer MinGW GCC builds now default to a shared libstdc++, so plugins now also
+ require -static-libstdc++.
+ .
+  Without this patch, C++ plugins such as NSISdl fail to load.
+Bug-RedHat: https://bugzilla.redhat.com/show_bug.cgi?id=734905
+Bug-RedHat: https://bugzilla.redhat.com/show_bug.cgi?id=553971
+Bug-Debian: http://bugs.debian.org/654380
+Author: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Last-Update: 2016-08-09
+--- a/SCons/Config/gnu
++++ b/SCons/Config/gnu
+@@ -141,6 +141,7 @@
+ plugin_env.Append(LINKFLAGS = ['$ALIGN_FLAG'])      # 512 bytes align
+ plugin_env.Append(LINKFLAGS = ['$MAP_FLAG'])        # generate map file
+ plugin_env.Append(LINKFLAGS = ['-static-libgcc'])   # remove libgcc*.dll dependency
++plugin_env.Append(LINKFLAGS = ['-static-libstdc++']) # remove libstdc++*.dll dependency
+ 
+ plugin_uenv = plugin_env.Clone()
+ plugin_uenv.Append(CPPDEFINES = ['_UNICODE', 'UNICODE'])
