@@ -6,3 +6,4 @@ nsi_scripts.patch
 mingw_w64.patch
 parallel_build.patch
 zmemcpy.patch
+static-libgcc-libstdc++.patch

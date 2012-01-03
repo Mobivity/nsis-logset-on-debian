@@ -1,3 +1,11 @@
+nsis (2.46-7) UNRELEASED; urgency=low
+
+  * Make plugins not depend on libgcc_s_sjlj-1.dll nor libdtdc++-6.dll
+    by forcing static compilation of both libgcc and libstdc++. (Closes:
+    #654380)
+
+ -- Didier Raboud <odyx@debian.org>  Tue, 03 Jan 2012 14:12:33 +0100
+
 nsis (2.46-6) unstable; urgency=low
 
   * Corrected command line options passed to scons for build/NEWS target.
