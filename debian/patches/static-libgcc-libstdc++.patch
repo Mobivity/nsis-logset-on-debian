@@ -4,11 +4,13 @@ Description: Make plugins not depend on libgcc_s_sjlj-1.dll nor
  Plugins must not depend on a shared libgcc. Newer MinGW GCC builds now also
  default to a shared libstdc++, so plugins now also require -static-libstdc++.
  .
-  Without this patch, C++ plugins such as NSISdl fail to load-
+ Without this patch, C++ plugins such as NSISdl fail to load.
+Origin: upstream, http://sf.net/support/tracker.php?aid=3406350
 Bug-RedHat: https://bugzilla.redhat.com/show_bug.cgi?id=734905
 Bug-RedHat: https://bugzilla.redhat.com/show_bug.cgi?id=553971
 Bug-Debian: http://bugs.debian.org/654380
 Author: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Acked-by: Didier Raboud <odyx@debian.org>
 Last-Update: 2012-01-03
 --- a/SCons/Config/gnu
 +++ b/SCons/Config/gnu
