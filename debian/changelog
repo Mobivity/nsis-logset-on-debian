@@ -1,3 +1,11 @@
+nsis (2.46-8) unstable; urgency=low
+
+  * Dropped superfluous build dependency of libstdc++6-4.6-dev because
+    this build dependency is fulfilled by build-essential. (Closes:
+    #747982)
+
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 14 May 2014 22:00:26 +0200
+
 nsis (2.46-7) unstable; urgency=low
 
   * Make plugins not depend on libgcc_s_sjlj-1.dll nor libdtdc++-6.dll
