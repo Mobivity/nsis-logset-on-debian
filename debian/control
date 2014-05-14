@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Thomas Gaugler <thomas@dadie.net>
 Uploaders: Didier Raboud <odyx@debian.org>
 Build-Depends: debhelper (>= 7.0.50~), scons (>= 1.2.0), xmlto, html2text, libcppunit-dev, zlib1g-dev, mingw-w64 (>= 1.0)
-Standards-Version: 3.9.2
+Standards-Version: 3.9.5
 Homepage: http://nsis.sourceforge.net/
 Vcs-Git: git://git.debian.org/collab-maint/nsis.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nsis.git

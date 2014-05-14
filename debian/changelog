@@ -3,8 +3,9 @@ nsis (2.46-8) unstable; urgency=low
   * Dropped superfluous build dependency of libstdc++6-4.6-dev because
     this build dependency is fulfilled by build-essential. (Closes:
     #747982)
+  * Updated to Standards-Version 3.9.5.
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 14 May 2014 22:00:26 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 14 May 2014 22:33:10 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
