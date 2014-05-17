@@ -16,22 +16,21 @@ ifneq ($(strip $(XGCC_W32)),)
 	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
 endif
 
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-TEST=
-else
-TEST=test
-endif
-
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	SCONSFLAGS = -j $(NUMJOBS)
 endif
 
+# Honor hardening flags
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+SCONSHOSTFLAGS = APPEND_CCFLAGS="$(CFLAGS) $(CPPFLAGS)" \
+  APPEND_LINKFLAGS="$(LDFLAGS)"
+
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
   PREFIX=$(PREFIX) PREFIX_CONF=/etc \
   CHMDOCS=0 \
-  APPEND_CCFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)" \
-  APPEND_LINKFLAGS="-Wall -g -O$(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),0,2)"\
+  $(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),DEBUG=yes,) \
   STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
 
 ifdef XGCC_W32_PATH
@@ -53,7 +52,7 @@ IGNORE_UTILS_COMMON := $(IGNORE_UTILS_CLEAN)
 IGNORE_UTILS_CLEAN  := $(subst $(COMMA)SubStart,,$(IGNORE_UTILS_CLEAN))
 IGNORE_UTILS_CLEAN  := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_CLEAN))
 
-SCONSOPTS_NSIS   := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
+SCONSOPTS_HOST   := $(SCONSHOSTFLAGS) $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
 SCONSOPTS_COMMON := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON) \
 			SKIPDOC=COPYING
 SCONSOPTS_CLEAN  := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_CLEAN)
@@ -84,7 +83,7 @@ build/NEWS:
 	if [ -e "$(CURDIR)/debian/nsis-doc$(NEWS)" ]; then \
 		news_file="$(CURDIR)/debian/nsis-doc$(NEWS)"; \
 	else \
-		scons $(SCONSOPTS_COMMON) Docs/src; \
+		scons $(SCONSOPTS_HOST) Docs/src; \
 		news_file="$(wildcard build/*/Docs/html/AppendixF.html)"; \
 	fi; \
 	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
@@ -97,7 +96,8 @@ override_dh_auto_clean:
 
 build-indep:
 ifdef XGCC_W32_PATH
-	scons $(SCONSOPTS_COMMON) Docs/src stubs plugins utils
+	scons $(SCONSOPTS_HOST) Docs/src 
+	scons $(SCONSOPTS_COMMON) stubs plugins utils
 	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
 	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
@@ -107,35 +107,36 @@ ifdef XGCC_W32_PATH
 endif
 
 build-arch:
-	scons $(SCONSOPTS_NSIS) utils makensis
+	scons $(SCONSOPTS_HOST) utils makensis
 	xmlto -o build man debian/makensis.xml
 	xmlto -o build man debian/GenPat.xml
 	xmlto -o build man debian/LibraryLocal.xml
 
 test:
-	if [ x$(TEST) != x ] ; then \
-		if [ -d "$(CURDIR)/debian/nsis-common$(PREFIX)/share/nsis" ] ; then \
-			scons $(SCONSOPTS_TEST) $(TEST); \
-		else \
-			scons $(SCONSOPTS_NSIS) PREFIX_DEST="$(CURDIR)/.test" $(INSTALL_nsis); \
-			for script_path in $(SCRIPTS_PATH)/*.nsi \
-				$(SCRIPTS_PATH)/*/*.nsi; do \
-				script=$${script_path#$(SCRIPTS_PATH)/}; \
-				if [ "$${script%/*}" != "$${script}" ]; then \
-					mkdir -p ".test/$${script%/*}"; \
-				fi; \
-				case $${script} in \
-				$(IGNORE_TESTS)) ;; \
-				*) \
-				if [ -f "$${script_path}" ]; then \
-					PATH=$(PATH):$(CURDIR)/.test$(PREFIX)/bin ".test$(PREFIX)/bin/makensis" \
-					"$${script_path}" \
-					-X"OutFile \"$(CURDIR)/.test/$${script%.nsi}.exe\"" || exit 1; \
-				fi;; \
-				esac; \
-			done; \
-		fi; \
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	if [ -d "$(CURDIR)/debian/nsis-common$(PREFIX)/share/nsis" ] ; then \
+		scons $(SCONSOPTS_HOST) test-code; \
+		scons $(SCONSOPTS_TEST) test-scripts; \
+	else \
+		scons $(SCONSOPTS_HOST) PREFIX_DEST="$(CURDIR)/.test" $(INSTALL_nsis); \
+		for script_path in $(SCRIPTS_PATH)/*.nsi \
+			$(SCRIPTS_PATH)/*/*.nsi; do \
+			script=$${script_path#$(SCRIPTS_PATH)/}; \
+			if [ "$${script%/*}" != "$${script}" ]; then \
+				mkdir -p ".test/$${script%/*}"; \
+			fi; \
+			case $${script} in \
+			$(IGNORE_TESTS)) ;; \
+			*) \
+			if [ -f "$${script_path}" ]; then \
+				PATH=$(PATH):$(CURDIR)/.test$(PREFIX)/bin ".test$(PREFIX)/bin/makensis" \
+				"$${script_path}" \
+				-X"OutFile \"$(CURDIR)/.test/$${script%.nsi}.exe\"" || exit 1; \
+			fi;; \
+			esac; \
+		done; \
 	fi
+endif
 
 install-indep:
 	dh "install" --before dh_auto_install
@@ -162,7 +163,7 @@ endif
 
 install-arch:
 	dh "install" --before dh_auto_install
-	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_NSIS),$(p)))
+	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_HOST),$(p)))
 	find "$(CURDIR)/debian/nsis/etc" \
 		-type f -perm +111 -exec chmod a-x {} \;
 

@@ -6,8 +6,9 @@ nsis (2.46-8) unstable; urgency=low
   * Updated to Standards-Version 3.9.5.
   * Use wildcard function of make instead of relying on shell for path
     expansion.
+  * Honor hardening flags.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 17 May 2014 19:13:59 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 17 May 2014 19:16:50 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
