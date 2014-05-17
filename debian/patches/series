@@ -7,3 +7,4 @@ mingw_w64.patch
 parallel_build.patch
 zmemcpy.patch
 static-libgcc-libstdc++.patch
+array_bounds.patch

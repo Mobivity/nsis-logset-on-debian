@@ -1,0 +1,61 @@
+Description: Fix of mingw-w64 warnings concering out of boundary array access.
+ The mingw-w64 compiler based on the version 4.9.0 of the GNU compiler
+ (gcc) requires syntactial sugar to correctly detect access of an array
+ within its bounds. The patch fixes the "array subscript is above array
+ bounds" compiler warnings.
+Forwarded: http://sf.net/p/nsis/patches/250
+Author: Thomas Gaugler <thomas@dadie.net>
+
+diff -urd nsis-2.46-src.orig/Source/exehead/state.h nsis-2.46-src/Source/exehead/state.h
+--- nsis-2.46-src.orig/Source/exehead/state.h	2009-02-01 15:44:30.000000000 +0100
++++ nsis-2.46-src/Source/exehead/state.h	2014-05-17 15:57:01.663159039 +0200
+@@ -18,18 +18,18 @@
+ 
+ extern NSIS_STRING g_usrvars[1];
+ 
+-#define state_command_line        g_usrvars[20]
+-#define state_install_directory   g_usrvars[21]
+-#define state_output_directory    g_usrvars[22]
+-#define state_exe_directory       g_usrvars[23]
+-#define state_language            g_usrvars[24] 
+-#define state_temp_dir            g_usrvars[25]
++#define state_command_line        (((NSIS_STRING *) g_usrvars)[20])
++#define state_install_directory   (((NSIS_STRING *) g_usrvars)[21])
++#define state_output_directory    (((NSIS_STRING *) g_usrvars)[22])
++#define state_exe_directory       (((NSIS_STRING *) g_usrvars)[23])
++#define state_language            (((NSIS_STRING *) g_usrvars)[24])
++#define state_temp_dir            (((NSIS_STRING *) g_usrvars)[25])
+ #ifdef NSIS_CONFIG_PLUGIN_SUPPORT
+-#  define state_plugins_dir       g_usrvars[26]
++#  define state_plugins_dir       (((NSIS_STRING *) g_usrvars)[26])
+ #endif
+-#define state_exe_path            g_usrvars[27]
+-#define state_exe_file            g_usrvars[28]
+-#define state_click_next          g_usrvars[30]
++#define state_exe_path            (((NSIS_STRING *) g_usrvars)[27])
++#define state_exe_file            (((NSIS_STRING *) g_usrvars)[28])
++#define state_click_next          (((NSIS_STRING *) g_usrvars)[30])
+ 
+ extern char g_caption[NSIS_MAX_STRLEN*2];
+ #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
+diff -urd nsis-2.46-src.orig/Source/exehead/Main.c nsis-2.46-src/Source/exehead/Main.c
+--- nsis-2.46-src.orig/Source/exehead/Main.c	2009-02-01 15:44:30.000000000 +0100
++++ nsis-2.46-src/Source/exehead/Main.c	2014-05-17 17:57:00.974765846 +0200
+@@ -226,7 +226,7 @@
+       CreateDirectory(state_temp_dir,NULL);
+       SetCurrentDirectory(state_temp_dir);
+ 
+-      if (!state_install_directory[0])
++      if (!(*state_install_directory))
+         mystrcpy(state_install_directory,state_exe_directory);
+ 
+       mystrcpy(g_usrvars[0], realcmds);
+@@ -259,7 +259,7 @@
+             }
+           }
+         }
+-        g_usrvars[1][0]++;
++        (*(((NSIS_STRING *)g_usrvars)[1]))++;
+       }
+ 
+ #ifdef NSIS_SUPPORT_MOVEONREBOOT

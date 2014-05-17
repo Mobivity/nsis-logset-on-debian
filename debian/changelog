@@ -7,8 +7,9 @@ nsis (2.46-8) unstable; urgency=low
   * Use wildcard function of make instead of relying on shell for path
     expansion.
   * Honor hardening flags.
+  * Fix of mingw-w64 warnings concerning out of bounds array access.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 17 May 2014 19:16:50 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 17 May 2014 19:21:44 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
