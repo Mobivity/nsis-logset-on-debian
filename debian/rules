@@ -11,6 +11,7 @@ PREFIX=/usr
 DATADIR=$(PREFIX)/share/nsis
 DOCDIR=$(PREFIX)/share/doc/nsis
 SYSCONF=/etc
+TESTDIR=$(CURDIR)/build/test
 
 # Variables for Win32 cross compiler
 XGCC_W32 = $(shell which i686-w64-mingw32-gcc)
@@ -19,6 +20,7 @@ ifneq ($(strip $(XGCC_W32)),)
 	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
 endif
 
+# Evaluate parallel build option
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	SCONSFLAGS = -j $(NUMJOBS)
@@ -31,10 +33,10 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="$(CFLAGS) $(CPPFLAGS)" \
   APPEND_LINKFLAGS="$(LDFLAGS)"
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
-  PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) \
-  CHMDOCS=0 \
+  PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
   $(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),DEBUG=yes,) \
-  STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
+  STRIP_CP=no \
+  $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
 
 ifdef XGCC_W32_PATH
 SCONSOPTS := $(SCONSOPTS) \
@@ -47,59 +49,69 @@ COMMA := ,
 
 UTILS_ALL = 'Library/LibraryLocal,Library/RegTool,MakeLangId,Makensisw,NSIS Menu,UIs,SubStart,VPatch/Source/GenPat,zip2exe'
 
-IGNORE_UTILS_NSIS  := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
+IGNORE_UTILS_NSIS   := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
 IGNORE_UTILS_NSIS   := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_NSIS))
-IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA)Library/RegTool$(COMMA),,$(UTILS_ALL))
-IGNORE_UTILS_CLEAN  := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_CLEAN))
-IGNORE_UTILS_COMMON := $(IGNORE_UTILS_CLEAN)
+IGNORE_UTILS_COMMON := $(subst $(COMMA)Library/RegTool$,,$(UTILS_ALL))
+IGNORE_UTILS_COMMON := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_COMMON))
+
+IGNORE_UTILS_CLEAN  := $(IGNORE_UTILS_COMMON)
+IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
 IGNORE_UTILS_CLEAN  := $(subst $(COMMA)SubStart,,$(IGNORE_UTILS_CLEAN))
 IGNORE_UTILS_CLEAN  := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_CLEAN))
 
-SCONSOPTS_HOST   := $(SCONSHOSTFLAGS) $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
+SCONSOPTS_HOST   := $(SCONSHOSTFLAGS) $(SCONSOPTS) \
+  SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
 SCONSOPTS_COMMON := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON) \
-			SKIPDOC=COPYING
+  SKIPDOC=COPYING
 SCONSOPTS_CLEAN  := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_CLEAN)
-SCONSOPTS_TEST   := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON)
 
 INSTALL_nsis = install-utils install-compiler install-conf
 INSTALL_nsis-common = install-stubs install-plugins install-data install-utils
 INSTALL_nsis-pluginapi = install-pluginapi
 INSTALL_nsis-doc = install-examples install-doc
 
-# Exclude test scripts not appropriate for POSIX platforms.
+# Exclude test scripts which are not appropriate for POSIX platforms.
 IGNORE_TESTS = makensis.nsi|gfx.nsi
 
 # Path to .nsi scripts
 SCRIPTS_PATH = $(DOCDIR)/Examples
 
-# Release notes 
-NEWS = $(DOCDIR)/Docs/AppendixF.html
-
 define DO_SCONS_INSTALL
 	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
 endef
 
-clean build:
+# Substitute reference to License text file in Modern UI examples
+# with source file to enable their compilation with makensis
+define SANITIZE_MODERN_UI
+	for f in $$(find "$(1)" -type f -name '*.nsi' -print0 | xargs -0 -n 1 basename); \
+	do \
+		sed -i \
+		-e "s&\$${NSISDIR}\\\\Docs\\\\Modern UI\\\\License.txt&$${f}&g" \
+		"$(1)/$${f}"; \
+	done
+endef
+
+%:
 	dh "$@"
-
-build/NEWS:
-	if [ -e "$(CURDIR)/debian/nsis-doc$(NEWS)" ]; then \
-		news_file="$(CURDIR)/debian/nsis-doc$(NEWS)"; \
-	else \
-		scons $(SCONSOPTS_HOST) Docs/src; \
-		news_file="$(wildcard build/*/Docs/html/AppendixF.html)"; \
-	fi; \
-	html2text -nobs "$${news_file}" | sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
-
 
 override_dh_auto_clean:
 	scons -c $(SCONSOPTS_CLEAN) 2>&1
-	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test
+	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test $(TESTDIR)
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
-build-indep:
+build/NEWS:
+	scons $(SCONSOPTS_HOST) Docs/src; \
+	html2text -nobs "$(wildcard build/*/Docs/html/AppendixF.html)" | \
+	sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
+
+override_dh_auto_build-arch: build/NEWS
+	scons $(SCONSOPTS_HOST) utils makensis
+	xmlto -o build man debian/makensis.xml
+	xmlto -o build man debian/GenPat.xml
+	xmlto -o build man debian/LibraryLocal.xml
+
+override_dh_auto_build-indep: build/NEWS
 ifdef XGCC_W32_PATH
-	scons $(SCONSOPTS_HOST) Docs/src 
 	scons $(SCONSOPTS_COMMON) stubs plugins utils
 	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
@@ -109,48 +121,56 @@ ifdef XGCC_W32_PATH
 	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
 endif
 
-build-arch:
-	scons $(SCONSOPTS_HOST) utils makensis
-	xmlto -o build man debian/makensis.xml
-	xmlto -o build man debian/GenPat.xml
-	xmlto -o build man debian/LibraryLocal.xml
-
-test:
+override_dh_auto_test-arch:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	if [ -d "$(CURDIR)/debian/nsis-common$(DATADIR)" ] ; then \
-		scons $(SCONSOPTS_HOST) test-code; \
-		scons $(SCONSOPTS_TEST) test-scripts; \
-	else \
-		scons $(SCONSOPTS_HOST) PREFIX_DEST="$(CURDIR)/.test" $(INSTALL_nsis); \
-		for script_path in $(SCRIPTS_PATH)/*.nsi \
-			$(SCRIPTS_PATH)/*/*.nsi; do \
-			script=$${script_path#$(SCRIPTS_PATH)/}; \
-			if [ "$${script%/*}" != "$${script}" ]; then \
-				mkdir -p ".test/$${script%/*}"; \
-			fi; \
-			case $${script} in \
-			$(IGNORE_TESTS)) ;; \
-			*) \
-			if [ -f "$${script_path}" ]; then \
-				PATH=$(PATH):$(CURDIR)/.test$(PREFIX)/bin ".test$(PREFIX)/bin/makensis" \
-				"$${script_path}" \
-				-X"OutFile \"$(CURDIR)/.test/$${script%.nsi}.exe\"" || exit 1; \
-			fi;; \
-			esac; \
-		done; \
-	fi
+	scons $(SCONSOPTS_HOST) test-code
 endif
 
-install-indep:
-	dh "install" --before dh_auto_install
+override_dh_auto_test-indep:
 ifdef XGCC_W32_PATH
-	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+ifneq ($(wildcard build/*/makensis/makensis),)
+	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)" $(INSTALL_nsis) && \
+	scons $(SCONSOPTS_COMMON) PREFIX_DEST="$(TESTDIR)" \
+		$(INSTALL_nsis-common) $(INSTALL_nsis-doc) && \
+	$(call SANITIZE_MODERN_UI,$(TESTDIR)$(DOCDIR)/Examples/Modern UI) && \
+	for script_path in $(TESTDIR)$(SCRIPTS_PATH)/*.nsi \
+		$(TESTDIR)$(SCRIPTS_PATH)/*/*.nsi; do \
+		script=$${script_path#$(TESTDIR)$(SCRIPTS_PATH)/}; \
+		if [ "$${script%/*}" != "$${script}" ]; then \
+			mkdir -p "$(TESTDIR)/$${script%/*}"; \
+		fi; \
+		case $${script} in \
+		$(IGNORE_TESTS)) ;; \
+		*) \
+		if [ -f "$${script_path}" ]; then \
+			PATH=$(TESTDIR)$(PREFIX)/bin:$(PATH) \
+			NSISDIR=$(TESTDIR)$(DATADIR) \
+			NSISCONFDIR=$(TESTDIR)$(SYSCONF) \
+			"$(TESTDIR)$(PREFIX)/bin/makensis" \
+			"$${script_path}" \
+			-X"OutFile \"$(TESTDIR)/$${script%.nsi}.exe\"" \
+			|| exit 1; \
+		fi;; \
+		esac; \
+	done; 
+endif
+endif
+endif
+
+override_dh_auto_install-arch:
+	$(foreach p,$(shell dh_listpackages -a),$(call DO_SCONS_INSTALL,$(SCONSOPTS_HOST),$(p)))
+
+override_dh_fixperms-arch:
+	dh_fixperms
+	find "$(CURDIR)/debian/nsis/$(SYSCONF)" \
+		-type f -perm +111 -exec chmod a-x {} \;
+
+override_dh_auto_install-indep:
+ifdef XGCC_W32_PATH
+	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
 	# Exclude any architecture dependent binaries from nsis-common
 	rm -rf "$(CURDIR)/debian/nsis-common$(PREFIX)/bin"
-	# Fix permissions for plugin API
-	find "$(CURDIR)/debian/nsis-pluginapi$(MINGW32_PATH)" \
-		"$(CURDIR)/debian/nsis-common/$(DATADIR)" \
-		-type f -perm +111 -exec chmod a-x {} \;
 	# Clean up examples and documentation
 	# The docs file can't seem to have spaces within the file name(s)
 	dh_installdocs -pnsis-doc "build/README.Modern UI" \
@@ -158,38 +178,27 @@ ifdef XGCC_W32_PATH
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/NSISdl/License.txt"
-	# Remove reference to License text file in Modern UI examples
-	# to enable their compilation with makensis
-	cd "$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI"; \
-	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/{}/g' "{}"
+	$(call SANITIZE_MODERN_UI,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI) 
 endif
 
-install-arch:
-	dh "install" --before dh_auto_install
-	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_HOST),$(p)))
-	find "$(CURDIR)/debian/nsis/$(SYSCONF)" \
-		-type f -perm +111 -exec chmod a-x {} \;
-
-override_dh_compress:
+override_dh_compress-indep:
 	dh_compress -X.nlf -X.nsh -X.nsi -X.dll
 	# Adapt links to documents with those of their compressed version
 	if [ -d debian/nsis-doc$(DOCDIR) ]; then \
 		cd debian/nsis-doc$(DOCDIR) ; \
-		find ./ -mindepth 2 -iname \*.gz | \
-		sed -e 's,.gz$$,,g' -e 's, ,%20,g' | \
+		find -mindepth 2 -name \*.gz | \
+		sed -e 's,^\.\(.\+\)\.gz$$,\1,g' -e 's, ,%20,g' | \
 		xargs -i88 sh -c 'fgrep -rl "88\"" . | \
 		xargs -i{} sed -i -e "s|88\"|88.gz\"|g" "{}"'; \
 	fi
 
-binary-indep: PKGS = $(shell dh_listpackages -i)
-binary-indep: build-indep install-indep
-	dh "$@"
-
-binary-arch: PKGS = $(shell dh_listpackages -a)
-binary-arch: build-arch build/NEWS test install-arch
-	dh "$@"
-
-binary: binary-indep binary-arch
-
-.PHONY: binary binary-arch binary-indep build build-arch build-indep clean install-arch install-indep test
-.NOTPARALLEL: binary
+override_dh_fixperms-indep:
+	dh_fixperms
+	# Remove executable flag from data files
+	find "$(CURDIR)/debian/nsis-common$(DATADIR)" \
+		-type f -perm +111 -exec chmod a-x {} \;
+	# Fix permissions for plugin API header and library files
+ifdef XGCC_W32_PATH
+	find "$(CURDIR)/debian/nsis-pluginapi$(XGCC_W32_PATH)" \
+		-type f -perm +111 -exec chmod a-x {} \;
+endif
