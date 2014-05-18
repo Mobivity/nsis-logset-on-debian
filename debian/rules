@@ -8,6 +8,9 @@ export DH_ALWAYS_EXCLUDE=.svn
 
 VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
 PREFIX=/usr
+DATADIR=$(PREFIX)/share/nsis
+DOCDIR=$(PREFIX)/share/doc/nsis
+SYSCONF=/etc
 
 # Variables for Win32 cross compiler
 XGCC_W32 = $(shell which i686-w64-mingw32-gcc)
@@ -28,7 +31,7 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="$(CFLAGS) $(CPPFLAGS)" \
   APPEND_LINKFLAGS="$(LDFLAGS)"
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
-  PREFIX=$(PREFIX) PREFIX_CONF=/etc \
+  PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) \
   CHMDOCS=0 \
   $(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),DEBUG=yes,) \
   STRIP_CP=no $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
@@ -67,10 +70,10 @@ INSTALL_nsis-doc = install-examples install-doc
 IGNORE_TESTS = makensis.nsi|gfx.nsi
 
 # Path to .nsi scripts
-SCRIPTS_PATH = $(PREFIX)/share/doc/nsis/Examples
+SCRIPTS_PATH = $(DOCDIR)/Examples
 
 # Release notes 
-NEWS = $(PREFIX)/share/doc/nsis/Docs/AppendixF.html
+NEWS = $(DOCDIR)/Docs/AppendixF.html
 
 define DO_SCONS_INSTALL
 	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
@@ -114,7 +117,7 @@ build-arch:
 
 test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	if [ -d "$(CURDIR)/debian/nsis-common$(PREFIX)/share/nsis" ] ; then \
+	if [ -d "$(CURDIR)/debian/nsis-common$(DATADIR)" ] ; then \
 		scons $(SCONSOPTS_HOST) test-code; \
 		scons $(SCONSOPTS_TEST) test-scripts; \
 	else \
@@ -143,35 +146,35 @@ install-indep:
 ifdef XGCC_W32_PATH
 	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
 	# Exclude any architecture dependent binaries from nsis-common
-	rm -rf "$(CURDIR)/debian/nsis-common/usr/bin"
+	rm -rf "$(CURDIR)/debian/nsis-common$(PREFIX)/bin"
 	# Fix permissions for plugin API
 	find "$(CURDIR)/debian/nsis-pluginapi$(MINGW32_PATH)" \
-		"$(CURDIR)/debian/nsis-common/usr/share/nsis" \
+		"$(CURDIR)/debian/nsis-common/$(DATADIR)" \
 		-type f -perm +111 -exec chmod a-x {} \;
 	# Clean up examples and documentation
 	# The docs file can't seem to have spaces within the file name(s)
 	dh_installdocs -pnsis-doc "build/README.Modern UI" \
 		"build/README.Modern UI 2"
-	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/Modern UI/License.txt"
-	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/Modern UI 2/License.txt"
-	rm "debian/nsis-doc/usr/share/doc/nsis/Docs/NSISdl/License.txt"
+	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI/License.txt"
+	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/License.txt"
+	rm "debian/nsis-doc$(DOCDIR)/Docs/NSISdl/License.txt"
 	# Remove reference to License text file in Modern UI examples
 	# to enable their compilation with makensis
-	cd "$(CURDIR)/debian/nsis-doc/usr/share/doc/nsis/Examples/Modern UI"; \
+	cd "$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI"; \
 	ls *.nsi | xargs -i{} sed -i -e 's/$${NSISDIR}\\Docs\\Modern UI\\License.txt/{}/g' "{}"
 endif
 
 install-arch:
 	dh "install" --before dh_auto_install
 	$(foreach p,$(PKGS),$(call DO_SCONS_INSTALL,$(SCONSOPTS_HOST),$(p)))
-	find "$(CURDIR)/debian/nsis/etc" \
+	find "$(CURDIR)/debian/nsis/$(SYSCONF)" \
 		-type f -perm +111 -exec chmod a-x {} \;
 
 override_dh_compress:
 	dh_compress -X.nlf -X.nsh -X.nsi -X.dll
 	# Adapt links to documents with those of their compressed version
-	if [ -d debian/nsis-doc/usr/share/doc/nsis ]; then \
-		cd debian/nsis-doc/usr/share/doc/nsis ; \
+	if [ -d debian/nsis-doc$(DOCDIR) ]; then \
+		cd debian/nsis-doc$(DOCDIR) ; \
 		find ./ -mindepth 2 -iname \*.gz | \
 		sed -e 's,.gz$$,,g' -e 's, ,%20,g' | \
 		xargs -i88 sh -c 'fgrep -rl "88\"" . | \
