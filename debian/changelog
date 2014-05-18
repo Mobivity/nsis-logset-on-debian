@@ -9,8 +9,9 @@ nsis (2.46-8) unstable; urgency=low
   * Honor hardening flags.
   * Fix of mingw-w64 warnings concerning out of bounds array access.
   * Deploy variables for path names in debian/rules.
+  * Upgraded to debhelper version 9.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sun, 18 May 2014 19:11:13 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Sun, 18 May 2014 19:15:54 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
