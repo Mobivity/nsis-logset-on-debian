@@ -11,7 +11,9 @@ PREFIX=/usr
 DATADIR=$(PREFIX)/share/nsis
 DOCDIR=$(PREFIX)/share/doc/nsis
 SYSCONF=/etc
-TESTDIR=$(CURDIR)/build/test
+BUILDDIR=build
+BUILDTYPE=release
+TESTDIR=$(CURDIR)/$(BUILDDIR)/test
 
 # Variables for Win32 cross compiler
 XGCC_W32 = $(shell which i686-w64-mingw32-gcc)
@@ -34,13 +36,16 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="$(CFLAGS) $(CPPFLAGS)" \
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
   PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
-  $(if $(findstring noopt,$(DEB_BUILD_OPTIONS)),DEBUG=yes,) \
   STRIP_CP=no \
   $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
 
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+BUILDTYPE=debug
+SCONSOPTS += DEBUG=yes
+endif
+
 ifdef XGCC_W32_PATH
-SCONSOPTS := $(SCONSOPTS) \
-  PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
+SCONSOPTS += PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
   PREFIX_PLUGINAPI_LIB=$(XGCC_W32_PATH)/lib/ \
   XGCC_W32_PREFIX=$(XGCC_W32_PREFIX)
 endif
@@ -99,26 +104,26 @@ override_dh_auto_clean:
 	-rm -rf .sconf_temp .sconsign.dblite SCons/Tools/crossmingw.pyc build config.log .test $(TESTDIR)
 	-rm -f Source/exehead/sconf.h Source/version.h Source/defines.h config.log
 
-build/NEWS:
+$(BUILDDIR)/NEWS:
 	scons $(SCONSOPTS_HOST) Docs/src; \
-	html2text -nobs "$(wildcard build/*/Docs/html/AppendixF.html)" | \
+	html2text -nobs "$(BUILDDIR)/$(BUILDTYPE)/Docs/html/AppendixF.html" | \
 	sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
 
-override_dh_auto_build-arch: build/NEWS
+override_dh_auto_build-arch: $(BUILDDIR)/NEWS
 	scons $(SCONSOPTS_HOST) utils makensis
-	xmlto -o build man debian/makensis.xml
-	xmlto -o build man debian/GenPat.xml
-	xmlto -o build man debian/LibraryLocal.xml
+	xmlto -o $(BUILDDIR) man debian/makensis.xml
+	xmlto -o $(BUILDDIR) man debian/GenPat.xml
+	xmlto -o $(BUILDDIR) man debian/LibraryLocal.xml
 
-override_dh_auto_build-indep: build/NEWS
+override_dh_auto_build-indep: $(BUILDDIR)/NEWS
 ifdef XGCC_W32_PATH
 	scons $(SCONSOPTS_COMMON) stubs plugins utils
-	html2text -style pretty -nobs -o "build/README.Modern UI" "Contrib/Modern UI/Readme.html"
-	html2text -style pretty -nobs -o "build/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
-	html2text -style pretty -nobs -o build/README.VPatch Contrib/VPatch/Readme.html
-	html2text -style pretty -nobs -o build/README.InstallOptions Contrib/InstallOptions/Readme.html
-	html2text -style pretty -nobs -o build/README.MultiUser Contrib/MultiUser/Readme.html
-	html2text -style pretty -nobs -o build/README.nsDialogs Contrib/nsDialogs/Readme.html
+	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI" "Contrib/Modern UI/Readme.html"
+	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
+	html2text -style pretty -nobs -o $(BUILDDIR)/README.VPatch Contrib/VPatch/Readme.html
+	html2text -style pretty -nobs -o $(BUILDDIR)/README.InstallOptions Contrib/InstallOptions/Readme.html
+	html2text -style pretty -nobs -o $(BUILDDIR)/README.MultiUser Contrib/MultiUser/Readme.html
+	html2text -style pretty -nobs -o $(BUILDDIR)/README.nsDialogs Contrib/nsDialogs/Readme.html
 endif
 
 override_dh_auto_test-arch:
@@ -129,7 +134,7 @@ endif
 override_dh_auto_test-indep:
 ifdef XGCC_W32_PATH
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-ifneq ($(wildcard build/*/makensis/makensis),)
+ifneq ($(wildcard $(BUILDDIR)/$(BUILDTYPE)/makensis/makensis),)
 	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)" $(INSTALL_nsis) && \
 	scons $(SCONSOPTS_COMMON) PREFIX_DEST="$(TESTDIR)" \
 		$(INSTALL_nsis-common) $(INSTALL_nsis-doc) && \
@@ -173,8 +178,8 @@ ifdef XGCC_W32_PATH
 	rm -rf "$(CURDIR)/debian/nsis-common$(PREFIX)/bin"
 	# Clean up examples and documentation
 	# The docs file can't seem to have spaces within the file name(s)
-	dh_installdocs -pnsis-doc "build/README.Modern UI" \
-		"build/README.Modern UI 2"
+	dh_installdocs -pnsis-doc "$(BUILDDIR)/README.Modern UI" \
+		"$(BUILDDIR)/README.Modern UI 2"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/NSISdl/License.txt"

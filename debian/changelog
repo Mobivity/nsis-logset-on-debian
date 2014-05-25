@@ -1,4 +1,4 @@
-nsis (2.46-8) unstable; urgency=low
+nsis (2.46-8) UNRELEASED; urgency=low
 
   * Dropped superfluous build dependency of libstdc++6-4.6-dev because
     this build dependency is fulfilled by build-essential. (Closes:
@@ -11,8 +11,9 @@ nsis (2.46-8) unstable; urgency=low
   * Deploy variables for path names in debian/rules.
   * Upgraded to debhelper version 9.
   * Defined override targets for arch and indep packages.
+  * Introduced variables for build directory and type in debian/rules.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sun, 18 May 2014 19:39:03 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Sun, 25 May 2014 10:37:20 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
