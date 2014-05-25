@@ -71,9 +71,13 @@ SCONSOPTS_COMMON := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_COMMON) \
 SCONSOPTS_CLEAN  := $(SCONSOPTS) SKIPUTILS=$(IGNORE_UTILS_CLEAN)
 
 INSTALL_nsis = install-utils install-compiler install-conf
+INSTALL_FLAGS_nsis = $(SCONSOPTS_HOST)
 INSTALL_nsis-common = install-stubs install-plugins install-data install-utils
+INSTALL_FLAGS_nsis-common = $(SCONSOPTS_COMMON)
 INSTALL_nsis-pluginapi = install-pluginapi
+INSTALL_FLAGS_nsis-pluginapi = $(SCONSOPTS_COMMON)
 INSTALL_nsis-doc = install-examples install-doc
+INSTALL_FLAGS_nsis-doc = $(SCONSOPTS_HOST)
 
 # Exclude test scripts which are not appropriate for POSIX platforms.
 IGNORE_TESTS = makensis.nsi|gfx.nsi
@@ -82,7 +86,7 @@ IGNORE_TESTS = makensis.nsi|gfx.nsi
 SCRIPTS_PATH = $(DOCDIR)/Examples
 
 define DO_SCONS_INSTALL
-	scons $(1) PREFIX_DEST="$(CURDIR)/debian/$(2)" $(INSTALL_$(2)) || exit 1;
+	scons $(INSTALL_FLAGS_$(1)) PREFIX_DEST="$(CURDIR)/debian/$(1)" $(INSTALL_$(1)) || exit 1;
 endef
 
 # Substitute reference to License text file in Modern UI examples
@@ -135,9 +139,10 @@ override_dh_auto_test-indep:
 ifdef XGCC_W32_PATH
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 ifneq ($(wildcard $(BUILDDIR)/$(BUILDTYPE)/makensis/makensis),)
-	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)" $(INSTALL_nsis) && \
+	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)"\
+		$(INSTALL_nsis) $(INSTALL_nsis-doc) && \
 	scons $(SCONSOPTS_COMMON) PREFIX_DEST="$(TESTDIR)" \
-		$(INSTALL_nsis-common) $(INSTALL_nsis-doc) && \
+		$(INSTALL_nsis-common) && \
 	$(call SANITIZE_MODERN_UI,$(TESTDIR)$(DOCDIR)/Examples/Modern UI) && \
 	for script_path in $(TESTDIR)$(SCRIPTS_PATH)/*.nsi \
 		$(TESTDIR)$(SCRIPTS_PATH)/*/*.nsi; do \
@@ -164,7 +169,7 @@ endif
 endif
 
 override_dh_auto_install-arch:
-	$(foreach p,$(shell dh_listpackages -a),$(call DO_SCONS_INSTALL,$(SCONSOPTS_HOST),$(p)))
+	$(foreach p,$(shell dh_listpackages -a),$(call DO_SCONS_INSTALL,$(p)))
 
 override_dh_fixperms-arch:
 	dh_fixperms
@@ -173,7 +178,7 @@ override_dh_fixperms-arch:
 
 override_dh_auto_install-indep:
 ifdef XGCC_W32_PATH
-	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(SCONSOPTS_COMMON),$(p)))
+	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(p)))
 	# Exclude any architecture dependent binaries from nsis-common
 	rm -rf "$(CURDIR)/debian/nsis-common$(PREFIX)/bin"
 	# Clean up examples and documentation

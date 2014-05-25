@@ -12,8 +12,9 @@ nsis (2.46-8) UNRELEASED; urgency=low
   * Upgraded to debhelper version 9.
   * Defined override targets for arch and indep packages.
   * Introduced variables for build directory and type in debian/rules.
+  * Retain same flags for build and installation to avoid rebuilding. 
 
- -- Thomas Gaugler <thomas@dadie.net>  Sun, 25 May 2014 10:37:20 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Sun, 25 May 2014 11:35:48 +0200
 
 nsis (2.46-7) unstable; urgency=low
 
