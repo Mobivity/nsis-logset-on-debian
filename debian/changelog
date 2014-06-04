@@ -1,4 +1,4 @@
-nsis (2.46-8) UNRELEASED; urgency=low
+nsis (2.46-8) unstable; urgency=low
 
   * Dropped superfluous build dependency of libstdc++6-4.6-dev because
     this build dependency is fulfilled by build-essential. (Closes:
