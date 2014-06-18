@@ -12,8 +12,9 @@ nsis (2.46-9) UNRELEASED; urgency=low
   * Use correct syntax for invoking shell function from make.
   * Rely on PATH environment for finding mingw-w64 rather than
     explicitly searching for it.
+  * Suggest wine package for any architecture it is available.
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 20:32:10 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 20:53:45 +0200
 
 nsis (2.46-8) unstable; urgency=low
 

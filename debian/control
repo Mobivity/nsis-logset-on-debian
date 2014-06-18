@@ -12,7 +12,7 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nsis.git
 Package: nsis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, nsis-common (>= ${source:Version})
-Suggests: nsis-doc (>= ${source:Version}), nsis-pluginapi (>= ${source:Version}), mingw-w64 (>= 1.0), wine
+Suggests: nsis-doc (>= ${source:Version}), nsis-pluginapi (>= ${source:Version}), mingw-w64 (>= 1.0), wine [amd64 i386 kfreebsd-amd64 kfreebsd-i386 powerpc]
 Description: Nullsoft Scriptable Install System (modified for Debian)
  NSIS is a tool for creating quick and user friendly installers for
  Microsoft Windows (Win32) operating systems.
