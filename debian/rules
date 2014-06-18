@@ -100,6 +100,19 @@ define SANITIZE_MODERN_UI
 	done
 endef
 
+# Replace duplicate files with symbolic link
+define SYMLINK_DUPLICATES
+	for f in $$(ls -1 "$(1)"); \
+	do \
+		cmp -s "$(1)/$${f}" "$(2)/$${f}"; \
+		if [ $$? -eq 0 ]; \
+		then \
+			ln -sf "$(3)/$${f}" "$(2)/$${f}"; \
+			echo $${f}; \
+		fi; \
+	done
+endef
+
 %:
 	dh "$@"
 
@@ -188,7 +201,10 @@ ifdef XGCC_W32_PATH
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/License.txt"
 	rm "debian/nsis-doc$(DOCDIR)/Docs/NSISdl/License.txt"
-	$(call SANITIZE_MODERN_UI,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI) 
+	$(call SANITIZE_MODERN_UI,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI)
+	# Replace duplicate image files with symbolic links
+	$(call SYMLINK_DUPLICATES,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Docs/Modern UI/images,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/images,../../Modern UI/images)
+
 endif
 
 override_dh_compress-indep:
