@@ -16,10 +16,10 @@ BUILDTYPE=release
 TESTDIR=$(CURDIR)/$(BUILDDIR)/test
 
 # Variables for Win32 cross compiler
-XGCC_W32 = $(shell which i686-w64-mingw32-gcc)
+XGCC_W32 = i686-w64-mingw32-gcc
 ifneq ($(strip $(XGCC_W32)),)
 	XGCC_W32_PATH = $(abspath $(shell $(XGCC_W32) -print-file-name=libkernel32.a)/../..)
-	XGCC_W32_PREFIX = $(subst -gcc,-,$(notdir $(XGCC_W32)))
+	XGCC_W32_PREFIX = $(subst -gcc,-,$(XGCC_W32))
 endif
 
 # Evaluate parallel build option
