@@ -8,8 +8,9 @@ nsis (2.46-9) UNRELEASED; urgency=low
     than Windows.
   * Overwrite lintian warning about missing Large File Support (LFS). 
   * Replace duplicate image files of Modern UI with symbolic links. 
+  * Probe for built makensis instead of using wildcard function.
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 20:02:05 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 20:22:26 +0200
 
 nsis (2.46-8) unstable; urgency=low
 

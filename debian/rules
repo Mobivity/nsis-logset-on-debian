@@ -151,7 +151,7 @@ endif
 override_dh_auto_test-indep:
 ifdef XGCC_W32_PATH
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-ifneq ($(wildcard $(BUILDDIR)/$(BUILDTYPE)/makensis/makensis),)
+	test -x "$(BUILDDIR)/$(BUILDTYPE)/makensis/makensis" && \
 	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)"\
 		$(INSTALL_nsis) $(INSTALL_nsis-doc) && \
 	scons $(SCONSOPTS_COMMON) PREFIX_DEST="$(TESTDIR)" \
@@ -177,7 +177,6 @@ ifneq ($(wildcard $(BUILDDIR)/$(BUILDTYPE)/makensis/makensis),)
 		fi;; \
 		esac; \
 	done; 
-endif
 endif
 endif
 
