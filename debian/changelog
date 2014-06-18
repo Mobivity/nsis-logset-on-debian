@@ -1,3 +1,14 @@
+nsis (2.46-9) UNRELEASED; urgency=low
+
+  [ Didier Raboud ]
+  * Update Vcs-* URLs to be canonical.
+
+  [ Thomas Gaugler ]
+  * Fix of GCC stdcall attribute warnings occurring for targets other
+    than Windows.
+
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 19:56:57 +0200
+
 nsis (2.46-8) unstable; urgency=low
 
   * Dropped superfluous build dependency of libstdc++6-4.6-dev because
