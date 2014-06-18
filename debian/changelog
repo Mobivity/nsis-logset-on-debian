@@ -6,8 +6,9 @@ nsis (2.46-9) UNRELEASED; urgency=low
   [ Thomas Gaugler ]
   * Fix of GCC stdcall attribute warnings occurring for targets other
     than Windows.
+  * Overwrite lintian warning about missing Large File Support (LFS). 
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 19:56:57 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 19:59:45 +0200
 
 nsis (2.46-8) unstable; urgency=low
 
