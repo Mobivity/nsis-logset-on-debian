@@ -6,7 +6,7 @@
 # Exclude .svn directories from packages
 export DH_ALWAYS_EXCLUDE=.svn
 
-VERSION=${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
+VERSION=$(shell dpkg-parsechangelog | sed -n 's/^Version: *//p')
 PREFIX=/usr
 DATADIR=$(PREFIX)/share/nsis
 DOCDIR=$(PREFIX)/share/doc/nsis
