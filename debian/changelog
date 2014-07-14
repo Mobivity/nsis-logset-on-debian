@@ -13,8 +13,10 @@ nsis (2.46-9) UNRELEASED; urgency=low
   * Rely on PATH environment for finding mingw-w64 rather than
     explicitly searching for it.
   * Suggest wine package for any architecture it is available.
+  * Fix test run on s390x by using stdint.h for portable data type
+    definitions. (Closes: #754679)
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 18 Jun 2014 20:53:45 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Mon, 14 Jul 2014 20:25:01 +0200
 
 nsis (2.46-8) unstable; urgency=low
 

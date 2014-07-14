@@ -89,16 +89,56 @@ diff -urd nsis-2.46-src.orig/Source/DialogTemplate.cpp nsis-2.46-src/Source/Dial
    return pbDlg;
 diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
 --- nsis-2.46-src.orig/Source/Platform.h	2009-06-06 16:22:25.000000000 +0000
-+++ nsis-2.46-src/Source/Platform.h	2010-05-04 18:15:54.000000000 +0000
-@@ -53,6 +53,7 @@
++++ nsis-2.46-src/Source/Platform.h	2014-07-14 20:15:14.922201196 +0200
+@@ -30,20 +30,21 @@
+ #    include <string.h>
+ #    include <stdlib.h>
+ #  endif
++#  include <stdint.h>
+ // basic types
+-typedef unsigned char BYTE, *PBYTE, *LPBYTE;
+-typedef unsigned short WORD, *LPWORD;
+-typedef unsigned int DWORD, *LPDWORD;
+-typedef short SHORT;
+-typedef unsigned short USHORT;
+-typedef unsigned int UINT;
+-typedef unsigned int UINT32;
+-typedef int INT;
+-typedef int INT32;
+-typedef long LONG;
+-typedef unsigned long ULONG;
+-typedef long long INT64, LARGE_INTEGER;
+-typedef unsigned long long UINT64, ULARGE_INTEGER;
++typedef uint8_t BYTE, *PBYTE, *LPBYTE;
++typedef uint16_t WORD, *LPWORD;
++typedef uint32_t DWORD, *LPDWORD;
++typedef int16_t SHORT;
++typedef uint16_t USHORT;
++typedef uint32_t UINT;
++typedef uint32_t UINT32;
++typedef int32_t INT;
++typedef int32_t INT32;
++typedef int32_t LONG;
++typedef uint32_t ULONG;
++typedef int64_t INT64, LARGE_INTEGER;
++typedef uint64_t UINT64, ULARGE_INTEGER;
+ typedef int BOOL, *LPBOOL;
+ typedef short VARIANT_BOOL;
+ typedef void VOID;
+@@ -51,17 +52,18 @@
+ typedef char CHAR, *PCHAR, *LPCH, *PCH, *NPSTR, *LPSTR, *PSTR;
+ typedef unsigned char UCHAR;
  typedef const char *LPCCH, *PCSTR, *LPCSTR;
- typedef unsigned short WCHAR, OLECHAR, *PWCHAR, *LPWCH, *PWCH, *NWPSTR, *LPWSTR, *PWSTR, *BSTR;
- typedef const unsigned short *LPCWCH, *PCWCH, *LPCWSTR, *PCWSTR, *LPCOLESTR;
-+typedef int INT_PTR;
- typedef unsigned int UINT_PTR;
+-typedef unsigned short WCHAR, OLECHAR, *PWCHAR, *LPWCH, *PWCH, *NWPSTR, *LPWSTR, *PWSTR, *BSTR;
+-typedef const unsigned short *LPCWCH, *PCWCH, *LPCWSTR, *PCWSTR, *LPCOLESTR;
+-typedef unsigned int UINT_PTR;
++typedef uint16_t WCHAR, OLECHAR, *PWCHAR, *LPWCH, *PWCH, *NWPSTR, *LPWSTR, *PWSTR, *BSTR;
++typedef const uint16_t *LPCWCH, *PCWCH, *LPCWSTR, *PCWSTR, *LPCOLESTR;
++typedef intptr_t INT_PTR, LONG_PTR;
++typedef uintptr_t UINT_PTR, ULONG_PTR;
  // basic stuff
  typedef void * HANDLE;
-@@ -60,8 +72,8 @@
+ typedef HANDLE HWND;
  typedef HANDLE HMODULE;
  typedef unsigned long HKEY;
  // some gdi
@@ -109,7 +149,16 @@ diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
  // bool
  #  define FALSE 0
  #  define TRUE 1
-@@ -166,7 +183,7 @@
+@@ -154,7 +156,7 @@
+ 
+ #ifndef _WIN32
+ #  ifndef FIELD_OFFSET
+-#    define FIELD_OFFSET(t,f) ((LONG)&(((t*)0)->f))
++#    define FIELD_OFFSET(t,f) ((LONG)(LONG_PTR)&(((t*)0)->f))
+ #  endif
+ #  ifndef MAKEINTRESOURCEA
+ #    define MAKEINTRESOURCEA(i) ((LPSTR)((ULONG_PTR)((WORD)(i))))
+@@ -166,7 +168,7 @@
  #    define MAKEINTRESOURCE MAKEINTRESOURCEA
  #  endif
  #  ifndef IMAGE_FIRST_SECTION
@@ -118,7 +167,7 @@ diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
                                       FIELD_OFFSET(IMAGE_NT_HEADERS, OptionalHeader) + \
                                       FIX_ENDIAN_INT16(PIMAGE_NT_HEADERS(h)->FileHeader.SizeOfOptionalHeader) ) )
  #  endif
-@@ -174,7 +191,7 @@
+@@ -174,7 +176,7 @@
  #    define RGB(r,g,b) ((DWORD)(((BYTE)(r)|((WORD)(g)<<8))|(((DWORD)(BYTE)(b))<<16)))
  #  endif
  #  ifndef MAKELONG
@@ -127,7 +176,7 @@ diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
  #  endif
  #endif
  #ifndef IS_INTRESOURCE
-@@ -197,8 +214,10 @@
+@@ -197,8 +199,10 @@
  #  define FOF_NOERRORUI 0x0400
  #endif
  
@@ -140,7 +189,7 @@ diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
  #endif
  
  #ifndef IDC_HAND
-@@ -238,7 +257,7 @@
+@@ -238,7 +242,7 @@
  #  undef INVALID_FILE_ATTRIBUTES
  #endif
  #ifndef INVALID_FILE_ATTRIBUTES
@@ -494,3 +543,24 @@ diff -urd nsis-2.46-src.orig/Source/util.cpp nsis-2.46-src/Source/util.cpp
      {
        SetLastError( 0 );
        return dwResult;
+diff -urd nsis-2.46-src.orig/Source/7zip/Common/Types.h nsis-2.46-src/Source/7zip/Common/Types.h
+--- nsis-2.46-src.orig/Source/7zip/Common/Types.h	2006-10-28 21:45:02.000000000 +0200
++++ nsis-2.46-src/Source/7zip/Common/Types.h	2014-07-14 20:20:33.901191024 +0200
+@@ -57,14 +57,15 @@
+ 
+ #else
+ 
++#include <stdint.h>
+ #ifndef _7ZIP_INT64_DEFINED
+ #define _7ZIP_INT64_DEFINED
+-typedef long long int Int64;
++typedef int64_t Int64;
+ #endif 
+ 
+ #ifndef _7ZIP_UINT64_DEFINED
+ #define _7ZIP_UINT64_DEFINED
+-typedef unsigned long long int UInt64;
++typedef uint64_t UInt64;
+ #endif 
+ 
+ #endif
