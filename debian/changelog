@@ -1,4 +1,4 @@
-nsis (2.46-9) UNRELEASED; urgency=low
+nsis (2.46-9) unstable; urgency=medium
 
   [ Didier Raboud ]
   * Update Vcs-* URLs to be canonical.
