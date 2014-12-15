@@ -177,6 +177,8 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 		fi;; \
 		esac; \
 	done; 
+	# Fail the build if libwinpthread is needed at runtime (see #722898)
+	test `find $(TESTDIR)$(DATADIR)/Plugins -iname "*.dll" -exec objdump -p {} \; | grep -E "file format|DLL Name" | grep -cim1 libwinpthread` -eq 0
 endif
 endif
 
