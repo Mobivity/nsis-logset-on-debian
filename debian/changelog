@@ -1,3 +1,9 @@
+nsis (2.46-10) unstable; urgency=medium
+
+  * Fail the build if libwinpthread is needed at runtime (see #722898)
+
+ -- Didier Raboud <odyx@debian.org>  Mon, 15 Dec 2014 22:58:06 +0100
+
 nsis (2.46-9) unstable; urgency=medium
 
   [ Didier Raboud ]
