@@ -1,3 +1,10 @@
+nsis (2.46-10.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Build with -fgnu89-inline. Closes: #778029.
+
+ -- Matthias Klose <doko@debian.org>  Fri, 10 Jul 2015 13:59:55 +0200
+
 nsis (2.46-10) unstable; urgency=medium
 
   * Fail the build if libwinpthread is needed at runtime (see #722898)
