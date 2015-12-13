@@ -6,10 +6,10 @@ Forwarded: http://sf.net/support/tracker.php?aid=2918870
 Forwarded: http://sf.net/support/tracker.php?aid=2995455
 Author: Thomas Gaugler <thomas@dadie.net>
 
-Index: nsis-2.46/Source/zlib/INFBLOCK.C
+Index: nsis-2.48/Source/zlib/INFBLOCK.C
 ===================================================================
---- nsis-2.46/Source/zlib/INFBLOCK.C
-+++ nsis-2.46/Source/zlib/INFBLOCK.C
+--- nsis-2.48/Source/zlib/INFBLOCK.C
++++ nsis-2.48/Source/zlib/INFBLOCK.C
 @@ -424,7 +424,7 @@
        }
        break;
@@ -19,10 +19,10 @@ Index: nsis-2.46/Source/zlib/INFBLOCK.C
        s->sub.left = (uInt)b & 0xffff;
        b = k = 0;                      /* dump bits */
        Tracev((stderr, "inflate:       stored length %u\n", s->sub.left));
-Index: nsis-2.46/INSTALL
+Index: nsis-2.48/INSTALL
 ===================================================================
---- nsis-2.46/INSTALL	(revision 6038)
-+++ nsis-2.46/INSTALL	(revision 6044)
+--- nsis-2.48/INSTALL	(revision 6038)
++++ nsis-2.48/INSTALL	(revision 6044)
 @@ -6,7 +6,8 @@
   - Requirements
  
@@ -48,10 +48,10 @@ Index: nsis-2.46/INSTALL
   - Installing
  
     * type:
-Index: nsis-2.46/Contrib/VPatch/Source/GenPat/SConscript
+Index: nsis-2.48/Contrib/VPatch/Source/GenPat/SConscript
 ===================================================================
---- nsis-2.46/Contrib/VPatch/Source/GenPat/SConscript	(revision 6029)
-+++ nsis-2.46/Contrib/VPatch/Source/GenPat/SConscript	(revision 6030)
+--- nsis-2.48/Contrib/VPatch/Source/GenPat/SConscript	(revision 6029)
++++ nsis-2.48/Contrib/VPatch/Source/GenPat/SConscript	(revision 6030)
 @@ -13,6 +13,7 @@
  """)
  
@@ -60,10 +60,10 @@ Index: nsis-2.46/Contrib/VPatch/Source/GenPat/SConscript
  """)
  
  Import('BuildUtil')
-Index: nsis-2.46/Contrib/VPatch/Source/GenPat/adler32.cpp
+Index: nsis-2.48/Contrib/VPatch/Source/GenPat/adler32.cpp
 ===================================================================
---- nsis-2.46/Contrib/VPatch/Source/GenPat/adler32.cpp	(revision 6029)
-+++ nsis-2.46/Contrib/VPatch/Source/GenPat/adler32.cpp	(revision 6030)
+--- nsis-2.48/Contrib/VPatch/Source/GenPat/adler32.cpp	(revision 6029)
++++ nsis-2.48/Contrib/VPatch/Source/GenPat/adler32.cpp	(revision 6030)
 @@ -24,69 +24,14 @@
   */
  
@@ -138,10 +138,10 @@ Index: nsis-2.46/Contrib/VPatch/Source/GenPat/adler32.cpp
 +      return zlib::adler32(adler, buf, len);
    }
  }
-Index: nsis-2.46/Contrib/zip2exe/zlib/ioapi.c
+Index: nsis-2.48/Contrib/zip2exe/zlib/ioapi.c
 ===================================================================
---- nsis-2.46/Contrib/zip2exe/zlib/ioapi.c	(revision 6029)
-+++ nsis-2.46/Contrib/zip2exe/zlib/ioapi.c	(revision 6030)
+--- nsis-2.48/Contrib/zip2exe/zlib/ioapi.c	(revision 6029)
++++ nsis-2.48/Contrib/zip2exe/zlib/ioapi.c	(revision 6030)
 @@ -10,7 +10,7 @@
  #include <stdlib.h>
  #include <string.h>
@@ -151,10 +151,10 @@ Index: nsis-2.46/Contrib/zip2exe/zlib/ioapi.c
  #include "ioapi.h"
  
  
-Index: nsis-2.46/Contrib/zip2exe/zlib/unzip.c
+Index: nsis-2.48/Contrib/zip2exe/zlib/unzip.c
 ===================================================================
---- nsis-2.46/Contrib/zip2exe/zlib/unzip.c	(revision 6029)
-+++ nsis-2.46/Contrib/zip2exe/zlib/unzip.c	(revision 6030)
+--- nsis-2.48/Contrib/zip2exe/zlib/unzip.c	(revision 6029)
++++ nsis-2.48/Contrib/zip2exe/zlib/unzip.c	(revision 6030)
 @@ -38,7 +38,7 @@
  #include <stdio.h>
  #include <stdlib.h>
@@ -164,10 +164,10 @@ Index: nsis-2.46/Contrib/zip2exe/zlib/unzip.c
  #include "unzip.h"
  
  #ifdef STDC
-Index: nsis-2.46/Contrib/zip2exe/zlib/unzip.h
+Index: nsis-2.48/Contrib/zip2exe/zlib/unzip.h
 ===================================================================
---- nsis-2.46/Contrib/zip2exe/zlib/unzip.h	(revision 6029)
-+++ nsis-2.46/Contrib/zip2exe/zlib/unzip.h	(revision 6030)
+--- nsis-2.48/Contrib/zip2exe/zlib/unzip.h	(revision 6029)
++++ nsis-2.48/Contrib/zip2exe/zlib/unzip.h	(revision 6030)
 @@ -50,7 +50,7 @@
  #endif
  
@@ -177,10 +177,10 @@ Index: nsis-2.46/Contrib/zip2exe/zlib/unzip.h
  #endif
  
  #ifndef _ZLIBIOAPI_H
-Index: nsis-2.46/Contrib/zip2exe/SConscript
+Index: nsis-2.48/Contrib/zip2exe/SConscript
 ===================================================================
---- nsis-2.46/Contrib/zip2exe/SConscript	(revision 6029)
-+++ nsis-2.46/Contrib/zip2exe/SConscript	(revision 6030)
+--- nsis-2.48/Contrib/zip2exe/SConscript	(revision 6029)
++++ nsis-2.48/Contrib/zip2exe/SConscript	(revision 6030)
 @@ -2,14 +2,8 @@
  
  files = Split("""
@@ -204,10 +204,10 @@ Index: nsis-2.46/Contrib/zip2exe/SConscript
  """)
  
  headers = Split("""
-Index: nsis-2.46/Contrib/SubStart/SConscript
+Index: nsis-2.48/Contrib/SubStart/SConscript
 ===================================================================
---- nsis-2.46/Contrib/SubStart/SConscript	(revision 0)
-+++ nsis-2.46/Contrib/SubStart/SConscript	(revision 6063)
+--- nsis-2.48/Contrib/SubStart/SConscript	(revision 0)
++++ nsis-2.48/Contrib/SubStart/SConscript	(revision 6063)
 @@ -0,0 +1,16 @@
 +Import('env')
 +
@@ -225,10 +225,10 @@ Index: nsis-2.46/Contrib/SubStart/SConscript
 +substart = BuildUtil(target, files, libs)
 +
 +env.DistributeBin(substart, names=['makensis.exe'], alias='install-compiler') # install as makensis
-Index: nsis-2.46/Contrib/SubStart/substart.c
+Index: nsis-2.48/Contrib/SubStart/substart.c
 ===================================================================
---- nsis-2.46/Contrib/SubStart/substart.c	(revision 0)
-+++ nsis-2.46/Contrib/SubStart/substart.c	(revision 6030)
+--- nsis-2.48/Contrib/SubStart/substart.c	(revision 0)
++++ nsis-2.48/Contrib/SubStart/substart.c	(revision 6030)
 @@ -0,0 +1,109 @@
 +/*
 + * substart.c
@@ -339,10 +339,10 @@ Index: nsis-2.46/Contrib/SubStart/substart.c
 +    return err;
 +}
 +
-Index: nsis-2.46/Contrib/SubStart/ReadMe.txt
+Index: nsis-2.48/Contrib/SubStart/ReadMe.txt
 ===================================================================
---- nsis-2.46/Contrib/SubStart/ReadMe.txt	(revision 0)
-+++ nsis-2.46/Contrib/SubStart/ReadMe.txt	(revision 6030)
+--- nsis-2.48/Contrib/SubStart/ReadMe.txt	(revision 0)
++++ nsis-2.48/Contrib/SubStart/ReadMe.txt	(revision 6030)
 @@ -0,0 +1,34 @@
 +substart - Redirect to an executable located in the 'Bin' sub folder 
 +           relative to the starter executable.
@@ -378,10 +378,10 @@ Index: nsis-2.46/Contrib/SubStart/ReadMe.txt
 +Please be aware that the name of the substart executable has to match
 +with the one in the sub folder.
 +
-Index: nsis-2.46/Source/czlib.h
+Index: nsis-2.48/Source/czlib.h
 ===================================================================
---- nsis-2.46/Source/czlib.h	(revision 6029)
-+++ nsis-2.46/Source/czlib.h	(revision 6030)
+--- nsis-2.48/Source/czlib.h	(revision 6029)
++++ nsis-2.48/Source/czlib.h	(revision 6030)
 @@ -18,7 +18,7 @@
  #define __CZLIB_H__
  
@@ -406,10 +406,10 @@ Index: nsis-2.46/Source/czlib.h
      }
  
      int End() {
-Index: nsis-2.46/Source/build.cpp
+Index: nsis-2.48/Source/build.cpp
 ===================================================================
---- nsis-2.46/Source/build.cpp	(revision 6029)
-+++ nsis-2.46/Source/build.cpp	(revision 6030)
+--- nsis-2.48/Source/build.cpp	(revision 6029)
++++ nsis-2.48/Source/build.cpp	(revision 6030)
 @@ -414,7 +414,7 @@
    if (dir) nsis_dir = dir;
    else {
@@ -419,10 +419,10 @@ Index: nsis-2.46/Source/build.cpp
  #else
      nsis_dir = PREFIX_DATA;
  #endif
-Index: nsis-2.46/Source/SConscript
+Index: nsis-2.48/Source/SConscript
 ===================================================================
---- nsis-2.46/Source/SConscript	(revision 6029)
-+++ nsis-2.46/Source/SConscript	(revision 6030)
+--- nsis-2.48/Source/SConscript	(revision 6029)
++++ nsis-2.48/Source/SConscript	(revision 6030)
 @@ -46,11 +46,6 @@
  	7zip/Common/CRC.cpp
  """)
@@ -461,10 +461,10 @@ Index: nsis-2.46/Source/SConscript
  
  makensis = env.Program(target, files)
  
-Index: nsis-2.46/Source/makenssi.cpp
+Index: nsis-2.48/Source/makenssi.cpp
 ===================================================================
---- nsis-2.46/Source/makenssi.cpp	(revision 6029)
-+++ nsis-2.46/Source/makenssi.cpp	(revision 6030)
+--- nsis-2.48/Source/makenssi.cpp	(revision 6029)
++++ nsis-2.48/Source/makenssi.cpp	(revision 6030)
 @@ -442,7 +442,7 @@
          char* env_var = getenv("NSISCONFDIR");
          if(env_var == NULL)
@@ -474,10 +474,10 @@ Index: nsis-2.46/Source/makenssi.cpp
  #else
            main_conf = PREFIX_CONF;
  #endif
-Index: nsis-2.46/Source/Tests/SConscript
+Index: nsis-2.48/Source/Tests/SConscript
 ===================================================================
---- nsis-2.46/Source/Tests/SConscript	(revision 6029)
-+++ nsis-2.46/Source/Tests/SConscript	(revision 6030)
+--- nsis-2.48/Source/Tests/SConscript	(revision 6029)
++++ nsis-2.48/Source/Tests/SConscript	(revision 6030)
 @@ -56,16 +56,10 @@
  required += bzip2_files
  required_exehead += bzip2_exehead_files
@@ -524,10 +524,10 @@ Index: nsis-2.46/Source/Tests/SConscript
  
  	# alias running the test to 'test'
  	test = env.Alias('test-code', [tests], tests[0].abspath)
-Index: nsis-2.46/SCons/utils.py
+Index: nsis-2.48/SCons/utils.py
 ===================================================================
---- nsis-2.46/SCons/utils.py	(revision 6029)
-+++ nsis-2.46/SCons/utils.py	(revision 6030)
+--- nsis-2.48/SCons/utils.py	(revision 6029)
++++ nsis-2.48/SCons/utils.py	(revision 6030)
 @@ -1,6 +1,6 @@
  def AddAvailableLibs(env, libs):
  	"""
@@ -575,10 +575,10 @@ Index: nsis-2.46/SCons/utils.py
  
 -Export('AddAvailableLibs FlagsConfigure GetAvailableLibs')
 +Export('AddAvailableLibs AddZLib FlagsConfigure GetAvailableLibs')
-Index: nsis-2.46/SConstruct
+Index: nsis-2.48/SConstruct
 ===================================================================
---- nsis-2.46/SConstruct	(revision 6029)
-+++ nsis-2.46/SConstruct	(revision 6030)
+--- nsis-2.48/SConstruct	(revision 6029)
++++ nsis-2.48/SConstruct	(revision 6030)
 @@ -1,4 +1,4 @@
 -EnsureSConsVersion(0,98)
 +EnsureSConsVersion(1,2)
@@ -729,10 +729,10 @@ Index: nsis-2.46/SConstruct
  				AlwaysBuild(cmd)
  				env.Alias('test-scripts', cmd)
  
-Index: nsis-2.46/Docs/src/build.but
+Index: nsis-2.48/Docs/src/build.but
 ===================================================================
---- nsis-2.46/Docs/src/build.but	(revision 6029)
-+++ nsis-2.46/Docs/src/build.but	(revision 6030)
+--- nsis-2.48/Docs/src/build.but	(revision 6029)
++++ nsis-2.48/Docs/src/build.but	(revision 6030)
 @@ -6,7 +6,32 @@
  
  Source code is available in \W{http://nsis.svn.sourceforge.net/viewvc/nsis/}{SVN} and as a separate package with every \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{NSIS distribution}.
@@ -776,11 +776,11 @@ Index: nsis-2.46/Docs/src/build.but
  
  \H{build_posix} Building on POSIX
  
-Index: nsis-2.46/Examples/makensis.nsi
+Index: nsis-2.48/Examples/makensis.nsi
 ===================================================================
---- nsis-2.46/Examples/makensis.nsi	(revision 6029)
-+++ nsis-2.46/Examples/makensis.nsi	(revision 6030)
-@@ -115,12 +115,15 @@
+--- nsis-2.48/Examples/makensis.nsi	(revision 6029)
++++ nsis-2.48/Examples/makensis.nsi	(revision 6030)
+@@ -115,13 +115,16 @@
    RMDir /r $SMPROGRAMS\NSIS
  
    SetOverwrite on
@@ -789,6 +789,7 @@ Index: nsis-2.46/Examples/makensis.nsi
    File ..\makensisw.exe
    File ..\COPYING
    File ..\NSIS.chm
+   !searchparse /file "..\NSIS.chm" "ITSF" VALIDATE_CHM
    File ..\NSIS.exe
    File /nonfatal ..\NSIS.exe.manifest
 +  SetOutPath $INSTDIR\Bin
@@ -797,7 +798,7 @@ Index: nsis-2.46/Examples/makensis.nsi
  
    IfFileExists $INSTDIR\nsisconf.nsi "" +2
    Rename $INSTDIR\nsisconf.nsi $INSTDIR\nsisconf.nsh
-@@ -955,7 +958,7 @@
+@@ -956,7 +959,7 @@
      ExecWait '$R1 _?=$INSTDIR'
  
      IfErrors no_remove_uninstaller
@@ -806,7 +807,7 @@ Index: nsis-2.46/Examples/makensis.nsi
  
        Delete $R1
        RMDir $INSTDIR
-@@ -996,7 +999,7 @@
+@@ -997,7 +1000,7 @@
    DetailPrint "Uninstalling NSI Development Shell Extensions..."
    SetDetailsPrint listonly
  
@@ -815,7 +816,7 @@ Index: nsis-2.46/Examples/makensis.nsi
      MessageBox MB_YESNO "It does not appear that NSIS is installed in the directory '$INSTDIR'.$\r$\nContinue anyway (not recommended)?" IDYES nsis_installed
      Abort "Uninstall aborted by user"
    nsis_installed:
-@@ -1030,6 +1033,7 @@
+@@ -1031,6 +1034,7 @@
    Delete $INSTDIR\makensis.exe
    Delete $INSTDIR\makensisw.exe
    Delete $INSTDIR\NSIS.exe
