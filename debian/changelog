@@ -1,9 +1,13 @@
-nsis (2.48-1) UNRELEASED; urgency=medium
+nsis (2.48-1) unstable; urgency=medium
 
-  * New upstream release. Closes: #806036.
-  * Updated to Standards-Version 3.9.6.
+  * New upstream release
+    - LoadLibrary security hardening to prevent dll hijacking
+      (Bug #1125, Closes: #806036)
 
- -- Thomas Gaugler <thomas@dadie.net>  Sun, 13 Dec 2015 21:10:31 +0100
+  * Updated to Standards-Version 3.9.6
+  * Acknowledge NMU
+
+ -- Thomas Gaugler <thomas@dadie.net>  Tue, 15 Dec 2015 10:51:30 +0100
 
 nsis (2.46-10.1) unstable; urgency=medium
 
