@@ -134,6 +134,7 @@ override_dh_auto_build-arch: $(BUILDDIR)/NEWS
 
 override_dh_auto_build-indep: $(BUILDDIR)/NEWS
 ifdef XGCC_W32_PATH
+	scons $(SCONSOPTS_HOST) makensis
 	scons $(SCONSOPTS_COMMON) stubs plugins utils
 	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
