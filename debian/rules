@@ -126,11 +126,12 @@ $(BUILDDIR)/NEWS:
 	html2text -nobs "$(BUILDDIR)/$(BUILDTYPE)/Docs/html/AppendixF.html" | \
 	sed -e '0,/^\*\*\*\*\*/c\NSIS Release Notes (automatically converted from AppendixF.html)' -e 's/F\.[.0-9]* //g' -e 's/^\*\*\*\** *\([^*]*\)  *\**\*\*\*/\n\1\n/g' -e '/Changelog/d' -e '/^NSIS_1.x_version_history/,/^=/c\    http://nsis.sourceforge.net/download/nsis1/' -e 's/^\(Released.*\)/    \1\n/g' | cat -s > "$@"
 
-override_dh_auto_build-arch: $(BUILDDIR)/NEWS
+# Convert DocBook to man page
+$(BUILDDIR)/%.1: debian/%.xml
+	xsltproc --nonet --output $@ $<
+
+override_dh_auto_build-arch: $(BUILDDIR)/NEWS $(BUILDDIR)/GenPat.1 $(BUILDDIR)/LibraryLocal.1 $(BUILDDIR)/makensis.1
 	scons $(SCONSOPTS_HOST) utils makensis
-	xmlto -o $(BUILDDIR) man debian/makensis.xml
-	xmlto -o $(BUILDDIR) man debian/GenPat.xml
-	xmlto -o $(BUILDDIR) man debian/LibraryLocal.xml
 
 override_dh_auto_build-indep: $(BUILDDIR)/NEWS
 ifdef XGCC_W32_PATH

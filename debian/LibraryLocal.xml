@@ -1,38 +1,41 @@
-<?xml version='1.0'?>
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
-  <!ENTITY firstname "<firstname>Paul</firstname>">
-  <!ENTITY surname   "<surname>Wise</surname>">
-  <!ENTITY date      "<date>July 28, 2007</date>">
-  <!ENTITY section   "<manvolnum>1</manvolnum>">
-  <!ENTITY email     "<email>pabs@debian.org</email>">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl"
+  href="http://docbook.sourceforge.net/release/xsl-ns/current/manpages/docbook.xsl"?>
+<!DOCTYPE refentry [
+  <!ENTITY firstname "Paul">
+  <!ENTITY surname   "Wise">
+  <!ENTITY date      "July 28, 2007">
+  <!ENTITY section   "1">
+  <!ENTITY email     "pabs@debian.org>">
   <!ENTITY username  "Paul Wise">
-  <!ENTITY ucpackage "<refentrytitle>NSIS</refentrytitle>">
+  <!ENTITY ucpackage "NSIS">
   <!ENTITY package   "LibraryLocal">
   <!ENTITY debian    "Debian (TM)">
 ]>
 
-<refentry>
-  <refentryinfo>
-    <title>&package;</title>
+<refentry xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+  <info>
     <productname>&package; manual</productname>
     <address>
-      &email;
+      <email>&email;</email>
     </address>
     <author>
-      &firstname;
-      &surname;
+      <personname>
+        <firstname>&firstname;</firstname>
+        <surname>&surname;</surname>
+      </personname>
       <contrib>Created man page</contrib>
     </author>
     <copyright>
       <year>2007</year>
       <holder>&username;</holder>
     </copyright>
-    &date;
-  </refentryinfo>
+    <date>&date;</date>
+  </info>
   <refmeta>
-    &ucpackage;
-    &section;
+    <refentrytitle>&ucpackage;</refentrytitle>
+    <manvolnum>&section;</manvolnum>
+    <refmiscinfo class="manual">&package; manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>&package;</refname>
@@ -97,7 +100,7 @@
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
-    <para>This manual page was written by &username; &email; for
+    <para>This manual page was written by &username; <email>&email;</email> for
       the &debian; system.
     </para>
   </refsect1>

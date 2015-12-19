@@ -2,8 +2,10 @@ nsis (2.49-1) UNRELEASED; urgency=medium
 
   * New upstream release
     - Fixed CreateShortcut failure on Vista caused by security changes
+  * Switched to using DocBook 5 and xsltproc for manpage generation
+    because the xmlto package has no longer a maintainer.
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 19 Dec 2015 17:28:50 +0100
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 19 Dec 2015 22:29:39 +0100
 
 nsis (2.48-2) unstable; urgency=medium
 
