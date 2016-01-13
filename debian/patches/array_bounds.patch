@@ -6,9 +6,8 @@ Description: Fix of mingw-w64 warnings concering out of boundary array access.
 Forwarded: http://sf.net/p/nsis/patches/250
 Author: Thomas Gaugler <thomas@dadie.net>
 
-diff -urd nsis-2.48-src.orig/Source/exehead/state.h nsis-2.48-src/Source/exehead/state.h
---- nsis-2.48-src.orig/Source/exehead/state.h	2015-12-09 23:26:15.000000000 +0100
-+++ nsis-2.48-src/Source/exehead/state.h	2015-12-13 21:54:08.937109485 +0100
+--- a/Source/exehead/state.h
++++ b/Source/exehead/state.h
 @@ -18,18 +18,18 @@
  
  extern NSIS_STRING g_usrvars[1];
@@ -38,10 +37,9 @@ diff -urd nsis-2.48-src.orig/Source/exehead/state.h nsis-2.48-src/Source/exehead
  
  extern char g_caption[NSIS_MAX_STRLEN*2];
  #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
-diff -urd nsis-2.48-src.orig/Source/exehead/Main.c nsis-2.48-src/Source/exehead/Main.c
---- nsis-2.48-src.orig/Source/exehead/Main.c	2015-12-09 23:26:15.000000000 +0100
-+++ nsis-2.48-src/Source/exehead/Main.c	2015-12-13 21:46:02.093115432 +0100
-@@ -266,7 +266,7 @@
+--- a/Source/exehead/Main.c
++++ b/Source/exehead/Main.c
+@@ -276,7 +276,7 @@
        admin ? CreateRestrictedDirectory(state_temp_dir) : CreateNormalDirectory(state_temp_dir);
        SetCurrentDirectory(state_temp_dir);
  
@@ -50,7 +48,7 @@ diff -urd nsis-2.48-src.orig/Source/exehead/Main.c nsis-2.48-src/Source/exehead/
          mystrcpy(state_install_directory,state_exe_directory);
  
        mystrcpy(g_usrvars[0], realcmds);
-@@ -299,7 +299,7 @@
+@@ -309,7 +309,7 @@
              }
            }
          }

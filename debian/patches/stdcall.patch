@@ -4,10 +4,8 @@ Description: Set define for calling convention only for Win32 targets.
  NSISCALL only for Win32 targets.
 Author: Thomas Gaugler <thomas@dadie.net>
 
-Index: nsis-2.46/SCons/Config/gnu
-===================================================================
---- nsis-2.46/SCons/Config/gnu
-+++ nsis-2.46/SCons/Config/gnu
+--- a/SCons/Config/gnu
++++ b/SCons/Config/gnu
 @@ -9,6 +9,14 @@
  ### cross compiling
  
@@ -31,4 +29,4 @@ Index: nsis-2.46/SCons/Config/gnu
 +defenv.Append(CPPDEFINES = [('NSISCALL', '')])
  
  ### helper functions
-
+ 

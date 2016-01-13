@@ -6,10 +6,8 @@ Description: Use zmemcpy function of the same calling convention.
  NSISCALL define is evaluated for setting the calling convention.
 Author: Thomas Gaugler <thomas@dadie.net>
 
-Index: nsis-2.46/Source/zlib/ZUTIL.H
-===================================================================
---- nsis-2.46/Source/zlib/ZUTIL.H
-+++ nsis-2.46/Source/zlib/ZUTIL.H
+--- a/Source/zlib/ZUTIL.H
++++ b/Source/zlib/ZUTIL.H
 @@ -59,12 +59,8 @@
  
  
@@ -25,10 +23,8 @@ Index: nsis-2.46/Source/zlib/ZUTIL.H
  #else
  #  define zmemcpy memcpy
  #  define zmemzero(a,b) memset(a,0,b)
-Index: nsis-2.46/Source/exehead/util.h
-===================================================================
---- nsis-2.46/Source/exehead/util.h
-+++ nsis-2.46/Source/exehead/util.h
+--- a/Source/exehead/util.h
++++ b/Source/exehead/util.h
 @@ -19,7 +19,15 @@
  
  #include "../Platform.h"

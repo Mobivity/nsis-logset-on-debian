@@ -4,9 +4,8 @@ Description: Use variant_dir instead of build_dir keyword in SConstruct file
 Forwarded: http://sf.net/support/tracker.php?aid=3075573
 Author: Thomas Gaugler <thomas@dadie.net>
 
-diff -urd nsis-2.46-src.orig/SConstruct nsis-2.46-src/SConstruct
---- nsis-2.46-src.orig/SConstruct	2010-09-25 17:08:49.000000000 +0200
-+++ nsis-2.46-src/SConstruct	2010-09-25 17:27:37.000000000 +0200
+--- a/SConstruct
++++ b/SConstruct
 @@ -470,7 +470,7 @@
  
  	exports = { 'env' : env, 'compression' : compression, 'solid_compression' : solid }

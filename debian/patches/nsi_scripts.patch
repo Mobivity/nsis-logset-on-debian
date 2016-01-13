@@ -4,8 +4,8 @@ Description: Use relative paths in .nsi script examples
 Forwarded: http://sf.net/support/tracker.php?aid=3293899
 Author: Thomas Gaugler <thomas@dadie.net>
 
---- nsis-2.46.orig/Contrib/System/SysFunc.nsh.orig	2007-12-01 12:43:02.000000000 +0100
-+++ nsis-2.46/Contrib/System/SysFunc.nsh	2011-04-27 09:35:22.000000000 +0200
+--- a/Contrib/System/SysFunc.nsh
++++ b/Contrib/System/SysFunc.nsh
 @@ -7,7 +7,7 @@
  !ifndef SysFunc.NSH.Included
  !define SysFunc.NSH.Included
@@ -15,8 +15,8 @@ Author: Thomas Gaugler <thomas@dadie.net>
  
  !verbose 3      ; For WinMessages especially
    !include "WinMessages.nsh"
---- nsis-2.46.orig/Contrib/nsDialogs/InstallOptions.nsi.orig	2007-12-01 12:43:02.000000000 +0100
-+++ nsis-2.46/Contrib/nsDialogs/InstallOptions.nsi	2011-04-27 09:38:06.000000000 +0200
+--- a/Contrib/nsDialogs/InstallOptions.nsi
++++ b/Contrib/nsDialogs/InstallOptions.nsi
 @@ -17,7 +17,7 @@
  Function nsDialogsIO
  

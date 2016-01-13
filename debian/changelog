@@ -1,10 +1,14 @@
 nsis (2.50-1) UNRELEASED; urgency=medium
 
+  [ Thomas Gaugler ]
   * New upstream release
     - Fixed CreateShortcut failure on Vista caused by security changes
   * Switched to using DocBook 5 and xsltproc for manpage generation
     because the xmlto package has no longer a maintainer.
   * Acknowledge NMU
+
+  [ Didier Raboud ]
+  * Refresh all patches for 2.50
 
  -- Thomas Gaugler <thomas@dadie.net>  Wed, 13 Jan 2016 19:45:34 +0100
 

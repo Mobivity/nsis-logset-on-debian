@@ -2,9 +2,8 @@ Description: Build makensis and portable utilities natively for 64-bit systems
 Forwarded: http://sf.net/support/tracker.php?aid=1753070
 Author: Thomas Gaugler <thomas@dadie.net>
 
-diff -urd nsis-2.46-src.orig/SCons/Config/gnu nsis-2.46-src/SCons/Config/gnu
---- nsis-2.46-src.orig/SCons/Config/gnu	2009-02-05 00:52:28.000000000 +0000
-+++ nsis-2.46-src/SCons/Config/gnu	2010-05-04 18:15:54.000000000 +0000
+--- a/SCons/Config/gnu
++++ b/SCons/Config/gnu
 @@ -95,8 +95,6 @@
  makensis_env.Append(CXXFLAGS = ['-Wall'])                 # all warnings
  
@@ -32,9 +31,8 @@ diff -urd nsis-2.46-src.orig/SCons/Config/gnu nsis-2.46-src/SCons/Config/gnu
  conf.Finish()
  
  ### weird GCC requirements
-diff -urd nsis-2.46-src.orig/Source/DialogTemplate.cpp nsis-2.46-src/Source/DialogTemplate.cpp
---- nsis-2.46-src.orig/Source/DialogTemplate.cpp	2007-11-30 09:54:13.000000000 +0000
-+++ nsis-2.46-src/Source/DialogTemplate.cpp	2010-05-04 18:15:46.000000000 +0000
+--- a/Source/DialogTemplate.cpp
++++ b/Source/DialogTemplate.cpp
 @@ -74,7 +74,7 @@
      if (IS_INTRESOURCE(x)) { \
        *(WORD*)seeker = 0xFFFF; \
@@ -87,9 +85,8 @@ diff -urd nsis-2.46-src.orig/Source/DialogTemplate.cpp nsis-2.46-src/Source/Dial
  
    // DONE!
    return pbDlg;
-diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
---- nsis-2.46-src.orig/Source/Platform.h	2009-06-06 16:22:25.000000000 +0000
-+++ nsis-2.46-src/Source/Platform.h	2014-07-14 20:15:14.922201196 +0200
+--- a/Source/Platform.h
++++ b/Source/Platform.h
 @@ -30,20 +30,21 @@
  #    include <string.h>
  #    include <stdlib.h>
@@ -198,9 +195,8 @@ diff -urd nsis-2.46-src.orig/Source/Platform.h nsis-2.46-src/Source/Platform.h
  #endif
  
  // shell folders
-diff -urd nsis-2.46-src.orig/Source/Plugins.cpp nsis-2.46-src/Source/Plugins.cpp
---- nsis-2.46-src.orig/Source/Plugins.cpp	2009-02-01 14:44:30.000000000 +0000
-+++ nsis-2.46-src/Source/Plugins.cpp	2010-05-04 18:15:54.000000000 +0000
+--- a/Source/Plugins.cpp
++++ b/Source/Plugins.cpp
 @@ -29,7 +29,7 @@
  #include "dirreader.h"
  
@@ -221,9 +217,8 @@ diff -urd nsis-2.46-src.orig/Source/Plugins.cpp nsis-2.46-src/Source/Plugins.cpp
          {
            const string name = string((char*)exports + FIX_ENDIAN_INT32(names[j]) - ExportDirVA);
            const string signature = dllName + "::" + name;
-diff -urd nsis-2.46-src.orig/Source/ResourceEditor.cpp nsis-2.46-src/Source/ResourceEditor.cpp
---- nsis-2.46-src.orig/Source/ResourceEditor.cpp	2009-02-05 00:50:12.000000000 +0000
-+++ nsis-2.46-src/Source/ResourceEditor.cpp	2010-05-04 18:15:46.000000000 +0000
+--- a/Source/ResourceEditor.cpp
++++ b/Source/ResourceEditor.cpp
 @@ -27,20 +27,10 @@
  #define ALIGN(dwToAlign, dwAlignOn) dwToAlign = (dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn
  #define RALIGN(dwToAlign, dwAlignOn) ((dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn)
@@ -353,9 +348,8 @@ diff -urd nsis-2.46-src.orig/Source/ResourceEditor.cpp nsis-2.46-src/Source/Reso
    }
    else {
      m_bHasName = true;
-diff -urd nsis-2.46-src.orig/Source/ResourceEditor.h nsis-2.46-src/Source/ResourceEditor.h
---- nsis-2.46-src.orig/Source/ResourceEditor.h	2009-02-01 14:44:30.000000000 +0000
-+++ nsis-2.46-src/Source/ResourceEditor.h	2010-05-04 18:19:00.000000000 +0000
+--- a/Source/ResourceEditor.h
++++ b/Source/ResourceEditor.h
 @@ -27,7 +27,7 @@
  
  #include "Platform.h"
@@ -401,9 +395,8 @@ diff -urd nsis-2.46-src.orig/Source/ResourceEditor.h nsis-2.46-src/Source/Resour
  
  private:
    BYTE* m_pbData;
-diff -urd nsis-2.46-src.orig/Source/ResourceVersionInfo.cpp nsis-2.46-src/Source/ResourceVersionInfo.cpp
---- nsis-2.46-src.orig/Source/ResourceVersionInfo.cpp	2009-03-28 10:20:04.000000000 +0000
-+++ nsis-2.46-src/Source/ResourceVersionInfo.cpp	2010-05-04 18:15:29.000000000 +0000
+--- a/Source/ResourceVersionInfo.cpp
++++ b/Source/ResourceVersionInfo.cpp
 @@ -146,7 +146,7 @@
      p += sizeof(WORD);
      szKey = (WCHAR*)p;
@@ -413,9 +406,8 @@ diff -urd nsis-2.46-src.orig/Source/ResourceVersionInfo.cpp nsis-2.46-src/Source
          p++;
      return p - baseP;    
  }
-diff -urd nsis-2.46-src.orig/Source/fileform.cpp nsis-2.46-src/Source/fileform.cpp
---- nsis-2.46-src.orig/Source/fileform.cpp	2009-02-01 14:44:30.000000000 +0000
-+++ nsis-2.46-src/Source/fileform.cpp	2010-05-04 18:15:29.000000000 +0000
+--- a/Source/fileform.cpp
++++ b/Source/fileform.cpp
 @@ -149,7 +149,7 @@
    m_sink->write_int(data->text);
    m_sink->write_int(data->bkc);
@@ -425,9 +417,8 @@ diff -urd nsis-2.46-src.orig/Source/fileform.cpp nsis-2.46-src/Source/fileform.c
    m_sink->write_int(data->bkmode);
    m_sink->write_int(data->flags);
  }
-diff -urd nsis-2.46-src.orig/Source/mmap.cpp nsis-2.46-src/Source/mmap.cpp
---- nsis-2.46-src.orig/Source/mmap.cpp	2009-02-01 14:44:30.000000000 +0000
-+++ nsis-2.46-src/Source/mmap.cpp	2010-05-04 18:15:46.000000000 +0000
+--- a/Source/mmap.cpp
++++ b/Source/mmap.cpp
 @@ -322,7 +322,7 @@
    if (!pView)
      return;
@@ -437,9 +428,8 @@ diff -urd nsis-2.46-src.orig/Source/mmap.cpp nsis-2.46-src/Source/mmap.cpp
    pView = (char *)pView - alignment;
    size += alignment;
  #ifdef _WIN32
-diff -urd nsis-2.46-src.orig/Source/script.cpp nsis-2.46-src/Source/script.cpp
---- nsis-2.46-src.orig/Source/script.cpp	2009-06-10 21:26:01.000000000 +0000
-+++ nsis-2.46-src/Source/script.cpp	2010-05-04 18:15:54.000000000 +0000
+--- a/Source/script.cpp
++++ b/Source/script.cpp
 @@ -2129,7 +2129,7 @@
          int k=line.gettoken_enum(1,rootkeys[0]);
          if (k == -1) k=line.gettoken_enum(1,rootkeys[1]);
@@ -485,9 +475,8 @@ diff -urd nsis-2.46-src.orig/Source/script.cpp nsis-2.46-src/Source/script.cpp
          ent.offsets[2]=add_string(line.gettoken_str(3));
          ent.offsets[3]=add_string(line.gettoken_str(4));
          ent.offsets[4]=which_token == TOK_ENUMREGKEY;
-diff -urd nsis-2.46-src.orig/Source/util.cpp nsis-2.46-src/Source/util.cpp
---- nsis-2.46-src.orig/Source/util.cpp	2009-03-28 09:56:49.000000000 +0000
-+++ nsis-2.46-src/Source/util.cpp	2010-05-04 18:15:54.000000000 +0000
+--- a/Source/util.cpp
++++ b/Source/util.cpp
 @@ -77,9 +77,9 @@
    }
  
@@ -543,9 +532,8 @@ diff -urd nsis-2.46-src.orig/Source/util.cpp nsis-2.46-src/Source/util.cpp
      {
        SetLastError( 0 );
        return dwResult;
-diff -urd nsis-2.46-src.orig/Source/7zip/Common/Types.h nsis-2.46-src/Source/7zip/Common/Types.h
---- nsis-2.46-src.orig/Source/7zip/Common/Types.h	2006-10-28 21:45:02.000000000 +0200
-+++ nsis-2.46-src/Source/7zip/Common/Types.h	2014-07-14 20:20:33.901191024 +0200
+--- a/Source/7zip/Common/Types.h
++++ b/Source/7zip/Common/Types.h
 @@ -57,14 +57,15 @@
  
  #else
