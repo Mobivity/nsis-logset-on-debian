@@ -1,4 +1,4 @@
-nsis (2.50-1) UNRELEASED; urgency=medium
+nsis (2.50-1) unstable; urgency=medium
 
   [ Thomas Gaugler ]
   * New upstream release
@@ -10,7 +10,7 @@ nsis (2.50-1) UNRELEASED; urgency=medium
   [ Didier Raboud ]
   * Refresh all patches for 2.50
 
- -- Thomas Gaugler <thomas@dadie.net>  Wed, 13 Jan 2016 19:45:34 +0100
+ -- Didier Raboud <odyx@debian.org>  Wed, 13 Jan 2016 22:02:48 +0100
 
 nsis (2.48-2.1) unstable; urgency=medium
 
