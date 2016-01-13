@@ -190,7 +190,7 @@ override_dh_auto_install-arch:
 override_dh_fixperms-arch:
 	dh_fixperms
 	find "$(CURDIR)/debian/nsis/$(SYSCONF)" \
-		-type f -perm +111 -exec chmod a-x {} \;
+		-type f -perm /111 -exec chmod a-x {} \;
 
 override_dh_auto_install-indep:
 ifdef XGCC_W32_PATH
@@ -225,9 +225,9 @@ override_dh_fixperms-indep:
 	dh_fixperms
 	# Remove executable flag from data files
 	find "$(CURDIR)/debian/nsis-common$(DATADIR)" \
-		-type f -perm +111 -exec chmod a-x {} \;
+		-type f -perm /111 -exec chmod a-x {} \;
 	# Fix permissions for plugin API header and library files
 ifdef XGCC_W32_PATH
 	find "$(CURDIR)/debian/nsis-pluginapi$(XGCC_W32_PATH)" \
-		-type f -perm +111 -exec chmod a-x {} \;
+		-type f -perm /111 -exec chmod a-x {} \;
 endif

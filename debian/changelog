@@ -4,8 +4,16 @@ nsis (2.50-1) UNRELEASED; urgency=medium
     - Fixed CreateShortcut failure on Vista caused by security changes
   * Switched to using DocBook 5 and xsltproc for manpage generation
     because the xmlto package has no longer a maintainer.
+  * Acknowledge NMU
 
  -- Thomas Gaugler <thomas@dadie.net>  Wed, 13 Jan 2016 19:45:34 +0100
+
+nsis (2.48-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Use "find -perm /x" instead of "find -perm +x". Closes: #808934
+
+ -- Andreas Metzler <ametzler@debian.org>  Tue, 29 Dec 2015 15:02:57 +0100
 
 nsis (2.48-2) unstable; urgency=medium
 
