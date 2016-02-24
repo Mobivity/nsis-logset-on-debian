@@ -1,0 +1,6 @@
+EXPORTS
+    AttemptConnect @1
+    AutodialHangup @2
+    AutodialOnline @3
+    AutodialUnattended @4
+    GetConnectedState @5

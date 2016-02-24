@@ -1,0 +1,36 @@
+The menu thing isn't included because it requires wxWidgets 2.8 to build.
+
+To build nsis plugins you have to install the nsis-pluginapi package 
+and follow the given below instructions.
+
+If your package manager did not install the recommended package(s) of
+nsis-pluginapi then you would need to manually install a cross compiler
+targeting the win32 platform.
+
+Ideally you should install the recommended package(s) which you could
+query with the following command:
+dpkg-query -W -f'${Recommends}\n' nsis-pluginapi
+
+Nevertheless you are free to take your favorite cross compiler targeting
+the win32 platform as long as it can handle the application binary
+interface (ABI) used by the nsis plugin api library. In that case you
+need to explicitly specify the include and library path as mentioned
+below.
+
+You should include the header like so:
+
+#include <nsis/pluginapi.h>
+
+By default the include and library files of the nsis plugin api are
+installed in the standard search paths of the recommended win32 cross
+compiler package.
+
+If that is not the case then the include and library path need to be
+explicitly specified for example in a Makefile such as:
+
+CPPFLAGS += -I $(shell dpkg-query -L nsis-pluginapi \
+		| sed -n '/include$$/p')
+
+LDFLAGS += -L $(shell dpkg-query -L nsis-pluginapi \
+		| sed -n '/lib\/nsis$$/p') -lpluginapi
+

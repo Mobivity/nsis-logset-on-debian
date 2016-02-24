@@ -1,0 +1,13 @@
+1e3dff139e3e169a174bbabdd0d09067  usr/bin/GenPat
+ca7b36d98723235dc65419bd0a7b7335  usr/bin/LibraryLocal
+e818482be9989db9227ddea4504512c7  usr/bin/makensis
+7270c58c92fc98c8427cf19ca221d190  usr/share/doc/nsis/NEWS.Debian.gz
+cbc3d09ac93d81640435eea18ac881f2  usr/share/doc/nsis/NEWS.gz
+2cf966efce47d68f71ad0b2df9257bbe  usr/share/doc/nsis/README.Debian
+423a04aea126d5663013459ac2a4b8a2  usr/share/doc/nsis/TODO.Debian
+3c24c34d25b52b485ef7689f988e7bc8  usr/share/doc/nsis/TODO.txt
+54710baac7f92beb74acaedfc59badec  usr/share/doc/nsis/changelog.Debian.gz
+a8a2e123dd8fc3eca8e06eecc8939092  usr/share/doc/nsis/copyright
+208406ba10f99ffdb3c01172b384f40a  usr/share/man/man1/GenPat.1.gz
+83fe1337076a8b0ec107c37620804310  usr/share/man/man1/LibraryLocal.1.gz
+9acb252c6e0f962d30ff8d5820937bb7  usr/share/man/man1/makensis.1.gz

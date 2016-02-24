@@ -1,0 +1,259 @@
+7270c58c92fc98c8427cf19ca221d190  usr/share/doc/nsis-common/NEWS.Debian.gz
+0e307b7da2109dcafb95b2462d9b4cea  usr/share/doc/nsis-common/README.InstallOptions.gz
+e88427748db8ed36d5e1693fdea346af  usr/share/doc/nsis-common/README.MultiUser.gz
+39b54a72c133914c89090fafe969fd76  usr/share/doc/nsis-common/README.VPatch.gz
+70fb12dd5c9067e3a2e9a135112450f0  usr/share/doc/nsis-common/README.nsDialogs.gz
+54710baac7f92beb74acaedfc59badec  usr/share/doc/nsis-common/changelog.Debian.gz
+a8a2e123dd8fc3eca8e06eecc8939092  usr/share/doc/nsis-common/copyright
+4adff56f407d59c31eb76462808294ed  usr/share/lintian/overrides/nsis-common
+bc24f7b72b014452ef8939880a036734  usr/share/nsis/Bin/RegTool.bin
+ea6d4785ab8d073ee28a5484afa568c5  usr/share/nsis/Contrib/Graphics/Checks/big.bmp
+a1f55cd0853872d5d1923cc7a5daba34  usr/share/nsis/Contrib/Graphics/Checks/classic-cross.bmp
+cfe377bc9fc0622bec69bb72d3c3bf80  usr/share/nsis/Contrib/Graphics/Checks/classic.bmp
+9e607d1df83db89026831faa71badad0  usr/share/nsis/Contrib/Graphics/Checks/colorful.bmp
+a2e4650361227448ad999c3516ec3f04  usr/share/nsis/Contrib/Graphics/Checks/grey-cross.bmp
+9c4cf578eee36746421778420ddf9e8d  usr/share/nsis/Contrib/Graphics/Checks/grey.bmp
+60d2a10c7daac29b36ca1c303f13d0a2  usr/share/nsis/Contrib/Graphics/Checks/modern.bmp
+7d1a612e0b8063104578a14a9a26bb0b  usr/share/nsis/Contrib/Graphics/Checks/red-round.bmp
+81dee7bdaf5e3fb2529a1c401be3aa24  usr/share/nsis/Contrib/Graphics/Checks/red.bmp
+d5e694db0a5934750d1f83e5ea7763d1  usr/share/nsis/Contrib/Graphics/Checks/simple-round.bmp
+82972b5d44cea4604c4fa647fa6a1a9b  usr/share/nsis/Contrib/Graphics/Checks/simple-round2.bmp
+bcd206077c42dc63c334543546eae1b5  usr/share/nsis/Contrib/Graphics/Checks/simple.bmp
+1b1176cf517f1bea1ed4315f672589dd  usr/share/nsis/Contrib/Graphics/Header/nsis-r.bmp
+940c56737bf9bb69ce7a31c623d4e87a  usr/share/nsis/Contrib/Graphics/Header/nsis.bmp
+a82603340ad25eaaabb51d89c1f65feb  usr/share/nsis/Contrib/Graphics/Header/orange-nsis.bmp
+5acf495828feae7f85e006b7774af497  usr/share/nsis/Contrib/Graphics/Header/orange-r-nsis.bmp
+852b07c25e75b8a5356931c91c834efc  usr/share/nsis/Contrib/Graphics/Header/orange-r.bmp
+7f918d22521d8390a52eab32ed22e6a9  usr/share/nsis/Contrib/Graphics/Header/orange-uninstall-nsis.bmp
+5e2ab99c109dd4987172de4e42ba5c45  usr/share/nsis/Contrib/Graphics/Header/orange-uninstall-r-nsis.bmp
+5a75cbbf4a5cac52878424cdd63fee86  usr/share/nsis/Contrib/Graphics/Header/orange-uninstall-r.bmp
+026e958ee0b47258f99f76204de29fdf  usr/share/nsis/Contrib/Graphics/Header/orange-uninstall.bmp
+583c38fb0f5af5fe584d9a9b01d6a3e7  usr/share/nsis/Contrib/Graphics/Header/orange.bmp
+eadf80c79f88337c58ca0fb5032cb579  usr/share/nsis/Contrib/Graphics/Header/win.bmp
+c8634f487744581273bca0f58dc00632  usr/share/nsis/Contrib/Graphics/Icons/arrow-install.ico
+330615bf47da223f9e41fb44584a9c4c  usr/share/nsis/Contrib/Graphics/Icons/arrow-uninstall.ico
+a732b92b6262bb6a61e3b2b1ca4359c3  usr/share/nsis/Contrib/Graphics/Icons/arrow2-install.ico
+0243196a60b08b1f31208ad8960879b1  usr/share/nsis/Contrib/Graphics/Icons/arrow2-uninstall.ico
+034ed0f6ec784b34577b89bf045b4063  usr/share/nsis/Contrib/Graphics/Icons/box-install.ico
+4c21bb2d1c41488bcb614d49fa69b20a  usr/share/nsis/Contrib/Graphics/Icons/box-uninstall.ico
+28151c77b90e6fbd9b194c32e9c9d405  usr/share/nsis/Contrib/Graphics/Icons/classic-install.ico
+9994a299bf19e1260b0be53af4675ed2  usr/share/nsis/Contrib/Graphics/Icons/classic-uninstall.ico
+2e2c96cb50ec0b34d541004d5398854b  usr/share/nsis/Contrib/Graphics/Icons/llama-blue.ico
+4594824ab309855d19ff533aadbd11d5  usr/share/nsis/Contrib/Graphics/Icons/llama-grey.ico
+b6d66ee2e36cc41fd4cced07a02043ff  usr/share/nsis/Contrib/Graphics/Icons/modern-install-blue-full.ico
+359362b58bfcc1b31757075167598aa1  usr/share/nsis/Contrib/Graphics/Icons/modern-install-blue.ico
+795dfadd194c56269bfb0b45cd7fd05f  usr/share/nsis/Contrib/Graphics/Icons/modern-install-colorful.ico
+f4126775f2aa973682b1c9e142338135  usr/share/nsis/Contrib/Graphics/Icons/modern-install-full.ico
+0544fd959b81b995e8cc6f49a97cdad9  usr/share/nsis/Contrib/Graphics/Icons/modern-install.ico
+3ba26092cac1be9afd78ec88a07308c5  usr/share/nsis/Contrib/Graphics/Icons/modern-uninstall-blue-full.ico
+38bd0e74075cf1668424e48537e0d923  usr/share/nsis/Contrib/Graphics/Icons/modern-uninstall-blue.ico
+4d0146850bda3b604837889d80667a76  usr/share/nsis/Contrib/Graphics/Icons/modern-uninstall-colorful.ico
+79edcb4aaca3eacb0bf679ce2edfc7ba  usr/share/nsis/Contrib/Graphics/Icons/modern-uninstall-full.ico
+562c29d8199d2a8ee9108dbd8baa960f  usr/share/nsis/Contrib/Graphics/Icons/modern-uninstall.ico
+9c5670bf2b876f2c8643a7df6f771cb7  usr/share/nsis/Contrib/Graphics/Icons/nsis1-install.ico
+766525927181abc35acd3ce22dce48b9  usr/share/nsis/Contrib/Graphics/Icons/nsis1-uninstall.ico
+bcf57c8f21ab6ec108326e989b364502  usr/share/nsis/Contrib/Graphics/Icons/orange-install-nsis.ico
+a55c5259d57cca0652713e3ddb79d2bf  usr/share/nsis/Contrib/Graphics/Icons/orange-install.ico
+b1f1567d0ff030d2769bebd0c1e5a749  usr/share/nsis/Contrib/Graphics/Icons/orange-uninstall-nsis.ico
+61c630d9528b5a521c8109adc8be17a6  usr/share/nsis/Contrib/Graphics/Icons/orange-uninstall.ico
+f49764fb2a99809ce599ff60f6207c61  usr/share/nsis/Contrib/Graphics/Icons/pixel-install.ico
+753ba77269d7052d696773d87bdee996  usr/share/nsis/Contrib/Graphics/Icons/pixel-uninstall.ico
+f31ab27282cf444ef1f263320be6b705  usr/share/nsis/Contrib/Graphics/Icons/win-install.ico
+62a385296a57632959a5abac36369b60  usr/share/nsis/Contrib/Graphics/Icons/win-uninstall.ico
+23d466abc86dbb1dd0ca2db40d524947  usr/share/nsis/Contrib/Graphics/Wizard/arrow.bmp
+a72996789e121eba43a54a9a761c78cf  usr/share/nsis/Contrib/Graphics/Wizard/llama.bmp
+e58e3b3163d1d85ce72df18b0e9c5ed4  usr/share/nsis/Contrib/Graphics/Wizard/nsis.bmp
+3d2a79a829946435acded3832780723f  usr/share/nsis/Contrib/Graphics/Wizard/nullsoft.bmp
+7f8e1969b0874c8fb9ab44fc36575380  usr/share/nsis/Contrib/Graphics/Wizard/orange-nsis.bmp
+7bfc4218ba561db82aa23d6799745433  usr/share/nsis/Contrib/Graphics/Wizard/orange-uninstall-nsis.bmp
+d08f87bb8ff9f53b90b5a148d5d3ca58  usr/share/nsis/Contrib/Graphics/Wizard/orange-uninstall.bmp
+9e4cd80a60db6947642677bf31a10906  usr/share/nsis/Contrib/Graphics/Wizard/orange.bmp
+cbe40fd2b1ec96daedc65da172d90022  usr/share/nsis/Contrib/Graphics/Wizard/win.bmp
+3a1d21d3416a50c211f16eecb55b0c03  usr/share/nsis/Contrib/Language files/Afrikaans.nlf
+5418dad1c7d6dec392663652fc02fa00  usr/share/nsis/Contrib/Language files/Afrikaans.nsh
+f74755247d542627b1b5cc652a2cad7f  usr/share/nsis/Contrib/Language files/Albanian.nlf
+b2d11d3108b5d6135fb5d36b6b455ada  usr/share/nsis/Contrib/Language files/Albanian.nsh
+61115aeaabb4ff3e6afea768b3a1de24  usr/share/nsis/Contrib/Language files/Arabic.nlf
+2d5c5046f58afdf29775fb0897a81ecd  usr/share/nsis/Contrib/Language files/Arabic.nsh
+a03afdfbde621bed188d29e48294714a  usr/share/nsis/Contrib/Language files/Basque.nlf
+9ca17e238c7efd7cc469508aac648f65  usr/share/nsis/Contrib/Language files/Basque.nsh
+1122e9ac9ca21a48b59d2de23bd07c03  usr/share/nsis/Contrib/Language files/Belarusian.nlf
+9829cb1686bb9105fae3fc2724530338  usr/share/nsis/Contrib/Language files/Belarusian.nsh
+99d38167224f54c6613f357b6690837e  usr/share/nsis/Contrib/Language files/Bosnian.nlf
+145cf429b2eecf4b23715655279bfefe  usr/share/nsis/Contrib/Language files/Bosnian.nsh
+6d3ffeca2bd9e0e9b3b6741e7f649898  usr/share/nsis/Contrib/Language files/Breton.nlf
+0e7895fa793e600ca181b080d8f2c9dd  usr/share/nsis/Contrib/Language files/Breton.nsh
+4bab66f67c68037e9f5f3f9ee783a211  usr/share/nsis/Contrib/Language files/Bulgarian.nlf
+c44d2bfdc42872f2a88d8a279558acaf  usr/share/nsis/Contrib/Language files/Bulgarian.nsh
+07f91abf0a277a5ca755f3da9d8f62c2  usr/share/nsis/Contrib/Language files/Catalan.nlf
+8fe4b54395a53db599ae93cbed6e9add  usr/share/nsis/Contrib/Language files/Catalan.nsh
+e31f5bc8cca24c5918c4794c524450b3  usr/share/nsis/Contrib/Language files/Croatian.nlf
+36ae9b2fe6b59863d68fa8237293e66e  usr/share/nsis/Contrib/Language files/Croatian.nsh
+bda51de463a22363b76aa29e0988103b  usr/share/nsis/Contrib/Language files/Czech.nlf
+25508c897435c70359f5b775a624803b  usr/share/nsis/Contrib/Language files/Czech.nsh
+974341a6bf0557c0f2828f49c3c771a8  usr/share/nsis/Contrib/Language files/Danish.nlf
+dffb429af9dd4056dc42263bb513d759  usr/share/nsis/Contrib/Language files/Danish.nsh
+a5ee845ce823e9ece1490a6c13b08e5d  usr/share/nsis/Contrib/Language files/Dutch.nlf
+4e505d42a0cf028849d5b93439803e35  usr/share/nsis/Contrib/Language files/Dutch.nsh
+80c41cd863c367d9987b6c26a8278c5d  usr/share/nsis/Contrib/Language files/English.nlf
+18e4df607735c1ca0aea0f410a7f41e7  usr/share/nsis/Contrib/Language files/English.nsh
+a1867a84fd64db5429cb466ff28957c9  usr/share/nsis/Contrib/Language files/Esperanto.nlf
+6454dcae07aea0ce1a353e127aa0ee80  usr/share/nsis/Contrib/Language files/Esperanto.nsh
+68fa88791fb8c8541966336caf3fea7b  usr/share/nsis/Contrib/Language files/Estonian.nlf
+b28bc581730db0c3753551455286f160  usr/share/nsis/Contrib/Language files/Estonian.nsh
+610a30e78ab47e6d62bee6056a7d1b54  usr/share/nsis/Contrib/Language files/Farsi.nlf
+3e9cee67f018f99ead3c940bcedbcd9b  usr/share/nsis/Contrib/Language files/Farsi.nsh
+107e89f99476ed1a93d751e1b25e610f  usr/share/nsis/Contrib/Language files/Finnish.nlf
+2c245a1742b82996908757e86f156f06  usr/share/nsis/Contrib/Language files/Finnish.nsh
+2802a1cae45b60c3ea4d0e9bd7fc1c0e  usr/share/nsis/Contrib/Language files/French.nlf
+76afedba903847294f774fa67cb5803a  usr/share/nsis/Contrib/Language files/French.nsh
+f2f1151386034674203ce339ad6a85f2  usr/share/nsis/Contrib/Language files/Galician.nlf
+a406ef02c4d7f1842255bcef2230d758  usr/share/nsis/Contrib/Language files/Galician.nsh
+786ceb7008dce76eef37f941e2e4ef87  usr/share/nsis/Contrib/Language files/German.nlf
+b84c9faf16dd47789ab0ea1a2cc8c1b7  usr/share/nsis/Contrib/Language files/German.nsh
+4b1f0a81abe7f907358a98d9eefc61a8  usr/share/nsis/Contrib/Language files/Greek.nlf
+9d6ed224d272610ac34ee7026b2b9f9b  usr/share/nsis/Contrib/Language files/Greek.nsh
+1e28a6a3736e0397c1598dfbf2f58c4e  usr/share/nsis/Contrib/Language files/Hebrew.nlf
+beb59de660271ab8ca75918c8b2a19d3  usr/share/nsis/Contrib/Language files/Hebrew.nsh
+e9ff2ffe916605d383d43315351e652e  usr/share/nsis/Contrib/Language files/Hungarian.nlf
+88816b3f5773710e6d8b1d3ab72d511f  usr/share/nsis/Contrib/Language files/Hungarian.nsh
+178f72708ab1e61242398af480167eb1  usr/share/nsis/Contrib/Language files/Icelandic.nlf
+865de7df318d60c26ac2772b45cba3c9  usr/share/nsis/Contrib/Language files/Icelandic.nsh
+afdc9c7531871fc4d26035801bd4f4ce  usr/share/nsis/Contrib/Language files/Indonesian.nlf
+d31a1fd7e1db1c8496941fb65ec78150  usr/share/nsis/Contrib/Language files/Indonesian.nsh
+cbab8762bea4154142e7bc62686bc26e  usr/share/nsis/Contrib/Language files/Irish.nlf
+62a5af9d797591fd29e4c883a699b789  usr/share/nsis/Contrib/Language files/Irish.nsh
+ef6c52deffa26aa9eb3b00a366e634a8  usr/share/nsis/Contrib/Language files/Italian.nlf
+a8a8b52fd57c892700610c9726a5634d  usr/share/nsis/Contrib/Language files/Italian.nsh
+be575079bb95ac8c079676c3a0d210e0  usr/share/nsis/Contrib/Language files/Japanese.nlf
+dd0b71f6e9706cf6b469840963fb605a  usr/share/nsis/Contrib/Language files/Japanese.nsh
+c35f92d273f8853eecc947e0c6642df8  usr/share/nsis/Contrib/Language files/Korean.nlf
+5f588ce0d87416232d450ad4d0ac334c  usr/share/nsis/Contrib/Language files/Korean.nsh
+b90490a66356c668499e5c4841f57d04  usr/share/nsis/Contrib/Language files/Kurdish.nlf
+27beb8a20d4e23dc6634082ebbc716d9  usr/share/nsis/Contrib/Language files/Kurdish.nsh
+b05acd6434db7f1e05deca7c9c7bd04d  usr/share/nsis/Contrib/Language files/Latvian.nlf
+866d410181d4b17ac8faa94731f2b936  usr/share/nsis/Contrib/Language files/Latvian.nsh
+13539c748c017ee9c2c8cc9914d323e3  usr/share/nsis/Contrib/Language files/Lithuanian.nlf
+9b8e2d04fea125838f480c2ff87a2a87  usr/share/nsis/Contrib/Language files/Lithuanian.nsh
+2251fd5f18020df25d2d386eec6fcb89  usr/share/nsis/Contrib/Language files/Luxembourgish.nlf
+30ef111c7c6dde31df2cbe0d370fe091  usr/share/nsis/Contrib/Language files/Luxembourgish.nsh
+7a0653f8483b9a73132f2eef65cbc845  usr/share/nsis/Contrib/Language files/Macedonian.nlf
+c158ca57fb00a8595be60e008bceea90  usr/share/nsis/Contrib/Language files/Macedonian.nsh
+1a17de215e01b3fc0d36fd6a88c0d1d5  usr/share/nsis/Contrib/Language files/Malay.nlf
+cc8da56e450fbe99f01c495a1a387bf6  usr/share/nsis/Contrib/Language files/Malay.nsh
+62804614e1b180840b2fd57278f90a1d  usr/share/nsis/Contrib/Language files/Mongolian.nlf
+40be83330269be4752c96564f0609c9f  usr/share/nsis/Contrib/Language files/Mongolian.nsh
+39c48814f43ea4a939c537469d0061a9  usr/share/nsis/Contrib/Language files/Norwegian.nlf
+cc974993661a73d6c812046d27f0d17a  usr/share/nsis/Contrib/Language files/Norwegian.nsh
+4e55afe9b751697386bb5128d8883e65  usr/share/nsis/Contrib/Language files/NorwegianNynorsk.nlf
+6bbdf9fa6283a35df8609624c3ae474c  usr/share/nsis/Contrib/Language files/NorwegianNynorsk.nsh
+843ed5efd83e46cfa30f2759e7d31b5e  usr/share/nsis/Contrib/Language files/Polish.nlf
+2dfe2bc35cf37a2f39788f1a5ed26359  usr/share/nsis/Contrib/Language files/Polish.nsh
+3a55cf9d7c08a62146c041ccad94396d  usr/share/nsis/Contrib/Language files/Portuguese.nlf
+675f6f80a2a1ca7c41fbeb037852c461  usr/share/nsis/Contrib/Language files/Portuguese.nsh
+91ded884aaf8f27ebdd04fab4ada0d84  usr/share/nsis/Contrib/Language files/PortugueseBR.nlf
+5e60685e478e41808c7fa0632a29a343  usr/share/nsis/Contrib/Language files/PortugueseBR.nsh
+37c8293ae23dd5896ecdbb7e3167e390  usr/share/nsis/Contrib/Language files/Romanian.nlf
+c16d848e68e1d3e1b80168afd69eab9b  usr/share/nsis/Contrib/Language files/Romanian.nsh
+508e402ce604f5b84d4c4e68edf0bce5  usr/share/nsis/Contrib/Language files/Russian.nlf
+3c76374493d04b6b2f9ad0e0020e3cf7  usr/share/nsis/Contrib/Language files/Russian.nsh
+f37fc0e0d0cd0063b3ab6fd182025e14  usr/share/nsis/Contrib/Language files/Serbian.nlf
+d8d8c19877c40a2731939dede1e250a1  usr/share/nsis/Contrib/Language files/Serbian.nsh
+e6aaaecc72e0070ee9a9d47d5f76a870  usr/share/nsis/Contrib/Language files/SerbianLatin.nlf
+b1028692a34e8a8fad79b7627af9b52c  usr/share/nsis/Contrib/Language files/SerbianLatin.nsh
+7fd10f00ebc116c10ecea7ebeb412cf3  usr/share/nsis/Contrib/Language files/SimpChinese.nlf
+782fa70ee3c0c9444743693bc5ec9515  usr/share/nsis/Contrib/Language files/SimpChinese.nsh
+27a3ab7f2a93f3cec34b19d4ff7258c7  usr/share/nsis/Contrib/Language files/Slovak.nlf
+8a72b7d4ece5e950900e205348d8090e  usr/share/nsis/Contrib/Language files/Slovak.nsh
+3a981c3db69dfe1f1fa20525db8eadec  usr/share/nsis/Contrib/Language files/Slovenian.nlf
+48710746c0ebd72496835f3ed6b540de  usr/share/nsis/Contrib/Language files/Slovenian.nsh
+01d9fd9367dee05a7192ec022be78157  usr/share/nsis/Contrib/Language files/Spanish.nlf
+6ec7f422d39666229b9b267baef4f2a6  usr/share/nsis/Contrib/Language files/Spanish.nsh
+388048c86713d3954c5908c662bc2073  usr/share/nsis/Contrib/Language files/SpanishInternational.nlf
+9eff0dc03d6a08dda9e4d4e495784122  usr/share/nsis/Contrib/Language files/SpanishInternational.nsh
+431687179def85eb841c4aa512d091b9  usr/share/nsis/Contrib/Language files/Swedish.nlf
+3ee09ab27a13cd9f89d6cf58b5ec639e  usr/share/nsis/Contrib/Language files/Swedish.nsh
+db06ff10c25b5bf28aa4f2b461cba49d  usr/share/nsis/Contrib/Language files/Thai.nlf
+450d827458d11798b072d281d8306b0d  usr/share/nsis/Contrib/Language files/Thai.nsh
+0e87d223eb5e133785e38a1649d3e210  usr/share/nsis/Contrib/Language files/TradChinese.nlf
+c00d9bad1920169b0de2ef38aa5b6c97  usr/share/nsis/Contrib/Language files/TradChinese.nsh
+57f0a401e818f627ab5ba6a49de72161  usr/share/nsis/Contrib/Language files/Turkish.nlf
+1a6901be90f5bfb50406f90207bcd0e4  usr/share/nsis/Contrib/Language files/Turkish.nsh
+77ed135df514b1197352635b9b63581c  usr/share/nsis/Contrib/Language files/Ukrainian.nlf
+f022d90a3a2d92bbc0786e2ba22f967b  usr/share/nsis/Contrib/Language files/Ukrainian.nsh
+f693cab340abb9be79d8d9064c6d6236  usr/share/nsis/Contrib/Language files/Uzbek.nlf
+a349c5c827f0b98b3ee5434ba1fbec2f  usr/share/nsis/Contrib/Language files/Uzbek.nsh
+ae20956354fd38bb21d96416bb88fde6  usr/share/nsis/Contrib/Language files/Welsh.nlf
+14c65db148b99b7522641e74e6d2a813  usr/share/nsis/Contrib/Language files/Welsh.nsh
+d8590d778df4331fa87cd2ebf70bb32a  usr/share/nsis/Contrib/Modern UI 2/Deprecated.nsh
+c67339276e53ba731ba2cdd3d5deddd2  usr/share/nsis/Contrib/Modern UI 2/Interface.nsh
+04e47f79d61ca718fddc35252908f053  usr/share/nsis/Contrib/Modern UI 2/Localization.nsh
+4174a37611eff7d5069f2aee8bf6da57  usr/share/nsis/Contrib/Modern UI 2/MUI2.nsh
+4fb6961de9747e563453d98cf5c809fd  usr/share/nsis/Contrib/Modern UI 2/Pages.nsh
+4fbfaa9933a86b57c1d4a6ce7739a19b  usr/share/nsis/Contrib/Modern UI 2/Pages/Components.nsh
+ff9a76d1bf3232c0d0a1c007a7b69e62  usr/share/nsis/Contrib/Modern UI 2/Pages/Directory.nsh
+a36133f0a0a9e52bb707102b26e08fd0  usr/share/nsis/Contrib/Modern UI 2/Pages/Finish.nsh
+e1163265afefa535ac408cd8e22d8c7d  usr/share/nsis/Contrib/Modern UI 2/Pages/InstallFiles.nsh
+484bdd9e5bc525b05ac9ced48d7f2779  usr/share/nsis/Contrib/Modern UI 2/Pages/License.nsh
+bf1436b211f2bf91d6a0bfb932d6c654  usr/share/nsis/Contrib/Modern UI 2/Pages/StartMenu.nsh
+36bfcd22bdd3318c4af753ddc30a2f43  usr/share/nsis/Contrib/Modern UI 2/Pages/UninstallConfirm.nsh
+c9add8b9677673a4abcfbdde552a16da  usr/share/nsis/Contrib/Modern UI 2/Pages/Welcome.nsh
+c18b484e9e2458b9ff7a66d9e00e8163  usr/share/nsis/Contrib/Modern UI/System.nsh
+e2d5070bc28db1ac745613689ff86067  usr/share/nsis/Contrib/Modern UI/ioSpecial.ini
+dbbed24b035867f7331e6ea9013b6001  usr/share/nsis/Contrib/UIs/default.exe
+bdb0435f06c3682cb2a133f8bc7ed1de  usr/share/nsis/Contrib/UIs/modern.exe
+e55d8e684c80fcd0061462c2a844455b  usr/share/nsis/Contrib/UIs/modern_headerbmp.exe
+3028df38acacd3ee395c63e33988d9ae  usr/share/nsis/Contrib/UIs/modern_headerbmpr.exe
+e9f4c197add43af5c79294f2756ce451  usr/share/nsis/Contrib/UIs/modern_nodesc.exe
+14aa1213558a56759b18534953955701  usr/share/nsis/Contrib/UIs/modern_smalldesc.exe
+540e55fe691d2c1a1e5b3d5e23d99da0  usr/share/nsis/Contrib/UIs/sdbarker_tiny.exe
+510d59e492e231415d2526d9c32a32c6  usr/share/nsis/Include/Colors.nsh
+5f7c210b680e8748ff0f74f3be388334  usr/share/nsis/Include/FileFunc.nsh
+7cc1b1035fabb62662f25eadfdf875c2  usr/share/nsis/Include/InstallOptions.nsh
+93978f5a4afed29fe1bd2a3ee993cd37  usr/share/nsis/Include/LangFile.nsh
+cdf7db3cc3656c87e697d95ccb45ae19  usr/share/nsis/Include/Library.nsh
+4ddde42f7de80ee965027c8f170af2dc  usr/share/nsis/Include/LogicLib.nsh
+6496d56ccae212dbdb592699e5c57667  usr/share/nsis/Include/MUI.nsh
+73fb3adae5961d56737429022f25f6a8  usr/share/nsis/Include/MUI2.nsh
+e5666ac3315b599adfc376c0b4dbb32b  usr/share/nsis/Include/Memento.nsh
+0a5234b786d49827f4fe67158c06320a  usr/share/nsis/Include/MultiUser.nsh
+7dbe3fd2885af2ff2d83c8c1639a1e5b  usr/share/nsis/Include/Sections.nsh
+913c11baa1973fb19026e01feed70925  usr/share/nsis/Include/StrFunc.nsh
+a9cf09ffeba87ab80a8a8eef3fefcf7d  usr/share/nsis/Include/TextFunc.nsh
+bc45297e86427f8731496391c6a6b122  usr/share/nsis/Include/UpgradeDLL.nsh
+b07c22a8f248f6a4717b63e9e9490a8b  usr/share/nsis/Include/Util.nsh
+bc6254355b234c95fd17b5593541c251  usr/share/nsis/Include/VB6RunTime.nsh
+1d34e4a35644cb80ac48cbc2b8906f47  usr/share/nsis/Include/VPatchLib.nsh
+1ca00e08f08ee41a23ac070e3a5288f1  usr/share/nsis/Include/Win/WinDef.nsh
+b9c7c98da39af17f45b0d7823c09c663  usr/share/nsis/Include/Win/WinError.nsh
+eace6c7b7003bbc1f7de624defc61124  usr/share/nsis/Include/Win/WinNT.nsh
+dba40abf166af31fa62438cd73166cb3  usr/share/nsis/Include/Win/WinUser.nsh
+0774ad6912625a3345768806fdd27cce  usr/share/nsis/Include/WinCore.nsh
+ec5cd908090641a33ff73b9a3fff39f7  usr/share/nsis/Include/WinMessages.nsh
+767d358777f3958367bc7d14672cb29a  usr/share/nsis/Include/WinVer.nsh
+22d6a53ecab0f93558254367a3f08613  usr/share/nsis/Include/WordFunc.nsh
+650c682fce838441f6c8fa3a87aa7010  usr/share/nsis/Include/nsDialogs.nsh
+c4a15b31bdf72d228ceffc1967b686ad  usr/share/nsis/Include/x64.nsh
+32ce478783b92e5fe40f828598745894  usr/share/nsis/Plugins/AdvSplash.dll
+d654f0fa6a6b8d620a7cc8c5f161f7e0  usr/share/nsis/Plugins/Banner.dll
+14682dedeeea94dd8b5e353a48811eb3  usr/share/nsis/Plugins/BgImage.dll
+a9e1db025e7222cd50b97d4871d751a3  usr/share/nsis/Plugins/Dialer.dll
+6de32e2d303be5e58f85a6cd4d3d10b4  usr/share/nsis/Plugins/InstallOptions.dll
+c793c94a5f00897fba4fff3da60cf6a9  usr/share/nsis/Plugins/LangDLL.dll
+dbd6b9aa992f20effd49ae22b678a6dd  usr/share/nsis/Plugins/Math.dll
+39b1dbb66aec5cf506177a209ee4597e  usr/share/nsis/Plugins/NSISdl.dll
+a98a229a08ee9a971949545c0276167e  usr/share/nsis/Plugins/Splash.dll
+3f50f3dee6c3ca66179f93f5bc4a149e  usr/share/nsis/Plugins/StartMenu.dll
+0c890419651ef7c15b7f3047b920a6fd  usr/share/nsis/Plugins/System.dll
+43359ef09c9ede4f92700d6ef0d7f093  usr/share/nsis/Plugins/TypeLib.dll
+94ef7474356aed61f7d5a5fe39c709c8  usr/share/nsis/Plugins/UserInfo.dll
+78c5a1e93cc3f8f0b13ff0310da9346d  usr/share/nsis/Plugins/VPatch.dll
+593faac267758d94554d2f0d76c78bce  usr/share/nsis/Plugins/nsDialogs.dll
+40813f8f03d14464da52317133cc660b  usr/share/nsis/Plugins/nsExec.dll
+5e0fc22eb22d023c3fe316f4e2342c61  usr/share/nsis/Stubs/bzip2
+55efeb72be447b7ae5f653ef97e994ca  usr/share/nsis/Stubs/bzip2_solid
+476a16d1ae13bcee11ec5cea6be3c95d  usr/share/nsis/Stubs/lzma
+bf3046cf31674fe38c683739c13b7202  usr/share/nsis/Stubs/lzma_solid
+4023b710d3b47d9101c27f5da22aa5ef  usr/share/nsis/Stubs/uninst
+6a284779e7290e4680342bfbc83871c7  usr/share/nsis/Stubs/zlib
+f3fdfc2c3aa19b933f70bdde477f9be3  usr/share/nsis/Stubs/zlib_solid

@@ -1,0 +1,11 @@
+Document: nsis
+Title: Debian nsis Manual
+Author: Nullsoft, Inc.
+Abstract: This manual describes what nsis is
+ and how it can be used to create Windows
+ installer programs.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/nsis/Docs/Contents.html
+Files: /usr/share/doc/nsis/Docs/*.html

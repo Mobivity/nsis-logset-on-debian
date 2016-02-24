@@ -1,0 +1,2476 @@
+NSIS Release Notes (automatically converted from AppendixF.html)
+
+2.46
+
+    Released on December 6th, 2009
+
+Minor Changes
+
+    * Fixed !searchparse (bug_#2803622)
+    * Fixed Vista error message when canceling uninstaller (bug_#2803097)
+    * Resolve warning for LogicLib's endless Do..Loop (bug_#2849872)
+    * StartMenu: fixed random number prefixes when clicking on an empty spot
+      (bug_#2810188)
+    * Updates to NSIS.pas for plug-in development (patch_#2802794)
+
+Translations
+
+    * PortugueseBR typo (patch_#2826598)
+    * Removed double spaces in Italian (bug_#2873598)
+
+Build System
+
+    * Fixed mingw builds of Math plug-in (patch_#2835731)
+
+2.45
+
+    Released on June 6th, 2009
+
+Release Notes
+
+    * Support for Microsoft's upcoming release of Windows 7 has been added
+      based on RC1 testing and documentation. Please report any related issues
+      and don't forget to use RequestExecutionLevel.
+
+Major Changes
+
+    * Added support for Windows 7 installers - use RequestExecutionLevel, just
+      like with Vista (bug_#2725883)
+    * Added WinVer.nsh Windows 7 and Windows 2008 R2 support
+    * Installers now identify as Terminal Services aware
+      (IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE) so $WINDIR will no
+      longer be under the user's profile when installing on Terminal Services
+    * Less UAC annoyance in Add/Remove control panel (bug_#2697027)
+
+Minor Changes
+
+    * Added wildcard and /nonfatal suppport for !delfile (RFE_#1505425)
+    * Fixed !searchparse (bug_#2680110)
+    * Fixed input validation for CreateFont (bug_#2801024)
+    * Fixed NSIS Menu handling of working directory (bug_#2781948)
+    * Fixed Vista issues with shell folders ($DOCUMENTS, $PROFILE, etc.) on
+      root directories (bug_#2138075)
+    * Minor documentation improvements (including bug_#2705878, bug_#2606525)
+    * Use SW_SHOWDEFAULT for ExecShell by default (bug_#2796189)
+
+Modern UI
+
+    * Call finish page show function only after the page is fully initialized
+      (bug_#2720968)
+    * Fixed translation of uninstaller directory page (bug_#2690112)
+    * Fixed installation type text position in components page (patch_#2801317)
+    * Fixed missing MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE (bug_#2788620)
+
+Translations
+
+    * Updated Indonesian (patch_#2790571)
+    * Updated Portuguese BR (patch_#2642542)
+
+Build System
+
+    * Fixed some GCC warnings
+
+2.44
+
+    Released on February 21st, 2009
+
+Major Changes
+
+    * Fixed a bug introduced in 2.43 causing script build issues with some
+      icons (bug_#2572035)
+
+Minor Changes
+
+    * Fixed nsDialogs CreateTimer documentation (bug_#2595565)
+    * Global labels didn't work when declared in unused functions (bug
+      #2593369)
+
+2.43
+
+    Released on February 5th, 2009
+
+Release Notes
+
+    * A few minor changes were made to the new plug-in API that break backward
+      compatibility. Header and library paths were changed and
+      RegisterPluginCallback has changed its return value.
+
+Minor Changes
+
+    * Added WinCore.nsh, WinDef.nsh, WinError.nsh, WinNT.nsh and WinUser.nsh
+      for more useful Windows definitions
+    * Fixed a crash caused by !packhdr compressing resources (bug_#2533431)
+    * Minor documentation improvements (including bug_#2564005)
+    * Modern_UI_2: Fixed MUI_DIRECTORYPAGE_BGCOLOR (bug_#2494528)
+
+Utilities and Plug-ins
+
+    * Banner: Fixed installer showing on the background when Banner was used in
+      .onInit
+    * MakeNSISW: Added Ctrl+K hotkey for build cancelation (RFE_#2557392)
+    * nsDialogs: Added NSD_SetIcon (patch_#2500960)
+
+Translations
+
+    * Added Esperanto
+    * Bulgarian fixes
+
+Plug-in API
+
+    * Added VS2008 project files
+    * Better installation of header and library files under POSIX - see INSTALL
+      file for more information
+    * Header and library files were moved to a subdirectory named nsis to
+      prevent collisions
+    * RegisterPluginCallback now returns int instead of BOOL for a wider range
+      of error reporting
+
+Build System
+
+    * Added fink's mingw prefixes (bug_#2495138)
+    * Fixed BOOL build issue on OS X (bug_#2497290)
+    * Fixed iconv dependency detection on OS X (bug_#2494539)
+    * Fixed Solaris builds (patch_#2497172)
+
+2.42
+
+    Released on December 20th, 2008
+
+Release Notes
+
+    * Merry Christmas and a happy Hanukkah!
+    * Plug-in developers should check out the new plug-in API in
+      Examples\Plugin and convert their plug-ins, especially in case they
+      require staying loaded.
+
+Major Changes
+
+    * Deprecated /NOUNLOAD and SetPluginsUnload to make scripts simpler and
+      safer (patch_#1912699)
+    * Useful_header_functions no longer require usage declaration and different
+      syntax for uninstaller functions
+    * Revamped plug-in API now comes in the form of pluginapi.lib, API version
+      information and more common functions (patch_#2359978)
+
+Minor Changes
+
+    * Added !searchreplace preprocessor command for compiletime text search/
+      replaces
+    * Added support for registration of EXE COM servers (RFE_#2315740)
+    * Minor documentation improvements (including bug_#2386821)
+    * nsDialogs: Added timer support (patch_#2135855)
+    * nsDialogs: Added progress bar support
+    * WinVer.nsh: Added IsServer, IsWin2003R2, IsStarterEdition,
+      OSHasMediaCenter and OSHasTabletSupport (patch by Anders)
+    * WinVer.nsh: Fixed 95/NT4 ambiguity (bug_#2053642)
+    * WinVer.nsh: Proper Windows XP x64 detection (bug_#2053700)
+    * WinVer.nsh: Windows 2008 detection support (RFE_#1949260)
+
+Translations
+
+    * Minor English grammar improvements (bug_#2323452)
+
+Build System
+
+    * Full System compatibility with GCC (patch_#2193442)
+
+2.41
+
+    Released on November 20th, 2008
+
+Minor Changes
+
+    * Fixed LangDLL memory leaks for invalid input (bug_#1939573)
+    * Fixed uninstaller generation on big-endian systems (bug_#2166401, bug
+      #2167958)
+
+Translations
+
+    * Brazilian Portuguese corrections
+    * Consistency fixes for Simple Chinese (patch_#2189117)
+
+Build System
+
+    * Added support for SCons 1.1.0
+    * Fixed directory and components page text issues on VC8 builds (patch
+      #1982084)
+    * System's Resource.dll now built from source
+
+2.40
+
+    Released on October 10th, 2008
+
+Major Changes
+
+    * Service pack macros added to WinVer in version 2.39 now work (bug
+      #2070708, patch_#2095363)
+
+Minor Changes
+
+    * Added initial folder selection option for nsDialogs::SelectFileDialog
+      (patch_#2016003)
+    * Fixed GetParameters handling of MBCS characters (bug_#2067946)
+    * Fixed incorrect ${NSD_OnBack} documentation (bug_#2059651)
+    * Modern_UI_2: Set focus to checkboxes on the finish page (bug_#2110357)
+
+Translations
+
+    * Portuguese corrections (bug_#2086988)
+    * Simplified Chinese corrections (patch_#2056906)
+
+2.39
+
+    Released on August 16th, 2008
+
+Major Changes
+
+    * Added !define /file and !searchparse (patch_#2016254)
+    * Added service pack macros (AtLeastServicePack, IsServicePack,
+      AtMostServicePack) to WinVer.nsh (patch_#2036802)
+
+Minor Changes
+
+    * Added more nsDialogs list box handling macros (patch_#2041919)
+    * Added Unicode version compatible System string type (patch_#2025721, RFE
+      #1961307)
+    * Fixed nsDialogs atom leak (bug_#2053522)
+    * Minor documentation improvements
+    * Show hand cursor for nsDialogs links (patch_#2004129)
+
+2.38
+
+    Released on July 12th, 2008
+
+Major Changes
+
+    * Fixed a bug in nsDialogs that caused it to pollute the stack if callbacks
+      are not set for each control (bug_#2013317)
+
+Minor Changes
+
+    * Added IfNotThen support for LogicLib (patch_#1990761)
+    * Added support for NTFS mounts points on the directory page (bug_#1946112)
+    * Fixed branding image control detection on Debian, due to improper
+      identification of static controls (bug_#1951417)
+    * Log actual creation of directories and not just failures and final
+      directory (patch_#1992325)
+    * Made log close when LogSet off is used (patch_#1986692)
+    * Minor documentation improvements (including bug_#1990955)
+    * MultiUser: Fixed MULTIUSER_INSTALLMODE_INSTDIR handling for the
+      uninstaller
+
+Modern UI
+
+    * Document page leave callback function (bug_#1964719)
+    * Fixed MUI_FINISHPAGE_CANCEL_ENABLED
+    * Fixed wasted variable warnings (bug_#1995024)
+
+Translations
+
+    * Fixed French translation of MUI_UNTEXT_FINISH_INFO_REBOOT (patch
+      #1967032)
+    * Removed non-ANSI characters from French display name (bug_#1979491)
+    * Updated Slovenian (patch_#2014106)
+
+2.37
+
+    Released on May 3rd, 2008
+
+Major Changes
+
+    * Fixed a bug introduced in 2.32 that caused blurry icons on Windows
+      versions prior to XP (bug_#1956350)
+    * Use $PROGRAMFILES as a default for $PROGRAMFILES64 instead of &quot;C:
+      \Program Files&quot; (bug_#1947702)
+
+Minor Changes
+
+    * Automatically select language in case there is only one available choice
+      (bug_#1939571)
+    * MultiUser: Fixed build errors with manual inclusion of StrFunc.nsh
+    * Support for compression of files up to 2GB (patch_#1948700)
+
+Utilities and Plug-ins
+
+    * Fixed ${NSD_OnBack} (bug_#1947388)
+    * Fixed nsDialogs::SelectFileDialog return value for user cancelation (bug
+      #1955803)
+    * Fixed possible BgImage crash when calling BgImage::Destroy more than once
+      (patch_#1951248)
+    * Minor documentation improvements
+
+Translation
+
+    * Brazilian Portuguese updates
+    * Polish updates (patch_#1927421)
+    * Slovak updates (patch_#1939669)
+    * Spanish updates
+
+Build System
+
+    * SCons requirement upgraded to 0.98
+
+2.36
+
+    Released on March 29th, 2008
+
+Release Notes
+
+    * nsDialogs is picking up its pace and offers lots of new macros in this
+      release. Keep the patches and requests coming!
+
+Major Changes
+
+    * nsExec: Support for x64 disabled redirection (RFE_#1778973, bug_#1889317)
+
+Modern UI
+
+    * Added missing MUI_UNFUNCTION_DESCRIPTION_BEGIN and
+      MUI_UNFUNCTION_DESCRIPTION_END
+    * Fixed start menu page setting the error flag (bug_#1891106)
+
+nsDialogs
+
+    * NSD_AddStyle and NSD_AddExStyle for easy customization (patch_#1900588)
+    * NSD_CB_AddString, NSD_CB_SelectString, NSD_LB_AddString and
+      NSD_LB_SelectString for easier handling of combo and list boxes
+    * NSD_CreateNumber and NSD_SetTextLimit for limited input fields
+    * NSD_SetImage, NSD_SetStretchedImage, NSD_ClearImage and NSD_FreeImage for
+      image handling
+    * NSD_SetState, NSD_GetState, NSD_Check and NSD_Uncheck for handling of
+      check boxes and radio buttons (patch_#1900588)
+    * NSD_SetText for easily setting control's text
+    * OnClick support for labels (bug_#1908732)
+    * Support for edit box change notification in combo box
+
+Minor Changes
+
+    * Fixed exception handling of UPX compressed icons (bug_#1896500)
+    * Fixed InstallDirRegKey example in bigtest.nsi
+    * Fixed Memento's documentation to include ${MementoSectionDone}
+    * Fixed rare decompression error with 0x4001 bytes of compressed data (bug
+      #1874297)
+    * LangFile.nsh: Added LANGFILE_INCLUDE_WITHDEFAULT to load language file
+      with defaults being obtained from a default file. This replaces the
+      LANGFILE_DEFAULT setting and makes it easier to use LangFile.nsh for
+      multiple sets of languages file without having to care about the
+      different LANGFILE_DEFAULT settings.
+    * Minor documentation improvements (including bug_#1891266, bug_#1894033,
+      bug_#1896803)
+    * MultiUser: Fixed error when a custom installation mode initialization
+      function is used only for the installer
+    * MultiUser: Fixed default installation mode based on registry key (bug
+      #1913029)
+    * MultiUser: Fixed no uninstaller handling (MULTIUSER_NOUNINSTALL)
+
+Utilities and Plug-ins
+
+    * MakeNSISW: Avoid opening executables with identical folder names when
+      opening script's folder (bug_#1891066)
+    * nsExec: Fixed return code handling so 259 won't cause an infinite loop
+      (bug_#1909458)
+    * VPatch: Added MD5 functions (RFE_#1900226)
+
+Translation
+
+    * Albanian updates (patch_#1919360)
+    * French fixes (patch_#1916564)
+    * Polish updates (patch_#1894983)
+
+Build System
+
+    * Fixed build of NSIS Menu with wxGTK (bug_#1900233)
+    * Use CRLF for DSW and DSP files to avoid corruption messages
+    * Various build fixes for GCC 4.3, amd64 and Linux in general
+
+2.35
+
+    Released on February 8th, 2008
+
+Major Changes
+
+    * Added MultiUser - installer configuration for multi-user Windows
+      environments
+    * More user friendly corrupted installer message (RFE_#1795426)
+    * Switched all examples to Modern UI 2
+
+Minor Changes
+
+    * Fixed uninitialized memory leaking into resources (bug_#1874297)
+    * Minor documentation improvements (including bug_#1861941, bug_#1883917)
+    * Modern_UI_2: Fit images in welcome/finish page by default and fix support
+      for MUI_(UN)WELCOMEFINISHPAGE_BITMAP_NOSTRETCH (bug_#1875945)
+    * Modern_UI_2: Fixed default finish page reboot selection (bug_#1864690)
+    * Modern_UI_2: Fixed MUI_STARTMENU_GETFOLDER (bug_#1864507)
+    * Modern_UI_2: Fixed unreferenced mui.StartMenuPage.Create warning (bug
+      #1861944)
+    * New simplified code for installation_of_VisualBasic_6_runtime
+    * Simplified NSIS Menu providing easier access to all documentation
+
+Utilities and Plug-ins
+
+    * Added keyboard cues support for LINK controls in nsDialogs (patch
+      #1871856)
+    * Fixed a rare nsDialogs crash on Windows 98 with non-standard builds of
+      nsDialogs (bug_#1889720)
+
+2.34
+
+    Released on December 24th, 2007
+
+Release Notes
+
+    * Thanks to user input on Modern_UI_2, it is now ready for mass consumption
+      at no better time than the holiday season. The installer for NSIS itself
+      now exploits the wonders of MUI2 and nsDialogs and so should you.
+
+Major Changes
+
+    * Modern_UI_2: Simpler code, easier to extend and makes use of the faster
+      nsDialogs
+
+Minor Changes
+
+    * Added IfNot support for LogicLib (patch_#1846785)
+    * Added some deprecation messages in MUI2 (bug_#1784470)
+    * Allow overwrite of LANGFILE_*_NAME defines in new LangFile.nsh (bug
+      #1848952)
+    * Better RTL support in instfiles and components page (bug_#1841573)
+    * Don't warn of comments containing line-continuation character when it has
+      no effect (bug_#1701051, RFE_#1686589)
+    * Fixed deletion of files with relative paths, a.k.a the EVE bug (bug
+      #1851273)
+    * Fixed input verification of GetCurInstType and GetFullPathName
+    * Fixed WordFind handling of MBCS characters (bug_#1852141)
+    * Minor documentation improvements (including bug_#1842326)
+    * Use CRLF in examples (bug_#1835866)
+
+Utilities and Plug-ins
+
+    * Added missing stack handling in nsDialogs examples
+    * Added NSD_GetState for checkboxes and radio buttons, NSD_SetFocus,
+      NSD_CreatePassword and NSD_CreateDropList (patch_#1848940)
+    * Fixed documentation of nsDialogs::SelectFolderDialog (bug_#1841120)
+    * Fixed NSD_CreateComboBox so it'd work like InstallOptions (bug_#1851136)
+
+Translations
+
+    * Bulgarian updates
+    * German fixes
+
+Build System
+
+    * Fixed build issues on Mac OS (bug_#1851365)
+    * Fixed endianity issues introduced in version 2.32 (bug_#1851365)
+
+2.33
+
+    Released on November 17th, 2007
+
+Release Notes
+
+    * This is a quick fix release for a bug, introduced in 2.32, that prevented
+      the welcome page to display properly on Windows 9x. The problem was
+      caused by the move from CVS to Subversion that messed with the line-
+      breaks format of the INI files.
+
+Major Changes
+
+    * Modern_UI: Fixed a bug, introduced in 2.32, that caused display problems
+      for the welcome and finish pages on Windows 9x (bug_#1831677)
+
+Minor Changes
+
+    * Modern_UI: Allow MUI_LANGDLL_ALLLANGUAGES to be defined after insertion
+      of MUI_LANGUAGE macro
+
+Utilities and Plug-ins
+
+    * Made nsExec's internal process always exit cleanly to avoid false return
+      values and delays (reported in the forum)
+    * nsDialogs: Added OnClick support for static controls
+    * VPatch: Fixed VPatchFile macro path handling (bug_#1829540)
+
+Translations
+
+    * Spanish updates
+
+Build System
+
+    * Separate strip options for win32 and cross-platform binaries
+
+2.32
+
+    Released on November 9th, 2007
+
+Release Notes
+
+    * Vista PNG icons are now supported without the need for any special
+      tricks.
+
+Major Changes
+
+    * Added support for mismatching installer and uninstaller icons
+    * NSIS source code is now hosted on Subversion instead of CVS
+
+Minor Changes
+
+    * Fixed synchronization that could allow the user to cause extraction
+      errors in rare cases (reported in the forum)
+    * Fixed syntax validation of Var
+    * Minor documentation improvements (including bug_#1811876, bug_#1819946)
+    * Modern_UI_2_beta: Fixed 3-line title on welcome/finish page
+    * Modern_UI_2_beta: Fixed components page description and lock
+    * Modern_UI_2_beta: Fixed default language selection from registry
+    * Modern_UI_2_beta: Fixed MUI_DIRECTORYPAGE_BGCOLOR
+
+Utilities and Plug-ins
+
+    * nsDialogs: Added link support
+
+Translations
+
+    * Bulgarian corrections
+    * Fixed Japanese and Norwegian Nynorsk MUI line breaks (bug_#1817289)
+
+Build System
+
+    * Check compiler's -m32 flag before the linker's to avoid gcc segfault
+
+2.31
+
+    Released on September 29th, 2007
+
+Release Notes
+
+    * Please continue to report any issues and suggestions regarding Modern_UI
+      2. Input for the previous version was very helpful in improving MUI2.
+
+Minor Changes
+
+    * Added BST_* definitions to WinMessages.nsh (bug_#1792422)
+    * Added SetRegView lastused
+    * Minor documentation improvements
+    * Library will now revert registry view settings (SetRegView) after it's
+      finished
+    * Modern_UI: Fixed empty welcome page with Chinese (bug_#1786899)
+    * Modern_UI: Fixed finish button text (bug_#1789492)
+    * Modern_UI: Fixed uninstaller comportments page text (bug_#1793811)
+    * Modern_UI: Fixed unused function warnings
+    * Modern_UI_2_beta: Fixed header bitmap issues, including NOSTRETCH and
+      compilation errors
+    * Modern_UI_2_beta: Fixed language selection dialog
+    * Modern_UI_2_beta: Fixed reboot finish page
+    * Modern_UI_2_beta: Fixed unloading of nsDialogs on finish page
+    * Modern_UI_2_beta: Fixed unused variable warnings
+
+Utilities and Plug-ins
+
+    * MakeNSISW: Fixed command line parsing error (bug_#1796053)
+
+Translations
+
+    * Korean corrections
+    * Persian improvements (patch_#1776386)
+    * Romanian improvements (patch_#1783853)
+
+Build System
+
+    * Fixed build failures with MinGW's GCC 4 (bug_#1800834)
+
+2.30
+
+    Released on August 25th, 2007
+
+Release Notes
+
+    * This release includes a beta of Modern_UI_2. Please report any issues and
+      suggestions.
+    * The format of Modern UI language files has been modified to better
+      support external strings. Private language files should be converted (and
+      submitted as a patch in the spirit of open source).
+
+Major Changes
+
+    * Fixed a bug introduced in version 2.29 that caused invalid $SMPROGRAMS
+      value on Windows 98 (bug_#1766268)
+    * Modern_UI_2_beta: Simpler code, easier to extend and makes use of
+      nsDialogs
+
+Minor Changes
+
+    * Added InstallOptions.nsh with relevant usage macros, based on the old
+      Modern UI macros
+    * Added LangFile.nsh allowing creation of langauge files that can be
+      included with a single command with defaults for missing strings (when
+      LANGFILE_DEFAULT is set)
+    * Added LB_ERR and CB_ERR to WinMessages.nsh (bug_#1771644)
+    * Fixed CreateDirectory logging (patch_#1768584)
+    * Fixed escaping of quotes with $\ in macros (bug_#1713708)
+    * Minor documentation improvements
+    * Modern_UI_1.80: New language files structure based on LangFile.nsh
+    * Modern_UI_1.80: MUI_LANGDLL_DISPLAY now reads previous settings on silent
+      installations as well
+    * Modern_UI_1.80: Added MUI_CUSTOMFUNCTION_MOUSEOVERSECTION (patch
+      #1762003)
+
+Utilities and Plug-ins
+
+    * Various nsDialogs improvements including RTL support, more macros in
+      nsDialogs.nsh and initial_documentation
+
+Translations
+
+    * Catalan returns
+    * Danish corrections
+    * Slovak corrections (patch_#1762627)
+
+Build System
+
+    * More HPUX fixes (bug_#1755148, bug_#1753063, bug_#1758873, patch
+      #1758863)
+    * Ignore known failing tests by default on POSIX
+
+2.29
+
+    Released on July 14th, 2007
+
+Release Notes
+
+    * The most notable addition in this release is nsDialogs - a faster and far
+      more capable replacement for InstallOptions. It allows creating controls
+      of any type directly from the script and removes the need to mess with
+      slow INI files. It integrates directly into the script by calling
+      functions for notification, including change notification for edit boxes.
+      Speak_up if you have any suggestions/comments/patches for it.
+
+Major Changes
+
+    * Added nsDialogs - a replacement for InstallOptions
+
+Minor Changes
+
+    * Disable Windows error messages for the entire installer and not just for
+      an incomplete list of fail-points (bug_#1741061)
+    * Fixed incorrect large version handling of GetFileVersion (bug_#1742255,
+      patch_#1742562)
+    * Fixed the ReverseSection macro in Sections.nsh (bug_#1742793)
+    * Minor documentation improvements
+    * Simplified REG_MULTI_SZ_reader
+    * Use SHGetFolderPath where available to better support all users' folders
+
+Utilities and Plug-ins
+
+    * Banner: Avoid possible hangs when called from page callbacks (bug
+      #1743801)
+    * NSISdl: added /TRANSLATE2 for more &quot;translator-friendly&quot;
+      strings (patch_#1656076)
+    * NSISdl: support downloads over 2gb (patch_#1723131)
+
+Translations
+
+    * Added International Spanish
+
+Build System
+
+    * Added support for HPUX (patch_#1714416)
+
+2.28
+
+    Released on June 8th, 2007
+
+Major Changes
+
+    * Added a workaround for a Windows 2000 bug that caused infinite loops when
+      hitting a key in the instilfes page (bug_#1733692)
+
+Minor Changes
+
+    * Improved compiler error strings (patch_#1722147)
+    * Modern_UI: added MUI_STARTMENUPAGE_BGCOLOR and MUI_DIRECTORYPAGE_BGCOLOR
+      (patch_#1706187)
+    * Modern_UI: added MUI_LANGDLL_ALLLANGUAGES that forces the language
+      selection dialog to display all languages (patch_#1724876)
+
+Utilities and Plug-ins
+
+    * InstallOptions: corrected documentation of TxtColor (bug_#1716614)
+    * NSISdl: added compatibility with some buggy servers that don't close the
+      connection (bug_#1713562)
+    * NSISdl: fixed 100% CPU usage during domain resolution (bug_#1713560)
+
+Translations
+
+    * Valencian and Catalan are no longer installed (patch_#1558822)
+
+Build System
+
+    * Added IGNORETESTS for ignoring certain test files
+    * Added wxWidgets to the requirement list
+    * System now builds with GCC, but without System::Get and System::Call
+      (patch_#1711089)
+
+2.27
+
+    Released on May 5th, 2007
+
+Release Notes
+
+    * This is a quick-fix release that addresses a bug introduced in the last
+      version, 2.26, that caused $PROGRAMFILES and $COMMONFILES to translate
+      into random strings in the uninstaller.
+
+Major Changes
+
+    * Fixed a bug introduced in 2.26 that made $PROGRAMFILES and $COMMONFILES
+      unavailable in the uninstaller
+
+Minor Changes
+
+    * Disable the X button on InstallOptions pages when CancelEnabled is 0
+    * Fixed incomplete MessageBox usage line (bug_#1709460)
+
+Build System
+
+    * Added TOOLSET option to allow selection of specific build tools (e.g.
+      scons TOOLSET=mingw)
+
+2.26
+
+    Released on April 27th, 2007
+
+Release Notes
+
+    * Installation on x64 systems is now fully supported with $PROGRAMFILES64,
+      SetRegView and Library's LIBRARY_X64 option.
+
+Major Changes
+
+    * Added LIBRARY_X64 option for InstallLib and UnInstallLib for installing
+      and uninstalling x64 libraries
+    * Added $PROGRAMFILES32, $PROGRAMFILES64, $COMMONFILES32 and $COMMONFILES64
+
+Minor Changes
+
+    * Added $EXEPATH and $EXEFILE
+    * Added $(^Language) language string which holds the language name (RFE
+      #1235616)
+    * Added LIBRARY_IGNORE_VERSION option for InstallLib (patch_#1699435)
+    * Added VXD support for GetDLLVersionLocal on Windows NT/2000/XP/Vista
+      (patch_#1706624)
+    * Avoid Library warning when UnInstallLib is unused (bug_#1692761)
+    * Fixed error handling of CopyFiles on Windows NT4 (bug_#774966)
+    * Fixed font name encoding broken since 2.24
+    * Fixed LogicLib duplicate labels across included files
+    * Fixed preservation of folder attributes with File/a (bug_#1699474)
+    * Improved unused variable warning (bug_#1701050)
+    * Library macros no longer require version information for DLL files on
+      POSIX
+    * Minor documentation improvements (including RFE_#971467)
+    * Modern_UI: added MUI_FINISHPAGE_CANCEL_ENABLED
+    * Modern_UI: added MUI_FINISHPAGE_REBOOTLATER_DEFAULT (RFE_#1143843)
+    * Modern_UI: block unsupported languages in the language selection dialog
+      (RFE_#1564986)
+    * Modern_UI: disable Cancel button on the finish page (bug_#1267491)
+    * Modern_UI: reduce flicker caused by MUI_HEADER_TRANSPARENT_TEXT (patch
+      #1696610)
+    * Support Quit in show_page_functions
+
+New/Changed Commands
+
+    * Added SetRegView to allow access to the x64 registry view
+    * Installer icon support for MessageBox using MB_USERICON (patch_#1682748,
+      RFE_#1530388)
+
+Utilities and Plug-ins
+
+    * InstallOptions_2.47: line breaks support in Link controls (patch
+      #1683186, RFE_#1495949), added HLine and VLine controls (patch_#1683189)
+    * MakeNSISW: fixed broken command line parameter handling introduced in the
+      last version (bug_#1696534)
+    * UserInfo: return effective user group on Vista, added
+      GetOriginalAccountType (patch_#1687456, bug_#1684777)
+
+Translations
+
+    * Added Afrikaans translation (patch_#1699558)
+    * French corrections (patch_#1676101)
+    * German corrections
+
+Build System
+
+    * Added SKIPTESTS option
+    * Avoid a lot of code warnings (bug_#1676243)
+    * Detect wxWidgets instead of assuming its existence on POSIX (bug
+      #1672315)
+    * Fixed big-endian platform support broken since 2.24
+
+2.25
+
+    Released on March 31st, 2007
+
+Major Changes
+
+    * Added Memento.nsh for easy persistency of user selections across
+      different runs of the installer (RFE_#1677624)
+    * Fixed a bug introduced in 2.24 that allowed the license page to be
+      skipped even with agreement check box or radio buttons (bug_#1664428)
+
+Minor Changes
+
+    * Added Vista manifest to StartMenu.nsi example to avoid backward
+      compatibility mode that moves shortcuts (bug_#1664957)
+    * Both dashes and slashes are supported as switch prefixes on makensis.exe
+      (bug_#1661503)
+    * Delete uninstaller temporary directory on reboot (patch_#1660626)
+    * Distribute Plug-in_example with the NSIS package and not only with the
+      source code
+    * Fixed lossy Unicode conversion of dialog template strings (bug_#1662190)
+    * Fixed Sections.nsh macros support for $0 as input (bug_#1664648)
+    * Fixed uninstallers support for the /D= command line switch
+    * Improved logging of WriteReg commands
+    * Minor documentation updates and fixes (including patch_#1662419)
+
+New/Changed Commands
+
+    * Added bitwise operators support for !define /math (RFE_#1669513)
+    * __PAGEEX__ contains the page type (patch_#1644712)
+
+Utilities and Plug-ins
+
+    * InstallOptions_2.46: Use installer's name for message boxes (bug
+      #1661677)
+    * MakeNSISW: Use Escape button to close (RFE_#1666501)
+    * Math: Removed mathcrt.lib
+    * StartMenu: Refuse empty paths (bug_#1684751)
+
+Translations
+
+    * Fixed Galician language files (bug_#1663795)
+
+Build System
+
+    * Added APPEND_LIBPATH and APPEND_CPPATH instead of the malfunctioning
+      CPPPATH and LIBPATH
+    * Added ChangeLog to source code package (patch_#1680508)
+    * Avoid some warnings on VS2005 (patch_#1667950)
+    * Fixed lzma test segfault on POSIX (bug_#1666873)
+    * More strict-aliasing compatibility (bug_#1635841)
+    * NSIS Menu finally built from source
+
+2.24
+
+    Released on February 17th, 2007
+
+Major Changes
+
+    * Library uninstall-reinstall-reboot problems workaround (bug_#1097642)
+    * Minimized number of cases where an error message appears in silent mode
+    * New compiler predefines for code_scope (patch_#1644712)
+
+Minor Changes
+
+    * Added /P_command_line_option for setting process priority of makensis
+      (patch_#1638974)
+    * Added support for 64-bit PE on POSIX to GetDLLVersionLocal (patch
+      #1643633)
+    * Append last part of InstallDir only to $INSTDIR on directory pages (bug
+      #1174184)
+    * Avoid permissions change of output files for LineFind and FileJoin (bug
+      #1631773)
+    * Fixed erroneous warnings on uninstall sections (bug_#1631889)
+    * Fixed lossy Unicode conversion in resource editor (bug_#1083492)
+    * Ignore invalid preprocessor commands in ignored block or comments
+    * Made VIAddVersionKey only query language tables instead of creating them
+      and generating warnings (bug_#1626504)
+    * Minor documentation updates and fixes (including bug_#1642107, patch
+      #1649187)
+    * Warn when continuing a comment line using backslash (bug_#1554178)
+
+New/Changed Commands
+
+    * RegDLL and UnregDLL now use LOAD_WITH_ALTERED_SEARCH_PATH, so there's no
+      need to use SetOutPath to set the working directory (bug_#1638191)
+
+Utilities and Plug-ins
+
+    * InstallOptions_2.45: Added FOCUS flag (patch_#1634704) and fixed paste
+      with ONLY_NUMBERS flag (bug_#1652075)
+    * MakeNSISW: settings in HKCU instead of HKLM (bug_#1411970) and MRU menu
+      accelerators
+
+Translations
+
+    * Added Galician translation (patch_#1631765)
+
+Build System
+
+    * Added a workaround for building on x64 POSIX platforms (bug_#1646170)
+    * Added a workaround for strict-aliasing compatibility (bug_#1635841)
+    * Added compression tests
+    * Added STRIP, APPEND_CCFLAGS and APPEND_LINKFLAGS build options
+    * Fixed SCons 0.96.94 compatibility
+
+2.23
+
+    Released on January 13th, 2007
+
+Minor Changes
+
+    * Fixed compiler crash on Mac OS X (patch_#1611866)
+    * Fixed deletion of start menu icons in NSIS installer on Vista (bug
+      #1611251)
+
+Utilities and Plug-ins
+
+    * Fixed incorrect nsExec message handling in silent mode (bug_#1605581)
+    * Fixed System crash when System::Store is called on an empty private stack
+      (bug_#1620178)
+    * Fixed System crash with parenthesis in filename (bug_#1616267)
+    * Minor VPatch documentation enhancements (patch_#1624292)
+
+Build System
+
+    * Fixed build failures on mingw32 (bug_#1610773)
+    * Fixed build problems with MSTOOLKIT=yes
+
+2.22
+
+    Released on November 27th, 2006
+
+Release Notes
+
+    * Some changes have been made to the credit and license files in order to
+      avoid copyrights and license related confusions. This does not change in
+      any way how NSIS should or could be used. NSIS itself is still licensed
+      with the permissive BSD-like zlib_license.
+    * Upgrade is recommended for early adopters of WinVer.nsh, due to a bug in
+      Windows 98 and ME detection.
+
+Minor Changes
+
+    * Fixed context menu not disappearing when moving from instfiles page (bug
+      #1115825)
+    * Fixed WinVer.nsh's detection of Windows 98 and ME (reported on the forum)
+    * Fixed WriteUninstaller failure to overwrite read-only uninstallers (bug
+      #1542530)
+    * Licensed lzma under CPL with a special_exception, instead of LGPL
+    * Minor documentation updates and fixes (including bug_#1584618, bug
+      #1589877)
+    * Updated comments in MUI examples (bug_#1595500)
+
+New/Changed Commands
+
+    * Added `highest` option for RequestExecutionLevel
+
+Translations
+
+    * Added Uzbek translation
+    * Fixed corruption in Lithuanian (bug_#1602673)
+    * Minor Breton fixes
+    * Slovenian corrections (patch_#1590108)
+
+Build System
+
+    * Added Microsoft_Visual_C++_2005_Express support
+    * SCons requirement upgraded to 0.96.93
+
+2.21
+
+    Released on October 20th, 2006
+
+Major Changes
+
+    * Added WinVer.nsh for easy Windows version comparisons
+    * Upgraded to lzma sdk 4.43 for faster compression
+
+Minor Changes
+
+    * Added Vista support to GetWindowsVersion
+    * Added x64.nsh including a few simple macros for handling x64
+      installations
+    * Fixed a handle leak in Locate
+    * Minor documentation updates and fixes
+    * Modern_UI_1.76: Added MUI_ABORTWARNING_CANCEL_DEFAULT (RFE_#1547844)
+
+New/Changed Commands
+
+    * Added RequestExecutionLevel (RFE_#1524709)
+
+Translations
+
+    * Added Valencian translation (patch_#1558822)
+    * Bulgarian corrections
+    * Slovenian corrections
+
+Build System
+
+    * SCons requirement upgraded to 0.96.92
+
+2.20
+
+    Released on September 9th, 2006
+
+Minor Changes
+
+    * Better LogicLib errors (bug_#1537976)
+    * Fixed incomplete plug-in call error messages (bug_#1535995)
+    * Fixed incorrect file timestamp querying on big-endian platforms (bug
+      #1536377)
+    * Minor documentation updates and fixes
+
+Translations
+
+    * Danish corrections (bug_#1548190)
+    * Fixed incorrectly encoded Turkish translation (bug_#1542765)
+    * French corrections
+    * Italian corrections (bug_#1546183)
+    * Spanish corrections
+    * Swedish corrections (bug_#1542680)
+    * Ukrainian corrections
+
+Build System
+
+    * Fixed NSIS_CONFIG_CONST_DATA_PATH being ignored on POSIX platforms (bug
+      #1515592)
+
+2.19
+
+    Released on August 6th, 2006
+
+Minor Changes
+
+    * Fixed !system and !packhdr failure with quoted long file names (bug
+      #1509909)
+    * Fixed build problems on 64bit platforms (bug_#1504772)
+    * Fixed negative total size for data larger than 2GB in script compilation
+      summary (bug_#1468852)
+    * Minor documentation updates and fixes
+    * Replaced IsDotNETInstalled with a simpler and better version
+
+New/Changed Commands
+
+    * Made !if compare strings case insensitively, like StrCmp and !ifdef
+
+Plug-ins
+
+    * NSISdl: fixed random DNS errors (reported_in_the_forums)
+    * System: fixed a bug that caused stack corruption and stopped the
+      installer from deleting System.dll when a function with no arguments was
+      called (bug_#1535005)
+    * System: fixed wrong return values for functions that return short or char
+      (bug_#1535007)
+
+Translations
+
+    * Added Norwegian Nynorsk translation (patch_#1503208)
+    * Fixed typos in the French translation (bug_#1531874)
+
+2.18
+
+    Released on July 1st, 2006
+
+Minor Changes
+
+    * CRC32 implementation used potentially non-32bit types (bug_#1504758)
+    * Fixed errors on multiple inclusion of useful_headers
+    * Fixed GetFileAttributes
+    * Fixed incorrect text on browse dialog with .onVerifyInstDir (bug
+      #1504297)
+    * Fixed Library's implementation on POSIX
+    * Minor documentation updates and fixes
+
+Translations
+
+    * Added Irish translation (patch_#1503639)
+    * Catalan corrections (bug_#1504104)
+    * Dutch corrections
+    * Finnish corrections (Mozilla bug #341643)
+    * Fixed Serbian grammar and typos
+    * Italian corrections (Mozilla bug #340450)
+    * Polish corrections (Mozilla bug #224532)
+    * Portuguese (Brazil) corrections (Mozilla bug #340885)
+    * Romanian corrections (Mozilla bug #340645)
+    * Thai corrections
+    * Turkish corrections (Mozilla bug #340511)
+
+2.17
+
+    Released on May 19th, 2006
+
+Minor Changes
+
+    * Fixed build failures and segfaults on PowerPC Mac OS X (bug_#1474597, bug
+      #1481044)
+    * Fixed Library's TLB version interpretation (bug_#1471341)
+    * Fixed possible stack corruption when using TypeLib.dll on an invalid TLB
+    * Fixed RMDir deletion failure of read-only folders (bug_#1481664)
+    * MakeNSISW: Fixed toolbar compressor selection menu, broken in the
+      previous version (bug_#1466486)
+    * Minor documentation improvements and fixes (including bug_#1469306, bug
+      #1491616)
+
+Translations
+
+    * Added missing Basque and Welsh files (bug_#1469471)
+    * Brazilian Portuguese updates
+    * Bulgarian fixes
+    * Fixed a typo in Hebrew translation (bug_#1474587)
+    * Icelandic fixes and improvements
+
+2.16
+
+    Released on April 7th, 2006
+
+Release Notes
+
+    * The script compiler, makensis, builds and works on big-endian platforms.
+      This change enlarges the portability range of NSIS to theoretically every
+      POSIX platform. Please report any incompatibility with specific platforms
+      or build-tools.
+    * The internal changes made to support big-endian platforms also pave the
+      road to x64 installers. There is now a central function which writes data
+      to disk. This function currently only converts the endianity of integers,
+      but it can be changed to selectively write 64-bit integers. Hopefully,
+      there'll soon be a simple method of compiling a script to both x86 and
+      x64 installers.
+    * Changing Source/exehead/fileform.h to alter the internal structure of
+      installers is no longer enough. The compiler has its own definitions of
+      the structures which must also be changed in Source/fileform.cpp. In the
+      future, fileform.cpp should be automatically generated from fileform.h,
+      but for now, the synchronization must be done manually.
+
+Major Changes
+
+    * Big-endian platforms are now fully supported by makensis
+    * Library now available on non-Windows platforms as well, although it
+      requires the installed DLL to have version information
+    * MakeNSISW_2.1: added &quot;Cancel compilation&quot; menu item
+
+New/Changed Commands
+
+    * Added /utcdate switch to !define for UTC dates (RFE_#1459210)
+
+Minor Changes
+
+    * Added an optional timestamp in the log - NSIS_CONFIG_LOG_TIMESTAMP build
+      setting (RFE_#1460586)
+    * Added NSIS_WIN32_MAKENSIS define, defined only when compiling on Windows
+    * Exported validate_filename to plug-ins
+    * Fixed a crash in CResourceEditor when adding resources to a PE that
+      already contains named resources
+    * Fixed a small resource leak in the TypeLib::GetLibVersion plug-in
+      function
+    * Fixed CResourceEditor input sanity checks
+    * Fixed incorrect FileOpen input validation (bug_#1459789)
+    * Fixed Library failure with DLLs marked as read-only
+    * Fixed lzma's POSIX implemention thread synchronization issues and
+      resource leaks
+    * Fixed makensis self-path detection on non-Windows platforms
+      (NSIS_CONFIG_CONST_DATA_PATH=no)
+    * Fixed replace_icon and and generate_uninstall_icon_data icon validation
+    * Made external CHM links safer to script exceptions (bug_#1449879)
+    * Minor documentation improvements and fixes (including bug_#1077439, bug
+      #1448374, RFE_#1464446)
+    * Modern_UI_1.75: added show function for the start menu page (RFE
+      #1448176), added MUI_HEADER_TRANSPARENT_TEXT for transparent header texts
+      (RFE_#1447766)
+    * NSISdl: better header detection for better compatibility with proxies
+      like WinProxy (bug_#1445735), fail if no headers are sent, faster
+      downloads (patch_#1465378)
+    * StartMenu: validate user input (bug_#1440636)
+
+Translations
+
+    * Added Basque translation
+    * Minor Slovenian fixes
+
+Build System
+
+    * Added code tests for CResourceEditor and CDialogTemplate
+    * Automatically pass build settings to script, eliminating the need to edit
+      build.cpp for new settings
+    * Fixed $PREFIX expansion during installation on POSIX platforms (bug
+      #1456943)
+    * Fixed CHM dependencies
+    * Fixed compatibility issue with EclipseNSIS (version wasn't prefixed with
+      'v')
+    * Fixed GCC 4.1 compatibility (patch_#1456861)
+    * Test for -Wl,-Map availability
+
+2.15
+
+    Released on March 4th, 2006
+
+New/Changed Commands
+
+    * Added !if for more complex compile-time flow control (patch_#1412982)
+    * Added /math switch to !define for simple compile-time mathematical
+      operations (patch_#1372561)
+
+Minor Changes
+
+    * Added more replacement options to WordReplace
+    * Added NSIS_CONFIG_LOG_STDOUT configuration option for logging to stdout
+    * Added path translation for !addincludedir (bug_#1431958)
+    * ConfigRead now sets the error flag, if the entry wasn't found
+    * Documented Nop
+    * Edit box in the installation directory selection page is now always LTR,
+      even for RTL languages
+    * Fixed improper iterator usage in dir_reader (bug_#1431593)
+    * Fixed MessageBoxMB_TOPMOST not showing up, if used as the first sections'
+      instruction (bug_#1400995)
+    * Fixed RMDir skipping files with names starting with two dots (bug
+      #1420657)
+    * GetOptions now sets the error flag, if the option wasn't found
+    * Made !include stop searching the include directories after a match is
+      found (bug_#1441877)
+    * Made header_functions use /NOUNLOAD for faster plug-in calls
+    * Minor documentation improvements and fixes (including bug_#1420352, bug
+      #1432423)
+    * More informative Icon error messages (bug_#1174742)
+    * New case sesnsitive functions in headers: WordFindS, WordFind2XS,
+      WordFind3XS, WordReplaceS, WordAddS, WordInsertS, StrFilterS,
+      TextCompareS, ConfigReadS, ConfigWriteS, GetOptionsS
+
+Translations
+
+    * Added proper language identifier for Breton
+    * Breton translation improvements
+    * Bulgarian translation improvements
+    * Fixed Czech grammer mistakes (patch_#1427189)
+    * Fixed Italian typo (patch_#1416988)
+    * Updated Mongolian
+
+Build System
+
+    * Fixed __BIG_ENDIAN__ definition
+    * Fixed improper handling of paths passed to the compiler (bug_#1434215)
+    * Improved GCC 4.2 compatibility (patch_#1434174)
+    * Moved NSIS_VARS_SECTION from config.h to scons
+    * Write all configuration to sconf.h instead of passing it on the command
+      line
+
+2.14
+
+    Released on January 24th, 2006
+
+Release Notes
+
+    * This release fixes a critical bug that caused installers using plug-ins
+      to fail loading on Windows 9x and NT. Upgrading from 2.13 is highly
+      recommended.
+
+Major Changes
+
+    * Fixed a bug that corrupted $TEMP under Windows 9x and NT and caused
+      InitPluginsDir to fail (bug_#1412159)
+
+Minor Changes
+
+    * Fixed a possible buffer overflow caused by long values of $0, when using
+      large NSIS_MAX_STRLEN builds (above 4096)
+
+2.13
+
+    Released on January 21st, 2006
+
+Release Notes
+
+    * Language detection has changed. The default language is now set to the
+      user's user-interface language instead of the locale language, as
+      suggested by MSDN. To restore the old behavior, use System::Call
+      &quot;kernel32::GetUserDefaultLangID()i.a&quot; in .onInit.
+
+Major Changes
+
+    * Default $LANGUAGE value is now based on user's UI language instead of
+      locale (bug_#1324734)
+
+New/Changed Commands
+
+    * Added StrCmpS for case sensitive string comparison (patch_#1381929)
+
+Minor Changes
+
+    * Added system time support to GetTime
+    * Fixed components page checkbox redraw problem under Windows 95 (bug
+      #1397031)
+    * Fixed constant maximum string length in FileRead (changed from 1024 to
+      NSIS_MAX_STRLEN)
+    * Fixed empty $INSTDIR value in directory page show callback function (bug
+      #1209843)
+    * Fixed relative jumps ignoring File/nonfatal (bug_#1299100)
+    * Fixed typo in NSIS Menu (bug_#1387748)
+    * Issue a warning when BrandingText/TRIM* actually expands the label (bug
+      #1362443)
+    * Made RMDir/r remove Unicode paths as well using short names (bug
+      #1378785)
+    * Minor documentation improvements and fixes
+
+Utilities and Plug-ins
+
+    * Fixed System plug-in documentation of callback functions (bug_#1403608)
+    * Fixed System plug-in heap corruption (bug_#1403601)
+
+Translations
+
+    * Mongolian translation improvements
+
+Build System
+
+    * Better installation under POSIX with proper ${NSISDIR} detection and
+      appropriate directory paths (/usr/bin, /usr/share/doc, etc.)
+
+2.12
+
+    Released on December 17th, 2005
+
+Major Changes
+
+    * Fixed compile-time assertion failure for big uninstallers (bug_#1380447)
+    * Tutorial enhancements (including bug_#1366431)
+
+New/Changed Commands
+
+    * Added /NONFATAL switch to !include (patch_#1372048)
+
+Minor Changes
+
+    * Clearer error message for double label definition (patch_#1374675)
+    * Fixed browsed network root directory not being accepted (bug_#1331292)
+    * Fixed incorrect CompletedText parsing (bug_#1349810)
+    * Fixed sdbarker_tiny.exe's compatibility with NSIS_CONFIG_LOG (bug
+      #1365869)
+    * Implemented nicer registry commands log (patch_#1340255)
+    * Minor documentation improvements and fixes (including patch_#1355653, bug
+      #1349810)
+    * Multi-line comments are no longer ignored inside !ifdef'd block
+
+Utilities and Plug-ins
+
+    * Added drag &amp; drop support for zip2exe
+    * Better drag &amp; drop error handling in MakeNSISw
+    * Fixed Math plug-in array issues (bug_#1235875)
+
+Translations
+
+    * Added browse button Danish translation
+    * Breton translation fixes and improvements
+    * Fixed finish button Swedish translation
+
+Build System
+
+    * Fixed endianess detection problem on POSIX platforms (bug_#1370179)
+    * Generated installers use nsis-VERSION-setup.exe template
+
+2.11
+
+    Released on November 12th, 2005
+
+Release Notes
+
+    * Rebuilding existing installers that use SetOverwriteifdiff, might falsely
+      overwrite files once
+
+Major Changes
+
+    * Added a workaround for a bug that prevented detection of some special
+      folders (e.g. $DESKTOP for all users) on Windows 9x (bug_#1008632)
+    * Fixed a crash caused by copying very long details to clipboard in the
+      installation log page (bug_#1314004)
+
+New/Changed Commands
+
+    * Added !tempfile, !delfile and !appendfile for cross-platform handling of
+      text files during compilation
+    * Fixed ChangeUI input handling (patch_#1348473)
+    * SectionIn RO is no longer case sensitive
+
+Minor Changes
+
+    * Added support URL to the NSIS package entry in the Add/Remove control
+      panel (RFE_#1349867)
+    * Fixed comment handling (patch_#1324898)
+    * Fixed duplicate RegTool test in Library
+    * Fixed invalid language selection according to $LANGUAGE in .onInit when
+      only primary language match is found (bug_#1328629)
+    * Fixed missing RegTool error after install-reboot-install-reboot sequence
+      with Library
+    * Fixed portability issues with LogicLib (bug_#1320297, patch_#1248336)
+    * Fixed SetOverwriteifdiff always overwriting on FAT file system (bug
+      #1338423)
+    * Fixed wrong size of red.bmp check box image
+    * Larger browse button for localized texts (bug_#1314682)
+    * Minor documentation improvements and fixes (including bug_#1349810)
+    * Sort language names in language selection dialog
+    * Use the temporary directory for Library temporary files, instead of the
+      possibly write-protected installation directory
+
+Utilities and Plug-ins
+
+    * Added /OEM switch for OEM to ANSI conversion in nsExec (patch_#1346737)
+    * Added /PROXY switch for manual proxy configuration in NSISdl (patch
+      #1334166)
+    * Added solid compression check box to zip2exe (patch_#1334155)
+    * Added stdin in MakeNSISw to allow xcopy to run
+    * Added timestamp handling to zip2exe (bug_#1349853)
+    * Fixed input validation of nsExec
+    * InstallOptions_2.44: Added HWND and HWND2 entries to the INI file to
+      avoid messy calculations of the correct control id
+
+Translations
+
+    * Slovenian translation fixes and improvements
+
+Build System
+
+    * Added a workaround for linking errors caused by a bad library included in
+      recent Platform SDK versions
+    * Check for and use -pthread linker flag
+    * Improved FreeBSD portability
+    * Nicer error message for SCons version older than 0.96.90
+
+2.10
+
+    Released on October 4th, 2005
+
+Major Changes
+
+    * Added auto completion to the directory page
+    * Fixed a bug, introduced in 2.09, that caused AllowRootDirInstall to fail
+    * Fixed a thread leak in the POSIX implementation of LZMA
+    * VPatch_3.1: MD5 checksums, better performance, and some bug fixes
+      (including bug_#1219806)
+
+Minor Changes
+
+    * Added rounding of required and available size on the directory page (1.59
+      => 1.6 instead of 1.5)
+    * Added WS_EX_LEFTSCROLLBAR style in RTL mode (bug_#1283528)
+    * Fixed alteration of the working directory by FileRequest in
+      InstallOptions (bug_#1287731)
+    * Fixed bad mnemonic key in MakeNSISw menu (bug_#1288159)
+    * Fixed negative size values showing up after the decimal point in the
+      directory page for very big sizes
+    * Minor documentation improvements and fixes
+    * Modern_UI_1.74: Fixed compile error when checkboxes are used on multiple
+      finish pages
+
+Translations
+
+    * Fixed a bug in Slovenian translation that caused lots of missing language
+      string warnings
+    * Fixed typos in Serbian translation
+    * Fixed typos in Thai translation
+    * Updated Simple Chinese translation
+
+Build System
+
+    * Automatic fix for VC6_SP6_compile_error
+    * Moved most of the configuration from config.h to the build system
+    * Removed all optimizations and symbol stripping in debug mode
+    * SCons requirement updated to 0.96.91
+    * VPatch can be built on POSIX as well
+
+2.09
+
+    Released on August 26th, 2005
+
+Major Changes
+
+    * Fixed a bug introduced in 2.08, that prevented uninstallers from deleting
+      $INSTDIR
+    * Fixed a bug that caused &quot;C:\ &quot; to be considered a valid
+      installation directory, even without AllowRootDirInstall
+
+New/Changed Commands
+
+    * Var can now be used in sections and functions, but only with the /GLOBAL
+      flag
+
+Minor Changes
+
+    * Applied patch_#1248335 for greater portability of examples
+    * FileFunc: workaround for GetLongPathName which is not available on
+      Windows 95 (Instructor)
+    * Fixed an unused label warning in Library
+    * Fixed duplicate label errors in LogicLib and Library when used in
+      different files (bug_#1243865)
+    * Modern_UI_1.73: fixed checkboxes on uninstaller finish page or multiple
+      finish pages
+    * WordFunc: fixed incorrect replacement of first word in WordReplace, under
+      some conditions (Instructor)
+
+Translations
+
+    * Renamed Malaysian to Malay
+    * Update Thai translation to the latest version
+    * Updated Kurdish MUI translation to the latest version
+
+Build System
+
+    * Fixed a number of build problems on POSIX platforms which caused plug-ins
+      to malfunction and installers to crash
+
+2.08
+
+    Released on July 23rd, 2005
+
+Release Notes
+
+    * The Archive has been replaced with a Wiki. The new Wiki allows everyone
+      to edit all pages so there's no longer need to hunt for the original
+      author. It also allows everyone to upload plug-ins and not just
+      administrators. And as if that's not enough, it looks better and provides
+      easier and more feature-rich syntax.
+
+Major Changes
+
+    * Added Instructor's header_files_of_useful_functions
+    * Library improvements: ordered registration after reboot, smaller RegTool
+      and separate process for each registration to avoid conflicts (thanks
+      stb)
+
+Minor Changes
+
+    * Added Bosnian and Kurdish translations
+    * Added per-user nsisconf.nsh file in %APPDATA% or $HOME, depending on the
+      platform (patch_#1223041)
+    * Documentation improvements and fixes (including bug_#1202495, bug
+      #1227610, bug_#1238686, patch_#1225167, RFE_#1240601)
+    * Fixed _?= being ignored, if the uninstaller path is not quoted and is
+      separated with only space from _?=
+    * Fixed Library failing on paths with spaces (bug_#1234283)
+    * Fixed UpgradeDLL compilation error (bug_#1230336)
+    * Improved French, Ukrainian and Luxembourgish translation
+    * Made RMDir set the error flag, if passed an invalid directory path (bug
+      #1227553)
+    * Made uninstallers copy themselves into a subdirectory of the temporary
+      directory to avoid DLLs left in the temporary directory from being loaded
+      by the uninstaller (patch_#1214319)
+    * Missing LangString warning now uses the language name, if possible
+    * zip2exe: fixed restriction of extraction path length and updated to zlib
+      1.2.3 (bug_#1226381)
+
+Build System
+
+    * Added linker script to assure correct order of sections when building
+      using GNU tools
+    * Added test target
+    * UIs are now built from source
+
+2.07
+
+    Released on June 20th, 2005
+
+Release Notes
+
+    * NSIS Update was removed and the update check was moved back to MakeNSISw
+      (Help -> NSIS Update). Use the nightly_builds to get the latest compiled
+      binaries from CVS.
+    * Solid compression is no longer the default for bzip2 and lzma, use
+      SetCompressor /SOLID bzip2 or SetCompressor /SOLID lzma for solid
+      compression.
+    * Source code is no longer supplied with the installer package. Source code
+      can be downloaded from CVS or from the download_page.
+    * The directory structure of the installation has been changed. All
+      documentation is now in the Docs folder and all examples are in the
+      Examples folder.
+
+Major Changes
+
+    * Added /SOLID switch for SetCompressor
+    * New build system (see appendix_G)
+    * Stubs (exeheads) are no longer compiled into makensis.exe, but kept in
+      the Stubs folder
+
+New/Changed Commands
+
+    * EnumRegValue sets the error flag, if the enumeration index is out of
+      range (bug_#1178756)
+    * ExpandEnvStrings now sets the error flag as the documentation states
+    * Made File /oname throw an error if the first character is a quote
+
+Minor Changes
+
+    * Added $LOCALAPPDATA (RFE_#1172123)
+    * Changed MUI dialogs charset from ANSI_CHARSET to DEFAULT_CHARSET (bug
+      #1193736, bug_#1201712)
+    * Fixed $INSTDIR changing, even if user clicked Cancel in browse dialog
+    * Fixed a crash in makensis when using WindowIcon off (bug_#1123353)
+    * Fixed Call :label in uninstall code
+    * Fixed compilation error without NSIS_CONFIG_COMPONENTPAGE
+    * Fixed compilation errors on various platforms (including patch_#1179116,
+      patch_#1193692)
+    * Fixed CreateDirectory setting the error flag for directories with two
+      consecutive backslashes (bug_#1119442)
+    * Fixed InstallLib setting the error flag for new shared libraries (bug
+      #1181951)
+    * Fixed letters case in examples (patch_#1184571)
+    * Fixed logging state being reset after the directory page (bug_#1168711)
+    * Fixed overlapping icon in welcome page (bug_#1221772)
+    * Fixed RMDir /REBOOTOK setting the reboot flag when trying to delete non-
+      existent directory (bug_#1073792)
+    * Minor documentation fixes and improvements (including bug_#1220940)
+    * Removed NSIS Update, MakeNSISw checks for new versions again
+
+Include Files
+
+    * More messages in WinMessages.nsh (Shengalts Aleksander)
+    * Some more useful macros in Colors.nsh (Joel)
+
+Utilities and Plug-ins
+
+    * Fixed halibut segfaults on PowerPC (patch_#1180886)
+    * Math: Fixed memory leak (brainsucker)
+    * zip2exe: upgraded to zlib 1.2.2
+
+Translations
+
+    * Added Malaysian translation (Azwa)
+    * Added Welsh translation (Rhoslyn Prys)
+    * Fixed Breton NLF file (credits weren't commented)
+    * Fixed duplicate accelerator in French translation (bug_#1168652)
+    * Improved French translation (bug_#1220277)
+    * Updated Russian translation (Dmitry)
+    * Updated translation credits (patch_#1223362)
+
+2.06
+
+    Released on March 19th, 2005
+
+Major Changes
+
+    * Fixed a bug, introduced in 2.05, that made components selection not
+      function properly if the first section in the script was a section group
+    * Fixed a bug, introduced in 2.05, that corrupted the state of section
+      groups inside section groups (bug_#1155836)
+
+New/Changed Commands
+
+    * Added MB_RTLREADING style to MessageBox (RFE_#1159701)
+    * All registry instructions now accept SHCTX which is replaced with HKLM or
+      HKCU on runtime according to SetShellVarContext (RFE_#1124901)
+
+Minor Changes
+
+    * Added Belarusian and Icelandic language files
+    * Added components.c to the Makefile (patch_#1123154)
+    * Added missing ClearErrors in GetWindowsVersion (bug_#1155588)
+    * Fixed a bug in install.sh that made it try to install a non existing
+      directory
+    * Fixed a bug in the Russian language file distributed with 2.05
+    * Fixed a bug that caused SetFont to not function properly with RTL
+      languages on Windows 9x (bug_#1159700)
+    * Fixed a bug, introduced in 2.05, that caused problems with InstType /
+      COMPONENTSONLYONCUSTOM (bug_#1155060)
+    * Fixed a crash caused by compiling large uninstallers (bug_#1144763)
+    * Fixed compile error without NSIS_CONFIG_CRC_SUPPORT
+    * Fixed compile errors of MinGW on POSIX for source code under Contrib
+      (patch_#1164307)
+    * Fixed plug-ins directory initialization for extremely restricted guest
+      users with no directory listing access to the temporary directory
+    * Made install.sh not use $(tempfile) and install files under /usr/share
+      instead of /lib (patch_#1120399)
+    * Minor documentation updates and fixes
+    * Updated Slovenian, Serbian and Serbian Latin language files
+
+Utilities and Plug-ins
+
+    * AdvSplash: Fixed a small memory leak (Thanks Takhir)
+    * StartMenu: Added support for SetCtlColors (RFE_#711900)
+
+2.05
+
+    Released on February 4th, 2005
+
+Release Notes
+
+    * A lot of changes were made to the behavior of sections/components and
+      related instructions. The changes were thoroughly tested, but may still
+      cause minor incompatibilities with old scripts. Please let us know if
+      your script no longer functions as expected with these changes.
+
+New/Changed Commands
+
+    * Renamed SubSection and SubSectionEnd to SectionGroup and SectionGroupEnd
+    * SectionSetFlags, when used on a section group, toggles its children too
+    * SectionSetText works better with variables (parses immediately and treats
+      an empty variable as an empty string)
+    * SetCurInstType works without the components page
+
+Minor Changes
+
+    * Added Breton translation
+    * AdvSplash: Fixed double delay time in some cases
+    * Documentation fixes and enhancements (including patch_#1098454)
+    * Fixed case sensitive name comparison with File /x, when not using
+      wildcards
+    * Fixed extraction status ending prior to 100%
+    * Fixed negative values of available space in the directory page (bug
+      #1114876)
+    * Fixed system.nsi example crash (bug_#1102255)
+    * Fixed unused label warnings with Library_macros
+    * Improved some error messages
+    * InstallOptions_2.42: Added an image displaying example, added TRANSPARENT
+      flag for BITMAP fields (RFE_#1079715 - funded by Chris Morgan)
+    * Invisible sections weren't always affected by a change of the
+      installation type (bug_#1045722)
+    * Language file fixes
+    * Made pages refresh after an aborted leave function
+    * Partially selected section groups can now be toggled
+
+2.04
+
+    Released on January 7th, 2005
+
+Major Changes
+
+    * Fixed $0 changed by File /r
+    * Fixed empty directory not included by File /r
+    * Fixed invalid directory creation by File /r on POSIX
+    * Fixed Unicode conversion problems on POSIX
+
+Minor Changes
+
+    * Added new test for dir_reader::matches
+    * Fixed LibraryLocal failure with UNC paths
+    * Fixed VC 7.1 and GCC 3.4 compile errors
+    * Language file fixes
+
+2.03
+
+    Released on December 3rd, 2004
+
+Release Notes
+
+    * If you're using File /r folder in your script, it's recommended you
+      replace it with File /r folder\* for faster compilation and so no other
+      folders named folder will be included
+    * Command line switches prefix on POSIX has changed to a dash
+    * The plug-in API change is backward compatible
+
+Major Changes
+
+    * Added another parameter to plug-in functions with a pointer to exec_flags
+      and ExecuteCodeSegment
+    * Fixed handling of absolute paths on POSIX
+    * Made RegDLL load and unload a DLL exactly once to fix crashes with COM
+      DLLs registration
+
+New/Changed Commands
+
+    * Added /date switch to !define for definition of date and time constants
+    * Added /x switch for File and ReserveFile to exclude files and directories
+    * Made File's /r switch always search in subdirectories, even if the given
+      path points to an existing directory
+
+Minor Changes
+
+    * Added LIBRARY_SHELL_EXTENSION and LIBRARY_COM to Library
+    * Added missing #include
+    * Added NSIS_LZMA_COMPRESS_WHOLE to the script define list
+    * Documentation fixes and improvements
+    * Fixed an access violation in case of a script jump beyond the last entry
+    * Fixed keyboard navigation in the instfiles page while installing
+    * Fixed unpacking window not showing when BGGradient is used
+    * Fixed unused label warning in Library.nsh
+    * Language file fixes
+    * Modern_UI_1.72: Fixed state of Cancel button on Finish page when used in
+      installer and uninstaller, added a string for
+      NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+    * nsisconf.nsh was not always parsed when compiling using MakeNSISw
+
+2.02
+
+    Released on October 23rd, 2004
+
+Major Changes
+
+    * Added lots of small usage examples to the documentation
+    * Made relative_jumps work with instructions that add multiple entries
+    * Made the datablock optimizer much faster
+    * Made the installer deny reboots while running (WM_QUERYENDSESSION)
+    * Made the Reboot command first quit and then reboot so everything is
+      always cleaned-up
+
+New/Changed Commands
+
+    * Added << and >> to IntOp
+    * Added GetErrorLevel and SetErrorLevel
+    * Fixed CopyFiles usage checking problem
+    * Made Reboot call .onRebootFailed and quit on failure instead of setting
+      the error flag
+
+Minor Changes
+
+    * Added Albanian language files
+    * Added NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE configuration option which
+      makes components only be toggled when the user clicks on the checkbox and
+      makes .onMouseOverSection only be called when the user selects a
+      component
+    * Added some CppUnit tests
+    * Both _=? and /D= now require a space before them so they can safely
+      remove the space from $CMDLINE
+    * Fixed a bug that caused the uninstaller CRC-check to fail if !packhdr
+      created a non-512-bytes-aligned exehead
+    * Fixed a compiler crash caused by using GetCurrentAddress
+    * Fixed errors when using 'File /r .' on Windows
+    * Fixed gcc 3.4 compile errors
+    * Fixed inconsistencies between error levels and the documentation
+    * Fixed some minor memory leaks
+    * Language file fixes
+    * Makefile improvements
+    * Modern_UI_1.71: Made the selected language only be saved if the
+      installation was successful
+    * Some code refactoring
+    * StrFunc: Rewrote StrSort and fixed StrStrAdv. See the readme for a
+      complete changelog
+
+Utilities and Plug-ins
+
+    * Banner: Fixed some cases where the banner would not show on the
+      foreground
+
+2.01
+
+    Released on September 24th, 2004
+
+Release Notes
+
+    * See Compiling_NSIS_Sources for information about compiling makensis on
+      POSIX platforms
+    * NSIS doesn't create installers for Linux/Mac OS X etc., but you can
+      compile Windows installers on these platforms
+    * UpgradeDLL is still provided in UpgradeDLL.nsh for backwards
+      compatibility
+
+Major Changes
+
+    * Compiler (makensis) supports POSIX platforms (Linux, *BSD, Mac OS X,
+      etc.)
+    * New_system for DLL/TLB library setup
+
+New/Changed Commands
+
+    * Added BGFont that allows setting the background text font
+    * Added SW_HIDE to ExecShell's accepted show modes
+    * RMDir can now be used with both /r and /REBOOTOK at the same time
+    * Extended maximum binary data for WriteRegBin to 3 * NSIS_MAX_STRLEN
+    * Added !execute
+
+Minor Changes
+
+    * LZMA exehead is now 34KB and should also decompress faster
+    * Windows 95 (OSR2)/98/ME no longer see drive free space capped to 2GB
+    * Modern_User_Interface: New orange theme by MoNKi
+    * Speedup background gradient painting
+    * LogicLib 2.5: Added AndIf, AndUnless, OrIf, OrUnless. Avoids unused
+      variable warnings by requiring !defines before using certain features.
+    * StrFunc: Added support for uninstaller, some fixes and improvements. See
+      the readme for a complete changelog
+    * The plug-ins folder is properly removed when the system is rebooted
+    * SetOutPath &quot;-&quot; works again
+    * Fixed a bug which made plug-ins that didn't have lower case extension not
+      be found
+    * Fixed a bug that caused directories with drives that had their current
+      directory set to an invalid directory to not be accepted in the directory
+      selection page
+    * Fixed a crash in makensis caused by defining a macro in a file included
+      by another macro
+    * makensis shows meaningful errors for compression errors instead of just
+      magic numbers
+    * Fixed a bug with AllowRootDirInstall used along with InstallDirRegKey
+      that caused the directory in the registry to be ignored
+    * Fixed FileRead setting the error flag when a null character is the first
+      character it reads
+    * Fixed a bug which caused the background gradient to paint slowly
+    * File paths relative to the root folder work again
+    * Added Colors.nsh
+    * Made Times New Roman default font for the background text because it
+      should always have support for the locale's language
+    * Fixed compilation of NSISdl under VS.NET
+    * SetCtlColors /BRANDING wasn't working right, if just one of the
+      background or text color were specified
+    * Language file fixes and improvements
+
+Utilities and Plug-ins
+
+    * System: New, hopefully more informative, documentation; fixed some bugs
+    * Banner: Added getWindow to allow greater control over the banner window
+    * InstallOptions_2.41: Bitmaps are now automatically centered, fixed a bug
+      which prevented enabling the next button from the leave function of
+      InstallOptions pages, fixed a rare freeze
+    * Zip2Exe 0.32: Fixed codepage problems
+    * nsExec: Always create a valid input handle, fixed a problem when called
+      from a path with spaces
+    * VPatch: Close all open file handles when one of them fail to open
+    * NSISdl: Added /NOIEPROXY (based on memph's code)
+
+2.0
+
+    Released on February 7th, 2004
+
+Release Notes
+
+    * Finnish, Bulgarian and Thai language files are outdated and do not
+      contain all needed translations
+
+Changes from 1.98
+
+    * Multiple_languages_in_one_installer_support (with RTL support)
+    * Easier_plug-in_system
+    * Modern_User_Interface (optional)
+    * LZMA compression which provides installers 20% smaller than bzip2
+    * Easier_paging_system (no more .onNextPage, .onPrevPage)
+    * Components are presented as a tree which allows sub components
+    * User_variables ($VARNAME)
+    * Icon and UninstallIcon support any color depth and sizes, not just
+      32x32x16
+    * CheckBitmap supports any color depth
+    * Improved large files handling
+    * License_data can be RTF
+    * CHM documentation for easy browsing
+    * Better_silent_support
+    * New include files for easier scripting: LogicLib, StrFunc and Sections
+    * Improved plug-ins: InstallOptions, NSISdl and Splash
+    * New plug-ins: AdvSplash, Banner, BgImage, Dialer, LangDLL, Math, nsExec,
+      StartMenu, System, UserInfo and VPatch
+    * New and improved utilities: MakeNSISw, NSIS Menu (NSIS.exe), NSIS Update
+      (Bin\NSIS Update.exe) and zip2exe (Bin\zip2exe.exe)
+    * New commands: !addplugindir, !echo, !ifmacrodef, !ifmacrondef, !verbose,
+      AddBrandingImage, AllowSkipFiles, ChangeUI, CheckBitmap, CreateFont,
+      DirVar, DirVerify, EnableWindow, FileBufSize, FlushINI, GetCurInstType,
+      GetDlgItem, GetInstDirError, IfAbort, IfSilent, InitPluginsDir,
+      InstTypeGetText, InstTypeSetText, LangString, LicenseBkColor,
+      LicenseForceSelection, LicenseLangString, LoadLanguageFile, LockWindow,
+      Page, PageEx, ReserveFile, SectionGetInstTypes, SectionGetSize,
+      SectionSetInstTypes, SectionSetSize, SetBrandingImage,
+      SetCompressionLevel, SetCompressor, SetCompressorDictSize, SetCtlColors,
+      SetCurInstType, SetPluginUnload, SetSilent, ShowWindow, SubSection
+      (replaced by SectionGroup), SubSectionEnd (replaced by SectionGroupEnd),
+      Var, VIAddVersionKey, VIProductVersion and XPStyle
+    * Removed commands: DirShow, DisabledBitmap, EnabledBitmap and
+      SectionDivider
+    * All this and a smaller overhead! =)
+    * A lot more... See below for more information
+
+Changes from RC4
+
+    * Command line parser ignored any switches after tokens that are not
+      switches
+    * Last part of the path specified in InstallDir was appended even if
+      selected folder name was the same
+    * Modern_UI_1.70: Improved documentation, new Init custom function for
+      Welcome and Finish page
+    * Added StrFunc by deguix
+    * Updated and fixed language files
+    * Updated, fixed and improved documentation
+
+2.0 Release Candidate 4
+
+    Released on February 2nd, 2004
+
+Major Changes
+
+    * Fixed MBCS mishandling in exehead, InstallOptions and nsExec
+
+Minor Changes
+
+    * Language files updates and fixes
+    * Fixed logging (NSIS_CONFIG_LOG)
+    * Fixed compile errors caused by removing some config.h options
+    * NSIS compiles without PSDK again
+    * Documentation fixes
+
+Utilities and Plug-ins
+
+    * NSISdl: All potential and rare crashes should be completely fixed now
+    * InstallOptions: Fixed a rare crash related to ListItems and a small
+      memory leak when using ValidateText
+
+2.0 Release Candidate 3
+
+    Released on January 26th, 2004
+
+Minor Changes
+
+    * Fixed some bugs with LZMA/bzip2 and non-solid compression
+    * Fixed a bug that caused escaping not to be ignored on extended !define
+      lines
+    * Language files updates and fixes
+    * Fixed installer crash when certain language strings were not referenced
+      in all languages
+    * Some new and improved graphics
+    * Made CreateShortcut case insensitive when parsing hot key
+    * Some documentation improvements and fix-ups
+    * Modern_UI_1.69: Made all uninstaller pages work without installer pages
+      and fixed top text on uninstaller license page
+
+Utilities and Plug-ins
+
+    * MakeNSISW: Fixed resize bug, fixed some UI issues in the settings dialog
+    * NSIS Update: Improved UI
+    * InstallOptions: Fixed minor problems with the new NOTIFY flag
+
+2.0 Release Candidate 2
+
+    Released on January 5th, 2004
+
+Minor Changes
+
+    * Set focus to the main control in each page to ease keyboard control
+      (plug-ins too)
+    * LangStrings and user variables limit is now 16383 and is enforced
+    * Fixed control colors set using SetCtlColors not changing when the system
+      colors were changed
+    * Log window now responds to the context menu key
+    * Fixed a bug which caused beeping when the space key is hit on the
+      components tree
+    * Added code to prevent weird usage of WM_COMMAND which can cause weird
+      behavior
+    * Fixed compile errors when NSIS_CONFIG_COMPONENTPAGE,
+      NSIS_CONFIG_PLUGIN_SUPPORT or NSIS_SUPPORT_HWNDS are not defined
+    * More language files updated to the latest version
+    * Fixed CHM's script errors
+    * Documentation improvements
+
+Utilities and Plug-ins
+
+    * InstallOptions_2.4: NOTIFY for link, drop list and list box; UI fixes and
+      improvements. See IO's change_log for a complete list
+    * MakeNSISW: Improved user interface, added support for named symbol sets
+      and fixed best compressor selector
+
+2.0 Release Candidate 1
+
+    Released on Decemeber 27th, 2003
+
+Release Notes
+
+    * Trying the LZMA compression method for your installer is recommended. It
+      often gives a 20% better compression ratio.
+    * Modern_UI_1.68: The setting to change the title size on the Welcome page
+      and Finish page has been changed
+
+Major Changes
+
+    * LZMA compression support. Added SetCompresssorDictSize.
+    * Modern_UI_1.68: New settings for extra space for title and text on
+      Welcome page and Finish page, improved handling of verbose settings,
+      language file string for uninstaller reboot information, more
+    * Shell folders are now detected using shell API functions and not the
+      registry. This is the recommended method by Microsoft. New constants have
+      been added in the process ($FONTS, $SENDTO and more...). See section
+      4.2.3 for more details.
+    * Added LogicLib to distribution (easier conditional execution etc.)
+    * Added DirVerify and GetInstDirError to allow custom error checking when
+      the installation directory is invalid or the drive does not have enough
+      space
+    * Support for reading environmental variables on compile time:
+      $%envVarName%
+    * Added /SD parameter for MessageBox. Allows to set default for silent
+      installers.
+    * New conditional compilation options: !ifmacrodef and !ifmacrondef.
+    * New sections macros for mutually exclusive section selection
+    * Improved RTL support by adding WS_EX_RTLREADING wherever possible
+
+Utilities and Plug-ins
+
+    * InstallOptions_2.3: Added new control type &quot;Button&quot;, added new
+      flag &quot;NOTIFY&quot;, added new flag &quot;NOWORDWRAP&quot; for multi-
+      line text boxes, reduced size down to 12K
+    * MakeNSISW: More options to set the compression method
+    * Zip2Exe 0.31: Fixed compression setting, LZMA compression support
+    * VPatch_2.1: Better error handling and exit code for GenPat
+
+2.0 Beta 4
+
+    Released on November 19th, 2003
+
+Release Notes
+
+    * The /LANG parameter is no longer available for any text setting
+      instructions. You must use a LangString if you want to make a certain
+      text multilingual. This means you can also set one text for all
+      languages. To make the license data multilingual you should use
+      LicenseLangString.
+    * Modern_UI_1.67: Because of the new syntax for pages, renaming of settings
+      and variable names etc., you have to make some changes to your scripts,
+      see the Modern_UI_Readme for details.
+    * Custom_Pages now have a leave function. As this parameter is placed
+      before the caption you have to add another &quot;&quot; empty string for
+      the title to work.
+    * .onSelChange is no longer called when the components page is created.
+    * The icons folder has been renamed to Graphics and was reorganized. If you
+      were using any files from Contrib\Icons in your script, you should update
+      it to point to the new image or icon path.
+    * UpgradeDLL has been changed, it's highly recommend that you include the
+      new version in your script using !include &quot;UpgradeDLL.nsh&quot;
+      instead of the old one.
+
+Major Changes
+
+    * CHM documentation - searchable and comes with an index
+    * User variables ($VARNAME) that can be declared with the Var command
+    * Support for all pages in both installer and uninstaller. Components,
+      directory and license pages can be used for the uninstaller
+    * Improved large files handling (way lower requirements to compile a 2GB
+      installer now)
+    * Full support for RTL languages, including support for LTR and RTL
+      languages in one installer
+    * Modern_UI_1.67: New system &amp; syntax for pages, settings (support for
+      multiple pages of the same type, page specific settings, more
+      customization options etc.), Welcome/Finish pages for uninstaller,
+      LicenseForceSelection support, new options for Finish page / language
+      selection dialog, fixes, more
+    * Extraction progress
+    * No more unprocessed strings, variables can be used everywhere
+    * Leave function for custom pages: Input on InstallOptions pages can be
+      validated using script code
+    * Interface improvements: Better ClearType support, no more flickering
+    * OnMouseOver_text is only displayed when mouse over section
+    * NLF language files (v6): language specific fonts, RTL and more strings
+    * Inner LangStrings can be used in the script
+    * No more /LANG, only LangStrings - easier to set one string to all
+      languages
+    * LangStrings are no longer installer/uninstaller specific (no un.)
+
+New/Changed Commands
+
+    * Added PageEx, PageCallbacks and DirVar - it's now a lot easier to add the
+      same page type twice
+    * Added FileBufSize
+    * Added VIAddVersionKey: add version information resource to the installer
+    * Added AllowSkipFiles: set whether the user should be able to skip a file
+      when overwriting failed
+    * Added LicenseForceSelection: checkbox or radio buttons on license page to
+      let user agree with license or not
+    * Added SectionSetSize, SectionGetSize, SetCurInstType and GetCurInstType
+    * Replaced SetBkColor with SetCtlColors which can set text color too
+    * Added IfSilent and SetSilent to allow better /S interaction
+    * Added support for standard predefines: ${__DATE__}, ${__TIME__}, $
+      {__TIMESTAMP__}, ${__FILE__}, ${__LINE__}
+    * Added ifdiff and lastusd for SetOverwrite
+    * /o Switch for Section provides ability to unselect the section by default
+    * New parameter for DirText to set the browse dialog text
+    * Added RMDir_/REBOOTOK: remove folders on reboot
+    * InstType /NOCUSTOM and /COMPONENTSONLYONCUSTOM work together
+    * Added base_dir for GetTempFileName
+
+Minor Changes
+
+    * RO sections can now be in InstTypes too (defaults to old behavior)
+    * Increased limit of InstTypes to 32
+    * Improved macros &amp; functions: UpgradeDLL, GetParent, GetParameters.
+      Using the new versions is recommended.
+    * Fixed SetOutPath not setting current directory if the directory didn't
+      exist before
+    * Components tree: fixed problems with sub-sections with RO sections as
+      children, SF_EXPAND now refreshes the components tree and added
+      SF_PSELECTED for partially selected sub-sections
+    * Improved AddBrandingImage: doesn't depend on the UI, can set image on the
+      bottom and on the right, support for custom padding value
+    * Better installation directory verification
+    * Fixed all known problems with temporary files and directories
+    * Documentation fixes
+    * Minor bug fixes
+    * Code clean-ups and some more comments
+    * More...
+
+Utilities and Plug-ins
+
+    * MakeNSISW_2.0: UI to define symbols, easy access to recent scripts,
+      toolbar and more
+    * Zip2Exe 0.3: based on header files, improved interface, Modern UI
+      support, new script code, improved folder detection
+    * InstallOptions_2.2: added LINK control, added EXTENDEDSELECT flag for
+      list boxes which replaces MULTISELECT that now acts exactly as the real
+      style flag ([double] click turns on or off selection), fixes
+    * BgImage plug-in stability fixes
+    * Added vPatch: patch generator and plug-in that applies the patches
+    * Banner plug-in improvements: responds to messages and some new /set
+      tricks by brainsucker
+    * AdvSpalsh plug-in improvements: smaller, better transparency support and
+      a possible bug fix
+    * System plug-in improvements: Unicode, GUID and COM support
+    * nsExec plug-in improvments: ability to run 16 bit code and tabs to spaces
+      conversion
+    * Math plug-in
+    * Delphi unit for NSIS plug-ins
+
+2.0 Beta 3
+
+    Released on March 16th, 2003
+
+    * Modern UI 1.63: Header bitmap support, new defines to change the
+      description area, single macro for language selection dialog, more!
+    * New tutorial in the documentation
+    * define_if_last in Page command also works when a define has not been
+      specified for all Page commands.
+      This fixes the problem with the Modern UI &quot;Click Next&quot; /
+      &quot;Click Install&quot; texts.
+    * Added SectionSetInstTypes and SectionGetInstTypes
+    * Reboot command does not force a reboot anymore (allows the user to save
+      work)
+    * !if[n]def/!else fixes
+    * LogSet on now really starts logging
+    * Cancel button available on all pages after the instfiles page but the
+      last page unless /ENABLECANCEL was used in its Page command
+    * License page: No more limit on RTF size
+    * LangDLL: Option to auto-count number of languages, shell font support
+    * Page and UninstPage can not be used inside sections/functions
+    * CreateDirectory now uses the error flag
+    * EnumRegKey/Value output_var check fixed
+    * Updated translations
+    * Dreaded BSOD after plug-ins enumeration finally banished
+    * Minimize button and BGGradient and BGImage compatibility fixes
+    * WriteINIStr with empty value works again
+    * Added FlushINI
+
+2.0 Beta 2
+
+    Released on February 26th, 2003
+
+    * NSIS Menu: links to all NSIS utilities, documentation and websites
+    * NSIS Update: check for new releases, download latest development files
+    * Dialer plugin to connect to the internet
+    * Improved filename validation
+    * VC7 compiler compatibility issues fixed
+    * CreateDirectory sets error flag
+    * InstallOptions: INI File State value fixed
+    * Updated translations
+    * Minor fixes
+
+2.0 Beta 1
+
+    Released on February 9th, 2003
+
+    * User interface improvements: better order/grouping of controls, button
+      selection problems fixed, added minimize box, transparent BrandingText
+    * LangString improvements: can be used before they have been defined,
+      warning if not present in all language tables
+    * New version of the Modern User Interface with UI improvements, bugfixes
+      and some small new features
+    * InstallOptions 2.0 with support for custom font and DPI settings,
+      groupboxes, grouped controls, lots of bugfixes etc.
+    * No more random compression ratios
+    * SetOutPath now sets the working directory
+    * File names are validated, directory given by the user will now always
+      work
+    * $QUICKLAUNCH now works with SetShellVarContext all
+    * Automatically appended directory name in the directory selection dialog
+      will no longer contain squares if not all characters are ASCII.
+    * Fixed a bug with remote drives and available space (\\remote\drive)
+    * Plug-in function's names are now case insensitive
+    * Fixed a bug with specifying Icon twice
+    * Include dirs (!addincludedir)
+    * On leave function for pages
+    * Installers can now really contain more than one branding image
+    * All !if/!else/!endif problems should be solved now
+    * SetFont &quot;MS Shell Dlg&quot; adds the DS_SHELLFONT style
+    * Win9x rename on reboot now also works when the destination file does not
+      exist
+    * DeleteRegKey works on default value
+    * nsExec can be called from an installer executed by CreateProcess
+    * WriteUninstaller sets error code
+    * Banner.dll compatible with Modern UI
+    * Fixed focus problems in MakeNSISw
+    * Updated and new translations
+    * Some new bitmaps for the MUI by Virtlink
+    * Faster and better MakeNSISw integration
+    * New_.NET_Framework_detection_function
+    * Minor bugfixes
+    * Code clean-ups (compiles on VC7)
+
+2.0 Beta 0
+
+    Released on December 6th, 2002
+
+    * New paging system
+    * Added Page and UninstPage
+    * Removed .onNextPage, .onPrevPage, .onInitDialog
+    * New easier version of the Modern User Interface with better multilanguage
+      support, InstallOptions integration, welcome and finish page etc.
+    * Custom pages no longer flicker when created
+    * Added accelerator keys
+    * Added LangString and LangStringUP for user defined multilingual strings
+    * Added support for transparent check marks
+    * Added InitPluginsDir
+    * Renamed nsisconf.nsi to nsisconf.nsh
+    * Added CreateShortcut comment/description parameter
+    * Splash.exe is now a plugin (splash.dll)
+    * Added new plugins: System, AdvSplash, nsExec, UserInfo, BgImage, Banner
+      and StartMenu
+    * !ifdef and friends can now be used in macros
+    * SendMessage can send strings (put STR: before a param) and supports
+      timeouts
+    * Right mouse button &quot;Copy to clipboard&quot; context menu for the
+      Details window
+    * Plugin syntax now requires dll name, e.g. dll::func not just func
+    * Licence text receives initial focus (page up &amp; down work immediately,
+      return key still works)
+    * Made win9x move/delete on reboot support proper and function like on
+      win2k
+    * Now always loads RichEdit v2 if present (links work on Win9x)
+    * DeleteRegKey now complains if given a third parameter (other than /
+      ifempty)
+    * RegDLL now works with DLLs dependent on DLLs from the same directory
+    * ${LANG_langName} defined as the language id when loading a NLF
+    * Fixed a few bugs that caused the installer to load slower than before
+    * Uninstall can now get command line parameters too
+    * Added ReserveFile
+    * Added ExDLL.h
+    * Included makensisw 1.9 (lots of changes)
+    * Updated InstallOptions
+    * Updated ZIP2EXE
+    * Updated HTTP download plugin, NSIS-dl (timeout added, better proxy
+      detection)
+    * A lot of new language files
+    * A lot of new icons and check marks
+    * Changed section flags values
+    * SectionSetFlags can now set bold too
+    * SectionSetFlags now works in silent installers too
+    * SectionSetName for sub sections doesn't need '-' in front of the name
+    * Added SetPluginUnload
+    * Hidden section can now use SectionIn too
+    * File /nonfatal switch added
+    * Plugins no longer add size to their containing section
+    * Defines can now be used inside define names (${bla${blo}})
+    * New docs format (WOOHA!)
+    * EXE header size a lot smaller, 33.5KB for bzip2 and 34KB for zlib
+    * Lots of other bugs fixed...
+
+2.0 Alpha 7
+
+    Released on August 29th, 2002
+
+    * Can now select the language from .onInit ($LANGUAGE is a variable)
+    * Added CreateFont
+    * Added .onMouseOverSection
+    * Added .onInitDialog and un.onInitDialog
+    * Added SetStaticBkColor
+    * Disabled UseOuterUIItem
+    * SendMessage WM_SETTEXT treats lParam as a string and not a number
+    * CopyFiles script message no longer always prints (silent)
+    * Custom install type text can now be changed
+    * ChangeUI can now change IDD_VERIFY
+    * Default license color now fits the user system
+    * Summary reports the right number of required sections
+    * Checkbox is only required in IDD_DIR if logging is enabled
+    * Not using /LANG now really causes the script compiler to use the last
+      used language
+    * Fixed a bug with MBCS and the uninstaller text
+    * MBCS to Unicode and Unicode to MBCS conversion bugs fixed
+    * Fixed a bug that caused RTF not to show on Windows 9x
+    * Added a dialog that shows up if compress whole is used and initial
+      decompressing lasts longer than a second
+    * Updated to InstallOptions 1.3
+    * MakeNSISw 1.7 included
+    * Added modern UI by Joost Verburg (Examples\Modern UI)
+    * Added new full color icons by adni18
+    * Added Dutch, Korean, Russian, Swedish and Traditional Chinese language
+      files
+    * Updated Spanish language file version (thanks to LsMoNKi)
+    * Added /TRIM(LEFT|RIGHT|CENTER) for BrandingText
+    * EXE header size down to 36.5KB
+    * Added yi-pixel.ico and yi-pixel-uninstall.ico by Jan T. Sott
+    * Fixed a bug with macros at the end of the file
+    * Sub-sections can now have defined names too
+    * Added LangDLL.dll plugin
+    * CallInstDLL /NOUNLOAD added (works on plugin calls too)
+
+2.0 Alpha 6
+
+    Released on August 10th, 2002
+
+    * Fixed two bugs with the plug-in mechanism
+    * Fixed infinite loop bug
+
+2.0 Alpha 5
+
+    Released on August 9th, 2002
+
+    * Added UseOuterUIItem
+    * Enhanced ChangeUI
+    * Enhanced SetDlgItemText
+    * Added one-section.nsi example file
+    * Optimized Ximon's code for plug-in DLLs (back to 37KB)
+    * If default user language doesn't fit exactly, will try to find primary
+      language match
+    * Fixed some strings that got replaced (space available and required etc.)
+    * Compiles without MS Platform SDK
+    * Included Spanish.nlf
+    * Included MagicLime.exe by snowchyld
+
+2.0 Alpha 4
+
+    Released on August 5th, 2002
+
+    * Added automatic detection, packing, unpacking and deletion of plugin dlls
+    * Added simplified calling syntax for plugin dlls
+    * Added PluginDir
+
+2.0 Alpha 3
+
+    Released on August 4th, 2002
+
+    * Added LoadLanguageFile
+    * Added $LANGUAGE
+    * Added /LANG option to string setters (Name, Caption, etc.)
+    * 'LogSet on' now builds a log file if not already created
+
+2.0 Alpha 2
+
+    Released on July 31st, 2002
+
+    * Added ${NSISDIR}
+    * Added XPStyle
+    * Added SetFont
+    * Added ChangeUI
+    * Added AddBrandingImage, and SetBrandingImage
+    * Added SetCompressor (no more makensis-bz2.exe)
+    * Added LicenseBkColor
+    * 'SpaceTexts none' now causes no space texts to appear
+    * Icon and UninstallIcon now support icons of any type
+    * CheckBitmap now support bitmaps with any color table/depth
+    * Unused resources are removed before writing out the installer
+    * Documented !error and !warning
+    * Added !echo and !verbose
+    * Added force option for CRCCheck
+    * Updated to Makensisw 1.6
+    * Updated to InstallOptions 1.2
+    * Installer can now be compressed using UPX
+    * A hint is shown if a line is longer than the detail window
+    * Modern style folder select dialog
+    * License data can now be RTF
+    * WindowIcon is now handled in the compiler
+    * Removed debug version (it never worked anyway)
+    * Faster compile time (WIN32_LEAN_AND_MEAN)
+
+2.0 Alpha 1
+
+    Released on July 9th, 2002
+
+    * Added expand node option to Section and SubSection
+    * Added preserve file attribute option to File command
+    * Copy-All bug fix in Makensisw
+    * Added NSISDIR to the define list
+    * Reorganized NSIS directory structure
+
+2.0 Alpha 0
+
+    Released on May 22nd, 2002
+
+    * TreeView component list (care of Jeff Doozan)
+    * No more SectionDivider, but SubSection and SubSectionEnd.
+    * No more EnabledBitmap/DisabledBitmap, just CheckBitmap. (with tons of
+      button states)
+    * Bugfixes of brokenness.
+    * Added ! for Section/SubSection to make bold.
+    * Made config.h have hacks for easier building for me. :)
+
+Older Versions
+
+    http://nsis.sourceforge.net/download/nsis1/

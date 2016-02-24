@@ -1,0 +1,3 @@
+nsis-pluginapi: arch-independent-package-contains-binary-or-object
+nsis-pluginapi: non-standard-dir-in-usr
+nsis-pluginapi: file-in-unusual-dir

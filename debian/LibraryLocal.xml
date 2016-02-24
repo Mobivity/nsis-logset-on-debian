@@ -1,0 +1,104 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY firstname "<firstname>Paul</firstname>">
+  <!ENTITY surname   "<surname>Wise</surname>">
+  <!ENTITY date      "<date>July 28, 2007</date>">
+  <!ENTITY section   "<manvolnum>1</manvolnum>">
+  <!ENTITY email     "<email>pabs@debian.org</email>">
+  <!ENTITY username  "Paul Wise">
+  <!ENTITY ucpackage "<refentrytitle>NSIS</refentrytitle>">
+  <!ENTITY package   "LibraryLocal">
+  <!ENTITY debian    "Debian (TM)">
+]>
+
+<refentry>
+  <refentryinfo>
+    <title>&package;</title>
+    <productname>&package; manual</productname>
+    <address>
+      &email;
+    </address>
+    <author>
+      &firstname;
+      &surname;
+      <contrib>Created man page</contrib>
+    </author>
+    <copyright>
+      <year>2007</year>
+      <holder>&username;</holder>
+    </copyright>
+    &date;
+  </refentryinfo>
+  <refmeta>
+    &ucpackage;
+    &section;
+  </refmeta>
+  <refnamediv>
+    <refname>&package;</refname>
+    <refpurpose>A program to get version numbers from DLL files for use with NSIS.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&package;</command>
+      <arg><option><replaceable>mode</replaceable></option></arg>
+      <arg><option><replaceable>input.dll</replaceable></option></arg>
+      <arg><option><replaceable>output.nsh</replaceable></option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>This manual page documents briefly the
+      <command>&package;</command> command.</para>
+    <para>This manual page was written for the &debian; distribution
+      because the original program does not have a manual page.</para>
+    <para><command>&package;</command> is a part of NSIS, which is a system for creating installer programs for Windows.</para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+    <para>All three arguments are required.</para>
+    <variablelist>
+      <varlistentry>
+        <term><option><replaceable>mode</replaceable></option></term>
+        <listitem>
+          <para>'D' for DLLs or 'T' for TLBs (only supported on Windows).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option><replaceable>input.dll</replaceable></option></term>
+        <listitem>
+          <para>The DLL/TLB file to get the version number from.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option><replaceable>output.nsh</replaceable></option></term>
+        <listitem>
+          <para>The name of the NSIS script file to output for use by the Library.nsh files.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>EXIT STATUS</title>
+    <variablelist>
+      <varlistentry>
+        <term>0</term>
+        <listitem>
+          <para>Success</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>1</term>
+        <listitem>
+          <para>Incorrect number of arguments</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>This manual page was written by &username; &email; for
+      the &debian; system.
+    </para>
+  </refsect1>
+</refentry>

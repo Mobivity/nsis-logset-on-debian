@@ -1,0 +1,853 @@
+Archive member included to satisfy reference by file (symbol)
+
+/usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                              /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o (__libc_csu_init)
+
+As-needed library included to satisfy reference by file (symbol)
+
+libstdc++.so.6                build/release/Library/LibraryLocal/ResourceEditor.o (__cxa_free_exception@@CXXABI_1.3)
+libgcc_s.so.1                 build/release/Library/LibraryLocal/LibraryLocal.o (_Unwind_Resume@@GCC_3.0)
+libc.so.6                     build/release/Library/LibraryLocal/util.o (fflush@@GLIBC_2.2.5)
+
+Discarded input sections
+
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/Library/LibraryLocal/LibraryLocal.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .group         0x0000000000000000        0x8 build/release/Library/LibraryLocal/ResourceEditor.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/Library/LibraryLocal/ResourceEditor.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/Library/LibraryLocal/util.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/Library/LibraryLocal/winchar.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+LOAD build/release/Library/LibraryLocal/LibraryLocal.o
+LOAD build/release/Library/LibraryLocal/ResourceEditor.o
+LOAD build/release/Library/LibraryLocal/util.o
+LOAD build/release/Library/LibraryLocal/winchar.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libstdc++.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/libm.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/libc.so
+START GROUP
+LOAD /lib/x86_64-linux-gnu/libc.so.6
+LOAD /usr/lib/x86_64-linux-gnu/libc_nonshared.a
+LOAD /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+END GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+                0x0000000000400000                PROVIDE (__executable_start, 0x400000)
+                0x0000000000400238                . = (0x400000 + SIZEOF_HEADERS)
+
+.interp         0x0000000000400238       0x1c
+ *(.interp)
+ .interp        0x0000000000400238       0x1c /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.note.ABI-tag   0x0000000000400254       0x20
+ .note.ABI-tag  0x0000000000400254       0x20 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.note.gnu.build-id
+                0x0000000000400274       0x24
+ *(.note.gnu.build-id)
+ .note.gnu.build-id
+                0x0000000000400274       0x24 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.hash
+ *(.hash)
+
+.gnu.hash       0x0000000000400298       0x68
+ *(.gnu.hash)
+ .gnu.hash      0x0000000000400298       0x68 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.dynsym         0x0000000000400300      0x8a0
+ *(.dynsym)
+ .dynsym        0x0000000000400300      0x8a0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.dynstr         0x0000000000400ba0      0x71f
+ *(.dynstr)
+ .dynstr        0x0000000000400ba0      0x71f /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version    0x00000000004012c0       0xb8
+ *(.gnu.version)
+ .gnu.version   0x00000000004012c0       0xb8 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version_d  0x0000000000401378        0x0
+ *(.gnu.version_d)
+ .gnu.version_d
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version_r  0x0000000000401378       0xd0
+ *(.gnu.version_r)
+ .gnu.version_r
+                0x0000000000401378       0xd0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.rela.dyn       0x0000000000401448       0xd8
+ *(.rela.init)
+ *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+ .rela.text     0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text.startup
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP18CResourceDirectorySaIS1_EED2Ev
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP18CResourceDataEntrySaIS1_EED2Ev
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP23CResourceDirectoryEntrySaIS1_EED2Ev
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt6vectorIP23CResourceDirectoryEntrySaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP18CResourceDirectorySaIS1_EE17_M_initialize_mapEm
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP18CResourceDataEntrySaIS1_EE17_M_initialize_mapEm
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt11_Deque_baseIP23CResourceDirectoryEntrySaIS1_EE17_M_initialize_mapEm
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt5dequeIP23CResourceDirectoryEntrySaIS1_EE16_M_push_back_auxERKS1_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt5dequeIP18CResourceDirectorySaIS1_EE17_M_reallocate_mapEmb
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt5dequeIP18CResourceDataEntrySaIS1_EE17_M_reallocate_mapEmb
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.fini)
+ *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+ .rela.rodata._ZTI15CResourceEditor
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.rodata._ZTI18CResourceDirectory
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.rodata._ZTI23CResourceDirectoryEntry
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.rodata._ZTV15CResourceEditor
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.rodata._ZTV18CResourceDirectory
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.rodata._ZTV23CResourceDirectoryEntry
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+ *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+ *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+ *(.rela.ctors)
+ *(.rela.dtors)
+ *(.rela.got)
+ .rela.got      0x0000000000401448       0x18 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+ .rela.bss      0x0000000000401460       0xc0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.ldata .rela.ldata.* .rela.gnu.linkonce.l.*)
+ *(.rela.lbss .rela.lbss.* .rela.gnu.linkonce.lb.*)
+ *(.rela.lrodata .rela.lrodata.* .rela.gnu.linkonce.lr.*)
+ *(.rela.ifunc)
+ .rela.eh_frame
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.gcc_except_table
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.rela.plt       0x0000000000401520      0x720
+ *(.rela.plt)
+ .rela.plt      0x0000000000401520      0x720 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401c40                PROVIDE (__rela_iplt_start, .)
+ *(.rela.iplt)
+ .rela.iplt     0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401c40                PROVIDE (__rela_iplt_end, .)
+
+.init           0x0000000000401c40       0x1a
+ *(SORT(.init))
+ .init          0x0000000000401c40       0x15 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+                0x0000000000401c40                _init
+ .init          0x0000000000401c55        0x5 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+.plt            0x0000000000401c60      0x4d0
+ *(.plt)
+ .plt           0x0000000000401c60      0x4d0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401c70                std::basic_ifstream<char, std::char_traits<char> >::close()@@GLIBCXX_3.4
+                0x0000000000401c80                memset@@GLIBC_2.2.5
+                0x0000000000401c90                ftell@@GLIBC_2.2.5
+                0x0000000000401ca0                std::string::assign(char const*)@@GLIBCXX_3.4
+                0x0000000000401cc0                operator new[](unsigned long)@@GLIBCXX_3.4
+                0x0000000000401cd0                fseek@@GLIBC_2.2.5
+                0x0000000000401ce0                std::string::_Rep::_M_dispose(std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401cf0                __cxa_rethrow@@CXXABI_1.3
+                0x0000000000401d00                std::ios_base::Init::Init()@@GLIBCXX_3.4
+                0x0000000000401d10                malloc@@GLIBC_2.2.5
+                0x0000000000401d20                fopen@@GLIBC_2.2.5
+                0x0000000000401d30                __libc_start_main@@GLIBC_2.2.5
+                0x0000000000401d40                system@@GLIBC_2.2.5
+                0x0000000000401d50                std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&)@@GLIBCXX_3.4
+                0x0000000000401d60                __cxa_atexit@@GLIBC_2.2.5
+                0x0000000000401d70                std::runtime_error::runtime_error(std::string const&)@@GLIBCXX_3.4
+                0x0000000000401d80                std::__throw_out_of_range(char const*)@@GLIBCXX_3.4
+                0x0000000000401d90                __vsnprintf_chk@@GLIBC_2.3.4
+                0x0000000000401da0                std::ios_base::Init::~Init()@@GLIBCXX_3.4
+                0x0000000000401db0                iconv_open@@GLIBC_2.2.5
+                0x0000000000401dc0                std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)@@GLIBCXX_3.4
+                0x0000000000401dd0                std::string::rfind(char const*, unsigned long, unsigned long) const@@GLIBCXX_3.4
+                0x0000000000401de0                free@@GLIBC_2.2.5
+                0x0000000000401df0                _IO_getc@@GLIBC_2.2.5
+                0x0000000000401e00                strlen@@GLIBC_2.2.5
+                0x0000000000401e10                std::string::_Rep::_M_destroy(std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401e20                __ctype_get_mb_cur_max@@GLIBC_2.2.5
+                0x0000000000401e30                std::bad_alloc::~bad_alloc()@@GLIBCXX_3.4
+                0x0000000000401e40                realpath@@GLIBC_2.3
+                0x0000000000401e50                fgetc@@GLIBC_2.2.5
+                0x0000000000401e60                iconv@@GLIBC_2.2.5
+                0x0000000000401e70                std::string::compare(char const*) const@@GLIBCXX_3.4
+                0x0000000000401e80                std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401e90                std::basic_ifstream<char, std::char_traits<char> >::~basic_ifstream()@@GLIBCXX_3.4
+                0x0000000000401ea0                __cxa_call_unexpected@@CXXABI_1.3
+                0x0000000000401eb0                strtol@@GLIBC_2.2.5
+                0x0000000000401ec0                readlink@@GLIBC_2.2.5
+                0x0000000000401ed0                std::basic_ofstream<char, std::char_traits<char> >::~basic_ofstream()@@GLIBCXX_3.4
+                0x0000000000401ee0                mblen@@GLIBC_2.2.5
+                0x0000000000401ef0                std::basic_ofstream<char, std::char_traits<char> >::close()@@GLIBCXX_3.4
+                0x0000000000401f00                memmove@@GLIBC_2.2.5
+                0x0000000000401f10                fread@@GLIBC_2.2.5
+                0x0000000000401f20                getenv@@GLIBC_2.2.5
+                0x0000000000401f30                strdup@@GLIBC_2.2.5
+                0x0000000000401f40                __stack_chk_fail@@GLIBC_2.4
+                0x0000000000401f50                strcmp@@GLIBC_2.2.5
+                0x0000000000401f60                tolower@@GLIBC_2.2.5
+                0x0000000000401f70                __cxa_allocate_exception@@CXXABI_1.3
+                0x0000000000401f80                __cxa_free_exception@@CXXABI_1.3
+                0x0000000000401f90                strcpy@@GLIBC_2.2.5
+                0x0000000000401fa0                std::runtime_error::~runtime_error()@@GLIBCXX_3.4
+                0x0000000000401fb0                std::basic_ifstream<char, std::char_traits<char> >::basic_ifstream(char const*, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000401fc0                __cxa_throw@@CXXABI_1.3
+                0x0000000000401fd0                fclose@@GLIBC_2.2.5
+                0x0000000000401fe0                std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)@@GLIBCXX_3.4.9
+                0x0000000000401ff0                std::basic_ofstream<char, std::char_traits<char> >::basic_ofstream(char const*, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000402000                __cxa_end_catch@@CXXABI_1.3
+                0x0000000000402010                std::__throw_bad_alloc()@@GLIBCXX_3.4
+                0x0000000000402020                __snprintf_chk@@GLIBC_2.3.4
+                0x0000000000402030                std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&)@@GLIBCXX_3.4
+                0x0000000000402040                __cxa_begin_catch@@CXXABI_1.3
+                0x0000000000402050                fwrite@@GLIBC_2.2.5
+                0x0000000000402060                realloc@@GLIBC_2.2.5
+                0x0000000000402070                setlocale@@GLIBC_2.2.5
+                0x0000000000402080                __gxx_personality_v0@@CXXABI_1.3
+                0x0000000000402090                std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&, unsigned long, unsigned long)@@GLIBCXX_3.4
+                0x00000000004020a0                _Unwind_Resume@@GCC_3.0
+                0x00000000004020b0                strftime@@GLIBC_2.2.5
+                0x00000000004020c0                pathconf@@GLIBC_2.2.5
+                0x00000000004020d0                std::__basic_file<char>::is_open() const@@GLIBCXX_3.4
+                0x00000000004020e0                std::string::_M_leak_hard()@@GLIBCXX_3.4
+                0x00000000004020f0                memcpy@@GLIBC_2.14
+                0x0000000000402100                __open_2@@GLIBC_2.7
+                0x0000000000402110                iconv_close@@GLIBC_2.2.5
+                0x0000000000402120                fflush@@GLIBC_2.2.5
+ *(.iplt)
+ .iplt          0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.text           0x0000000000402130     0x5b42
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ .text.startup  0x0000000000402130      0x2e5 build/release/Library/LibraryLocal/LibraryLocal.o
+                0x0000000000402130                main
+ *(.text.hot .text.hot.*)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x0000000000402415       0x2a /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000402415                _start
+ .text          0x000000000040243f        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ *fill*         0x000000000040243f        0x1 
+ .text          0x0000000000402440       0xbd /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ *fill*         0x00000000004024fd        0x3 
+ .text          0x0000000000402500        0x3 build/release/Library/LibraryLocal/LibraryLocal.o
+                0x0000000000402500                GetTLBVersion(std::string&, unsigned int&, unsigned int&)
+ *fill*         0x0000000000402503        0xd 
+ .text          0x0000000000402510     0x3557 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000402510                CResourceDirectory::~CResourceDirectory()
+                0x0000000000402510                CResourceDirectory::~CResourceDirectory()
+                0x0000000000402530                CResourceDirectory::~CResourceDirectory()
+                0x0000000000402560                CResourceDirectoryEntry::~CResourceDirectoryEntry()
+                0x0000000000402560                CResourceDirectoryEntry::~CResourceDirectoryEntry()
+                0x0000000000402590                CResourceDirectoryEntry::~CResourceDirectoryEntry()
+                0x00000000004025e0                CResourceEditor::GetNTHeaders(unsigned char*)
+                0x0000000000402710                CResourceEditor::GetResourceDirectory(unsigned char*, unsigned int, _IMAGE_NT_HEADERS*, unsigned int*, unsigned int*)
+                0x0000000000402990                CResourceEditor::FreeResource(unsigned char*)
+                0x00000000004029b0                CResourceEditor::AddExtraVirtualSize2PESection(char const*, int)
+                0x0000000000402b10                CResourceEditor::SetOffsets(CResourceDirectory*, unsigned long)
+                0x0000000000402c30                CResourceEditor::AdjustVA(unsigned int, unsigned int)
+                0x0000000000402c40                CResourceEditor::AlignVA(unsigned int)
+                0x0000000000402c60                CResourceDirectory::CResourceDirectory(_IMAGE_RESOURCE_DIRECTORY*)
+                0x0000000000402c60                CResourceDirectory::CResourceDirectory(_IMAGE_RESOURCE_DIRECTORY*)
+                0x0000000000402ca0                CResourceDirectory::GetInfo()
+                0x0000000000402cb0                CResourceDirectory::GetEntry(unsigned int)
+                0x0000000000402ce0                CResourceDirectory::RemoveEntry(int)
+                0x0000000000402d80                CResourceDirectory::CountEntries()
+                0x0000000000402d90                CResourceDirectory::Find(unsigned short)
+                0x0000000000402de0                CResourceDirectory::Find(unsigned short*)
+                0x0000000000402ec0                CResourceEditor::GetResourceSizeW(unsigned short*, unsigned short*, unsigned short)
+                0x0000000000402fe0                CResourceEditor::GetResourceSizeA(char*, char*, unsigned short)
+                0x00000000004030b0                CResourceEditor::GetResourceOffsetW(unsigned short*, unsigned short*, unsigned short)
+                0x00000000004031d0                CResourceEditor::GetResourceOffsetA(char*, char*, unsigned short)
+                0x00000000004032a0                CResourceEditor::GetResourceW(unsigned short*, unsigned short*, unsigned short)
+                0x0000000000403470                CResourceEditor::GetResourceA(char*, char*, unsigned short)
+                0x0000000000403540                CResourceDirectory::GetSize()
+                0x0000000000403600                CResourceDirectory::Destroy()
+                0x00000000004036d0                CResourceEditor::~CResourceEditor()
+                0x00000000004036d0                CResourceEditor::~CResourceEditor()
+                0x0000000000403710                CResourceEditor::~CResourceEditor()
+                0x0000000000403730                CResourceDirectoryEntry::CResourceDirectoryEntry(unsigned short*, CResourceDirectory*)
+                0x0000000000403730                CResourceDirectoryEntry::CResourceDirectoryEntry(unsigned short*, CResourceDirectory*)
+                0x0000000000403790                CResourceDirectoryEntry::CResourceDirectoryEntry(unsigned short*, CResourceDataEntry*)
+                0x0000000000403790                CResourceDirectoryEntry::CResourceDirectoryEntry(unsigned short*, CResourceDataEntry*)
+                0x00000000004037f0                CResourceDirectoryEntry::HasName()
+                0x0000000000403800                CResourceDirectoryEntry::GetName()
+                0x0000000000403820                CResourceDirectoryEntry::GetNameLength()
+                0x0000000000403840                CResourceDirectoryEntry::GetId()
+                0x0000000000403850                CResourceDirectoryEntry::IsDataDirectory()
+                0x0000000000403860                CResourceDirectoryEntry::GetSubDirectory()
+                0x0000000000403880                CResourceDirectoryEntry::GetDataEntry()
+                0x00000000004038a0                CResourceDataEntry::~CResourceDataEntry()
+                0x00000000004038a0                CResourceDataEntry::~CResourceDataEntry()
+                0x00000000004038c0                CResourceDataEntry::GetData()
+                0x00000000004038d0                CResourceDataEntry::SetData(unsigned char*, unsigned int, unsigned int)
+                0x0000000000403930                CResourceDataEntry::CResourceDataEntry(unsigned char*, unsigned int, unsigned int, unsigned int)
+                0x0000000000403930                CResourceDataEntry::CResourceDataEntry(unsigned char*, unsigned int, unsigned int, unsigned int)
+                0x0000000000403960                CResourceDataEntry::SetData(unsigned char*, unsigned int)
+                0x0000000000403970                CResourceDataEntry::GetSize()
+                0x0000000000403980                CResourceDataEntry::GetCodePage()
+                0x0000000000403990                CResourceDataEntry::GetOffset()
+                0x00000000004039a0                CResourceDirectory::AddEntry(CResourceDirectoryEntry*)
+                0x0000000000403b80                CResourceEditor::UpdateResourceW(unsigned short*, unsigned short*, unsigned short, unsigned char*, unsigned int)
+                0x0000000000403fa0                CResourceEditor::UpdateResourceW(unsigned short, unsigned short*, unsigned short, unsigned char*, unsigned int)
+                0x0000000000403fb0                CResourceEditor::UpdateResourceW(unsigned short*, unsigned short, unsigned short, unsigned char*, unsigned int)
+                0x0000000000403fc0                CResourceEditor::UpdateResourceA(char*, char*, unsigned short, unsigned char*, unsigned int)
+                0x00000000004040b0                CResourceEditor::UpdateResourceA(unsigned short, char*, unsigned short, unsigned char*, unsigned int)
+                0x00000000004040c0                CResourceEditor::UpdateResourceA(char*, unsigned short, unsigned short, unsigned char*, unsigned int)
+                0x00000000004040d0                CResourceEditor::UpdateResource(unsigned short, unsigned short, unsigned short, unsigned char*, unsigned int)
+                0x00000000004040e0                CResourceEditor::ScanDirectory(RESOURCE_DIRECTORY*, RESOURCE_DIRECTORY*)
+                0x0000000000404420                CResourceEditor::CResourceEditor(unsigned char*, int, bool)
+                0x0000000000404420                CResourceEditor::CResourceEditor(unsigned char*, int, bool)
+                0x0000000000404480                CResourceEditor::WriteRsrcSec(unsigned char*)
+                0x00000000004056c0                CResourceEditor::Save(unsigned char*, unsigned int&)
+ *fill*         0x0000000000405a67        0x9 
+ .text._ZNSt11_Deque_baseIP18CResourceDirectorySaIS1_EED2Ev
+                0x0000000000405a70       0x55 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405a70                std::_Deque_base<CResourceDirectory*, std::allocator<CResourceDirectory*> >::~_Deque_base()
+                0x0000000000405a70                std::_Deque_base<CResourceDirectory*, std::allocator<CResourceDirectory*> >::~_Deque_base()
+ *fill*         0x0000000000405ac5        0xb 
+ .text._ZNSt11_Deque_baseIP18CResourceDataEntrySaIS1_EED2Ev
+                0x0000000000405ad0       0x55 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405ad0                std::_Deque_base<CResourceDataEntry*, std::allocator<CResourceDataEntry*> >::~_Deque_base()
+                0x0000000000405ad0                std::_Deque_base<CResourceDataEntry*, std::allocator<CResourceDataEntry*> >::~_Deque_base()
+ *fill*         0x0000000000405b25        0xb 
+ .text._ZNSt11_Deque_baseIP23CResourceDirectoryEntrySaIS1_EED2Ev
+                0x0000000000405b30       0x55 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405b30                std::_Deque_base<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> >::~_Deque_base()
+                0x0000000000405b30                std::_Deque_base<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> >::~_Deque_base()
+ *fill*         0x0000000000405b85        0xb 
+ .text._ZNSt6vectorIP23CResourceDirectoryEntrySaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_
+                0x0000000000405b90      0x19a build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405b90                std::vector<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> >::_M_insert_aux(__gnu_cxx::__normal_iterator<CResourceDirectoryEntry**, std::vector<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> > >, CResourceDirectoryEntry* const&)
+ *fill*         0x0000000000405d2a        0x6 
+ .text._ZNSt11_Deque_baseIP18CResourceDirectorySaIS1_EE17_M_initialize_mapEm
+                0x0000000000405d30      0x12c build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405d30                std::_Deque_base<CResourceDirectory*, std::allocator<CResourceDirectory*> >::_M_initialize_map(unsigned long)
+ *fill*         0x0000000000405e5c        0x4 
+ .text._ZNSt11_Deque_baseIP18CResourceDataEntrySaIS1_EE17_M_initialize_mapEm
+                0x0000000000405e60      0x12c build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405e60                std::_Deque_base<CResourceDataEntry*, std::allocator<CResourceDataEntry*> >::_M_initialize_map(unsigned long)
+ *fill*         0x0000000000405f8c        0x4 
+ .text._ZNSt11_Deque_baseIP23CResourceDirectoryEntrySaIS1_EE17_M_initialize_mapEm
+                0x0000000000405f90      0x12c build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000405f90                std::_Deque_base<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> >::_M_initialize_map(unsigned long)
+ *fill*         0x00000000004060bc        0x4 
+ .text._ZNSt5dequeIP23CResourceDirectoryEntrySaIS1_EE16_M_push_back_auxERKS1_
+                0x00000000004060c0      0x1db build/release/Library/LibraryLocal/ResourceEditor.o
+                0x00000000004060c0                std::deque<CResourceDirectoryEntry*, std::allocator<CResourceDirectoryEntry*> >::_M_push_back_aux(CResourceDirectoryEntry* const&)
+ *fill*         0x000000000040629b        0x5 
+ .text._ZNSt5dequeIP18CResourceDirectorySaIS1_EE17_M_reallocate_mapEmb
+                0x00000000004062a0      0x190 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x00000000004062a0                std::deque<CResourceDirectory*, std::allocator<CResourceDirectory*> >::_M_reallocate_map(unsigned long, bool)
+ .text._ZNSt5dequeIP18CResourceDataEntrySaIS1_EE17_M_reallocate_mapEmb
+                0x0000000000406430      0x190 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000406430                std::deque<CResourceDataEntry*, std::allocator<CResourceDataEntry*> >::_M_reallocate_map(unsigned long, bool)
+ .text          0x00000000004065c0     0x1212 build/release/Library/LibraryLocal/util.o
+                0x00000000004065c0                dopause()
+                0x0000000000406630                CharNext(char const*)
+                0x0000000000406670                CharPrev(char const*, char const*)
+                0x00000000004066c0                CharNextExA(unsigned short, char const*, int)
+                0x0000000000406760                wsprintf(char*, char const*, ...)
+                0x0000000000406810                WideCharToMultiByte(unsigned int, unsigned int, unsigned short const*, int, char*, int, char const*, int*)
+                0x0000000000406960                MultiByteToWideChar(unsigned int, unsigned int, char const*, int, unsigned short*, int)
+                0x0000000000406ab0                IsValidCodePage(unsigned int)
+                0x0000000000406b40                my_convert(char const*)
+                0x0000000000406c00                my_convert_free(char*)
+                0x0000000000406c10                my_open(char const*, int)
+                0x0000000000406c40                my_fopen(char const*, char const*)
+                0x0000000000406c80                update_bitmap(CResourceEditor*, unsigned short, char const*, int, int, int)
+                0x0000000000406ec0                operator new(unsigned long)
+                0x0000000000406f10                operator delete(void*)
+                0x0000000000406f30                operator delete[](void*)
+                0x0000000000406f50                my_strftime(char*, unsigned long, char const*, tm const*)
+                0x0000000000406f60                get_full_path(std::string const&)
+                0x0000000000407060                get_string_prefix(std::string const&, std::string const&)
+                0x00000000004070c0                get_string_suffix(std::string const&, std::string const&)
+                0x0000000000407140                get_dir_name(std::string const&)
+                0x00000000004071e0                get_file_name(std::string const&)
+                0x0000000000407280                get_executable_path(char const*)
+                0x0000000000407430                get_executable_dir(char const*)
+                0x00000000004074c0                remove_file_extension(std::string const&)
+                0x0000000000407560                lowercase(std::string const&)
+                0x00000000004075f0                sane_system(char const*)
+                0x0000000000407600                GetDLLVersion(std::string const&, unsigned int&, unsigned int&)
+ *fill*         0x00000000004077d2        0xe 
+ .text          0x00000000004077e0      0x418 build/release/Library/LibraryLocal/winchar.o
+                0x00000000004077e0                winchar_fromansi(char const*, unsigned int)
+                0x0000000000407920                winchar_toansi(unsigned short const*, unsigned int)
+                0x0000000000407a60                winchar_strcpy(unsigned short*, unsigned short const*)
+                0x0000000000407a90                winchar_strncpy(unsigned short*, unsigned short const*, unsigned long)
+                0x0000000000407af0                winchar_strlen(unsigned short const*)
+                0x0000000000407b10                winchar_strdup(unsigned short const*)
+                0x0000000000407b90                winchar_strcmp(unsigned short const*, unsigned short const*)
+                0x0000000000407bc0                winchar_stoi(unsigned short const*)
+ *fill*         0x0000000000407bf8        0x8 
+ .text          0x0000000000407c00       0x72 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                0x0000000000407c00                __libc_csu_init
+                0x0000000000407c70                __libc_csu_fini
+ .text          0x0000000000407c72        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .text          0x0000000000407c72        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ *(.gnu.warning)
+
+.fini           0x0000000000407c74        0x9
+ *(SORT(.fini))
+ .fini          0x0000000000407c74        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+                0x0000000000407c74                _fini
+ .fini          0x0000000000407c78        0x5 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+                0x0000000000407c7d                PROVIDE (__etext, .)
+                0x0000000000407c7d                PROVIDE (_etext, .)
+                0x0000000000407c7d                PROVIDE (etext, .)
+
+.rodata         0x0000000000407c80      0x3b4
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.cst4   0x0000000000407c80        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000407c80                _IO_stdin_used
+ .rodata.str1.1
+                0x0000000000407c84       0x5c build/release/Library/LibraryLocal/LibraryLocal.o
+ .rodata.str1.8
+                0x0000000000407ce0       0x25 build/release/Library/LibraryLocal/LibraryLocal.o
+ *fill*         0x0000000000407d05        0x3 
+ .rodata.str1.8
+                0x0000000000407d08      0x11d build/release/Library/LibraryLocal/ResourceEditor.o
+ .rodata.str1.1
+                0x0000000000407e25       0x65 build/release/Library/LibraryLocal/ResourceEditor.o
+ *fill*         0x0000000000407e8a        0x6 
+ .rodata._ZTS15CResourceEditor
+                0x0000000000407e90       0x12 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407e90                typeinfo name for CResourceEditor
+ *fill*         0x0000000000407ea2        0xe 
+ .rodata._ZTI15CResourceEditor
+                0x0000000000407eb0       0x10 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407eb0                typeinfo for CResourceEditor
+ .rodata._ZTS18CResourceDirectory
+                0x0000000000407ec0       0x15 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407ec0                typeinfo name for CResourceDirectory
+ *fill*         0x0000000000407ed5        0xb 
+ .rodata._ZTI18CResourceDirectory
+                0x0000000000407ee0       0x10 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407ee0                typeinfo for CResourceDirectory
+ .rodata._ZTS23CResourceDirectoryEntry
+                0x0000000000407ef0       0x1a build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407ef0                typeinfo name for CResourceDirectoryEntry
+ *fill*         0x0000000000407f0a        0x6 
+ .rodata._ZTI23CResourceDirectoryEntry
+                0x0000000000407f10       0x10 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407f10                typeinfo for CResourceDirectoryEntry
+ .rodata._ZTV15CResourceEditor
+                0x0000000000407f20       0x20 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407f20                vtable for CResourceEditor
+ .rodata._ZTV18CResourceDirectory
+                0x0000000000407f40       0x20 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407f40                vtable for CResourceDirectory
+ .rodata._ZTV23CResourceDirectoryEntry
+                0x0000000000407f60       0x20 build/release/Library/LibraryLocal/ResourceEditor.o
+                0x0000000000407f60                vtable for CResourceDirectoryEntry
+ .rodata.str1.8
+                0x0000000000407f80       0x60 build/release/Library/LibraryLocal/util.o
+                                         0x5a (size before relaxing)
+ .rodata.str1.1
+                0x0000000000407fe0       0x3a build/release/Library/LibraryLocal/util.o
+                                         0x3b (size before relaxing)
+ .rodata.str1.1
+                0x000000000040801a       0x1a build/release/Library/LibraryLocal/winchar.o
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr   0x0000000000408034      0x38c
+ *(.eh_frame_hdr)
+ .eh_frame_hdr  0x0000000000408034      0x38c /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.eh_frame       0x00000000004083c0     0x14c4
+ *(.eh_frame)
+ .eh_frame      0x00000000004083c0       0x30 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .eh_frame      0x00000000004083f0       0x40 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .eh_frame      0x0000000000408430       0x88 build/release/Library/LibraryLocal/LibraryLocal.o
+                                         0xa0 (size before relaxing)
+ .eh_frame      0x00000000004084b8      0xce0 build/release/Library/LibraryLocal/ResourceEditor.o
+                                        0xc40 (size before relaxing)
+ .eh_frame      0x0000000000409198      0x558 build/release/Library/LibraryLocal/util.o
+                                        0x550 (size before relaxing)
+ .eh_frame      0x00000000004096f0      0x130 build/release/Library/LibraryLocal/winchar.o
+                                        0x158 (size before relaxing)
+ .eh_frame      0x0000000000409820       0x60 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                                         0x78 (size before relaxing)
+ .eh_frame      0x0000000000409880        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.gcc_except_table
+                0x0000000000409884      0x358
+ *(.gcc_except_table .gcc_except_table.*)
+ .gcc_except_table
+                0x0000000000409884       0x39 build/release/Library/LibraryLocal/LibraryLocal.o
+ *fill*         0x00000000004098bd        0x3 
+ .gcc_except_table
+                0x00000000004098c0      0x1d9 build/release/Library/LibraryLocal/ResourceEditor.o
+ *fill*         0x0000000000409a99        0x3 
+ .gcc_except_table
+                0x0000000000409a9c       0xec build/release/Library/LibraryLocal/util.o
+ .gcc_except_table
+                0x0000000000409b88       0x54 build/release/Library/LibraryLocal/winchar.o
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+                0x0000000000409bdc                . = (ALIGN (0x200000) - ((0x200000 - .) & 0x1fffff))
+                0x0000000000609de4                . = DATA_SEGMENT_ALIGN (0x200000, 0x1000)
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x0000000000609de4        0x0
+                0x0000000000609de4                PROVIDE (__preinit_array_start, .)
+ *(.preinit_array)
+                0x0000000000609de4                PROVIDE (__preinit_array_end, .)
+
+.init_array     0x0000000000609de8       0x10
+                0x0000000000609de8                PROVIDE (__init_array_start, .)
+ *(SORT(.init_array.*) SORT(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+ .init_array    0x0000000000609de8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .init_array    0x0000000000609df0        0x8 build/release/Library/LibraryLocal/LibraryLocal.o
+                0x0000000000609df8                PROVIDE (__init_array_end, .)
+
+.fini_array     0x0000000000609df8        0x8
+                0x0000000000609df8                PROVIDE (__fini_array_start, .)
+ *(SORT(.fini_array.*) SORT(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+ .fini_array    0x0000000000609df8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                0x0000000000609e00                PROVIDE (__fini_array_end, .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+
+.jcr            0x0000000000609e00        0x8
+ *(.jcr)
+ .jcr           0x0000000000609e00        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .jcr           0x0000000000609e00        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.dynamic        0x0000000000609e08      0x1f0
+ *(.dynamic)
+ .dynamic       0x0000000000609e08      0x1f0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000609e08                _DYNAMIC
+
+.got            0x0000000000609ff8        0x8
+ *(.got)
+ .got           0x0000000000609ff8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.igot)
+                0x000000000060afe8                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0x18)?0x18:0x0)
+
+.got.plt        0x000000000060a000      0x278
+ *(.got.plt)
+ .got.plt       0x000000000060a000      0x278 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x000000000060a000                _GLOBAL_OFFSET_TABLE_
+ *(.igot.plt)
+ .igot.plt      0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.data           0x000000000060a278       0x14
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x000000000060a278        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x000000000060a278                data_start
+                0x000000000060a278                __data_start
+ .data          0x000000000060a27c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ *fill*         0x000000000060a27c        0x4 
+ .data          0x000000000060a280        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                0x000000000060a280                __dso_handle
+ .data          0x000000000060a288        0x4 build/release/Library/LibraryLocal/LibraryLocal.o
+                0x000000000060a288                g_display_errors
+ .data          0x000000000060a28c        0x0 build/release/Library/LibraryLocal/ResourceEditor.o
+ .data          0x000000000060a28c        0x0 build/release/Library/LibraryLocal/util.o
+ .data          0x000000000060a28c        0x0 build/release/Library/LibraryLocal/winchar.o
+ .data          0x000000000060a28c        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .data          0x000000000060a28c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .data          0x000000000060a28c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+.tm_clone_table
+                0x000000000060a290        0x0
+ .tm_clone_table
+                0x000000000060a290        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .tm_clone_table
+                0x000000000060a290        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.data1
+ *(.data1)
+                0x000000000060a290                _edata = .
+                0x000000000060a290                PROVIDE (edata, .)
+                0x000000000060a290                . = .
+                0x000000000060a290                __bss_start = .
+
+.bss            0x000000000060a2a0     0x3160
+ *(.dynbss)
+ .dynbss        0x000000000060a2a0      0x128 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x000000000060a2a0                vtable for __cxxabiv1::__class_type_info@@CXXABI_1.3
+                0x000000000060a2f8                stdin@@GLIBC_2.2.5
+                0x000000000060a300                typeinfo for std::runtime_error@@GLIBCXX_3.4
+                0x000000000060a320                typeinfo for std::exception@@GLIBCXX_3.4
+                0x000000000060a340                vtable for std::bad_alloc@@GLIBCXX_3.4
+                0x000000000060a380                std::string::_Rep::_S_empty_rep_storage@@GLIBCXX_3.4
+                0x000000000060a3a0                typeinfo for std::bad_alloc@@GLIBCXX_3.4
+                0x000000000060a3c0                stdout@@GLIBC_2.2.5
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x000000000060a3c8        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .bss           0x000000000060a3c8        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .bss           0x000000000060a3c8        0x1 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ *fill*         0x000000000060a3c9        0x7 
+ .bss           0x000000000060a3d0        0xd build/release/Library/LibraryLocal/LibraryLocal.o
+                0x000000000060a3d0                g_output
+                0x000000000060a3d8                g_noconfig
+ .bss           0x000000000060a3dd        0x0 build/release/Library/LibraryLocal/ResourceEditor.o
+ *fill*         0x000000000060a3dd        0x3 
+ .bss           0x000000000060a3e0     0x3020 build/release/Library/LibraryLocal/util.o
+                0x000000000060a3e0                g_dopause
+ .bss           0x000000000060d400        0x0 build/release/Library/LibraryLocal/winchar.o
+ .bss           0x000000000060d400        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .bss           0x000000000060d400        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .bss           0x000000000060d400        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ *(COMMON)
+                0x000000000060d400                . = ALIGN ((. != 0x0)?0x8:0x1)
+
+.lbss
+ *(.dynlbss)
+ *(.lbss .lbss.* .gnu.linkonce.lb.*)
+ *(LARGE_COMMON)
+                0x000000000060d400                . = ALIGN (0x8)
+                0x000000000060d400                . = SEGMENT_START ("ldata-segment", .)
+
+.lrodata
+ *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
+
+.ldata          0x0000000000a0d400        0x0
+ *(.ldata .ldata.* .gnu.linkonce.l.*)
+                0x0000000000a0d400                . = ALIGN ((. != 0x0)?0x8:0x1)
+                0x0000000000a0d400                . = ALIGN (0x8)
+                0x0000000000a0d400                _end = .
+                0x0000000000a0d400                PROVIDE (end, .)
+                0x0000000000a0d400                . = DATA_SEGMENT_END (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x4f
+ *(.comment)
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                                         0x2c (size before relaxing)
+ .comment       0x0000000000000000       0x2c build/release/Library/LibraryLocal/LibraryLocal.o
+ .comment       0x0000000000000000       0x2c build/release/Library/LibraryLocal/ResourceEditor.o
+ .comment       0x0000000000000000       0x2c build/release/Library/LibraryLocal/util.o
+ .comment       0x0000000000000000       0x2c build/release/Library/LibraryLocal/winchar.o
+ .comment       0x000000000000002b       0x24 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                                         0x25 (size before relaxing)
+ .comment       0x0000000000000000       0x2c /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000      0x180
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x50 build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_aranges
+                0x0000000000000050       0xd0 build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_aranges
+                0x0000000000000120       0x30 build/release/Library/LibraryLocal/util.o
+ .debug_aranges
+                0x0000000000000150       0x30 build/release/Library/LibraryLocal/winchar.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000    0x292e9
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x0000000000000000     0x4bbb build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_info    0x0000000000004bbb    0x18850 build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_info    0x000000000001d40b     0x8732 build/release/Library/LibraryLocal/util.o
+ .debug_info    0x0000000000025b3d     0x37ac build/release/Library/LibraryLocal/winchar.o
+
+.debug_abbrev   0x0000000000000000     0x26a2
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000      0x8be build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_abbrev  0x00000000000008be      0xb5d build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_abbrev  0x000000000000141b      0xb9f build/release/Library/LibraryLocal/util.o
+ .debug_abbrev  0x0000000000001fba      0x6e8 build/release/Library/LibraryLocal/winchar.o
+
+.debug_line     0x0000000000000000     0x31e1
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x0000000000000000      0x4fa build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_line    0x00000000000004fa     0x1e14 build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_line    0x000000000000230e      0xaff build/release/Library/LibraryLocal/util.o
+ .debug_line    0x0000000000002e0d      0x3d4 build/release/Library/LibraryLocal/winchar.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x0000000000000000    0x113c7
+ *(.debug_str)
+ .debug_str     0x0000000000000000     0x2cab build/release/Library/LibraryLocal/LibraryLocal.o
+                                       0x305a (size before relaxing)
+ .debug_str     0x0000000000002cab     0xc5a2 build/release/Library/LibraryLocal/ResourceEditor.o
+                                       0xecd2 (size before relaxing)
+ .debug_str     0x000000000000f24d     0x2100 build/release/Library/LibraryLocal/util.o
+                                       0x4877 (size before relaxing)
+ .debug_str     0x000000000001134d       0x7a build/release/Library/LibraryLocal/winchar.o
+                                       0x2308 (size before relaxing)
+
+.debug_loc      0x0000000000000000    0x16b5a
+ *(.debug_loc)
+ .debug_loc     0x0000000000000000      0x9fd build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_loc     0x00000000000009fd    0x11431 build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_loc     0x0000000000011e2e     0x4293 build/release/Library/LibraryLocal/util.o
+ .debug_loc     0x00000000000160c1      0xa99 build/release/Library/LibraryLocal/winchar.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges   0x0000000000000000     0x5210
+ *(.debug_ranges)
+ .debug_ranges  0x0000000000000000       0x90 build/release/Library/LibraryLocal/LibraryLocal.o
+ .debug_ranges  0x0000000000000090     0x40c0 build/release/Library/LibraryLocal/ResourceEditor.o
+ .debug_ranges  0x0000000000004150      0xec0 build/release/Library/LibraryLocal/util.o
+ .debug_ranges  0x0000000000005010      0x200 build/release/Library/LibraryLocal/winchar.o
+
+.debug_macro
+ *(.debug_macro)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+OUTPUT(build/release/Library/LibraryLocal/LibraryLocal elf64-x86-64)

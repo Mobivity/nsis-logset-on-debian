@@ -1,0 +1,88 @@
+'\" t
+.\"     Title: NSIS
+.\"    Author: Paul Wise
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: July 28, 2007
+.\"    Manual: LibraryLocal
+.\"    Source: LibraryLocal manual
+.\"  Language: English
+.\"
+.TH "NSIS" "1" "July 28, 2007" "LibraryLocal manual" "LibraryLocal"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+LibraryLocal \- A program to get version numbers from DLL files for use with NSIS\&.
+.SH "SYNOPSIS"
+.HP \w'\fBLibraryLocal\fR\ 'u
+\fBLibraryLocal\fR [\fB\fImode\fR\fR] [\fB\fIinput\&.dll\fR\fR] [\fB\fIoutput\&.nsh\fR\fR]
+.SH "DESCRIPTION"
+.PP
+This manual page documents briefly the
+\fBLibraryLocal\fR
+command\&.
+.PP
+This manual page was written for the Debian (TM) distribution because the original program does not have a manual page\&.
+.PP
+\fBLibraryLocal\fR
+is a part of NSIS, which is a system for creating installer programs for Windows\&.
+.SH "OPTIONS"
+.PP
+All three arguments are required\&.
+.PP
+\fB\fImode\fR\fR
+.RS 4
+\*(AqD\*(Aq for DLLs or \*(AqT\*(Aq for TLBs (only supported on Windows)\&.
+.RE
+.PP
+\fB\fIinput\&.dll\fR\fR
+.RS 4
+The DLL/TLB file to get the version number from\&.
+.RE
+.PP
+\fB\fIoutput\&.nsh\fR\fR
+.RS 4
+The name of the NSIS script file to output for use by the Library\&.nsh files\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+0
+.RS 4
+Success
+.RE
+.PP
+1
+.RS 4
+Incorrect number of arguments
+.RE
+.SH "AUTHOR"
+.PP
+This manual page was written by Paul Wise
+<pabs@debian\&.org>
+for the Debian (TM) system\&.
+.SH "AUTHOR"
+.PP
+\fBPaul Wise\fR
+.RS 4
+Created man page
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2007 Paul Wise
+.br

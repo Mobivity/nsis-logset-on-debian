@@ -1,0 +1,7 @@
+5f75c402685e40d7366b869ff0225bd9  usr/i686-w64-mingw32/include/nsis/api.h
+8283f26a511bc187963d9bb655626ced  usr/i686-w64-mingw32/include/nsis/pluginapi.h
+42fc5f80d34b4e82f82686bed844d07d  usr/i686-w64-mingw32/lib/nsis/libpluginapi.a
+7270c58c92fc98c8427cf19ca221d190  usr/share/doc/nsis-pluginapi/NEWS.Debian.gz
+54710baac7f92beb74acaedfc59badec  usr/share/doc/nsis-pluginapi/changelog.Debian.gz
+a8a2e123dd8fc3eca8e06eecc8939092  usr/share/doc/nsis-pluginapi/copyright
+5c16a2b0c2969fbb5c2442596654663e  usr/share/lintian/overrides/nsis-pluginapi

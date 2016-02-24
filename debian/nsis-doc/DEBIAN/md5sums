@@ -1,0 +1,128 @@
+597d3dd871f7a52283d7d6abfabc6992  usr/share/doc-base/nsis
+7270c58c92fc98c8427cf19ca221d190  usr/share/doc/nsis-doc/NEWS.Debian.gz
+1777aa900d51e91e1cea829f6d2e6c70  usr/share/doc/nsis-doc/README.Modern UI 2.gz
+aad2816b27c54d193234c0081c5dac21  usr/share/doc/nsis-doc/README.Modern UI.gz
+54710baac7f92beb74acaedfc59badec  usr/share/doc/nsis-doc/changelog.Debian.gz
+a8a2e123dd8fc3eca8e06eecc8939092  usr/share/doc/nsis-doc/copyright
+57e378036b2c27c8ce16d91527ea1538  usr/share/doc/nsis/Docs/AdvSplash/advsplash.txt
+fefe5c5acae3574809f5694acdd95e90  usr/share/doc/nsis/Docs/AppendixA.html
+f460ae928d05be89ef9654d6793ccf2f  usr/share/doc/nsis/Docs/AppendixB.html
+ddc806957e8aad143dc6c4b91ba3169b  usr/share/doc/nsis/Docs/AppendixC.html
+c299addf1c8828f1b55d0276a0eff663  usr/share/doc/nsis/Docs/AppendixD.html
+a0170aa03bbe90e969289e7449b558ef  usr/share/doc/nsis/Docs/AppendixE.html
+04b76db3c30aefe49b32f5eec85c4cc9  usr/share/doc/nsis/Docs/AppendixF.html
+70527961825090b5dcca49b8e2d12e9d  usr/share/doc/nsis/Docs/AppendixG.html
+614c242f8295e16607bf05db089e5739  usr/share/doc/nsis/Docs/AppendixH.html
+40ae16bd1d26374a0883bd2232e8b500  usr/share/doc/nsis/Docs/AppendixI.html
+ec4a9608cf7847d7a072d94c07f0bfa6  usr/share/doc/nsis/Docs/Banner/Readme.txt
+04c237f67695203d84142da7ed30f764  usr/share/doc/nsis/Docs/BgImage/BgImage.txt
+869a5fa93fe7d60c8028e070df1e12d2  usr/share/doc/nsis/Docs/Chapter1.html
+0d55c14c8fab30f6846886318514ed13  usr/share/doc/nsis/Docs/Chapter2.html
+870aed65b92ca21d09fce32d02f42232  usr/share/doc/nsis/Docs/Chapter3.html
+81134a07352c1fd4e1364fe26db7dc4c  usr/share/doc/nsis/Docs/Chapter4.html
+f04622448abdfe1e7af3d69ba4bf0daf  usr/share/doc/nsis/Docs/Chapter5.html
+eade7c2bf3695e89b2765a6f5bbf55d3  usr/share/doc/nsis/Docs/Contents.html
+9fcc0390815b84609cececee7c619d8f  usr/share/doc/nsis/Docs/Dialer/Dialer.txt
+35ccc594ea84ef1f9479d8b4c1b6930e  usr/share/doc/nsis/Docs/IndexPage.html
+31fc7bb6a3ae01051d5e8c9d401bb5a6  usr/share/doc/nsis/Docs/InstallOptions/Changelog.txt.gz
+06af3495cb719c5e98f6477c9ff836b8  usr/share/doc/nsis/Docs/InstallOptions/Readme.html
+7b8d9ee4aebd69341071e38f5798354c  usr/share/doc/nsis/Docs/Math/Math.txt.gz
+4d827322d2736af852673e3334f5c4cc  usr/share/doc/nsis/Docs/Modern UI 2/Readme.html
+7ea54583c065619c4f153fa1914638df  usr/share/doc/nsis/Docs/Modern UI 2/images/closed.gif
+a8d0450df70c52383362092dde18db42  usr/share/doc/nsis/Docs/Modern UI 2/images/header.gif
+1236ddd1f38a56f06a4382f579b7342d  usr/share/doc/nsis/Docs/Modern UI 2/images/open.gif
+23c6046612c66140d48a012cc1b1a5e3  usr/share/doc/nsis/Docs/Modern UI 2/images/screen1.png
+c8cd7b5222ea8678bebfaa68124d0a01  usr/share/doc/nsis/Docs/Modern UI 2/images/screen2.png
+6fbbb6c795ba7ef3c763f648cc5f0fa8  usr/share/doc/nsis/Docs/Modern UI/Changelog.txt.gz
+3ddb7f7faf820e67048d72f1cc9c65e8  usr/share/doc/nsis/Docs/Modern UI/Readme.html
+7ea54583c065619c4f153fa1914638df  usr/share/doc/nsis/Docs/Modern UI/images/closed.gif
+a8d0450df70c52383362092dde18db42  usr/share/doc/nsis/Docs/Modern UI/images/header.gif
+1236ddd1f38a56f06a4382f579b7342d  usr/share/doc/nsis/Docs/Modern UI/images/open.gif
+23c6046612c66140d48a012cc1b1a5e3  usr/share/doc/nsis/Docs/Modern UI/images/screen1.png
+c8cd7b5222ea8678bebfaa68124d0a01  usr/share/doc/nsis/Docs/Modern UI/images/screen2.png
+27bb4feecc043a89a4fb81c77b114aa1  usr/share/doc/nsis/Docs/MultiUser/Readme.html
+43826e951f77f0169d33b118006c36c6  usr/share/doc/nsis/Docs/NSISdl/ReadMe.txt
+3b00611b3b4ca51aafbb623fdd2225f0  usr/share/doc/nsis/Docs/Splash/splash.txt
+88bf43b3d1deed39ba2319990bc81e3a  usr/share/doc/nsis/Docs/StartMenu/Readme.txt
+ff66c73ec3d8e2fd62fb34707dce68a3  usr/share/doc/nsis/Docs/StrFunc/StrFunc.txt.gz
+3ce36b0edc2b275071b9e65e75b7e4bf  usr/share/doc/nsis/Docs/System/System.html
+45a0a5adb3e8533a40339db035bd8868  usr/share/doc/nsis/Docs/System/WhatsNew.txt
+3bc36f8d03d7fa52223fb7736ad4f462  usr/share/doc/nsis/Docs/VPatch/Readme.html
+56e8507184664621b00b0b939a233bb8  usr/share/doc/nsis/Docs/nsDialogs/Readme.html
+daa59ba9bf473a83d779933f04b895c3  usr/share/doc/nsis/Docs/nsExec/nsExec.txt
+f583f50ca108b8d9ab4de59c7d278807  usr/share/doc/nsis/Docs/style.css
+8a925654465b9597bd51965c1b92c877  usr/share/doc/nsis/Examples/AdvSplash/Example.nsi
+8ad866077f3284db9c9a6e628ab9527d  usr/share/doc/nsis/Examples/Banner/Example.nsi
+4066b32b5f828a9a35736890f578aff1  usr/share/doc/nsis/Examples/BgImage/Example.nsi
+32b83edf1655cc996f26e79fab4cded9  usr/share/doc/nsis/Examples/FileFunc.ini
+d561eb667a7fb99dbc3e47d1c6726ca2  usr/share/doc/nsis/Examples/FileFunc.nsi
+d81c89990c7c9ce5f39f942cdc48ef02  usr/share/doc/nsis/Examples/FileFuncTest.nsi
+12128b88ffdd4b1f2a03ee5941914340  usr/share/doc/nsis/Examples/InstallOptions/test.ini
+e1a8875eb926263e7d4f8a02d76fbfe2  usr/share/doc/nsis/Examples/InstallOptions/test.nsi
+2ff590628aec608a02b1baea09ddda85  usr/share/doc/nsis/Examples/InstallOptions/testimgs.ini
+630255348667270cb8cbec4087348d4e  usr/share/doc/nsis/Examples/InstallOptions/testimgs.nsi
+620f2fd882fc0cfb6126f885218a48d4  usr/share/doc/nsis/Examples/InstallOptions/testlink.ini
+39d9743aa8277b045bc2588ca71258ba  usr/share/doc/nsis/Examples/InstallOptions/testlink.nsi
+e13a5b24ea2c514b539712de5baf4bf4  usr/share/doc/nsis/Examples/InstallOptions/testnotify.ini
+3f75085fe02252d5a60f82ed295778e3  usr/share/doc/nsis/Examples/InstallOptions/testnotify.nsi
+b2a8074e39041a70d4b43aa1a18ba95d  usr/share/doc/nsis/Examples/Library.nsi
+d9eebf75c752c6ffb1e956f93b3ae635  usr/share/doc/nsis/Examples/LogicLib.nsi
+448e22620e354bda252b1fb007970a87  usr/share/doc/nsis/Examples/Math/math.nsi
+25de4d61572827309d873673d04442e2  usr/share/doc/nsis/Examples/Math/mathtest.ini
+aebec3b851f062189c0f88bc69885c64  usr/share/doc/nsis/Examples/Math/mathtest.nsi
+008d29e3cdf5b3e2c1dd91856496fca0  usr/share/doc/nsis/Examples/Math/mathtest.txt
+f8428e47c11dc855747d5829af683b3e  usr/share/doc/nsis/Examples/Memento.nsi
+a78a9e0c1bbf5c11fc1df0a0a0db8858  usr/share/doc/nsis/Examples/Modern UI/Basic.nsi
+e77cd336227415e6784009a9b2ebfd47  usr/share/doc/nsis/Examples/Modern UI/HeaderBitmap.nsi
+9378918375ac9398f9a9416d62760e1a  usr/share/doc/nsis/Examples/Modern UI/MultiLanguage.nsi
+352bdd34d8b29ab9c75c7739907443cd  usr/share/doc/nsis/Examples/Modern UI/StartMenu.nsi
+0ff260f7c601076e51b57643e4893bb0  usr/share/doc/nsis/Examples/Modern UI/WelcomeFinish.nsi
+cb17138833afc447b006c677c10524f6  usr/share/doc/nsis/Examples/Plugin/exdll-vs2008.sln
+92559cf0043e3dd5587e78f17774023c  usr/share/doc/nsis/Examples/Plugin/exdll-vs2008.vcproj.gz
+765ab30b039c21926091838b47ed1e79  usr/share/doc/nsis/Examples/Plugin/exdll.c
+6f8ff46e53f71a2fcd64a1f6cb20a4c7  usr/share/doc/nsis/Examples/Plugin/exdll.dpr
+7d8ceeedabbcc758c5751583be76dd92  usr/share/doc/nsis/Examples/Plugin/exdll.dsp.gz
+362705ec444d56b90f59525a2437ddcc  usr/share/doc/nsis/Examples/Plugin/exdll.dsw
+d2b273fde854741a7d23348939a00521  usr/share/doc/nsis/Examples/Plugin/exdll_with_unit.dpr
+df2d240c97dff4db4472470568f426aa  usr/share/doc/nsis/Examples/Plugin/extdll.inc
+231ed7b4de12972ce3a76c10862e0a18  usr/share/doc/nsis/Examples/Plugin/nsis.pas.gz
+5f75c402685e40d7366b869ff0225bd9  usr/share/doc/nsis/Examples/Plugin/nsis/api.h
+8283f26a511bc187963d9bb655626ced  usr/share/doc/nsis/Examples/Plugin/nsis/pluginapi.h
+3e8fbf3e7665ffa91e1c8cb865f62ae6  usr/share/doc/nsis/Examples/Plugin/pluginapi.c
+b666d5d7af2c9408b2229fded32fbfdf  usr/share/doc/nsis/Examples/Splash/Example.nsi
+08ead254b614737400fac29a06073ce7  usr/share/doc/nsis/Examples/StartMenu/Example.nsi
+2bd96b639a6db4fc8bc203d3227131ac  usr/share/doc/nsis/Examples/StrFunc.nsi
+a52fbc8dc57a94a3474b5bfe13019874  usr/share/doc/nsis/Examples/System/Resource.dll
+38135e957f37371e547b957723b58ac7  usr/share/doc/nsis/Examples/System/SysFunc.nsh
+c09009e03f67b88b68cad712c14073f0  usr/share/doc/nsis/Examples/System/System.nsh
+2df51a009b3233801796bb0dba84710f  usr/share/doc/nsis/Examples/System/System.nsi
+e39f24de0123412aefd6f8d44d42ee43  usr/share/doc/nsis/Examples/TextFunc.ini
+3174aefce1681c436618f85eef0fa1a3  usr/share/doc/nsis/Examples/TextFunc.nsi
+3bc52c177a39358bcb1ce975a157134e  usr/share/doc/nsis/Examples/TextFuncTest.nsi
+7753fd4c227908a3d0b426dfb00b4303  usr/share/doc/nsis/Examples/UserInfo/UserInfo.nsi
+0aa3dc3d146b850c4506ce1ddb66227d  usr/share/doc/nsis/Examples/UserVars.nsi
+bd14d1560217bbf9791ad36c24019aa9  usr/share/doc/nsis/Examples/VPatch/example.nsi
+de333d4b27b86c4cdf8e7ffa0405c368  usr/share/doc/nsis/Examples/VPatch/newfile.txt
+dcfb2bd10556fc8dd280afa67d6a146a  usr/share/doc/nsis/Examples/VPatch/oldfile.txt
+1ad56275eda631e69aad1812c37d4c90  usr/share/doc/nsis/Examples/VPatch/patch.pat
+01630d5d154bf288c5394fe69b8b8f2b  usr/share/doc/nsis/Examples/VersionInfo.nsi
+6bb6f0085020a370e9e178ae1fba185a  usr/share/doc/nsis/Examples/WordFunc.ini
+71fc487a16b78f0ffce49370f7819c48  usr/share/doc/nsis/Examples/WordFunc.nsi
+1a90d5e2018798231b9741d0e4c3e8d8  usr/share/doc/nsis/Examples/WordFuncTest.nsi
+5e506e2755e16ebc07f035c5c705366c  usr/share/doc/nsis/Examples/bigtest.nsi
+d19ff68b5250aaccccc6155f84568d71  usr/share/doc/nsis/Examples/example1.nsi
+383d2517f1088a775d603c6602a5063d  usr/share/doc/nsis/Examples/example2.nsi
+ded1b6711498ca3b0923af697f8df41c  usr/share/doc/nsis/Examples/gfx.nsi
+bf34f4d462aa8fa639a1acd83f4ba54a  usr/share/doc/nsis/Examples/languages.nsi
+d1e524179d35c3d32acdd48602ba3029  usr/share/doc/nsis/Examples/makensis.nsi
+ed4c70d86ff6c38ae79c16cf292220a5  usr/share/doc/nsis/Examples/nsDialogs/InstallOptions.nsi
+1faafa9574d90ad03556ef1a922182e6  usr/share/doc/nsis/Examples/nsDialogs/example.nsi
+45faa3b7f881bee65b869cdf49f1776b  usr/share/doc/nsis/Examples/nsDialogs/timer.nsi
+4099b99ed7f8de633408baff1a687578  usr/share/doc/nsis/Examples/nsDialogs/welcome.nsi
+66f422a5012c08c26f1aa0852527fb9f  usr/share/doc/nsis/Examples/nsExec/test.nsi
+8a7fee9c942e13c9cba17bff68e5d1d4  usr/share/doc/nsis/Examples/one-section.nsi
+72c268c01c2a0d85c575af82614ec440  usr/share/doc/nsis/Examples/primes.nsi
+8c797a9144ec1dc2ea2a534980aaf569  usr/share/doc/nsis/Examples/rtest.nsi
+954614df48911c7ad5559e6d34662f3f  usr/share/doc/nsis/Examples/silent.nsi
+b15da6ea3ebac9f90c6775f0f5970964  usr/share/doc/nsis/Examples/viewhtml.nsi
+a550278a08a1dfce85b0bd35d992b1c1  usr/share/doc/nsis/Examples/waplugin.nsi

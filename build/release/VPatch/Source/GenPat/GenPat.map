@@ -1,0 +1,834 @@
+Archive member included to satisfy reference by file (symbol)
+
+/usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                              /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o (__libc_csu_init)
+
+As-needed library included to satisfy reference by file (symbol)
+
+libz.so.1                     build/release/VPatch/Source/GenPat/adler32.o (adler32)
+libstdc++.so.6                build/release/VPatch/Source/GenPat/main.o (std::string::_Rep::_M_destroy(std::allocator<char> const&)@@GLIBCXX_3.4)
+libgcc_s.so.1                 build/release/VPatch/Source/GenPat/Checksums.o (_Unwind_Resume@@GCC_3.0)
+libc.so.6                     build/release/VPatch/Source/GenPat/POSIXUtil.o (time@@GLIBC_2.2.5)
+
+Discarded input sections
+
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/adler32.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/Checksums.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/main.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/main.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/main.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/md5.o
+ .group         0x0000000000000000        0x8 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/release/VPatch/Source/GenPat/POSIXUtil.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ .gnu_debuglink
+                0x0000000000000000        0xc /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+LOAD build/release/VPatch/Source/GenPat/adler32.o
+LOAD build/release/VPatch/Source/GenPat/Checksums.o
+LOAD build/release/VPatch/Source/GenPat/ChunkedFile.o
+LOAD build/release/VPatch/Source/GenPat/FileFormat1.o
+LOAD build/release/VPatch/Source/GenPat/GlobalTypes.o
+LOAD build/release/VPatch/Source/GenPat/main.o
+LOAD build/release/VPatch/Source/GenPat/md5.o
+LOAD build/release/VPatch/Source/GenPat/PatchGenerator.o
+LOAD build/release/VPatch/Source/GenPat/POSIXUtil.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/libz.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libstdc++.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/libm.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/libc.so
+START GROUP
+LOAD /lib/x86_64-linux-gnu/libc.so.6
+LOAD /usr/lib/x86_64-linux-gnu/libc_nonshared.a
+LOAD /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+END GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+                0x0000000000400000                PROVIDE (__executable_start, 0x400000)
+                0x0000000000400238                . = (0x400000 + SIZEOF_HEADERS)
+
+.interp         0x0000000000400238       0x1c
+ *(.interp)
+ .interp        0x0000000000400238       0x1c /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.note.ABI-tag   0x0000000000400254       0x20
+ .note.ABI-tag  0x0000000000400254       0x20 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.note.gnu.build-id
+                0x0000000000400274       0x24
+ *(.note.gnu.build-id)
+ .note.gnu.build-id
+                0x0000000000400274       0x24 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.hash
+ *(.hash)
+
+.gnu.hash       0x0000000000400298       0x60
+ *(.gnu.hash)
+ .gnu.hash      0x0000000000400298       0x60 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.dynsym         0x00000000004002f8      0x7b0
+ *(.dynsym)
+ .dynsym        0x00000000004002f8      0x7b0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.dynstr         0x0000000000400aa8      0x93c
+ *(.dynstr)
+ .dynstr        0x0000000000400aa8      0x93c /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version    0x00000000004013e4       0xa4
+ *(.gnu.version)
+ .gnu.version   0x00000000004013e4       0xa4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version_d  0x0000000000401488        0x0
+ *(.gnu.version_d)
+ .gnu.version_d
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.gnu.version_r  0x0000000000401488       0xa0
+ *(.gnu.version_r)
+ .gnu.version_r
+                0x0000000000401488       0xa0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.rela.dyn       0x0000000000401528      0x120
+ *(.rela.init)
+ *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+ .rela.text     0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text.startup
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text.unlikely
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZSt16__insertion_sortIP9FileChunkEvT_S2_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZSt13__heap_selectIP9FileChunkEvT_S2_S2_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZSt16__introsort_loopIP9FileChunklEvT_S2_T0_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.text._ZNSt6vectorIP9SameBlockSaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.fini)
+ *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+ .rela.rodata._ZTISs
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+ *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+ *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+ *(.rela.ctors)
+ *(.rela.dtors)
+ *(.rela.got)
+ .rela.got      0x0000000000401528       0x18 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+ .rela.bss      0x0000000000401540      0x108 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.rela.ldata .rela.ldata.* .rela.gnu.linkonce.l.*)
+ *(.rela.lbss .rela.lbss.* .rela.gnu.linkonce.lb.*)
+ *(.rela.lrodata .rela.lrodata.* .rela.gnu.linkonce.lr.*)
+ *(.rela.ifunc)
+ .rela.eh_frame
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .rela.gcc_except_table
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.rela.plt       0x0000000000401648      0x630
+ *(.rela.plt)
+ .rela.plt      0x0000000000401648      0x630 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401c78                PROVIDE (__rela_iplt_start, .)
+ *(.rela.iplt)
+ .rela.iplt     0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401c78                PROVIDE (__rela_iplt_end, .)
+
+.init           0x0000000000401c78       0x1a
+ *(SORT(.init))
+ .init          0x0000000000401c78       0x15 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+                0x0000000000401c78                _init
+ .init          0x0000000000401c8d        0x5 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+.plt            0x0000000000401ca0      0x430
+ *(.plt)
+ .plt           0x0000000000401ca0      0x430 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000401cb0                std::basic_ifstream<char, std::char_traits<char> >::close()@@GLIBCXX_3.4
+                0x0000000000401cc0                std::ostream::operator<<(int)@@GLIBCXX_3.4
+                0x0000000000401cd0                close@@GLIBC_2.2.5
+                0x0000000000401ce0                std::string::substr(unsigned long, unsigned long) const@@GLIBCXX_3.4
+                0x0000000000401cf0                std::ios_base::ios_base()@@GLIBCXX_3.4
+                0x0000000000401d10                operator new[](unsigned long)@@GLIBCXX_3.4
+                0x0000000000401d20                operator delete(void*)@@GLIBCXX_3.4
+                0x0000000000401d30                std::string::_Rep::_M_dispose(std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401d40                std::istream::tellg()@@GLIBCXX_3.4
+                0x0000000000401d50                std::ios_base::Init::Init()@@GLIBCXX_3.4
+                0x0000000000401d60                __libc_start_main@@GLIBC_2.2.5
+                0x0000000000401d70                unlink@@GLIBC_2.2.5
+                0x0000000000401d80                std::istream::seekg(long, std::_Ios_Seekdir)@@GLIBCXX_3.4
+                0x0000000000401d90                std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&)@@GLIBCXX_3.4
+                0x0000000000401da0                __cxa_atexit@@GLIBC_2.2.5
+                0x0000000000401db0                std::basic_filebuf<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000401dc0                std::istream::read(char*, long)@@GLIBCXX_3.4
+                0x0000000000401dd0                std::ios_base::Init::~Init()@@GLIBCXX_3.4
+                0x0000000000401de0                std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)@@GLIBCXX_3.4
+                0x0000000000401df0                std::ostream::write(char const*, long)@@GLIBCXX_3.4
+                0x0000000000401e00                strlen@@GLIBC_2.2.5
+                0x0000000000401e10                std::string::_Rep::_M_destroy(std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401e20                __xstat@@GLIBC_2.2.5
+                0x0000000000401e30                std::basic_ifstream<char, std::char_traits<char> >::basic_ifstream()@@GLIBCXX_3.4
+                0x0000000000401e40                std::string::compare(char const*) const@@GLIBCXX_3.4
+                0x0000000000401e50                std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&)@@GLIBCXX_3.4
+                0x0000000000401e60                std::basic_ifstream<char, std::char_traits<char> >::~basic_ifstream()@@GLIBCXX_3.4
+                0x0000000000401e70                std::ostream::tellp()@@GLIBCXX_3.4
+                0x0000000000401e80                std::basic_ofstream<char, std::char_traits<char> >::~basic_ofstream()@@GLIBCXX_3.4
+                0x0000000000401e90                std::basic_ofstream<char, std::char_traits<char> >::close()@@GLIBCXX_3.4
+                0x0000000000401ea0                std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)@@GLIBCXX_3.4.9
+                0x0000000000401eb0                std::basic_istringstream<char, std::char_traits<char>, std::allocator<char> >::~basic_istringstream()@@GLIBCXX_3.4
+                0x0000000000401ec0                memmove@@GLIBC_2.2.5
+                0x0000000000401ed0                std::basic_ios<char, std::char_traits<char> >::init(std::basic_streambuf<char, std::char_traits<char> >*)@@GLIBCXX_3.4
+                0x0000000000401ee0                mkstemp@@GLIBC_2.2.5
+                0x0000000000401ef0                std::basic_ifstream<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000401f00                std::basic_ofstream<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000401f10                __stack_chk_fail@@GLIBC_2.4
+                0x0000000000401f20                std::ios_base::~ios_base()@@GLIBCXX_3.4
+                0x0000000000401f30                std::__basic_file<char>::~__basic_file()@@GLIBCXX_3.4
+                0x0000000000401f40                __cxa_allocate_exception@@CXXABI_1.3
+                0x0000000000401f50                std::istream::operator>>(int&)@@GLIBCXX_3.4
+                0x0000000000401f60                std::string::assign(std::string const&)@@GLIBCXX_3.4
+                0x0000000000401f70                operator delete[](void*)@@GLIBCXX_3.4
+                0x0000000000401f80                __cxa_get_exception_ptr@@CXXABI_1.3.1
+                0x0000000000401f90                std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)@@GLIBCXX_3.4
+                0x0000000000401fa0                __cxa_throw@@CXXABI_1.3
+                0x0000000000401fb0                std::basic_filebuf<char, std::char_traits<char> >::basic_filebuf()@@GLIBCXX_3.4
+                0x0000000000401fc0                std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)@@GLIBCXX_3.4.9
+                0x0000000000401fd0                std::basic_istringstream<char, std::char_traits<char>, std::allocator<char> >::basic_istringstream(std::string const&, std::_Ios_Openmode)@@GLIBCXX_3.4
+                0x0000000000401fe0                std::basic_ofstream<char, std::char_traits<char> >::basic_ofstream()@@GLIBCXX_3.4
+                0x0000000000401ff0                __cxa_end_catch@@CXXABI_1.3
+                0x0000000000402000                std::basic_filebuf<char, std::char_traits<char> >::~basic_filebuf()@@GLIBCXX_3.4
+                0x0000000000402010                adler32
+                0x0000000000402020                __cxa_begin_catch@@CXXABI_1.3
+                0x0000000000402030                std::ostream::seekp(long, std::_Ios_Seekdir)@@GLIBCXX_3.4
+                0x0000000000402040                __gxx_personality_v0@@CXXABI_1.3
+                0x0000000000402050                operator new(unsigned long)@@GLIBCXX_3.4
+                0x0000000000402060                _Unwind_Resume@@GCC_3.0
+                0x0000000000402070                std::locale::~locale()@@GLIBCXX_3.4
+                0x0000000000402080                std::__basic_file<char>::is_open() const@@GLIBCXX_3.4
+                0x0000000000402090                std::string::_M_leak_hard()@@GLIBCXX_3.4
+                0x00000000004020a0                umask@@GLIBC_2.2.5
+                0x00000000004020b0                std::basic_filebuf<char, std::char_traits<char> >::close()@@GLIBCXX_3.4
+                0x00000000004020c0                time@@GLIBC_2.2.5
+ *(.iplt)
+ .iplt          0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.text           0x00000000004020d0     0x4b82
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ .text.unlikely
+                0x00000000004020d0       0x15 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .text.unlikely
+                0x00000000004020e5       0x15 build/release/VPatch/Source/GenPat/main.o
+ .text.unlikely
+                0x00000000004020fa       0x15 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .text.unlikely
+                0x000000000040210f       0x15 build/release/VPatch/Source/GenPat/POSIXUtil.o
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *fill*         0x0000000000402124        0xc 
+ .text.startup  0x0000000000402130       0x26 build/release/VPatch/Source/GenPat/Checksums.o
+ *fill*         0x0000000000402156        0xa 
+ .text.startup  0x0000000000402160       0x26 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ *fill*         0x0000000000402186        0xa 
+ .text.startup  0x0000000000402190       0x26 build/release/VPatch/Source/GenPat/FileFormat1.o
+ *fill*         0x00000000004021b6        0xa 
+ .text.startup  0x00000000004021c0       0x26 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ *fill*         0x00000000004021e6        0xa 
+ .text.startup  0x00000000004021f0     0x1206 build/release/VPatch/Source/GenPat/main.o
+                0x00000000004021f0                main
+ *fill*         0x00000000004033f6        0xa 
+ .text.startup  0x0000000000403400       0x26 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ *fill*         0x0000000000403426        0xa 
+ .text.startup  0x0000000000403430       0x26 build/release/VPatch/Source/GenPat/POSIXUtil.o
+ *(.text.hot .text.hot.*)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x0000000000403456       0x2a /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000403456                _start
+ .text          0x0000000000403480        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .text          0x0000000000403480       0xbd /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ *fill*         0x000000000040353d        0x3 
+ .text          0x0000000000403540        0x5 build/release/VPatch/Source/GenPat/adler32.o
+                0x0000000000403540                Checksum::adler32(unsigned long, unsigned char const*, unsigned int)
+ *fill*         0x0000000000403545        0xb 
+ .text          0x0000000000403550      0x884 build/release/VPatch/Source/GenPat/Checksums.o
+                0x0000000000403550                InitCRC()
+                0x00000000004035b0                streamCRC32(std::istream&)
+                0x0000000000403680                streamMD5(std::istream&, unsigned char*)
+                0x0000000000403720                TChecksum::TChecksum(std::string&)
+                0x0000000000403720                TChecksum::TChecksum(std::string&)
+                0x0000000000403d20                TChecksum::loadMD5(unsigned char*)
+                0x0000000000403d50                TChecksum::loadCRC32(unsigned int)
+                0x0000000000403d60                TChecksum::operator==(TChecksum const&)
+ *fill*         0x0000000000403dd4        0xc 
+ .text          0x0000000000403de0      0x36b build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x0000000000403de0                ChunkedFile::search(TChunkChecksum, unsigned int*)
+                0x0000000000403ef0                ChunkedFile::ChunkedFile(std::istream&, unsigned int, unsigned int)
+                0x0000000000403ef0                ChunkedFile::ChunkedFile(std::istream&, unsigned int, unsigned int)
+ *fill*         0x000000000040414b        0x5 
+ .text._ZSt25__unguarded_linear_insertIP9FileChunkEvT_
+                0x0000000000404150       0x6f build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x0000000000404150                void std::__unguarded_linear_insert<FileChunk*>(FileChunk*)
+ *fill*         0x00000000004041bf        0x1 
+ .text._ZSt16__insertion_sortIP9FileChunkEvT_S2_
+                0x00000000004041c0      0x114 build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x00000000004041c0                void std::__insertion_sort<FileChunk*>(FileChunk*, FileChunk*)
+ *fill*         0x00000000004042d4        0xc 
+ .text._ZSt13__adjust_heapIP9FileChunklS0_EvT_T0_S3_T1_
+                0x00000000004042e0      0x198 build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x00000000004042e0                void std::__adjust_heap<FileChunk*, long, FileChunk>(FileChunk*, long, long, FileChunk)
+ *fill*         0x0000000000404478        0x8 
+ .text._ZSt13__heap_selectIP9FileChunkEvT_S2_S2_
+                0x0000000000404480      0x150 build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x0000000000404480                void std::__heap_select<FileChunk*>(FileChunk*, FileChunk*, FileChunk*)
+ .text._ZSt16__introsort_loopIP9FileChunklEvT_S2_T0_
+                0x00000000004045d0      0x318 build/release/VPatch/Source/GenPat/ChunkedFile.o
+                0x00000000004045d0                void std::__introsort_loop<FileChunk*, long>(FileChunk*, FileChunk*, long)
+ *fill*         0x00000000004048e8        0x8 
+ .text          0x00000000004048f0      0x88a build/release/VPatch/Source/GenPat/FileFormat1.o
+                0x00000000004048f0                FileFormat1::writeByte(std::ostream&, unsigned int)
+                0x0000000000404910                FileFormat1::writeWord(std::ostream&, unsigned int)
+                0x0000000000404960                FileFormat1::writeDword(std::ostream&, unsigned int)
+                0x00000000004049e0                FileFormat1::writeMD5(std::ostream&, unsigned char*)
+                0x0000000000404a20                FileFormat1::readDword(std::istream&)
+                0x0000000000404aa0                FileFormat1::readMD5(std::istream&, unsigned char*)
+                0x0000000000404ae0                FileFormat1::writeFileCount(std::ostream&, unsigned int)
+                0x0000000000404b10                FileFormat1::removeExistingPatch(std::istream&, unsigned int, std::ostream&, TChecksum*, bool)
+                0x0000000000404da0                FileFormat1::writePatch(std::ostream&, std::istream&, std::vector<SameBlock*, std::allocator<SameBlock*> >&, TChecksum*, TChecksum*, unsigned int, POSIX::ALT_FILETIME)
+ .text          0x000000000040517a        0x0 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .text          0x000000000040517a        0x0 build/release/VPatch/Source/GenPat/main.o
+ *fill*         0x000000000040517a        0x6 
+ .text          0x0000000000405180      0xc28 build/release/VPatch/Source/GenPat/md5.o
+                0x0000000000405b70                memcpy2
+                0x0000000000405ba0                md5_init
+                0x0000000000405bd0                md5_append
+                0x0000000000405cf0                md5_finish
+ *fill*         0x0000000000405da8        0x8 
+ .text          0x0000000000405db0      0x7c9 build/release/VPatch/Source/GenPat/PatchGenerator.o
+                0x0000000000405db0                PatchGenerator::PatchGenerator(std::istream&, unsigned int, std::istream&, unsigned int, std::ostream&)
+                0x0000000000405db0                PatchGenerator::PatchGenerator(std::istream&, unsigned int, std::istream&, unsigned int, std::ostream&)
+                0x0000000000405e00                PatchGenerator::~PatchGenerator()
+                0x0000000000405e00                PatchGenerator::~PatchGenerator()
+                0x0000000000405e20                PatchGenerator::improveSameBlockMatch(SameBlock&, unsigned int)
+                0x0000000000406010                PatchGenerator::findBlock(ChunkedFile*, unsigned int)
+                0x0000000000406200                PatchGenerator::execute(std::vector<SameBlock*, std::allocator<SameBlock*> >&)
+ *fill*         0x0000000000406579        0x7 
+ .text._ZNSt6vectorIP9SameBlockSaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_
+                0x0000000000406580      0x19a build/release/VPatch/Source/GenPat/PatchGenerator.o
+                0x0000000000406580                std::vector<SameBlock*, std::allocator<SameBlock*> >::_M_insert_aux(__gnu_cxx::__normal_iterator<SameBlock**, std::vector<SameBlock*, std::allocator<SameBlock*> > >, SameBlock* const&)
+ *fill*         0x000000000040671a        0x6 
+ .text          0x0000000000406720      0x4bd build/release/VPatch/Source/GenPat/POSIXUtil.o
+                0x0000000000406720                POSIX::TimeT_To_FILETIME(long, POSIX::ALT_FILETIME*)
+                0x0000000000406740                POSIX::getFileTime(char const*)
+                0x0000000000406800                POSIX::getFileSize(char const*)
+                0x0000000000406b10                POSIX::getTempFile()
+ *fill*         0x0000000000406bdd        0x3 
+ .text          0x0000000000406be0       0x72 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                0x0000000000406be0                __libc_csu_init
+                0x0000000000406c50                __libc_csu_fini
+ .text          0x0000000000406c52        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .text          0x0000000000406c52        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ *(.gnu.warning)
+
+.fini           0x0000000000406c54        0x9
+ *(SORT(.fini))
+ .fini          0x0000000000406c54        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+                0x0000000000406c54                _fini
+ .fini          0x0000000000406c58        0x5 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+                0x0000000000406c5d                PROVIDE (__etext, .)
+                0x0000000000406c5d                PROVIDE (_etext, .)
+                0x0000000000406c5d                PROVIDE (etext, .)
+
+.rodata         0x0000000000406c60      0x9f0
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.cst4   0x0000000000406c60        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000406c60                _IO_stdin_used
+ *fill*         0x0000000000406c64        0x4 
+ .rodata.str1.8
+                0x0000000000406c68       0x27 build/release/VPatch/Source/GenPat/Checksums.o
+ .rodata.str1.1
+                0x0000000000406c8f       0x4b build/release/VPatch/Source/GenPat/ChunkedFile.o
+ *fill*         0x0000000000406cda        0x6 
+ .rodata.str1.8
+                0x0000000000406ce0       0x59 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ *fill*         0x0000000000406d39        0x7 
+ .rodata.str1.8
+                0x0000000000406d40       0xb1 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .rodata.str1.1
+                0x0000000000406df1      0x10f build/release/VPatch/Source/GenPat/main.o
+                                        0x112 (size before relaxing)
+ .rodata.str1.8
+                0x0000000000406f00      0x5e8 build/release/VPatch/Source/GenPat/main.o
+ *fill*         0x00000000004074e8        0x8 
+ .rodata._ZTISs
+                0x00000000004074f0       0x10 build/release/VPatch/Source/GenPat/main.o
+                0x00000000004074f0                typeinfo for std::string
+ .rodata._ZTSSs
+                0x0000000000407500        0x3 build/release/VPatch/Source/GenPat/main.o
+                0x0000000000407500                typeinfo name for std::string
+ *fill*         0x0000000000407503       0x1d 
+ .rodata        0x0000000000407520       0x44 build/release/VPatch/Source/GenPat/md5.o
+ .rodata.str1.1
+                0x0000000000407564       0x58 build/release/VPatch/Source/GenPat/PatchGenerator.o
+                                         0x5c (size before relaxing)
+ *fill*         0x00000000004075bc        0x4 
+ .rodata.str1.8
+                0x00000000004075c0       0x1f build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .rodata.str1.1
+                0x00000000004075df       0x1a build/release/VPatch/Source/GenPat/POSIXUtil.o
+                                         0x1d (size before relaxing)
+ *fill*         0x00000000004075f9        0x7 
+ .rodata.str1.8
+                0x0000000000407600       0x50 build/release/VPatch/Source/GenPat/POSIXUtil.o
+                                         0x49 (size before relaxing)
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr   0x0000000000407650      0x1c4
+ *(.eh_frame_hdr)
+ .eh_frame_hdr  0x0000000000407650      0x1c4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.eh_frame       0x0000000000407818      0xa1c
+ *(.eh_frame)
+ .eh_frame      0x0000000000407818       0x30 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .eh_frame      0x0000000000407848       0x40 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .eh_frame      0x0000000000407888       0x18 build/release/VPatch/Source/GenPat/adler32.o
+                                         0x30 (size before relaxing)
+ .eh_frame      0x00000000004078a0      0x148 build/release/VPatch/Source/GenPat/Checksums.o
+                                        0x150 (size before relaxing)
+ .eh_frame      0x00000000004079e8      0x1c8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .eh_frame      0x0000000000407bb0      0x1d8 build/release/VPatch/Source/GenPat/FileFormat1.o
+                                        0x1f0 (size before relaxing)
+ .eh_frame      0x0000000000407d88       0x18 build/release/VPatch/Source/GenPat/GlobalTypes.o
+                                         0x30 (size before relaxing)
+ .eh_frame      0x0000000000407da0       0x88 build/release/VPatch/Source/GenPat/main.o
+                                         0xc0 (size before relaxing)
+ .eh_frame      0x0000000000407e28      0x100 build/release/VPatch/Source/GenPat/md5.o
+                                        0x108 (size before relaxing)
+ .eh_frame      0x0000000000407f28      0x1b8 build/release/VPatch/Source/GenPat/PatchGenerator.o
+                                        0x1e0 (size before relaxing)
+ .eh_frame      0x00000000004080e0       0xf0 build/release/VPatch/Source/GenPat/POSIXUtil.o
+                                        0x118 (size before relaxing)
+ .eh_frame      0x00000000004081d0       0x60 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                                         0x78 (size before relaxing)
+ .eh_frame      0x0000000000408230        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.gcc_except_table
+                0x0000000000408234      0x248
+ *(.gcc_except_table .gcc_except_table.*)
+ .gcc_except_table
+                0x0000000000408234       0x78 build/release/VPatch/Source/GenPat/Checksums.o
+ .gcc_except_table
+                0x00000000004082ac      0x17c build/release/VPatch/Source/GenPat/main.o
+ .gcc_except_table
+                0x0000000000408428       0x12 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .gcc_except_table
+                0x000000000040843a       0x42 build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+                0x000000000040847c                . = (ALIGN (0x200000) - ((0x200000 - .) & 0x1fffff))
+                0x0000000000608da4                . = DATA_SEGMENT_ALIGN (0x200000, 0x1000)
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x0000000000608da4        0x0
+                0x0000000000608da4                PROVIDE (__preinit_array_start, .)
+ *(.preinit_array)
+                0x0000000000608da4                PROVIDE (__preinit_array_end, .)
+
+.init_array     0x0000000000608da8       0x40
+                0x0000000000608da8                PROVIDE (__init_array_start, .)
+ *(SORT(.init_array.*) SORT(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+ .init_array    0x0000000000608da8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .init_array    0x0000000000608db0        0x8 build/release/VPatch/Source/GenPat/Checksums.o
+ .init_array    0x0000000000608db8        0x8 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .init_array    0x0000000000608dc0        0x8 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .init_array    0x0000000000608dc8        0x8 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .init_array    0x0000000000608dd0        0x8 build/release/VPatch/Source/GenPat/main.o
+ .init_array    0x0000000000608dd8        0x8 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .init_array    0x0000000000608de0        0x8 build/release/VPatch/Source/GenPat/POSIXUtil.o
+                0x0000000000608de8                PROVIDE (__init_array_end, .)
+
+.fini_array     0x0000000000608de8        0x8
+                0x0000000000608de8                PROVIDE (__fini_array_start, .)
+ *(SORT(.fini_array.*) SORT(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+ .fini_array    0x0000000000608de8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                0x0000000000608df0                PROVIDE (__fini_array_end, .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+
+.jcr            0x0000000000608df0        0x8
+ *(.jcr)
+ .jcr           0x0000000000608df0        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .jcr           0x0000000000608df0        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.dynamic        0x0000000000608df8      0x200
+ *(.dynamic)
+ .dynamic       0x0000000000608df8      0x200 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000608df8                _DYNAMIC
+
+.got            0x0000000000608ff8        0x8
+ *(.got)
+ .got           0x0000000000608ff8        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ *(.igot)
+                0x0000000000609fe8                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0x18)?0x18:0x0)
+
+.got.plt        0x0000000000609000      0x228
+ *(.got.plt)
+ .got.plt       0x0000000000609000      0x228 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000609000                _GLOBAL_OFFSET_TABLE_
+ *(.igot.plt)
+ .igot.plt      0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+
+.data           0x0000000000609228       0x10
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x0000000000609228        0x4 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000609228                data_start
+                0x0000000000609228                __data_start
+ .data          0x000000000060922c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ *fill*         0x000000000060922c        0x4 
+ .data          0x0000000000609230        0x8 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                0x0000000000609230                __dso_handle
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/adler32.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/Checksums.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/main.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/md5.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .data          0x0000000000609238        0x0 build/release/VPatch/Source/GenPat/POSIXUtil.o
+ .data          0x0000000000609238        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .data          0x0000000000609238        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .data          0x0000000000609238        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+
+.tm_clone_table
+                0x0000000000609238        0x0
+ .tm_clone_table
+                0x0000000000609238        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .tm_clone_table
+                0x0000000000609238        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.data1
+ *(.data1)
+                0x0000000000609238                _edata = .
+                0x0000000000609238                PROVIDE (edata, .)
+                0x0000000000609238                . = .
+                0x0000000000609238                __bss_start = .
+
+.bss            0x0000000000609240      0x8e8
+ *(.dynbss)
+ .dynbss        0x0000000000609240      0x4a0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+                0x0000000000609240                vtable for std::basic_ios<char, std::char_traits<char> >@@GLIBCXX_3.4
+                0x0000000000609260                std::cerr@@GLIBCXX_3.4
+                0x0000000000609380                vtable for std::basic_filebuf<char, std::char_traits<char> >@@GLIBCXX_3.4
+                0x0000000000609400                vtable for std::basic_ifstream<char, std::char_traits<char> >@@GLIBCXX_3.4
+                0x0000000000609460                vtable for __cxxabiv1::__class_type_info@@CXXABI_1.3
+                0x00000000006094c0                std::cout@@GLIBCXX_3.4
+                0x00000000006095e0                typeinfo for char*@@CXXABI_1.3
+                0x0000000000609600                typeinfo for char const*@@CXXABI_1.3
+                0x0000000000609620                VTT for std::basic_ifstream<char, std::char_traits<char> >@@GLIBCXX_3.4
+                0x0000000000609640                vtable for std::basic_streambuf<char, std::char_traits<char> >@@GLIBCXX_3.4
+                0x00000000006096c0                std::string::_Rep::_S_empty_rep_storage@@GLIBCXX_3.4
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x00000000006096e0        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o
+ .bss           0x00000000006096e0        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o
+ .bss           0x00000000006096e0        0x1 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+ .bss           0x00000000006096e1        0x0 build/release/VPatch/Source/GenPat/adler32.o
+ *fill*         0x00000000006096e1       0x1f 
+ .bss           0x0000000000609700      0x421 build/release/VPatch/Source/GenPat/Checksums.o
+                0x0000000000609700                bInitCRC
+                0x0000000000609720                CRCTable
+ .bss           0x0000000000609b21        0x1 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .bss           0x0000000000609b22        0x1 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .bss           0x0000000000609b23        0x1 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .bss           0x0000000000609b24        0x1 build/release/VPatch/Source/GenPat/main.o
+ .bss           0x0000000000609b25        0x0 build/release/VPatch/Source/GenPat/md5.o
+ .bss           0x0000000000609b25        0x1 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .bss           0x0000000000609b26        0x1 build/release/VPatch/Source/GenPat/POSIXUtil.o
+ .bss           0x0000000000609b27        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .bss           0x0000000000609b27        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+ .bss           0x0000000000609b27        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+ *(COMMON)
+                0x0000000000609b28                . = ALIGN ((. != 0x0)?0x8:0x1)
+ *fill*         0x0000000000609b27        0x1 
+
+.lbss
+ *(.dynlbss)
+ *(.lbss .lbss.* .gnu.linkonce.lb.*)
+ *(LARGE_COMMON)
+                0x0000000000609b28                . = ALIGN (0x8)
+                0x0000000000609b28                . = SEGMENT_START ("ldata-segment", .)
+
+.lrodata
+ *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
+
+.ldata          0x0000000000a09b28        0x0
+ *(.ldata .ldata.* .gnu.linkonce.l.*)
+                0x0000000000a09b28                . = ALIGN ((. != 0x0)?0x8:0x1)
+                0x0000000000a09b28                . = ALIGN (0x8)
+                0x0000000000a09b28                _end = .
+                0x0000000000a09b28                PROVIDE (end, .)
+                0x0000000000a09b28                . = DATA_SEGMENT_END (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x4f
+ *(.comment)
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o
+                                         0x2c (size before relaxing)
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/adler32.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/Checksums.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/FileFormat1.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/main.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/md5.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .comment       0x0000000000000000       0x2c build/release/VPatch/Source/GenPat/POSIXUtil.o
+ .comment       0x000000000000002b       0x24 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                                         0x25 (size before relaxing)
+ .comment       0x0000000000000000       0x2c /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000      0x2b0
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x30 build/release/VPatch/Source/GenPat/adler32.o
+ .debug_aranges
+                0x0000000000000030       0x40 build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_aranges
+                0x0000000000000070       0xa0 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_aranges
+                0x0000000000000110       0x40 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_aranges
+                0x0000000000000150       0x30 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .debug_aranges
+                0x0000000000000180       0x50 build/release/VPatch/Source/GenPat/main.o
+ .debug_aranges
+                0x00000000000001d0       0x30 build/release/VPatch/Source/GenPat/md5.o
+ .debug_aranges
+                0x0000000000000200       0x60 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_aranges
+                0x0000000000000260       0x50 build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000    0x24751
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x0000000000000000      0x1a2 build/release/VPatch/Source/GenPat/adler32.o
+ .debug_info    0x00000000000001a2     0x4b6d build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_info    0x0000000000004d0f     0x4462 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_info    0x0000000000009171     0x6494 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_info    0x000000000000f605     0x1921 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .debug_info    0x0000000000010f26     0x8999 build/release/VPatch/Source/GenPat/main.o
+ .debug_info    0x00000000000198bf      0x57d build/release/VPatch/Source/GenPat/md5.o
+ .debug_info    0x0000000000019e3c     0x59bb build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_info    0x000000000001f7f7     0x4f5a build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_abbrev   0x0000000000000000     0x3cf1
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000       0xda build/release/VPatch/Source/GenPat/adler32.o
+ .debug_abbrev  0x00000000000000da      0x921 build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_abbrev  0x00000000000009fb      0x821 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_abbrev  0x000000000000121c      0x90d build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_abbrev  0x0000000000001b29      0x371 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .debug_abbrev  0x0000000000001e9a      0xa3b build/release/VPatch/Source/GenPat/main.o
+ .debug_abbrev  0x00000000000028d5      0x27c build/release/VPatch/Source/GenPat/md5.o
+ .debug_abbrev  0x0000000000002b51      0x8e2 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_abbrev  0x0000000000003433      0x8be build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_line     0x0000000000000000     0x3311
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x0000000000000000       0xaa build/release/VPatch/Source/GenPat/adler32.o
+ .debug_line    0x00000000000000aa      0x66b build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_line    0x0000000000000715      0x89f build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_line    0x0000000000000fb4      0x62b build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_line    0x00000000000015df      0x286 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .debug_line    0x0000000000001865      0x9e4 build/release/VPatch/Source/GenPat/main.o
+ .debug_line    0x0000000000002249      0x2f6 build/release/VPatch/Source/GenPat/md5.o
+ .debug_line    0x000000000000253f      0x7ec build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_line    0x0000000000002d2b      0x5e6 build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x0000000000000000     0x5fc3
+ *(.debug_str)
+ .debug_str     0x0000000000000000      0x11b build/release/VPatch/Source/GenPat/adler32.o
+                                        0x156 (size before relaxing)
+ .debug_str     0x000000000000011b     0x2770 build/release/VPatch/Source/GenPat/Checksums.o
+                                       0x2bfd (size before relaxing)
+ .debug_str     0x000000000000288b      0x9c0 build/release/VPatch/Source/GenPat/ChunkedFile.o
+                                       0x1ce5 (size before relaxing)
+ .debug_str     0x000000000000324b     0x1aa8 build/release/VPatch/Source/GenPat/FileFormat1.o
+                                       0x4411 (size before relaxing)
+ .debug_str     0x0000000000004cf3       0x4c build/release/VPatch/Source/GenPat/GlobalTypes.o
+                                        0xe99 (size before relaxing)
+ .debug_str     0x0000000000004d3f      0x710 build/release/VPatch/Source/GenPat/main.o
+                                       0x4a99 (size before relaxing)
+ .debug_str     0x000000000000544f       0xbf build/release/VPatch/Source/GenPat/md5.o
+                                        0x16e (size before relaxing)
+ .debug_str     0x000000000000550e      0x525 build/release/VPatch/Source/GenPat/PatchGenerator.o
+                                       0x352f (size before relaxing)
+ .debug_str     0x0000000000005a33      0x590 build/release/VPatch/Source/GenPat/POSIXUtil.o
+                                       0x330a (size before relaxing)
+
+.debug_loc      0x0000000000000000     0xeefd
+ *(.debug_loc)
+ .debug_loc     0x0000000000000000       0xab build/release/VPatch/Source/GenPat/adler32.o
+ .debug_loc     0x00000000000000ab     0x1d80 build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_loc     0x0000000000001e2b     0x2e0b build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_loc     0x0000000000004c36     0x17bf build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_loc     0x00000000000063f5     0x3d2a build/release/VPatch/Source/GenPat/main.o
+ .debug_loc     0x000000000000a11f     0x25bd build/release/VPatch/Source/GenPat/md5.o
+ .debug_loc     0x000000000000c6dc     0x1c2c build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_loc     0x000000000000e308      0xbf5 build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges   0x0000000000000000     0x27b0
+ *(.debug_ranges)
+ .debug_ranges  0x0000000000000000      0x720 build/release/VPatch/Source/GenPat/Checksums.o
+ .debug_ranges  0x0000000000000720      0xa40 build/release/VPatch/Source/GenPat/ChunkedFile.o
+ .debug_ranges  0x0000000000001160      0x3c0 build/release/VPatch/Source/GenPat/FileFormat1.o
+ .debug_ranges  0x0000000000001520       0x50 build/release/VPatch/Source/GenPat/GlobalTypes.o
+ .debug_ranges  0x0000000000001570      0x6f0 build/release/VPatch/Source/GenPat/main.o
+ .debug_ranges  0x0000000000001c60       0x70 build/release/VPatch/Source/GenPat/md5.o
+ .debug_ranges  0x0000000000001cd0      0x6b0 build/release/VPatch/Source/GenPat/PatchGenerator.o
+ .debug_ranges  0x0000000000002380      0x430 build/release/VPatch/Source/GenPat/POSIXUtil.o
+
+.debug_macro
+ *(.debug_macro)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+OUTPUT(build/release/VPatch/Source/GenPat/GenPat elf64-x86-64)

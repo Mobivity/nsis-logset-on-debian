@@ -1,0 +1,11 @@
+nsis (2.46-4) unstable; urgency=low
+
+    This version split the NSIS package into four packages:
+    - nsis: compiler and utilities
+    - nsis-common: plugins, stubs and resource files
+    - nsis-pluginapi: header and library files for developing NSIS plugins
+    - nsis-doc: examples and HTML documentation
+
+    The details for building nsis plugins are described in README.Debian.
+
+ -- Thomas Gaugler <thomas@dadie.net>  Tue, 19 Apr 2011 19:20:38 +0000

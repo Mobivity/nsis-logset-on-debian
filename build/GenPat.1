@@ -1,0 +1,109 @@
+'\" t
+.\"     Title: NSIS
+.\"    Author: Paul Wise
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: October 5, 2005
+.\"    Manual: GenPat
+.\"    Source: GenPat manual
+.\"  Language: English
+.\"
+.TH "NSIS" "1" "October 5, 2005" "GenPat manual" "GenPat"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+GenPat \- A program to create patch files in VPatch format\&.
+.SH "SYNOPSIS"
+.HP \w'\fBGenPat\fR\ 'u
+\fBGenPat\fR [\fB\-R\fR] [\fB\-B=\fR\fB\fI64\fR\fR] [\fB\-V\fR] [\fB\-O\fR] [\fB\-A=\fR\fB\fI500\fR\fR] [\fB\fIsource\fR\fR] [\fB\fItarget\fR\fR] [\fB\fIpatch\&.pat\fR\fR]
+.SH "DESCRIPTION"
+.PP
+This manual page documents briefly the
+\fBGenPat\fR
+command\&.
+.PP
+This manual page was written for the Debian (TM) distribution because the original program does not have a manual page\&. Instead, it has documentation in the HTML format; see below\&.
+.PP
+\fBGenPat\fR
+is a program that creates installer programs for Windows\&.
+.SH "OPTIONS"
+.PP
+\fB\-R\fR
+.RS 4
+Replace a patch with same contents as source silently if it already exists\&.
+.RE
+.PP
+\fB\-B=\fR\fB\fI64\fR\fR
+.RS 4
+Set blocksize (default=64), multiple of 2 is required\&.
+.RE
+.PP
+\fB\-V\fR
+.RS 4
+More verbose information during patch creation\&.
+.RE
+.PP
+\fB\-O\fR
+.RS 4
+Deactivate match limit of the \-A switch (sometimes smaller patches)\&.
+.RE
+.PP
+\fB\-A=\fR\fB\fI500\fR\fR
+.RS 4
+Maximum number of block matches per block (improves performance)\&. Default is 500, larger is slower\&. Use \-V to see the cut\-off aborts\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+0
+.RS 4
+Success
+.RE
+.PP
+1
+.RS 4
+Arguments missing
+.RE
+.PP
+2
+.RS 4
+Other error
+.RE
+.PP
+3
+.RS 4
+Source file already has a patch in specified patch file (=error)
+.RE
+.SH "SEE ALSO"
+.PP
+GenPat is documented more fully in the HTML file /usr/share/doc/nsis/Docs/VPatch/Readme\&.html\&.
+.SH "AUTHOR"
+.PP
+This manual page was written by Paul Wise
+<pabs@debian\&.org>
+for the Debian (TM) system\&.
+.SH "AUTHOR"
+.PP
+\fBPaul Wise\fR
+.RS 4
+Created man page
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2005 Paul Wise
+.br

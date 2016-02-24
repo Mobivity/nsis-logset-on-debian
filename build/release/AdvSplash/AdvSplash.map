@@ -1,0 +1,836 @@
+Archive member included because of file (symbol)
+
+build/release/api/nsis/libpluginapi.a(pluginapi.o)
+                              build/release/AdvSplash/advsplash.o (popstring@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GlobalAlloc@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GlobalFree@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetVersion@0)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+                              build/release/AdvSplash/advsplash.o (_imp__lstrcpyA@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+                              build/release/AdvSplash/advsplash.o (_imp__lstrcatA@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetModuleHandleA@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetProcAddress@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+                              build/release/api/nsis/libpluginapi.a(pluginapi.o) (_imp__lstrcpynA@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o) (_head_lib32_libkernel32_a)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o) (_lib32_libkernel32_a_iname)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+                              build/release/AdvSplash/advsplash.o (_imp__PostMessageA@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+                              build/release/AdvSplash/advsplash.o (_imp__BeginPaint@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetClientRect@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+                              build/release/AdvSplash/advsplash.o (_imp__EndPaint@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+                              build/release/AdvSplash/advsplash.o (_imp__SystemParametersInfoA@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+                              build/release/AdvSplash/advsplash.o (_imp__SetWindowLongA@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+                              build/release/AdvSplash/advsplash.o (_imp__SetWindowPos@28)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+                              build/release/AdvSplash/advsplash.o (_imp__DestroyWindow@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+                              build/release/AdvSplash/advsplash.o (_imp__DefWindowProcA@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+                              build/release/AdvSplash/advsplash.o (_imp__SetWindowRgn@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+                              build/release/AdvSplash/advsplash.o (_imp__EnumDisplaySettingsA@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+                              build/release/AdvSplash/advsplash.o (_imp__LoadCursorA@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+                              build/release/AdvSplash/advsplash.o (_imp__RegisterClassA@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+                              build/release/AdvSplash/advsplash.o (_imp__LoadImageA@24)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+                              build/release/AdvSplash/advsplash.o (_imp__CreateWindowExA@48)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+                              build/release/AdvSplash/advsplash.o (_imp__IsWindow@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetMessageA@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+                              build/release/AdvSplash/advsplash.o (_imp__DispatchMessageA@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+                              build/release/AdvSplash/advsplash.o (_imp__UnregisterClassA@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+                              build/release/AdvSplash/advsplash.o (_imp__wsprintfA)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o) (_head_lib32_libuser32_a)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o) (_lib32_libuser32_a_iname)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+                              build/release/AdvSplash/advsplash.o (_imp__CreateCompatibleDC@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+                              build/release/AdvSplash/advsplash.o (_imp__SelectObject@8)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+                              build/release/AdvSplash/advsplash.o (_imp__BitBlt@36)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+                              build/release/AdvSplash/advsplash.o (_imp__DeleteDC@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetDIBits@28)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+                              build/release/AdvSplash/advsplash.o (_imp__CreateRectRgn@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+                              build/release/AdvSplash/advsplash.o (_imp__CombineRgn@16)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+                              build/release/AdvSplash/advsplash.o (_imp__DeleteObject@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+                              build/release/AdvSplash/advsplash.o (_imp__GetObjectA@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o) (_head_lib32_libgdi32_a)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o) (_lib32_libgdi32_a_iname)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+                              build/release/AdvSplash/advsplash.o (_imp__PlaySoundA@12)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+                              build/release/AdvSplash/advsplash.o (_imp__timeSetEvent@20)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+                              build/release/AdvSplash/advsplash.o (_imp__timeKillEvent@4)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o) (_head_lib32_libwinmm_a)
+/usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+                              /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o) (_lib32_libwinmm_a_iname)
+
+Allocating common symbols
+Common symbol       size              file
+
+bm                  0x18              build/release/AdvSplash/advsplash.o
+fadeout_val         0x4               build/release/AdvSplash/advsplash.o
+g_stacktop          0x4               build/release/api/nsis/libpluginapi.a(pluginapi.o)
+keycolor            0x4               build/release/AdvSplash/advsplash.o
+state               0x4               build/release/AdvSplash/advsplash.o
+resolution          0x4               build/release/AdvSplash/advsplash.o
+g_hInstance         0x4               build/release/AdvSplash/advsplash.o
+fadein_val          0x4               build/release/AdvSplash/advsplash.o
+g_variables         0x4               build/release/api/nsis/libpluginapi.a(pluginapi.o)
+g_stringsize        0x4               build/release/api/nsis/libpluginapi.a(pluginapi.o)
+g_hbm               0x4               build/release/AdvSplash/advsplash.o
+alphaparam          0x4               build/release/AdvSplash/advsplash.o
+timeleft            0x4               build/release/AdvSplash/advsplash.o
+sleep_val           0x4               build/release/AdvSplash/advsplash.o
+g_rv                0x4               build/release/AdvSplash/advsplash.o
+nt50                0x4               build/release/AdvSplash/advsplash.o
+SetLayeredWindowAttributesProc
+                    0x4               build/release/AdvSplash/advsplash.o
+
+Discarded input sections
+
+ .drectve       0x0000000000000000      0x17c build/release/AdvSplash/advsplash.o
+ .debug_info    0x0000000000000000     0x1bc0 build/release/AdvSplash/advsplash.o
+ .debug_abbrev  0x0000000000000000      0x28f build/release/AdvSplash/advsplash.o
+ .debug_loc     0x0000000000000000      0x27f build/release/AdvSplash/advsplash.o
+ .debug_aranges
+                0x0000000000000000       0x20 build/release/AdvSplash/advsplash.o
+ .debug_ranges  0x0000000000000000       0x20 build/release/AdvSplash/advsplash.o
+ .debug_line    0x0000000000000000      0x27e build/release/AdvSplash/advsplash.o
+ .debug_str     0x0000000000000000       0x13 build/release/AdvSplash/advsplash.o
+ .debug_frame   0x0000000000000000       0xdc build/release/AdvSplash/advsplash.o
+ .drectve       0x0000000000000000       0x54 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_info    0x0000000000000000      0xb20 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_abbrev  0x0000000000000000      0x1df build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_loc     0x0000000000000000      0x38b build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_aranges
+                0x0000000000000000       0x20 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_line    0x0000000000000000      0x1cf build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_str     0x0000000000000000        0x0 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .debug_frame   0x0000000000000000      0x19c build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ .text          0x0000000000000000        0x8 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x000000006c100000                __image_base__ = 0x6c100000
+                0x0000000000000000                __dll__ = 0x0
+                0x000000006c100000                ___ImageBase = 0x6c100000
+                0x0000000000001000                __section_alignment__ = 0x1000
+                0x0000000000000200                __file_alignment__ = 0x200
+                0x0000000000000004                __major_os_version__ = 0x4
+                0x0000000000000000                __minor_os_version__ = 0x0
+                0x0000000000000001                __major_image_version__ = 0x1
+                0x0000000000000000                __minor_image_version__ = 0x0
+                0x0000000000000004                __major_subsystem_version__ = 0x4
+                0x0000000000000000                __minor_subsystem_version__ = 0x0
+                0x0000000000000002                __subsystem__ = 0x2
+                0x0000000000200000                __size_of_stack_reserve__ = 0x200000
+                0x0000000000001000                __size_of_stack_commit__ = 0x1000
+                0x0000000000100000                __size_of_heap_reserve__ = 0x100000
+                0x0000000000001000                __size_of_heap_commit__ = 0x1000
+                0x0000000000000000                __loader_flags__ = 0x0
+                0x0000000000000000                __dll_characteristics__ = 0x0
+LOAD build/release/AdvSplash/advsplash.o
+LOAD build/release/api/nsis/libpluginapi.a
+LOAD /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a
+LOAD /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a
+LOAD /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a
+LOAD /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a
+                0x0000000000000268                . = SIZEOF_HEADERS
+                0x0000000000001000                . = ALIGN (__section_alignment__)
+
+.text           0x000000006c101000      0xe00
+ *(.init)
+ *(.text)
+ .text          0x000000006c101000      0x9c8 build/release/AdvSplash/advsplash.o
+                0x000000006c101000                TimeProc@20
+                0x000000006c1012f4                SetTransparentRegion
+                0x000000006c1014e0                DllMain@12
+                0x000000006c1014f4                show
+ .text          0x000000006c1019c8      0x378 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+                0x000000006c1019c8                popstring@4
+                0x000000006c101a1b                popstringn@8
+                0x000000006c101a7f                pushstring@4
+                0x000000006c101ae2                getuservariable@4
+                0x000000006c101b02                setuservariable@8
+                0x000000006c101b30                myatoi@4
+                0x000000006c101bc7                myatou@4
+                0x000000006c101be7                myatoi_or@4
+                0x000000006c101c96                popint@0
+                0x000000006c101cce                popint_or@0
+                0x000000006c101d06                pushint@4
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+ .text          0x000000006c101d40        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+ *(SORT(.text$*))
+ *(.text.*)
+ *(.gnu.linkonce.t.*)
+ *(.glue_7t)
+ *(.glue_7)
+                0x000000006c101d40                ___CTOR_LIST__ = .
+                0x000000006c101d40                __CTOR_LIST__ = .
+                0x000000006c101d40        0x4 LONG 0xffffffffffffffff
+ *(.ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+                0x000000006c101d44        0x4 LONG 0x0
+                0x000000006c101d48                ___DTOR_LIST__ = .
+                0x000000006c101d48                __DTOR_LIST__ = .
+                0x000000006c101d48        0x4 LONG 0xffffffffffffffff
+ *(.dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+                0x000000006c101d4c        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0x000000006c101d50                PROVIDE (etext, .)
+                0x000000006c101d50                PROVIDE (_etext, .)
+ *(.gcc_except_table)
+
+.data           0x000000006c102000        0x0
+                0x000000006c102000                __data_start__ = .
+ *(.data)
+ .data          0x000000006c102000        0x0 build/release/AdvSplash/advsplash.o
+ .data          0x000000006c102000        0x0 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+ .data          0x000000006c102000        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+ *(.data2)
+ *(SORT(.data$*))
+ *(.jcr)
+                0x000000006c102000                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0x000000006c102000      0x200
+ *(.rdata)
+ .rdata         0x000000006c102000       0x34 build/release/AdvSplash/advsplash.o
+                0x000000006c102030                classname
+ .rdata         0x000000006c102034        0x4 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ *(SORT(.rdata$*))
+ .rdata$zzz     0x000000006c102038       0x14 build/release/AdvSplash/advsplash.o
+ .rdata$zzz     0x000000006c10204c       0x14 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+                0x000000006c102060                __rt_psrelocs_start = .
+ *(.rdata_runtime_pseudo_reloc)
+                0x000000006c102060                __rt_psrelocs_end = .
+                0x0000000000000000                __rt_psrelocs_size = (__rt_psrelocs_end - __rt_psrelocs_start)
+                0x000000006c102060                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0x000000006c102060                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0x000000006c102060                ___RUNTIME_PSEUDO_RELOC_LIST__ = (. - __rt_psrelocs_size)
+                0x000000006c102060                __RUNTIME_PSEUDO_RELOC_LIST__ = (. - __rt_psrelocs_size)
+
+.eh_frame
+ *(.eh_frame*)
+
+.pdata
+ *(.pdata)
+
+.bss            0x000000006c103000       0x80
+                0x000000006c103000                __bss_start__ = .
+ *(.bss)
+ .bss           0x000000006c103000       0x28 build/release/AdvSplash/advsplash.o
+ .bss           0x000000006c103028        0x0 build/release/api/nsis/libpluginapi.a(pluginapi.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+ .bss           0x000000006c103028        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+ *(COMMON)
+ COMMON         0x000000006c103028       0x4c build/release/AdvSplash/advsplash.o
+                0x000000006c103028                bm
+                0x000000006c103040                fadeout_val
+                0x000000006c103044                keycolor
+                0x000000006c103048                state
+                0x000000006c10304c                resolution
+                0x000000006c103050                g_hInstance
+                0x000000006c103054                fadein_val
+                0x000000006c103058                g_hbm
+                0x000000006c10305c                alphaparam
+                0x000000006c103060                timeleft
+                0x000000006c103064                sleep_val
+                0x000000006c103068                g_rv
+                0x000000006c10306c                nt50
+                0x000000006c103070                SetLayeredWindowAttributesProc
+ COMMON         0x000000006c103074        0xc build/release/api/nsis/libpluginapi.a(pluginapi.o)
+                0x000000006c103074                g_stacktop
+                0x000000006c103078                g_variables
+                0x000000006c10307c                g_stringsize
+                0x000000006c103080                __bss_end__ = .
+
+.edata          0x000000006c104000      0x200
+ *(.edata)
+ .edata         0x000000006c104000       0x45 dll stuff
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+ *(.note.GNU-stack)
+ *(.gnu.lto_*)
+
+.idata          0x000000006c105000      0x600
+ SORT(*)(.idata$2)
+ .idata$2       0x000000006c105000       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+                0x000000006c105000                _head_lib32_libgdi32_a
+ .idata$2       0x000000006c105014       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+                0x000000006c105014                _head_lib32_libkernel32_a
+ .idata$2       0x000000006c105028       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+                0x000000006c105028                _head_lib32_libuser32_a
+ .idata$2       0x000000006c10503c       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+                0x000000006c10503c                _head_lib32_libwinmm_a
+ SORT(*)(.idata$3)
+                0x000000006c105050        0x4 LONG 0x0
+                0x000000006c105054        0x4 LONG 0x0
+                0x000000006c105058        0x4 LONG 0x0
+                0x000000006c10505c        0x4 LONG 0x0
+                0x000000006c105060        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0x000000006c105064        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+ .idata$4       0x000000006c105064        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .idata$4       0x000000006c105068        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .idata$4       0x000000006c10506c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .idata$4       0x000000006c105070        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .idata$4       0x000000006c105074        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .idata$4       0x000000006c105078        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .idata$4       0x000000006c10507c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .idata$4       0x000000006c105080        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .idata$4       0x000000006c105084        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .idata$4       0x000000006c105088        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+ .idata$4       0x000000006c10508c        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+ .idata$4       0x000000006c10508c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .idata$4       0x000000006c105090        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .idata$4       0x000000006c105094        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .idata$4       0x000000006c105098        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .idata$4       0x000000006c10509c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .idata$4       0x000000006c1050a0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .idata$4       0x000000006c1050a4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .idata$4       0x000000006c1050a8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .idata$4       0x000000006c1050ac        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+ .idata$4       0x000000006c1050b0        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+ .idata$4       0x000000006c1050b0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .idata$4       0x000000006c1050b4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .idata$4       0x000000006c1050b8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .idata$4       0x000000006c1050bc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .idata$4       0x000000006c1050c0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .idata$4       0x000000006c1050c4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .idata$4       0x000000006c1050c8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .idata$4       0x000000006c1050cc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .idata$4       0x000000006c1050d0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .idata$4       0x000000006c1050d4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .idata$4       0x000000006c1050d8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .idata$4       0x000000006c1050dc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .idata$4       0x000000006c1050e0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .idata$4       0x000000006c1050e4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .idata$4       0x000000006c1050e8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .idata$4       0x000000006c1050ec        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .idata$4       0x000000006c1050f0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .idata$4       0x000000006c1050f4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .idata$4       0x000000006c1050f8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .idata$4       0x000000006c1050fc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .idata$4       0x000000006c105100        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+ .idata$4       0x000000006c105104        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+ .idata$4       0x000000006c105104        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .idata$4       0x000000006c105108        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+ .idata$4       0x000000006c10510c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ .idata$4       0x000000006c105110        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+                0x000000006c105114                __IAT_start__ = .
+ SORT(*)(.idata$5)
+ .idata$5       0x000000006c105114        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbh.o)
+ .idata$5       0x000000006c105114        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+                0x000000006c105114                _imp__BitBlt@36
+ .idata$5       0x000000006c105118        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+                0x000000006c105118                _imp__CombineRgn@16
+ .idata$5       0x000000006c10511c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+                0x000000006c10511c                _imp__CreateCompatibleDC@4
+ .idata$5       0x000000006c105120        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+                0x000000006c105120                _imp__CreateRectRgn@16
+ .idata$5       0x000000006c105124        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+                0x000000006c105124                _imp__DeleteDC@4
+ .idata$5       0x000000006c105128        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+                0x000000006c105128                _imp__DeleteObject@4
+ .idata$5       0x000000006c10512c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+                0x000000006c10512c                _imp__GetDIBits@28
+ .idata$5       0x000000006c105130        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+                0x000000006c105130                _imp__GetObjectA@12
+ .idata$5       0x000000006c105134        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+                0x000000006c105134                _imp__SelectObject@8
+ .idata$5       0x000000006c105138        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+ .idata$5       0x000000006c10513c        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbh.o)
+ .idata$5       0x000000006c10513c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+                0x000000006c10513c                _imp__GetModuleHandleA@4
+ .idata$5       0x000000006c105140        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+                0x000000006c105140                _imp__GetProcAddress@8
+ .idata$5       0x000000006c105144        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+                0x000000006c105144                _imp__GetVersion@0
+ .idata$5       0x000000006c105148        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+                0x000000006c105148                _imp__GlobalAlloc@8
+ .idata$5       0x000000006c10514c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+                0x000000006c10514c                _imp__GlobalFree@4
+ .idata$5       0x000000006c105150        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+                0x000000006c105150                _imp__lstrcatA@8
+ .idata$5       0x000000006c105154        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+                0x000000006c105154                _imp__lstrcpyA@8
+ .idata$5       0x000000006c105158        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+                0x000000006c105158                _imp__lstrcpynA@12
+ .idata$5       0x000000006c10515c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+ .idata$5       0x000000006c105160        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbh.o)
+ .idata$5       0x000000006c105160        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+                0x000000006c105160                _imp__BeginPaint@8
+ .idata$5       0x000000006c105164        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+                0x000000006c105164                _imp__CreateWindowExA@48
+ .idata$5       0x000000006c105168        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+                0x000000006c105168                _imp__DefWindowProcA@16
+ .idata$5       0x000000006c10516c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+                0x000000006c10516c                _imp__DestroyWindow@4
+ .idata$5       0x000000006c105170        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+                0x000000006c105170                _imp__DispatchMessageA@4
+ .idata$5       0x000000006c105174        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+                0x000000006c105174                _imp__EndPaint@8
+ .idata$5       0x000000006c105178        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+                0x000000006c105178                _imp__EnumDisplaySettingsA@12
+ .idata$5       0x000000006c10517c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+                0x000000006c10517c                _imp__GetClientRect@8
+ .idata$5       0x000000006c105180        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+                0x000000006c105180                _imp__GetMessageA@16
+ .idata$5       0x000000006c105184        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+                0x000000006c105184                _imp__IsWindow@4
+ .idata$5       0x000000006c105188        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+                0x000000006c105188                _imp__LoadCursorA@8
+ .idata$5       0x000000006c10518c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+                0x000000006c10518c                _imp__LoadImageA@24
+ .idata$5       0x000000006c105190        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+                0x000000006c105190                _imp__PostMessageA@16
+ .idata$5       0x000000006c105194        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+                0x000000006c105194                _imp__RegisterClassA@4
+ .idata$5       0x000000006c105198        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+                0x000000006c105198                _imp__SetWindowLongA@12
+ .idata$5       0x000000006c10519c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+                0x000000006c10519c                _imp__SetWindowPos@28
+ .idata$5       0x000000006c1051a0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+                0x000000006c1051a0                _imp__SetWindowRgn@12
+ .idata$5       0x000000006c1051a4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+                0x000000006c1051a4                _imp__SystemParametersInfoA@16
+ .idata$5       0x000000006c1051a8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+                0x000000006c1051a8                _imp__UnregisterClassA@8
+ .idata$5       0x000000006c1051ac        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+                0x000000006c1051ac                _imp__wsprintfA
+ .idata$5       0x000000006c1051b0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+ .idata$5       0x000000006c1051b4        0x0 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbh.o)
+ .idata$5       0x000000006c1051b4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+                0x000000006c1051b4                _imp__PlaySoundA@12
+ .idata$5       0x000000006c1051b8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+                0x000000006c1051b8                _imp__timeKillEvent@4
+ .idata$5       0x000000006c1051bc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+                0x000000006c1051bc                _imp__timeSetEvent@20
+ .idata$5       0x000000006c1051c0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+                0x000000006c1051c4                __IAT_end__ = .
+ SORT(*)(.idata$6)
+ .idata$6       0x000000006c1051c4        0xa /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .idata$6       0x000000006c1051ce        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .idata$6       0x000000006c1051dc       0x16 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .idata$6       0x000000006c1051f2       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .idata$6       0x000000006c105202        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .idata$6       0x000000006c10520e       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .idata$6       0x000000006c10521e        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .idata$6       0x000000006c10522a        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .idata$6       0x000000006c105238       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .idata$6       0x000000006c105248       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .idata$6       0x000000006c10525c       0x12 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .idata$6       0x000000006c10526e        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .idata$6       0x000000006c10527c        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .idata$6       0x000000006c10528a        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .idata$6       0x000000006c105298        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .idata$6       0x000000006c1052a4        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .idata$6       0x000000006c1052b0        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .idata$6       0x000000006c1052bc        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .idata$6       0x000000006c1052ca       0x12 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .idata$6       0x000000006c1052dc       0x12 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .idata$6       0x000000006c1052ee       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .idata$6       0x000000006c1052fe       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .idata$6       0x000000006c105312        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .idata$6       0x000000006c10531e       0x18 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .idata$6       0x000000006c105336       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .idata$6       0x000000006c105346        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .idata$6       0x000000006c105354        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .idata$6       0x000000006c105360        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .idata$6       0x000000006c10536e        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .idata$6       0x000000006c10537c       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .idata$6       0x000000006c10538c       0x12 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .idata$6       0x000000006c10539e       0x12 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .idata$6       0x000000006c1053b0       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .idata$6       0x000000006c1053c0       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .idata$6       0x000000006c1053d0       0x18 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .idata$6       0x000000006c1053e8       0x14 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .idata$6       0x000000006c1053fc        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .idata$6       0x000000006c105408        0xe /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .idata$6       0x000000006c105416       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+ .idata$6       0x000000006c105426       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ SORT(*)(.idata$7)
+ *fill*         0x000000006c105436        0x2 
+ .idata$7       0x000000006c105438        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00012.o)
+ .idata$7       0x000000006c10543c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00022.o)
+ .idata$7       0x000000006c105440        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00034.o)
+ .idata$7       0x000000006c105444        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00064.o)
+ .idata$7       0x000000006c105448        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00072.o)
+ .idata$7       0x000000006c10544c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00075.o)
+ .idata$7       0x000000006c105450        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00167.o)
+ .idata$7       0x000000006c105454        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00206.o)
+ .idata$7       0x000000006c105458        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbs00305.o)
+ .idata$7       0x000000006c10545c        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libgdi32.a(dtfkbt.o)
+                0x000000006c10545c                _lib32_libgdi32_a_iname
+ .idata$7       0x000000006c105468        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00533.o)
+ .idata$7       0x000000006c10546c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00581.o)
+ .idata$7       0x000000006c105470        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00677.o)
+ .idata$7       0x000000006c105474        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00695.o)
+ .idata$7       0x000000006c105478        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs00702.o)
+ .idata$7       0x000000006c10547c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01289.o)
+ .idata$7       0x000000006c105480        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01298.o)
+ .idata$7       0x000000006c105484        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbs01301.o)
+ .idata$7       0x000000006c105488       0x10 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libkernel32.a(dnqfbt.o)
+                0x000000006c105488                _lib32_libkernel32_a_iname
+ .idata$7       0x000000006c105498        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00011.o)
+ .idata$7       0x000000006c10549c        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00091.o)
+ .idata$7       0x000000006c1054a0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00135.o)
+ .idata$7       0x000000006c1054a4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00145.o)
+ .idata$7       0x000000006c1054a8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00150.o)
+ .idata$7       0x000000006c1054ac        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00185.o)
+ .idata$7       0x000000006c1054b0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00195.o)
+ .idata$7       0x000000006c1054b4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00237.o)
+ .idata$7       0x000000006c1054b8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00297.o)
+ .idata$7       0x000000006c1054bc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00398.o)
+ .idata$7       0x000000006c1054c0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00409.o)
+ .idata$7       0x000000006c1054c4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00415.o)
+ .idata$7       0x000000006c1054c8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00470.o)
+ .idata$7       0x000000006c1054cc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00483.o)
+ .idata$7       0x000000006c1054d0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00574.o)
+ .idata$7       0x000000006c1054d4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00577.o)
+ .idata$7       0x000000006c1054d8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00578.o)
+ .idata$7       0x000000006c1054dc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00596.o)
+ .idata$7       0x000000006c1054e0        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00620.o)
+ .idata$7       0x000000006c1054e4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbs00644.o)
+ .idata$7       0x000000006c1054e8        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libuser32.a(dbukbt.o)
+                0x000000006c1054e8                _lib32_libuser32_a_iname
+ .idata$7       0x000000006c1054f4        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00008.o)
+ .idata$7       0x000000006c1054f8        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00149.o)
+ .idata$7       0x000000006c1054fc        0x4 /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbs00150.o)
+ .idata$7       0x000000006c105500        0xc /usr/lib/gcc/i686-w64-mingw32/4.8/../../../../i686-w64-mingw32/lib/../lib/libwinmm.a(dixkbt.o)
+                0x000000006c105500                _lib32_libwinmm_a_iname
+
+.CRT            0x000000006c106000        0x0
+                0x000000006c106000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0x000000006c106000                ___crt_xc_end__ = .
+                0x000000006c106000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0x000000006c106000                ___crt_xi_end__ = .
+                0x000000006c106000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0x000000006c106000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0x000000006c106000                ___crt_xp_end__ = .
+                0x000000006c106000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0x000000006c106000                ___crt_xt_end__ = .
+
+.tls            0x000000006c106000        0x0
+                0x000000006c106000                ___tls_start__ = .
+ *(.tls$AAA)
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+ *(.tls$ZZZ)
+                0x000000006c106000                ___tls_end__ = .
+
+.endjunk        0x000000006c106000        0x0
+                0x000000006c106000                PROVIDE (end, .)
+                0x000000006c106000                PROVIDE (_end, .)
+                0x000000006c106000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc          0x000000006c106000      0x200
+ *(.reloc)
+ .reloc         0x000000006c106000      0x150 dll stuff
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.zdebug_aranges
+ *(.zdebug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.zdebug_pubnames
+ *(.zdebug_pubnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.zdebug_pubtypes
+ *(.zdebug_pubtypes)
+
+.debug_info
+ *(.debug_info .gnu.linkonce.wi.*)
+
+.zdebug_info
+ *(.zdebug_info .zdebug.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.zdebug_abbrev
+ *(.zdebug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.zdebug_line
+ *(.zdebug_line)
+
+.debug_frame
+ *(.debug_frame*)
+
+.zdebug_frame
+ *(.zdebug_frame*)
+
+.debug_str
+ *(.debug_str)
+
+.zdebug_str
+ *(.zdebug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.zdebug_loc
+ *(.zdebug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.zdebug_macinfo
+ *(.zdebug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.zdebug_weaknames
+ *(.zdebug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.zdebug_funcnames
+ *(.zdebug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.zdebug_typenames
+ *(.zdebug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.zdebug_varnames
+ *(.zdebug_varnames)
+
+.debug_macro
+ *(.debug_macro)
+
+.zdebug_macro
+ *(.zdebug_macro)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.zdebug_ranges
+ *(.zdebug_ranges)
+
+.debug_types
+ *(.debug_types .gnu.linkonce.wt.*)
+
+.zdebug_types
+ *(.zdebug_types .gnu.linkonce.wt.*)
+OUTPUT(build/release/AdvSplash/AdvSplash.dll pei-i386)
+LOAD dll stuff

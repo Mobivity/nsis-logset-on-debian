@@ -1,0 +1,569 @@
+
+
+
+InstallOptions 2
+
+The InstallOptions plug-in is deprecated. For new scripts, it is recommended to
+use the new nsDialogs plug-in instead.
+
+Introduction
+
+InstallOptions is an NSIS plugin which allows you to create custom pages for
+NSIS installers, to prompt the user for extra information.
+The dialogs created by InstallOptions are based on INI files which define the
+controls on the dialog and their properties. These INI files can be modified
+from the script to adjust the dialogs on runtime.
+The format of INI files is described in a Wikipedia_article.
+
+INI file structure
+
+The INI file has one required section. This section includes the number of
+controls to be created as well as general window attributes. The INI file also
+includes a variable number of Field sections which are used to create the
+controls to be displayed.
+The required section is named &quot;Settings&quot;. It can contain the following
+values:
+
+NumFields        (required) The number of control elements to be displayed on
+                            the dialog window.
+Title            (optional) If specified, gives the text to set the titlebar to.
+                            Otherwise, the titlebar text is not changed.
+                            If specified, overrides NSIS settings and enables or
+CancelEnabled    (optional) disables the cancel button. If set to 1, the cancel
+                            button will be enabled. If set to 0, the cancel
+                            button will be disabled.
+                            If specified, overrides NSIS settings and shows or
+CancelShow       (optional) hides the cancel button If set to 1, the cancel
+                            button will be shown. If set to 0, the cancel button
+                            will be hidden.
+                            If specified, overrides NSIS settings and enables or
+BackEnabled      (optional) disables the back button. If set to 1, the back
+                            button will be enabled. If set to 0, the back button
+                            will be disabled.
+                            Overrides the text for the cancel button. If not
+CancelButtonText (optional) specified, the cancel button text will not be
+                            changed.
+NextButtonText   (optional) Overrides the text for the next button. If not
+                            specified, the next button text will not be changed.
+BackButtonText   (optional) Overrides the text for the back button. If not
+                            specified, the back button text will not be changed.
+                            Overrides the default rect ID to run over. This will
+Rect             (optional) make IO resize itself according to a different rect
+                            than NSIS's dialogs rect.
+                            If 1 is specified the dialog will be mirrored and
+                            all texts will be aligned to the right. The
+RTL              (optional) INSTALLOPTIONS_EXTRACT macros automatically set this
+                            field to the right value for the current installer
+                            language as given by the NSIS string $(^RTL).
+                            This is not something you have to supply yourself
+                            but is set by InstallOptions, before calling your
+State            (output)   custom page validation function, to the field number
+                            of the custom Button control (or other control
+                            having the Notify flag) the user pressed, if any.
+
+Each field section has the heading &quot;Field #&quot; where # must be
+sequential numbers from 1 to NumFields. Each Field section can contain the
+following values:
+
+                        Type of control to be created. Valid values are
+                        &quot;Label&quot;, &quot;Text&quot;,
+                        &quot;Password&quot;, &quot;Combobox&quot;,
+                        &quot;DropList&quot;, &quot;Listbox&quot;,
+                        &quot;CheckBox&quot;, &quot;RadioButton&quot;,
+                        &quot;FileRequest&quot;, &quot;DirRequest&quot;
+                        &quot;Icon&quot;, &quot;Bitmap&quot;,
+                        &quot;GroupBox&quot;, &quot;HLine&quot;,
+                        &quot;VLine&quot;, &quot;Link&quot; or
+                        &quot;Button&quot;.
+
+                        A &quot;Label&quot; is used to display static text.
+                        (i.e. a caption for a textbox)
+                        A &quot;Text&quot; and &quot;Password&quot; accept text
+                        input from the user. &quot;Password&quot; masks the
+                        input with * characters.
+                        A &quot;Combobox&quot; allows the user to type text not
+                        in the popup list, a &quot;Droplist&quot; only allows
+                        selection of items in the list.
+                        A &quot;Listbox&quot; shows multiple items and can
+                        optionally allow the user to select more than one item.
+                        A &quot;CheckBox&quot; control displays a check box with
+                        label.
+                        A &quot;RadioButton&quot; control displays a radio
+Type         (required) button with label.
+                        A &quot;FileRequest&quot; control displays a textbox and
+                        a browse button. Clicking the browse button will display
+                        a file requester where the user can browse for a file.
+                        A &quot;DirRequest&quot; control displays a textbox and
+                        a browse button. Clicking the browse button will display
+                        a directory requester where the user can browse for a
+                        directory.
+                        An &quot;Icon&quot; control displays an icon. Use no
+                        Text to use the installer icon.
+                        A &quot;Bitmap&quot; control displays a bitmap.
+                        A &quot;GroupBox&quot; control displays a frame to group
+                        controls.
+                        A &quot;HLine&quot; control displays a horizontal line
+                        to separate controls.
+                        A &quot;VLine&quot; control displays a vertical line to
+                        separate controls.
+                        A &quot;Link&quot; control displays a static hot text.
+                        When the user clicks the control the contents of State
+                        (e.g. http://...) will be executed using ShellExecute.
+                        Alternatively State can be omitted and the NOTIFY flag
+                        used to have your NSIS script called. See the
+                        &quot;NOTIFY&quot; flag below for more information.
+                        A &quot;Button&quot; control displays a push button that
+                        can be used in the same way as the &quot;Link&quot;
+                        control above.
+                        Specifies the caption of a label, checkbox, or radio
+                        button control. For DirRequest control this specifies
+                        the title of the browse dialog. For icon and bitmaps
+                        control this specifies the path to the image.
+Text         (optional)
+                        Note: For labels, \r\n will be converted to a newline.
+                        To use a back-slash in your text you have to escape it
+                        using another back-slash - \\. Described below are NSIS
+                        functions for converting text to/from this format.
+                        Specifies the state of the control. This is updated when
+                        the user closes the window, so you can read from it from
+                        NSIS. For edit texts and dir and file request boxes,
+                        this is the string that is specified. For radio button
+                        and check boxes, this can be '0' or '1' (for unchecked
+                        or checked). For list boxes, combo boxes and drop lists
+                        this is the selected items separated by pipes ('|'). For
+State        (optional) Links and Buttons this can specify something to be
+                        executed or opened (using ShellExecute).
+
+                        Note: For Text fields with the MULTILINE flag, \r\n will
+                        be converted to a newline. To use a back-slash in your
+                        text you have to escape it using another back-slash -
+                        \\. Described below are NSIS functions for converting
+                        text to/from this format.
+                        A list of items to display in a combobox, droplist, or
+ListItems    (optional) listbox.
+                        This is a single line of text with each item separated
+                        by a pipe character '|'
+                        Causes validation on the selected control to limit the
+                        maximum length of text.
+                        If the user specifies more text than this, a message box
+                        will appear when they click &quot;OK&quot; and the
+                        dialog will not be dismissed.
+MaxLen       (optional) You should not use this on a &quot;combobox&quot; since
+                        the user can not control what is selected.
+                        This should be set to a maximum of 260 for
+                        &quot;FileRequest&quot; and &quot;DirRequest&quot;
+                        controls.
+                        Ignored on &quot;Label&quot; controls.
+                        Causes validation on the selected control to force the
+                        user to enter a minimum amount of text.
+                        If the user specifies less text than this, a message box
+                        will appear when they click &quot;OK&quot; and the
+MinLen       (optional) dialog will not be dismissed.
+                        Unlike MaxLen, this is useful for &quot;Combobox&quot;
+                        controls. By setting this to a value of &quot;1&quot;
+                        the program will force the user to select an item.
+                        Ignored on &quot;Label&quot; controls.
+                        If the field fails the test for &quot;MinLen&quot; or
+                        &quot;MaxLen&quot;, a messagebox will be displayed with
+                        this text.
+ValidateText (optional)
+                        Note: \r\n will be converted to a newline, two back-
+                        slashes will be converted to one - \\. Described below
+                        are NSIS functions for converting text to/from this
+                        format.
+                        The position on the dialog where this control appears.
+                        All sizes should be set in dialog units. To get the
+                        right dimensions for your controls, design your dialog
+                        using a resource editor and copy the dimensions to the
+                        INI file.
+
+                        Note: You can specify negative coordinates to specify
+                        the distance from the right or bottom edge.
+
+                        Note (2): For combobox or droplist, the
+Left                    &quot;bottom&quot; value is not used in the same way.
+Right        (required) In this case, the bottom value is the maximum size of
+Top                     the window when the pop-up list is being displayed. All
+Bottom                  other times, the combobox is automatically sized to be
+                        one element tall. If you have trouble where you can not
+                        see the combobox drop-down, then check the bottom value
+                        and ensure it is large enough. A rough guide for the
+                        height required is the number of items in the list
+                        multiplied by 8, plus 20.
+
+                        Note (3): FileRequest and DirRequest controls will
+                        allocate 15 dialog units to the browse button. Make this
+                        control wide enough the contents of the textbox can be
+                        seen.
+                        Specifies the filter to be used in the
+                        &quot;FileRequest&quot; control.
+                        This is constructed by putting pairs of entries
+                        together, each item separated by a | character.
+                        The first value in each pair is the text to display for
+                        the filter.
+                        The second value is the pattern to use to match files.
+Filter       (optional) For example, you might specify:
+                        Filter=Text Files|*.txt|Programs|*.exe;*.com|All
+                        Files|*.*
+                        If not specified, then the filter defaults to All
+                        Files|*.*
+
+                        Note: you should not put any extra spaces around the |
+                        characters.
+                        Used by DirRequest controls to specify the root
+                        directory of the search. By default, this allows the
+Root         (optional) user to browse any directory on the computer. This will
+                        limit the search to a particular directory on the
+                        system.
+                        This specifies additional flags for the display of
+                        different controls. Each value should be separated by a
+                        | character, and you should be careful not to put any
+                        spaces around the | character.
+
+                        Value             Meaning
+                                          This causes &quot;FileRequest&quot;
+                        REQ_SAVE          controls to display a Save As dialog.
+                                          If not specified, an Open dialog is
+                                          used.
+                                          Used by &quot;FileRequest&quot; to
+                                          determine if the selected file must
+                                          exist.
+                                          This only applies if an
+                        FILE_MUST_EXIST   &quot;Open&quot; dialog is being
+                                          displayed.
+                                          This currently does not force the file
+                                          to exist other than through the browse
+                                          button.
+                                          Used by &quot;FileRequest&quot;,
+                        FILE_EXPLORER     enables new file request look
+                                          (recommended)
+                                          Used by &quot;FileRequest&quot;, hides
+                        FILE_HIDEREADONLY &quot;open read only&quot; checkbox in
+                                          open dialog.
+                                          Used by &quot;FileRequest&quot; to
+                                          display a warning message if the
+                        WARN_IF_EXIST     selected file already exists.
+                                          The warning message is only displayed
+                                          for files selected with the browse
+                                          button.
+                                          Used by &quot;FileRequest&quot; to
+                                          force the path to exist. Prevents the
+                        PATH_MUST_EXIST   user from typing a non-existent path
+                                          into the browse dialog window.
+                                          This only validates path's selected
+                                          with the browse button.
+                                          Used by &quot;FileRequest&quot; to
+                                          display a warning if the selected file
+                                          does not exist. However, it still
+                        PROMPT_CREATE     allows the user to select the file.
+                                          This only displays the warning for
+                                          files selected with the browse button.
+                                          Doesn't work along with REQ_SAVE.
+                                          Used by &quot;Checkbox&quot; and
+                                          &quot;Radiobutton&quot; controls to
+                        RIGHT             specify you want the checkbox to the
+                                          right of the text instead of the left
+                                          as is the default.
+                                          Used by &quot;Listbox&quot; controls.
+                                          Turns string selection on or off each
+                                          time the user clicks or double-clicks
+                        MULTISELECT       a string in the list box. The user can
+                                          select any number of strings. If this
+                                          flag and EXTENDEDSELCT are not
+                                          specified, only one item can be
+                                          selected from the list.
+                                          Used by &quot;Listbox&quot; controls.
+                                          Allows multiple items to be selected
+                                          by using the SHIFT key and the mouse
+                        EXTENDEDSELCT     or special key combinations. If this
+                                          flag and MULTISELECT are not
+                                          specified, only one item can be
+                                          selected from the list.
+                                          This causes &quot;Bitmap&quot;
+                                          controls to resize the image to the
+                        RESIZETOFIT       size of the control. Also useful to
+                                          support custom DPI settings. Without
+Flags        (optional)                   this, the image will be centered
+                                          within the specified area.
+                                          Add this flag to the first control of
+                                          a group of controls to group them.
+                        GROUP             Grouping controls allows you to create
+                                          multiple groups of radio button and
+                                          makes keyboard navigation using arrow
+                                          keys easier.
+                                          Sets focus on the specified control,
+                                          instead of the first focusable
+                        FOCUS             control. If more than one field is
+                                          specified with this flag, only the
+                                          first one will receive focus.
+                                          Do not stop on the control when the
+                                          user pressed the Tab key. Add
+                        NOTABSTOP         NOTABSTOP to all controls of a group
+                                          except the first one to allow
+                                          navigation between groups with the Tab
+                                          key.
+                        DISABLED          Causes a control to be disabled.
+                                          Used by &quot;Text&quot; controls.
+                        ONLY_NUMBERS      Forces the user to enter only numbers
+                                          into the edit box.
+                                          Used by &quot;Text&quot; controls.
+                        MULTILINE         Causes the control to accept multiple-
+                                          lines.
+                                          Used by &quot;Text&quot; controls with
+                                          multiple-line. Specifies that a
+                        WANTRETURN        carriage return be inserted when the
+                                          user presses the ENTER key while
+                                          entering text into the text box.
+                                          Used by &quot;Text&quot; controls with
+                                          multiple-line. Disables the word-wrap
+                        NOWORDWRAP        that occurs when long lines are
+                                          entered. Long lines instead scroll off
+                                          to the side. Specifying the HSCROLL
+                                          flag also has this effect.
+                                          Show a horizontal scrollbar. When used
+                        HSCROLL           by &quot;Text&quot; controls with
+                                          multiple-lines this also disables
+                                          word-wrap.
+                        VSCROLL           Show a vertical scrollbar.
+                                          Used by &quot;Text&quot; controls.
+                                          Prevents the user from entering or
+                        READONLY          editing text in the edit control, but
+                                          allow the user to select and copy the
+                                          text.
+                                          Used by &quot;Button&quot;,
+                                          &quot;Link&quot;,
+                                          &quot;CheckBox&quot;,
+                                          &quot;RadioButton&quot;,
+                                          &quot;ListBox&quot; and
+                                          &quot;DropList&quot; controls. Causes
+                                          InstallOptions to call your NSIS
+                                          custom page validation/leave function
+                                          whenever the control's selection
+                                          changes. Your validation/leave
+                        NOTIFY            function can read the
+                                          &quot;State&quot; value from the
+                                          &quot;Settings&quot; section to
+                                          determine which control caused the
+                                          notification, if any, and perform some
+                                          appropriate action followed by an
+                                          Abort instruction (to tell NSIS to
+                                          return to the page). The
+                                          Examples\InstallOptions folder
+                                          contains an example script showing how
+                                          this might be used.
+
+TxtColor     (optional) Used by Link controls to specify the foreground color of
+                        the text. Format: 0xBBGGRR (hexadecimal).
+                        After initDialog returns, this will contain the HWND of
+HWND                    the control created by this field. It can be used
+HWND2        (output)   instead of FindWindow and GetDlgItem. HWND2 contains the
+                        HWND of an additional control, such as the browse
+                        button.
+
+
+Header file
+
+The InstallOptions header files provides macros and functions to easily create
+custom dialogs. You can include it on the top of your script as follows:
+
+  !include InstallOptions.nsh
+
+
+Creating dialogs
+
+
+Extracting the INI file
+
+First, you have to extract your InstallOptions INI files in the .onInit function
+(or un.onInit for the uninstaller) using the INSTALLOPTIONS_EXTRACT macro. The
+files will be extracted to a temporary folder (the NSIS plug-ins folder) that is
+automatically created.
+
+  Function .onInit
+    !insertmacro INSTALLOPTIONS_EXTRACT &quot;ioFile.ini&quot;
+  FunctionEnd
+
+If the INI file is located in another directory, use INSTALLOPTIONS_EXTRACT_AS.
+The second parameter is the filename in the temporary folder, which is the
+filename that should be used as input for the other macros.
+
+  Function .onInit
+    !insertmacro INSTALLOPTIONS_EXTRACT_AS &quot;..\ioFile.ini&quot;
+  &quot;ioFile.ini&quot;
+  FunctionEnd
+
+
+Displaying the dialog
+
+You can call InstallOptions in a page function defined with the Page or
+UninstPage command. Check the NSIS documentation (Scripting Reference -> Pages)
+for information about the page system.
+
+  Page custom CustomPageFunction
+
+To display the dialog, use the INSTALLOPTIONS_DISPLAY macro:
+
+  Function CustomPageFunction ;Function name defined with Page command
+    !insertmacro INSTALLOPTIONS_DISPLAY &quot;ioFile.ini&quot;
+  FunctionEnd
+
+
+User input
+
+To get the input of the user, read the State value of a Field using the
+INSTALLOPTIONS_READ macro:
+
+  !insertmacro INSTALLOPTIONS_READ $VAR &quot;ioFile.ini&quot; &quot;Field
+  #&quot; &quot;Name&quot;
+
+
+Writing to INI files
+
+The INSTALLOPTIONS_WRITE macro allows you to write values to the INI file to
+change texts or control settings on runtime:
+
+  !insertmacro INSTALLOPTIONS_WRITE &quot;ioFile.ini&quot; &quot;Field #&quot;
+  &quot;Name&quot; &quot;Value&quot;
+
+
+Escaped values
+
+Some InstallOptions values are escaped (in a similar manner to &quot;C&quot;
+strings) to allow characters to be used that are not normally valid in INI file
+values. The affected values are:
+
+* The ValidateText field
+* The Text value of Label fields
+* The State value of Text fields that have the MULTILINE flag
+
+The escape character is the back-slash character (&quot;\&quot;) and the
+available escape sequences are:
+
+&quot;\\&quot; Back-slash
+&quot;\r&quot; Carriage return (ASCII 13)
+&quot;\n&quot; Line feed (ASCII 10)
+&quot;\t&quot; Tab (ASCII 9)
+
+The INSTALLOPTIONS_READ_CONVERT and INSTALLOPTIONS_WRITE_CONVERT macros
+automatically convert these characters in installer code. In uninstaller code,
+use INSTALLOPTIONS_READ_UNCONVERT and INSTALLOPTIONS_WRITE_UNCONVERT.
+To use these macros in your script, the conversion functions need to be
+included:
+
+  ;For INSTALLOPTIONS_READ_CONVERT
+    !insertmacro INSTALLOPTIONS_FUNCTION_READ_CONVERT
+  ;For INSTALLOPTIONS_WRITE_CONVERT
+    !insertmacro INSTALLOPTIONS_FUNCTION_WRITE_CONVERT
+  ;For INSTALLOPTIONS_READ_UNCONVERT
+    !insertmacro INSTALLOPTIONS_UNFUNCTION_READ_CONVERT
+  ;For INSTALLOPTIONS_WRITE_UNCONVERT
+    !insertmacro INSTALLOPTIONS_UNFUNCTION_WRITE_CONVERT
+
+
+Input validation
+
+To validate the user input (for example, to check whether the user has filled in
+a textbox) use the leave function of the Page command and Abort when the
+validation has failed:
+
+  Function ValidateCustom
+
+    !insertmacro INSTALLOPTIONS_READ $R0 "test.ini" "Field 1" "State"
+    StrCmp $R0 "" 0 +3
+      MessageBox MB_ICONEXCLAMATION|MB_OK "Please enter your name."
+      Abort
+
+  FunctionEnd
+
+
+Return value
+
+After a dialog is created (using display or show), a return value is available:
+
+* success - The user has pressed the Next button
+* back - The user has pressed the Back button
+* cancel - The user has pressed the Cancel button
+* error - An error has occurred, the dialog cannot be displayed.
+
+You only have to check this value if you need something really special, such as
+doing something when the user pressed the Back button.
+If you need the return value, use the INSTALLOPTIONS_DISPLAY_RETURN or
+INSTALLOPTIONS_SHOW_RETURN macro. The return value will be added to the stack,
+so you can use the Pop command to get it.
+
+Reserve files
+
+When using solid compression, it's important that files which are being
+extracted in user interface functions are located before other files in the data
+block. Otherwise there may be a delay before a page can be displayed.
+To ensure that this is the case, add ReserveFile commands for InstallOptions and
+the INI files before all sections and functions:
+
+  ReserveFile &quot;test.ini&quot;
+  ReserveFile &quot;${NSISDIR}\Plugins\InstallOptions.dll&quot;
+
+
+Fonts and colors
+
+To customize fonts or colors on InstallOptions dialogs, the
+INSTALLOPTIONS_INITDIALOG and INSTALLOPTIONS_SHOW macro can be used.
+INSTALLOPTIONS_INITDIALOG creates the dialog in memory, but does not show it.
+After inserting this macro, you can set the fonts and colors, and then insert
+INSTALLOPTIONS_SHOW to show the dialog.
+The INSTALLOPTIONS_INITDIALOG macro also pushes the HWND of the custom dialog to
+the stack. Control HWND's are available for each control in the HWND entry of
+the corresponding field in the INI file.
+Example of using a custom font:
+
+  Var HWND
+  Var DLGITEM
+  Var FONT
+
+  Function FunctionName ;FunctionName defined with Page command
+
+    !insertmacro INSTALLOPTIONS_INITDIALOG &quot;ioFile.ini&quot;
+    Pop $HWND ;HWND of dialog
+
+    !insertmacro INSTALLOPTIONS_READ $DLGITEM &quot;ioFile.ini&quot; &quot;Field
+  1&quot; &quot;HWND&quot;
+
+    ;$DLGITEM contains the HWND of the first field
+    CreateFont $FONT &quot;Tahoma&quot; 10 700
+    SendMessage $DLGITEM ${WM_SETFONT} $FONT 0
+
+    !insertmacro INSTALLOPTIONS_SHOW
+
+  FunctionEnd
+
+
+Credits
+
+Original version by Michael Bishop
+DLL version by Nullsoft, Inc.
+DLL version 2 by Amir Szekely, ORTIM, Joost Verburg
+New documentation by Joost Verburg
+
+License
+
+
+  Original version Copyright © 2001 Michael Bishop
+  DLL version 1 Copyright © 2001-2002 Nullsoft, Inc., ORTIM
+  DLL version 2 Copyright © 2003-2009 Amir Szekely, Joost Verburg, Dave Laundon
+
+  This software is provided 'as-is', without any express or implied
+  warranty. In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute
+  it freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented;
+     you must not claim that you wrote the original software.
+     If you use this software in a product, an acknowledgment in the
+     product documentation would be appreciated but is not required.
+  2. Altered versions must be plainly marked as such,
+     and must not be misrepresented as being the original software.
+  3. This notice may not be removed or altered from any distribution.
+
+

@@ -1,0 +1,19 @@
+Package: nsis-pluginapi
+Source: nsis
+Version: 2.46-7
+Architecture: all
+Maintainer: Thomas Gaugler <thomas@dadie.net>
+Installed-Size: 96
+Recommends: mingw-w64 (>= 1.0)
+Enhances: nsis (>= 2.46-7)
+Breaks: nsis (<< 2.46-4)
+Replaces: nsis (<< 2.46-4)
+Section: devel
+Priority: optional
+Homepage: http://nsis.sourceforge.net/
+Description: Nullsoft Scriptable Install System plugin API
+ NSIS is a tool for creating quick and user friendly installers for
+ Microsoft Windows (Win32) operating systems.
+ .
+ This package contains the header and library files for developing
+ NSIS plugins.

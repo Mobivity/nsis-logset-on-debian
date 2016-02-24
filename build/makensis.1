@@ -1,0 +1,131 @@
+'\" t
+.\"     Title: NSIS
+.\"    Author: Paul Wise
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: October 5, 2005
+.\"    Manual: makensis
+.\"    Source: makensis manual
+.\"  Language: English
+.\"
+.TH "NSIS" "1" "October 5, 2005" "makensis manual" "makensis"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+makensis \- A program to create Windows installers\&.
+.SH "SYNOPSIS"
+.HP \w'\fBmakensis\fR\ 'u
+\fBmakensis\fR [\fB\fIscript\&.nsi\fR\fR] [\fB\-CMDHELP\ \fR\fB\fIitem\fR\fR] [\fB\-HDRINFO\fR] [\fB\-LICENSE\fR] [\fB\-VERSION\fR] [\fB\-V\fR\fB\fIx\fR\fR] [\fB\-O\fR\fB\fIfile\fR\fR] [\fB\-PAUSE\fR] [\fB\-NOCONFIG\fR] [\fB\-NOCD\fR] [\fB\-D\fR\fB\fIdefine\fR\fR\fB=\fR\fB\fIvalue\fR\fR] [\fB\-X\fR\fB\fIscriptcmd\fR\fR]
+.SH "DESCRIPTION"
+.PP
+This manual page documents briefly the
+\fBmakensis\fR
+command\&.
+.PP
+This manual page was written for the Debian (TM) distribution because the original program does not have a manual page\&. Instead, it has documentation in the HTML format; see below\&.
+.PP
+\fBmakensis\fR
+is a program that creates installer programs for Windows\&.
+.SH "OPTIONS"
+.PP
+Parameters are processed by order (\-Ddef ins\&.nsi != ins\&.nsi \-Ddef) for script file name, you can use \- to read from the standard input\&. For a complete description, see the HTML files\&.
+.PP
+\fB\-V\fR\fB\fIx\fR\fR
+.RS 4
+Verbosity where x is 4=all, 3=no script, 2=no info, 1=no warnings, 0=none\&.
+.RE
+.PP
+\fB\-O\fR\fB\fIfile\fR\fR
+.RS 4
+Specifies a text file to log compiler output (default is stdout)\&.
+.RE
+.PP
+\fB\-PAUSE\fR
+.RS 4
+Pauses after execution\&.
+.RE
+.PP
+\fB\-NOCONFIG\fR
+.RS 4
+Disables inclusion of /etc/nsisconf\&.nsh\&.
+.RE
+.PP
+\fB\-NOCD\fR
+.RS 4
+Disable changing the current directory to that of the \&.nsi file\&.
+.RE
+.PP
+\fB\-D\fR\fB\fIdefine\fR\fR\fB=\fR\fB\fIvalue\fR\fR
+.RS 4
+Defines the symbol "define" for the script to [value]\&.
+.RE
+.PP
+\fB\-X\fR\fB\fIscriptcmd\fR\fR
+.RS 4
+Executes scriptcmd in the script (i\&.e\&. "\-XOutFile poop\&.exe")
+.RE
+.PP
+\fB\-CMDHELP \fR\fB\fIitem\fR\fR
+.RS 4
+Prints out help for \*(Aqitem\*(Aq, or lists all commands\&.
+.RE
+.PP
+\fB\-HDRINFO\fR
+.RS 4
+Prints information about what options makensis was compiled with\&.
+.RE
+.PP
+\fB\-LICENSE\fR
+.RS 4
+Prints the makensis software license\&.
+.RE
+.PP
+\fB\-VERSION\fR
+.RS 4
+Prints the makensis version and exits\&.
+.RE
+.SH "FILES"
+.PP
+/etc/nsisconf\&.nsh
+.RS 4
+System wide configuration file\&.
+.RE
+.PP
+~/\&.nsisconf\&.nsh
+.RS 4
+Per\-user configuration file\&.
+.RE
+.SH "SEE ALSO"
+.PP
+NSIS is documented more fully in the HTML files in /usr/share/doc/nsis/Docs\&.
+.SH "AUTHOR"
+.PP
+This manual page was written by Paul Wise
+<pabs@debian\&.org>
+for the Debian (TM) system\&.
+.SH "AUTHOR"
+.PP
+\fBPaul Wise\fR
+.RS 4
+Created man page
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2005 Paul Wise
+.br

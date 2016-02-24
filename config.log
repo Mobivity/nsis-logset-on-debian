@@ -1,0 +1,505 @@
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for linker flag $MAP_FLAG... 
+scons: Configure: ".sconf_temp/conftest_0.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_0.c <-
+  |  |
+  |  |			int main() {
+  |  |				return 0;
+  |  |			}
+  |  |		
+  |
+scons: Configure: ".sconf_temp/conftest_0.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_0.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_0.c
+  |
+scons: Configure: ".sconf_temp/conftest_0" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_0 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_0.map .sconf_temp/conftest_0.o
+  |
+scons: Configure: (cached) yes
+
+
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for linker flag $MAP_FLAG... 
+scons: Configure: ".sconf_temp/conftest_1.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_1.c <-
+  |  |
+  |  |			int main() {
+  |  |				return 0;
+  |  |			}
+  |  |		
+  |
+scons: Configure: ".sconf_temp/conftest_1.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_1.o -c -Wall -g -O2 -O2 -Wall -fno-strict-aliasing "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_1.c
+  |
+scons: Configure: ".sconf_temp/conftest_1" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_1 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_1.map .sconf_temp/conftest_1.o
+  |
+scons: Configure: (cached) yes
+
+
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+
+file /root/nsis-2.46/SCons/Config/gnu,line 233:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for memcpy requirement... 
+scons: Configure: ".sconf_temp/conftest_2.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_2.c <-
+  |  |
+  |  |		int __main() {
+  |  |			
+  |  |struct s // gcc 3
+  |  |{
+  |  |  char c[128];
+  |  |} t = { "test" };
+  |  |char a[] = // gcc 4
+  |  |  {'/', 'F', 'I' ,'L', 'L', 'S', 'C', 'R', 'E', 'E', 'N', 0};
+  |  |int i;
+  |  |for (i = 0; i < 100; i++) // avoid a and t being optimized out
+  |  |{
+  |  |  i += a[i] ^ t.c[i];
+  |  |}
+  |  |return i;
+  |  |
+  |  |			return 0;
+  |  |		}
+  |  |	
+  |
+scons: Configure: ".sconf_temp/conftest_2.o" is up to date.
+scons: Configure: The original builder output was:
+  |i686-w64-mingw32-gcc -o .sconf_temp/conftest_2.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" .sconf_temp/conftest_2.c
+  |
+scons: Configure: ".sconf_temp/conftest_2.exe" is up to date.
+scons: Configure: The original builder output was:
+  |i686-w64-mingw32-g++ -o .sconf_temp/conftest_2.exe -nostdlib -Wl,--exclude-libs,msvcrt.a -Wl,-e,___main .sconf_temp/conftest_2.o
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for memset requirement... 
+scons: Configure: ".sconf_temp/conftest_3.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_3.c <-
+  |  |
+  |  |		int __main() {
+  |  |			
+  |  |char c[128] = "test";
+  |  |c[0] = '6'; // avoid c being optimized out
+  |  |return c[1]; // avoid c being optimized out
+  |  |
+  |  |			return 0;
+  |  |		}
+  |  |	
+  |
+scons: Configure: ".sconf_temp/conftest_3.o" is up to date.
+scons: Configure: The original builder output was:
+  |i686-w64-mingw32-gcc -o .sconf_temp/conftest_3.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" .sconf_temp/conftest_3.c
+  |
+scons: Configure: ".sconf_temp/conftest_3.exe" is up to date.
+scons: Configure: The original builder output was:
+  |i686-w64-mingw32-g++ -o .sconf_temp/conftest_3.exe -nostdlib -Wl,--exclude-libs,msvcrt.a -Wl,-e,___main .sconf_temp/conftest_3.o
+  |
+scons: Configure: (cached) no
+
+
+file /root/nsis-2.46/SCons/utils.py,line 117:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for linker flag -pthread... 
+scons: Configure: ".sconf_temp/conftest_4.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_4.c <-
+  |  |
+  |  |			int main() {
+  |  |				return 0;
+  |  |			}
+  |  |		
+  |
+scons: Configure: ".sconf_temp/conftest_4.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_4.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_4.c
+  |
+scons: Configure: ".sconf_temp/conftest_4" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_4 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_4.map -pthread .sconf_temp/conftest_4.o
+  |
+scons: Configure: (cached) yes
+
+
+file /root/nsis-2.46/SCons/Config/gnu,line 298:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for __BIG_ENDIAN__... 
+scons: Configure: ".sconf_temp/conftest_5.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_5.c <-
+  |  |
+  |  |		int main() {
+  |  |			#ifdef __BIG_ENDIAN__
+  |  |				// already defined, no need to define again
+  |  |				return 0;
+  |  |			#else
+  |  |				int i = 1;
+  |  |				char *c = (char *) &i;
+  |  |				return c[0] != 1;
+  |  |			#endif
+  |  |		}
+  |  |	
+  |
+scons: Configure: ".sconf_temp/conftest_5.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_5.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" .sconf_temp/conftest_5.c
+  |
+scons: Configure: ".sconf_temp/conftest_5" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_5 -Wall -g -O2 .sconf_temp/conftest_5.o
+  |
+scons: Configure: ".sconf_temp/conftest_5.out" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_5 > .sconf_temp/conftest_5.out
+  |
+scons: Configure: (cached) no
+
+
+file /root/nsis-2.46/SCons/utils.py,line 6:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library gdi32... 
+scons: Configure: ".sconf_temp/conftest_6.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_6.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_6.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_6.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_6.c
+  |
+scons: Configure: Building ".sconf_temp/conftest_6" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_6 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_6.map -pthread .sconf_temp/conftest_6.o -lgdi32
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C library user32... 
+scons: Configure: ".sconf_temp/conftest_7.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_7.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_7.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_7.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_7.c
+  |
+scons: Configure: Building ".sconf_temp/conftest_7" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_7 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_7.map -pthread .sconf_temp/conftest_7.o -luser32
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C library pthread... 
+scons: Configure: ".sconf_temp/conftest_8.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_8.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_8.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_8.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_8.c
+  |
+scons: Configure: ".sconf_temp/conftest_8" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_8 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_8.map -pthread .sconf_temp/conftest_8.o -lpthread
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library iconv... 
+scons: Configure: ".sconf_temp/conftest_9.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_9.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_9.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_9.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_9.c
+  |
+scons: Configure: Building ".sconf_temp/conftest_9" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_9 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_9.map -pthread .sconf_temp/conftest_9.o -lpthread -liconv
+  |
+scons: Configure: (cached) no
+
+
+file /root/nsis-2.46/SCons/utils.py,line 34:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library z... 
+scons: Configure: ".sconf_temp/conftest_10.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_10.c <-
+  |  |
+  |  |
+  |  |#include "zlib.h"
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_10.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_10.o -c -Wall -Wall -g -O2 -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_10.c
+  |
+scons: Configure: ".sconf_temp/conftest_10" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_10 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_10.map -pthread .sconf_temp/conftest_10.o -lpthread -lz
+  |
+scons: Configure: (cached) yes
+
+
+file /root/nsis-2.46/SCons/utils.py,line 47:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library iconv... 
+scons: Configure: ".sconf_temp/conftest_11.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_11.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_11.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_11.o -c -Wall -g -O2 -O2 -Wall -fno-strict-aliasing "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_11.c
+  |
+scons: Configure: Building ".sconf_temp/conftest_11" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_11 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_11.map .sconf_temp/conftest_11.o -liconv
+  |
+scons: Configure: (cached) no
+
+
+file /root/nsis-2.46/SCons/utils.py,line 34:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library z... 
+.sconf_temp/conftest_12.c <-
+  |
+  |
+  |#include "zlib.h"
+  |
+  |int
+  |main() {
+  |  
+  |return 0;
+  |}
+  |
+gcc -o .sconf_temp/conftest_12.o -c -Wall -g -O2 -O2 -Wall -fno-strict-aliasing "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_12.c
+gcc -o .sconf_temp/conftest_12 -Wall -g -O2 -Wl,-Map,.sconf_temp/conftest_12.map .sconf_temp/conftest_12.o -lz
+scons: Configure: yes
+
+
+file /root/nsis-2.46/SCons/utils.py,line 6:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library dl... 
+scons: Configure: ".sconf_temp/conftest_13.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_13.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_13.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_13.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_13.c
+  |
+gcc -o .sconf_temp/conftest_13 -Wall -g -O2 .sconf_temp/conftest_13.o -ldl
+scons: Configure: yes
+
+scons: Configure: Checking for C library gdi32... 
+scons: Configure: ".sconf_temp/conftest_14.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_14.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_14.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_14.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_14.c
+  |
+gcc -o .sconf_temp/conftest_14 -Wall -g -O2 .sconf_temp/conftest_14.o -ldl -lgdi32
+/usr/bin/ld: cannot find -lgdi32
+collect2: error: ld returned 1 exit status
+scons: Configure: no
+
+scons: Configure: Checking for C library iconv... 
+scons: Configure: ".sconf_temp/conftest_15.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_15.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_15.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_15.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_15.c
+  |
+gcc -o .sconf_temp/conftest_15 -Wall -g -O2 .sconf_temp/conftest_15.o -ldl -liconv
+/usr/bin/ld: cannot find -liconv
+collect2: error: ld returned 1 exit status
+scons: Configure: no
+
+scons: Configure: Checking for C library pthread... 
+scons: Configure: ".sconf_temp/conftest_16.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_16.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_16.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_16.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_16.c
+  |
+gcc -o .sconf_temp/conftest_16 -Wall -g -O2 .sconf_temp/conftest_16.o -ldl -lpthread
+scons: Configure: yes
+
+scons: Configure: Checking for C library user32... 
+.sconf_temp/conftest_17.c <-
+  |
+  |
+  |
+  |int
+  |main() {
+  |  
+  |return 0;
+  |}
+  |
+gcc -o .sconf_temp/conftest_17.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_17.c
+gcc -o .sconf_temp/conftest_17 -Wall -g -O2 .sconf_temp/conftest_17.o -ldl -lpthread -luser32
+/usr/bin/ld: cannot find -luser32
+collect2: error: ld returned 1 exit status
+scons: Configure: no
+
+
+file /root/nsis-2.46/SCons/utils.py,line 34:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library z... 
+scons: Configure: ".sconf_temp/conftest_18.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_18.c <-
+  |  |
+  |  |
+  |  |#include "zlib.h"
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+gcc -o .sconf_temp/conftest_18.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -Ibuild/release/config .sconf_temp/conftest_18.c
+gcc -o .sconf_temp/conftest_18 -Wall -g -O2 .sconf_temp/conftest_18.o -ldl -lpthread -lz
+scons: Configure: yes
+
+
+file /root/nsis-2.46/Source/Tests/SConscript,line 109:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C++ library cppunit... 
+scons: Configure: ".sconf_temp/conftest_19.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_19.cpp <-
+  |  |
+  |  |
+  |  |#include "cppunit/extensions/HelperMacros.h"
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_19.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_19.o -c -Wall -g -O2 "-DNSISCALL= __attribute__((__stdcall__))" -DCOMPRESS_MF_BT -Ibuild/release/config .sconf_temp/conftest_19.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_19" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_19 -Wall -g -O2 .sconf_temp/conftest_19.o -ldl -lpthread -lz -lcppunit
+  |
+scons: Configure: (cached) yes
+
+
