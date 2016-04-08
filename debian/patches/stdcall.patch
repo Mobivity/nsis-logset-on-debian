@@ -3,6 +3,7 @@ Description: Set define for calling convention only for Win32 targets.
  convention for targets other than Windows. This patch defines the
  NSISCALL only for Win32 targets.
 Author: Thomas Gaugler <thomas@dadie.net>
+Last-Update: 2016-04-08
 
 --- a/SCons/Config/gnu
 +++ b/SCons/Config/gnu
@@ -14,7 +15,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
 +	if env.has_key('CPPDEFINES'):
 +		for i in range(len(env['CPPDEFINES'])):
 +			if 'NSISCALL' in env['CPPDEFINES'][i]:
-+				env['CPPDEFINES'][i] = ('NSISCALL', '$STDCALL')
++				env['CPPDEFINES'][i] = ('NSISCALL', '\'$STDCALL\'')
 +				break
 +	else:
 +		env.Append(CPPDEFINES = [('NSISCALL', '$STDCALL')])
