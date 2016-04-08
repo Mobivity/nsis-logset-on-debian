@@ -24,7 +24,7 @@ Copyright 1999-2009 Nullsoft, Jeff Doozan and Contributors
 
 http://www.zlib.net/
 Copyright 1995-1998 Jean-loup Gailly and Mark Adler
-Modifications Copyright (C) 1999-2009 Nullsoft and Contributors 
+Modifications Copyright (C) 1999-2009 Nullsoft and Contributors
 
 --| Source/7zip
 
@@ -194,7 +194,7 @@ you may not use this file except in compliance with the License.
 
 SPECIAL EXCEPTION FOR LZMA COMPRESSION MODULE
 ---------------------------------------------
- 
+
 Igor Pavlov and Amir Szekely, the authors of the LZMA compression module
 for NSIS, expressly permit you to statically or dynamically link your code
 (or bind by name) to the files from the LZMA compression module for NSIS
