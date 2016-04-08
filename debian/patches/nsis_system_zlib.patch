@@ -5,6 +5,7 @@ Description: Usage of the zlib compression library provided by the system
 Forwarded: http://sf.net/support/tracker.php?aid=2918870
 Forwarded: http://sf.net/support/tracker.php?aid=2995455
 Author: Thomas Gaugler <thomas@dadie.net>
+Last-Update: 2016-04-08
 
 --- a/Source/zlib/INFBLOCK.C
 +++ b/Source/zlib/INFBLOCK.C
@@ -699,8 +700,8 @@ Author: Thomas Gaugler <thomas@dadie.net>
  
  Source code is available in \W{http://nsis.svn.sourceforge.net/viewvc/nsis/}{SVN} and as a separate package with every \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{NSIS distribution}.
  
--To build NSIS \W{http://www.python.org/}{Python} and \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 0.96.93. Any version of Python above 1.6 is supported.
-+To build NSIS \W{http://www.python.org/}{Python}, \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 1.2.0 and above. Any version of Python above 1.6 is supported.
+-To build NSIS, \W{http://www.python.org/}{Python} and \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 0.96.93. Any version of Python above 1.6 is supported.
++To build NSIS, \W{http://www.python.org/}{Python}, \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 1.2.0 and above. Any version of Python above 1.6 is supported.
 +
 +NSIS uses the \W{http://zlib.net}{zlib} compression library. As a
 +consequence the header and library files of zlib must be installed. 

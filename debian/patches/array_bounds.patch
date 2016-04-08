@@ -5,6 +5,7 @@ Description: Fix of mingw-w64 warnings concering out of boundary array access.
  bounds" compiler warnings.
 Forwarded: http://sf.net/p/nsis/patches/250
 Author: Thomas Gaugler <thomas@dadie.net>
+Last-Update: 2016-04-08
 
 --- a/Source/exehead/state.h
 +++ b/Source/exehead/state.h
@@ -39,7 +40,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
  #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
 --- a/Source/exehead/Main.c
 +++ b/Source/exehead/Main.c
-@@ -276,7 +276,7 @@
+@@ -291,7 +291,7 @@
        admin ? CreateRestrictedDirectory(state_temp_dir) : CreateNormalDirectory(state_temp_dir);
        SetCurrentDirectory(state_temp_dir);
  
@@ -48,7 +49,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
          mystrcpy(state_install_directory,state_exe_directory);
  
        mystrcpy(g_usrvars[0], realcmds);
-@@ -309,7 +309,7 @@
+@@ -324,7 +324,7 @@
              }
            }
          }

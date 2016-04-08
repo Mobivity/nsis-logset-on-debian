@@ -1,6 +1,7 @@
 Description: Build makensis and portable utilities natively for 64-bit systems
 Forwarded: http://sf.net/support/tracker.php?aid=1753070
 Author: Thomas Gaugler <thomas@dadie.net>
+Last-Update: 2016-04-08
 
 --- a/SCons/Config/gnu
 +++ b/SCons/Config/gnu
@@ -42,7 +43,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
        seeker += sizeof(WORD); \
      } \
      else { \
-@@ -444,7 +444,7 @@
+@@ -450,7 +450,7 @@
        szClass = winchar_toansi(m_vItems[i]->szClass);
  
      // Button
@@ -51,7 +52,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
        m_vItems[i]->dwStyle ^= BS_LEFTTEXT;
        m_vItems[i]->dwStyle ^= BS_RIGHT;
        m_vItems[i]->dwStyle ^= BS_LEFT;
-@@ -458,13 +458,13 @@
+@@ -464,13 +464,13 @@
        }
      }
      // Edit
@@ -67,7 +68,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
        if ((m_vItems[i]->dwStyle & SS_TYPEMASK) == SS_LEFT || (m_vItems[i]->dwStyle & SS_TYPEMASK) == SS_LEFTNOWORDWRAP)
        {
          m_vItems[i]->dwStyle &= ~SS_TYPEMASK;
-@@ -571,7 +571,7 @@
+@@ -577,7 +577,7 @@
    // Write all of the items
    for (unsigned int i = 0; i < m_vItems.size(); i++) {
      // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundary
@@ -76,7 +77,7 @@ Author: Thomas Gaugler <thomas@dadie.net>
        seeker += sizeof(WORD);
  
      if (m_bExtended) {
-@@ -622,7 +622,7 @@
+@@ -628,7 +628,7 @@
      }
    }
  
@@ -523,15 +524,6 @@ Author: Thomas Gaugler <thomas@dadie.net>
    dwSize = pVerRes->dwResSize;
    pRawRes = &(pVerRes->bVerData);
  
-@@ -780,7 +780,7 @@
- 
-     // GetVxdVersion() will fail with ERROR_INSUFFICIENT_BUFFER and
-     // the required buffer size will be returned in dwResult.
--    if ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) 
-+    if ( dwError == ERROR_INSUFFICIENT_BUFFER ) 
-     {
-       SetLastError( 0 );
-       return dwResult;
 --- a/Source/7zip/Common/Types.h
 +++ b/Source/7zip/Common/Types.h
 @@ -57,14 +57,15 @@
