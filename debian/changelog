@@ -1,3 +1,14 @@
+nsis (2.51-1) unstable; urgency=medium
+
+  * New upstream release
+    - Refresh all patches for 2.51
+    - Escape the NSISCALL $STDCALL variable in the CPPDEFINES tuple
+
+  * Bump S-V to 3.9.8 without changes needed
+  * Run wrap-and-sort -sat on debian packaging files
+
+ -- Didier Raboud <odyx@debian.org>  Fri, 08 Apr 2016 13:51:08 +0200
+
 nsis (2.50-1) unstable; urgency=medium
 
   [ Thomas Gaugler ]
