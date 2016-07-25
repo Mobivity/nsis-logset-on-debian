@@ -6,21 +6,26 @@
 # Exclude .svn directories from packages
 export DH_ALWAYS_EXCLUDE=.svn
 
+# Enable hardening
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
 VERSION=$(shell dpkg-parsechangelog | sed -n 's/^Version: *//p')
 PREFIX=/usr
 DATADIR=$(PREFIX)/share/nsis
 DOCDIR=$(PREFIX)/share/doc/nsis
 SYSCONF=/etc
 BUILDDIR=build
-BUILDTYPE=release
+UNICODE=yes
 TESTDIR=$(CURDIR)/$(BUILDDIR)/test
 
-# Variables for Win32 cross compiler
-XGCC_W32 = i686-w64-mingw32-gcc
-ifneq ($(strip $(XGCC_W32)),)
-	XGCC_W32_PATH = $(abspath $(shell $(XGCC_W32) -print-file-name=libkernel32.a)/../..)
-	XGCC_W32_PREFIX = $(subst -gcc,-,$(XGCC_W32))
-endif
+# Variables for Win32/Win64 cross compiler
+XGCC_W32_X86 = i686-w64-mingw32-gcc
+XGCC_W32_X86_PATH = $(abspath $(shell $(XGCC_W32_X86) -print-file-name=libkernel32.a)/../..)
+XGCC_W32_X86_PREFIX = $(subst -gcc,-,$(XGCC_W32_X86))
+XGCC_W32_AMD64 = x86_64-w64-mingw32-gcc
+XGCC_W32_AMD64_PATH = $(abspath $(shell $(XGCC_W32_AMD64) -print-file-name=libkernel32.a)/../..)
+XGCC_W32_AMD64_PREFIX = $(subst -gcc,-,$(XGCC_W32_AMD64))
+
 
 # Evaluate parallel build option
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -29,25 +34,40 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 
 # Honor hardening flags
-DPKG_EXPORT_BUILDFLAGS = 1
-include /usr/share/dpkg/buildflags.mk
-SCONSHOSTFLAGS = APPEND_CCFLAGS="-fgnu89-inline $(CFLAGS) $(CPPFLAGS)" \
-  APPEND_LINKFLAGS="$(LDFLAGS)"
+SCONSHOSTFLAGS = APPEND_CCFLAGS="$(shell dpkg-buildflags --get CPPFLAGS) \
+  $(shell dpkg-buildflags --get CFLAGS)" \
+  APPEND_LINKFLAGS="$(shell dpkg-buildflags --get LDFLAGS)"
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
   PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
   STRIP_CP=no \
   $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
 
-ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-BUILDTYPE=debug
-SCONSOPTS += DEBUG=yes
+ifneq (,$(UNICODE),yes)
+	SCONSOPTS += UNICODE=yes
+	BUILDTYPE := u
 endif
 
-ifdef XGCC_W32_PATH
-SCONSOPTS += PREFIX_PLUGINAPI_INC=$(XGCC_W32_PATH)/include/ \
-  PREFIX_PLUGINAPI_LIB=$(XGCC_W32_PATH)/lib/ \
-  XGCC_W32_PREFIX=$(XGCC_W32_PREFIX)
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+	SCONSOPTS += DEBUG=yes
+	BUILDTYPE := $(BUILDTYPE)debug
+else
+	BUILDTYPE := $(BUILDTYPE)release
+endif
+
+ifdef XGCC_W32_X86_PATH
+SCONSOPTS_X86 = PREFIX_PLUGINAPI_INC=$(XGCC_W32_X86_PATH)/include/ \
+  PREFIX_PLUGINAPI_LIB=$(XGCC_W32_X86_PATH)/lib/ \
+  XGCC_W32_PREFIX=$(XGCC_W32_X86_PREFIX) \
+  TARGET_ARCH=x86
+endif
+
+ifdef XGCC_W32_AMD64_PATH
+SCONSOPTS_AMD64 = PREFIX_PLUGINAPI_INC=$(XGCC_W32_AMD64_PATH)/include/ \
+  PREFIX_PLUGINAPI_LIB=$(XGCC_W32_AMD64_PATH)/lib/ \
+  XGCC_W32_PREFIX=$(XGCC_W32_AMD64_PREFIX) \
+  TARGET_ARCH=amd64 \
+  SKIPPLUGINS='InstallOptions,Math'
 endif
 
 COMMA := ,
@@ -60,8 +80,7 @@ IGNORE_UTILS_COMMON := $(subst $(COMMA)Library/RegTool$,,$(UTILS_ALL))
 IGNORE_UTILS_COMMON := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_COMMON))
 
 IGNORE_UTILS_CLEAN  := $(IGNORE_UTILS_COMMON)
-IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
-IGNORE_UTILS_CLEAN  := $(subst $(COMMA)SubStart,,$(IGNORE_UTILS_CLEAN))
+IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA),,$(IGNORE_UTILS_COMMON))
 IGNORE_UTILS_CLEAN  := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_CLEAN))
 
 SCONSOPTS_HOST   := $(SCONSHOSTFLAGS) $(SCONSOPTS) \
@@ -86,7 +105,7 @@ IGNORE_TESTS = makensis.nsi|gfx.nsi
 SCRIPTS_PATH = $(DOCDIR)/Examples
 
 define DO_SCONS_INSTALL
-	scons $(INSTALL_FLAGS_$(1)) PREFIX_DEST="$(CURDIR)/debian/$(1)" $(INSTALL_$(1)) || exit 1;
+	scons $(INSTALL_FLAGS_$(1)) $(2) PREFIX_DEST="$(CURDIR)/debian/$(1)" $(INSTALL_$(1)) || exit 1;
 endef
 
 # Substitute reference to License text file in Modern UI examples
@@ -134,16 +153,18 @@ override_dh_auto_build-arch: $(BUILDDIR)/NEWS $(BUILDDIR)/GenPat.1 $(BUILDDIR)/L
 	scons $(SCONSOPTS_HOST) utils makensis
 
 override_dh_auto_build-indep: $(BUILDDIR)/NEWS
-ifdef XGCC_W32_PATH
-	scons $(SCONSOPTS_HOST) makensis
-	scons $(SCONSOPTS_COMMON) stubs plugins utils
+ifdef XGCC_W32_X86_PATH
+	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_X86) stubs plugins utils
+endif
+ifdef XGCC_W32_AMD64_PATH
+	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_AMD64) stubs plugins utils
+endif
 	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI" "Contrib/Modern UI/Readme.html"
 	html2text -style pretty -nobs -o "$(BUILDDIR)/README.Modern UI 2" "Contrib/Modern UI 2/Readme.html"
 	html2text -style pretty -nobs -o $(BUILDDIR)/README.VPatch Contrib/VPatch/Readme.html
 	html2text -style pretty -nobs -o $(BUILDDIR)/README.InstallOptions Contrib/InstallOptions/Readme.html
 	html2text -style pretty -nobs -o $(BUILDDIR)/README.MultiUser Contrib/MultiUser/Readme.html
 	html2text -style pretty -nobs -o $(BUILDDIR)/README.nsDialogs Contrib/nsDialogs/Readme.html
-endif
 
 override_dh_auto_test-arch:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -151,12 +172,13 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 endif
 
 override_dh_auto_test-indep:
-ifdef XGCC_W32_PATH
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	test -x "$(BUILDDIR)/$(BUILDTYPE)/makensis/makensis" && \
 	scons $(SCONSOPTS_HOST) PREFIX_DEST="$(TESTDIR)"\
-		$(INSTALL_nsis) $(INSTALL_nsis-doc) && \
-	scons $(SCONSOPTS_COMMON) PREFIX_DEST="$(TESTDIR)" \
+		$(INSTALL_nsis) && \
+	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_X86) PREFIX_DEST="$(TESTDIR)" \
+		$(INSTALL_nsis-common) $(INSTALL_nsis-doc) && \
+	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_AMD64) PREFIX_DEST="$(TESTDIR)" \
 		$(INSTALL_nsis-common) && \
 	$(call SANITIZE_MODERN_UI,$(TESTDIR)$(DOCDIR)/Examples/Modern UI) && \
 	for script_path in $(TESTDIR)$(SCRIPTS_PATH)/*.nsi \
@@ -182,7 +204,6 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Fail the build if libwinpthread is needed at runtime (see #722898)
 	test `find $(TESTDIR)$(DATADIR)/Plugins -iname "*.dll" -exec objdump -p {} \; | grep -E "file format|DLL Name" | grep -cim1 libwinpthread` -eq 0
 endif
-endif
 
 override_dh_auto_install-arch:
 	$(foreach p,$(shell dh_listpackages -a),$(call DO_SCONS_INSTALL,$(p)))
@@ -193,8 +214,8 @@ override_dh_fixperms-arch:
 		-type f -perm /111 -exec chmod a-x {} \;
 
 override_dh_auto_install-indep:
-ifdef XGCC_W32_PATH
-	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(p)))
+	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(p), $(SCONSOPTS_X86)))
+	$(foreach p,$(shell dh_listpackages -i),$(call DO_SCONS_INSTALL,$(p), $(SCONSOPTS_AMD64)))
 	# Exclude any architecture dependent binaries from nsis-common
 	rm -rf "$(CURDIR)/debian/nsis-common$(PREFIX)/bin"
 	# Clean up examples and documentation
@@ -207,8 +228,6 @@ ifdef XGCC_W32_PATH
 	$(call SANITIZE_MODERN_UI,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Examples/Modern UI)
 	# Replace duplicate image files with symbolic links
 	$(call SYMLINK_DUPLICATES,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Docs/Modern UI/images,$(CURDIR)/debian/nsis-doc$(DOCDIR)/Docs/Modern UI 2/images,../../Modern UI/images)
-
-endif
 
 override_dh_compress-indep:
 	dh_compress -X.nlf -X.nsh -X.nsi -X.dll
@@ -227,7 +246,11 @@ override_dh_fixperms-indep:
 	find "$(CURDIR)/debian/nsis-common$(DATADIR)" \
 		-type f -perm /111 -exec chmod a-x {} \;
 	# Fix permissions for plugin API header and library files
-ifdef XGCC_W32_PATH
-	find "$(CURDIR)/debian/nsis-pluginapi$(XGCC_W32_PATH)" \
+ifdef XGCC_W32_X86_PATH
+	find "$(CURDIR)/debian/nsis-pluginapi$(XGCC_W32_X86_PATH)" \
+		-type f -perm /111 -exec chmod a-x {} \;
+endif
+ifdef XGCC_W32_AMD64_PATH
+	find "$(CURDIR)/debian/nsis-pluginapi$(XGCC_W32_AMD64_PATH)" \
 		-type f -perm /111 -exec chmod a-x {} \;
 endif
