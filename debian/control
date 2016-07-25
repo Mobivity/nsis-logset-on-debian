@@ -17,7 +17,7 @@ Build-Depends:
 Standards-Version: 3.9.8
 Homepage: http://nsis.sourceforge.net/
 Vcs-Git: https://alioth.debian.org/anonscm/git/collab-maint/nsis.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nsis.git
+Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/nsis.git
 
 Package: nsis
 Architecture: any
