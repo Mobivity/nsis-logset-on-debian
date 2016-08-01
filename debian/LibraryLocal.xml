@@ -24,7 +24,9 @@
         <firstname>&firstname;</firstname>
         <surname>&surname;</surname>
       </personname>
-      <contrib>Created man page</contrib>
+      <contrib>This manual page was written by &username;
+<email>&email;</email> for the &debian; system.
+      </contrib>
     </author>
     <copyright>
       <year>2007</year>
@@ -97,11 +99,5 @@
         </listitem>
       </varlistentry>
     </variablelist>
-  </refsect1>
-  <refsect1>
-    <title>AUTHOR</title>
-    <para>This manual page was written by &username; <email>&email;</email> for
-      the &debian; system.
-    </para>
   </refsect1>
 </refentry>
