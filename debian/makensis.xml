@@ -4,13 +4,16 @@
 <!DOCTYPE refentry [
   <!ENTITY firstname "Paul">
   <!ENTITY surname   "Wise">
-  <!ENTITY date      "October 5, 2005">
+  <!ENTITY date      "August 1, 2016">
   <!ENTITY section   "1">
   <!ENTITY email     "pabs@debian.org">
   <!ENTITY username  "Paul Wise">
   <!ENTITY ucpackage "NSIS">
   <!ENTITY package   "makensis">
   <!ENTITY debian    "Debian (TM)">
+  <!ENTITY coauthor  "Thomas Gaugler">
+  <!ENTITY coauthor_firstname "Thomas">
+  <!ENTITY coauthor_surname   "Gaugler">
 ]>
 
 <refentry xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
@@ -19,16 +22,30 @@
     <address>
       <email>&email;</email>
     </address>
-    <author>
-      <personname>
-        <firstname>&firstname;</firstname>
-        <surname>&surname;</surname>
-      </personname>
-      <contrib>Created man page</contrib>
-    </author>
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>&firstname;</firstname>
+          <surname>&surname;</surname>
+        </personname>
+        <contrib>This manual page was written initially by &username;
+<email>&email;</email> for the &debian; system.
+        </contrib>
+      </author>
+      <author>
+        <personname>
+          <firstname>&coauthor_firstname;</firstname>
+          <surname>&coauthor_surname;</surname>
+        </personname>
+        <contrib>updated the man page to reflect changes introduced with
+version 3.0.
+        </contrib>
+      </author>
+    </authorgroup>
     <copyright>
-      <year>2005</year>
+      <year>2005-2016</year>
       <holder>&username;</holder>
+      <holder>&coauthor;</holder>
     </copyright>
     <date>&date;</date>
   </info>
@@ -50,10 +67,15 @@
       <arg><option>-LICENSE</option></arg>
       <arg><option>-VERSION</option></arg>
       <arg><option>-V<replaceable>x</replaceable></option></arg>
+      <arg><option>-WX</option></arg>
       <arg><option>-O<replaceable>file</replaceable></option></arg>
       <arg><option>-PAUSE</option></arg>
       <arg><option>-NOCONFIG</option></arg>
       <arg><option>-NOCD</option></arg>
+      <arg><option>-INPUTCHARSET=<replaceable>charset</replaceable></option></arg>
+      <arg><option>-OUTPUTCHARSET=<replaceable>charset</replaceable></option></arg>
+      <arg><option>-PPO</option></arg>
+      <arg><option>-SAFEPPO</option></arg>
       <arg><option>-D<replaceable>define</replaceable>=<replaceable>value</replaceable></option></arg>
       <arg><option>-X<replaceable>scriptcmd</replaceable></option></arg>
     </cmdsynopsis>
@@ -80,6 +102,12 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-WX</option></term>
+        <listitem>
+          <para>Treat warnings as errors</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>-O<replaceable>file</replaceable></option></term>
         <listitem>
           <para>Specifies a text file to log compiler output (default is stdout).</para>
@@ -101,6 +129,30 @@
         <term><option>-NOCD</option></term>
         <listitem>
           <para>Disable changing the current directory to that of the .nsi file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-INPUTCHARSET=<replaceable>charset</replaceable></option></term>
+        <listitem>
+          <para>Specifies a specific codepage for files without a BOM. The following choice of charsets is supported: &lt;ACP|OEM|CP#|UTF8|UTF16&lt;LE|BE&gt;&gt;</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-OUTPUTCHARSET=<replaceable>charset</replaceable></option></term>
+        <listitem>
+          <para>Specifies a specific codepage used by stdout when the output is redirected. The following choice of charsets is supported: &lt;ACP|OEM|CP#|UTF8[SIG]|UTF16&lt;LE|BE&gt;[BOM]&gt;</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-PPO</option></term>
+        <listitem>
+          <para>Run only the preprocessor and print the result to stdout.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-SAFEPPO</option></term>
+        <listitem>
+          <para>Same as -PPO but instructions like !appendfile or !system are not executed.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -162,11 +214,5 @@
     <title>SEE ALSO</title>
     <para>NSIS is documented more fully in the HTML files in
     /usr/share/doc/nsis/Docs.</para>
-  </refsect1>
-  <refsect1>
-    <title>AUTHOR</title>
-    <para>This manual page was written by &username; <email>&email;</email> for
-      the &debian; system.
-    </para>
   </refsect1>
 </refentry>
