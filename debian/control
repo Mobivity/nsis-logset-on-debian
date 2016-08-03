@@ -8,6 +8,7 @@ Build-Depends:
  debhelper (>= 9),
  docbook-xsl-ns,
  docbook5-xml,
+ dpkg-dev (>= 1.17.0),
  html2text,
  libcppunit-dev,
  mingw-w64 (>= 1.0),
