@@ -1,9 +1,25 @@
-nsis (3.0-1) UNRELEASED; urgency=medium
+nsis (3.0-1) experimental; urgency=low
 
-  * New upstream release
+  * New 3.0 upstream release
+
+  [ Thomas Gaugler ]
+  * Remove all patches for new upstream release
   * Build installer for win32 and win64
+  * Use secure URL for Vcs-Browser field
+  * Changed debian/copyright into a standard, machine-readable format
+  * Build all plugins for win64
+  * Removed unused nsis.lintian-overrides file
+  * Updated makensis man page
+  * Remove duplicate AUTHOR section in LibraryLocal man page
+  * Remove duplicate AUTHOR section in GenPat man page
+  * Simplify extraction of Version from changelog
+  * Removed obsolete and completed tasks from TODO file
 
- -- Thomas Gaugler <thomas@dadie.net>  Mon, 25 Jul 2016 21:34:44 +0200
+  [ Didier Raboud ]
+  * Add missing dpkg-dev versioned B-D for dpkg-parsechangelog's --show-field
+  * Re-add patch to statically link libstdc++ for plugins
+
+ -- Didier Raboud <odyx@debian.org>  Fri, 12 Aug 2016 14:36:48 +0200
 
 nsis (2.51-1) unstable; urgency=medium
 
