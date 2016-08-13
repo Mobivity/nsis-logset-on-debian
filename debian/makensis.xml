@@ -4,7 +4,7 @@
 <!DOCTYPE refentry [
   <!ENTITY firstname "Paul">
   <!ENTITY surname   "Wise">
-  <!ENTITY date      "August 1, 2016">
+  <!ENTITY date      "August 13, 2016">
   <!ENTITY section   "1">
   <!ENTITY email     "pabs@debian.org">
   <!ENTITY username  "Paul Wise">
@@ -72,8 +72,7 @@ version 3.0.
       <arg><option>-PAUSE</option></arg>
       <arg><option>-NOCONFIG</option></arg>
       <arg><option>-NOCD</option></arg>
-      <arg><option>-INPUTCHARSET=<replaceable>charset</replaceable></option></arg>
-      <arg><option>-OUTPUTCHARSET=<replaceable>charset</replaceable></option></arg>
+      <arg><option>-INPUTCHARSET <replaceable>charset</replaceable></option></arg>
       <arg><option>-PPO</option></arg>
       <arg><option>-SAFEPPO</option></arg>
       <arg><option>-D<replaceable>define</replaceable>=<replaceable>value</replaceable></option></arg>
@@ -132,15 +131,9 @@ version 3.0.
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-INPUTCHARSET=<replaceable>charset</replaceable></option></term>
+        <term><option>-INPUTCHARSET <replaceable>charset</replaceable></option></term>
         <listitem>
           <para>Specifies a specific codepage for files without a BOM. The following choice of charsets is supported: &lt;ACP|OEM|CP#|UTF8|UTF16&lt;LE|BE&gt;&gt;</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>-OUTPUTCHARSET=<replaceable>charset</replaceable></option></term>
-        <listitem>
-          <para>Specifies a specific codepage used by stdout when the output is redirected. The following choice of charsets is supported: &lt;ACP|OEM|CP#|UTF8[SIG]|UTF16&lt;LE|BE&gt;[BOM]&gt;</para>
         </listitem>
       </varlistentry>
       <varlistentry>
