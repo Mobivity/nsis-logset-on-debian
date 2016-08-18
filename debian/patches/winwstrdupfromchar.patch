@@ -1,0 +1,23 @@
+Description: WinWStrDupFromChar writes beyond allocated memory
+ In the function WinWStrDupFromChar memory is allocated for converting a
+ character (byte) string into a wide character string. However the
+ allocated memory to hold the wide character string does not take the
+ size of a wide character into account. As a result the allocated memory
+ is too little and the function MultiByteToWideChar writes beyond the
+ allocated memory.
+ .
+Forwarded: https://sourceforge.net/p/nsis/patches/271/
+Author: Thomas Gaugler <thomas@dadie.net>
+Last-Update: 2016-08-18
+
+--- a/Source/winchar.cpp
++++ b/Source/winchar.cpp
+@@ -46,7 +46,7 @@
+ WINWCHAR* WinWStrDupFromChar(const char *s, unsigned int cp)
+ {
+   int cch = MultiByteToWideChar(cp, 0, s, -1, 0, 0);
+-  wchar_t *p = (wchar_t*) malloc(cch);
++  wchar_t *p = (wchar_t*) malloc(cch * sizeof(wchar_t));
+   if (p)
+   {
+     MultiByteToWideChar(cp, 0, s, -1, p, cch);
