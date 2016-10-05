@@ -1,3 +1,16 @@
+nsis (3.0-3) experimental; urgency=medium
+
+  [ Thomas Gaugler ]
+  * makensis man page: OUTPUTCHARSET is not applicable for POSIX systems
+  * Added Patch: WinWStrDupFromChar writes beyond allocated memory
+  * Updated plugin api library description (new: amd64 & unicode)
+  * Added Patch: Make WinWStrDupFromWC endian agnostic
+
+  [ Didier Raboud ]
+  * Add BUILD_ARCH endianness test at the start of the build-indep target
+
+ -- Didier Raboud <odyx@debian.org>  Wed, 05 Oct 2016 08:40:53 +0200
+
 nsis (3.0-2) experimental; urgency=low
 
   * Build makensis in build-indep to fix indep-only FTBFS
