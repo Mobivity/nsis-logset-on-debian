@@ -152,6 +152,9 @@ override_dh_auto_build-arch: $(BUILDDIR)/NEWS $(BUILDDIR)/GenPat.1 $(BUILDDIR)/L
 	scons $(SCONSOPTS_HOST) utils makensis
 
 override_dh_auto_build-indep: $(BUILDDIR)/NEWS
+	# nsis-common must be built on little-endian
+	[ "$(shell dpkg-architecture -qDEB_BUILD_ARCH_ENDIAN)" = "little" ]
+	
 	scons $(SCONSOPTS_HOST) makensis
 ifdef XGCC_W32_X86_PATH
 	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_X86) stubs plugins utils
