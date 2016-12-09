@@ -29,8 +29,10 @@ XGCC_W32_AMD64_PREFIX = $(subst -gcc,-,$(XGCC_W32_AMD64))
 
 # Evaluate parallel build option
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+ifeq (,$(shell dh_listpackages -i))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	SCONSFLAGS = -j $(NUMJOBS)
+endif
 endif
 
 # Honor hardening flags
