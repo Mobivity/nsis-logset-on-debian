@@ -1,3 +1,10 @@
+nsis (3.0-4) experimental; urgency=medium
+
+  * Only build in parallel in builds without arch-all packages, to circumvent
+    arch:all FTBFS
+
+ -- Didier Raboud <odyx@debian.org>  Fri, 09 Dec 2016 16:15:19 +0100
+
 nsis (3.0-3) experimental; urgency=medium
 
   [ Thomas Gaugler ]
