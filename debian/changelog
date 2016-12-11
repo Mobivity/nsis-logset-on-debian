@@ -1,3 +1,10 @@
+nsis (3.0-5) experimental; urgency=medium
+
+  * Backport upstream workaround for '#1156 zlibCompressionTest loops
+    endlessly'
+
+ -- Didier Raboud <odyx@debian.org>  Sun, 11 Dec 2016 09:40:39 +0100
+
 nsis (3.0-4) experimental; urgency=medium
 
   * Only build in parallel in builds without arch-all packages, to circumvent
