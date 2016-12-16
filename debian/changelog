@@ -1,3 +1,10 @@
+nsis (3.01-1) UNRELEASED; urgency=medium
+
+  * New 3.01 upstream release
+  * Drop all patches, all included upstream
+
+ -- Didier Raboud <odyx@debian.org>  Fri, 16 Dec 2016 13:08:10 +0100
+
 nsis (3.0-5) experimental; urgency=medium
 
   * Backport upstream workaround for '#1156 zlibCompressionTest loops

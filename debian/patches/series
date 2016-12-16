@@ -1,4 +1,0 @@
-plugins-static-libstdc++.patch
-winwstrdupfromchar.patch
-winwstrdupfromwc.patch
-1156-zlibCompressionTest-workaround.patch
