@@ -1,3 +1,16 @@
+nsis (3.03-1) experimental; urgency=low
+
+  * New 3.03 upstream release:
+    - Add Library.nsi to ignored examples
+
+  * Packaging cleanup
+    - Cleanup d/control thanks to cme
+    - Update debian/copyright for new upstream release thanks to cme
+    - Bump debhelper compat to 11
+    - Update Vcs-* fields for the move to salsa
+
+ -- Didier Raboud <odyx@debian.org>  Tue, 27 Feb 2018 14:14:01 +0100
+
 nsis (3.02.1-1) experimental; urgency=low
 
   * New 3.02.1 upstream release
