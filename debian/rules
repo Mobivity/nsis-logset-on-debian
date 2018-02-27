@@ -100,7 +100,7 @@ INSTALL_nsis-doc = install-examples install-doc
 INSTALL_FLAGS_nsis-doc = $(SCONSOPTS_HOST)
 
 # Exclude test scripts which are not appropriate for POSIX platforms.
-IGNORE_TESTS = makensis.nsi|gfx.nsi
+IGNORE_TESTS = makensis.nsi|gfx.nsi|Library.nsi
 
 # Path to .nsi scripts
 SCRIPTS_PATH = $(DOCDIR)/Examples
