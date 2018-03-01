@@ -75,14 +75,16 @@ COMMA := ,
 
 UTILS_ALL = 'Library/LibraryLocal,Library/RegTool,MakeLangId,Makensisw,NSIS Menu,UIs,SubStart,VPatch/Source/GenPat,zip2exe'
 
+# Only build the LibraryLocal and GenPat utils for the host system
 IGNORE_UTILS_NSIS   := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
 IGNORE_UTILS_NSIS   := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_NSIS))
-IGNORE_UTILS_COMMON := $(subst $(COMMA)Library/RegTool$,,$(UTILS_ALL))
+
+# Build the win32 user interfaces (UIs) and RegTool
+IGNORE_UTILS_COMMON := $(subst $(COMMA)Library/RegTool,,$(UTILS_ALL))
 IGNORE_UTILS_COMMON := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_COMMON))
 
-IGNORE_UTILS_CLEAN  := $(IGNORE_UTILS_COMMON)
-IGNORE_UTILS_CLEAN  := $(subst Library/LibraryLocal$(COMMA),,$(IGNORE_UTILS_COMMON))
-IGNORE_UTILS_CLEAN  := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_CLEAN))
+# Clean everything except zip2exe pulling in a dependency on win32 zlib dll
+IGNORE_UTILS_CLEAN  := zip2exe
 
 SCONSOPTS_HOST   := $(SCONSHOSTFLAGS) $(SCONSOPTS) \
   SKIPUTILS=$(IGNORE_UTILS_NSIS) SKIPDOC=COPYING
