@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@
 
 extern double my_wtof(const wchar_t *str);
 extern size_t my_strncpy(TCHAR*Dest, const TCHAR*Src, size_t cchMax);
+template<class T> bool strtrycpy(T*Dest, const T*Src, size_t cchCap) { size_t c = my_strncpy(Dest, Src, cchCap); return c < cchCap && !Src[c]; }
 size_t my_strftime(TCHAR *s, size_t max, const TCHAR  *fmt, const struct tm *tm);
 
 // Adds the bitmap in filename using resource editor re as id id.
@@ -77,7 +78,8 @@ public:
     if (!p) throw std::bad_alloc();
     m_heap = (T*) p;
   }
-  size_t StrFmt(const T*FmtStr, va_list Args, bool throwonerr = true)
+  size_t StrFmt(const T*f, ...) { va_list v; va_start(v, f); size_t r = StrVFmt(f, v); va_end(v); return r; }
+  size_t StrVFmt(const T*FmtStr, va_list Args, bool throwonerr = true)
   {
     size_t n = ExpandoStrFmtVaList(m_stack, COUNTOF(m_stack), &m_heap, FmtStr, Args);
     if (throwonerr && !n && *FmtStr) throw std::bad_alloc();
@@ -169,6 +171,7 @@ inline void PrintColorFmtMsg_ERR(const TCHAR *fmtstr, ...)
 
 
 bool NSISRT_Initialize();
+#define NSISRT_GetASCIICodepage() ( 1252 )
 #ifndef _WIN32
 // iconv const inconsistency workaround by Alexandre Oliva
 template <typename T>
@@ -275,6 +278,15 @@ FILE* my_fopen(const TCHAR *path, const char *mode);
 // round a value up to be a multiple of 512
 // assumption: T is an int type
 template <class T> inline T align_to_512(const T x) { return (x+511) & ~511; }
+
+template<class T> inline T read_ptr_as(const void*p)
+{
+#if defined(_MSC_VER) && (_MSC_VER-0 < 1400) // TODO: Figure out which versions are able to optimize the memcpy
+  return *(T*)(p);
+#else
+  T t; memcpy(&t, p, sizeof(T)); return t;
+#endif
+}
 
 // some values need to be truncated from size_t to [unsigned] int, using this function is better than a plain cast
 template<class R, class T> inline R internaltruncate_cast(T t) {

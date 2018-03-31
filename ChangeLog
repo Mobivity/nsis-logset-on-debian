@@ -1,3 +1,840 @@
+2017-08-01 00:29  kichik
+
+	* /NSIS/tags/v3021: Tagging for release 3.02.1
+
+2017-08-01 00:29  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.02.1
+
+2017-08-01 00:26  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 3.02.1
+
+2017-08-01 00:04  kichik
+
+	* /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi: include welcome
+	  and finish pages to catch more errors
+
+2017-08-01 00:02  kichik
+
+	* /NSIS/trunk/Contrib/Language files/ScotsGaelic.nsh: escape quotes
+
+2017-07-31 17:44  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Fix Chinese (Traditional) (Bug
+	  #1191)
+
+2017-07-24 21:38  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Source/scriptpp.cpp: Make sure we always install the
+	  "native" RegTool binary.
+
+2017-07-24 11:38  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Pashto.nsh,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Fix translation files:
+	  Romanian.nsh, TradChinese.nsh (bug #1189)
+
+2017-07-24 06:31  kichik
+
+	* /NSIS/tags/v302: Tagging for release 3.02
+
+2017-07-24 00:30  kichik
+
+	* /NSIS/tags/v302: rerelease 3.02 due to another vc6 issue...
+
+2017-07-24 00:28  kichik
+
+	* /NSIS/trunk/Source/exehead/exec.c: more vc6 weirdness
+
+2017-07-23 23:50  kichik
+
+	* /NSIS/tags/v302: Tagging for release 3.02
+
+2017-07-23 23:48  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.02
+
+2017-07-23 23:45  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: fix regtool path
+
+2017-07-23 23:38  kichik
+
+	* /NSIS/trunk/Docs/src/SConscript: improve hhc workaround
+
+2017-07-23 19:53  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/script.cpp: vc6 build errors
+
+2017-07-23 19:11  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 3.02
+
+2017-07-17 21:44  anders_k
+
+	* /NSIS/trunk/Docs/src/compilerflags.but,
+	  /NSIS/trunk/Source/tokens.cpp: Minor documentation fixes
+
+2017-06-24 19:28  anders_k
+
+	* /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Docs/src/usefulinfos.but: Removed outdated tidbits
+	  from the documentation
+
+2017-06-23 12:59  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/exec.c: Logging build now prints
+	  EW_SETFLAG changes
+
+2017-06-23 01:11  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/misc.but,
+	  /NSIS/trunk/Docs/src/var.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/manifest.cpp: $LocalAppData now resolves to
+	  the ProgramData folder in the "SetShellVarContext all" context
+
+2017-06-19 22:01  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Czech.nlf,
+	  /NSIS/trunk/Docs/src/flowcontrol.but: Minor Czech translation fix
+	  from the forum
+
+2017-06-15 18:58  anders_k
+
+	* /NSIS/trunk/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/trunk/Docs/src/var.but: Display English and German in
+	  LangDLL if the codepage is 1250 (Bug #1185)
+
+2017-06-07 21:51  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/SimpChinese.nsh: Fixed minor
+	  error in SimpChinese.nsh (Patch #283)
+
+2017-06-06 19:51  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/registry.but,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp: Added the HKCR32, HKCR64, HKCU32,
+	  HKCU64, HKLM32 and HKLM64 root keys and the experimental HK*ANY
+	  root keys.
+
+2017-06-06 02:03  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/AdvSplash/advsplash.txt,
+	  /NSIS/branches/nsis2/Contrib/ExDLL/exdll.c,
+	  /NSIS/branches/nsis2/Contrib/InstallOptions/Readme.html,
+	  /NSIS/branches/nsis2/Contrib/InstallOptions/test.ini,
+	  /NSIS/branches/nsis2/Contrib/InstallOptions/testnotify.ini,
+	  /NSIS/branches/nsis2/Contrib/Language files/Afrikaans.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Albanian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Arabic.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Arabic.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Basque.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Basque.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Belarusian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Bosnian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Breton.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Bulgarian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Catalan.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Croatian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Czech.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Danish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Danish.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Dutch.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/English.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Estonian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Farsi.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Finnish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/French.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Galician.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/German.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Greek.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Hebrew.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Hungarian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Icelandic.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Indonesian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Irish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Italian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Japanese.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Korean.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Kurdish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Latvian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Lithuanian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Luxembourgish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Macedonian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Malay.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Mongolian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Norwegian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Norwegian.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/NorwegianNynorsk.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/NorwegianNynorsk.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Polish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Portuguese.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Portuguese.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Romanian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Russian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Serbian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/SerbianLatin.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Slovak.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Spanish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language
+	  files/SpanishInternational.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Swedish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Swedish.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Thai.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/TradChinese.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Turkish.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Ukrainian.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Ukrainian.nsh,
+	  /NSIS/branches/nsis2/Contrib/Language files/Uzbek.nlf,
+	  /NSIS/branches/nsis2/Contrib/Language files/Welsh.nlf,
+	  /NSIS/branches/nsis2/Contrib/Math/Math.txt,
+	  /NSIS/branches/nsis2/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/branches/nsis2/Contrib/Modern UI
+	  2/Pages/UninstallConfirm.nsh, /NSIS/branches/nsis2/Contrib/Modern
+	  UI/System.nsh,
+	  /NSIS/branches/nsis2/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/branches/nsis2/Contrib/MultiUser/Readme.html,
+	  /NSIS/branches/nsis2/Contrib/NSIS Menu/nsismenu/nslinks.cpp,
+	  /NSIS/branches/nsis2/Contrib/NSIS Menu/SConscript,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/ReadMe.txt,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/SConscript,
+	  /NSIS/branches/nsis2/Contrib/Splash/splash.txt,
+	  /NSIS/branches/nsis2/Contrib/StartMenu/Example.nsi,
+	  /NSIS/branches/nsis2/Contrib/System/System.html,
+	  /NSIS/branches/nsis2/Contrib/zip2exe/main.cpp,
+	  /NSIS/branches/nsis2/Contrib/zip2exe/res.rc,
+	  /NSIS/branches/nsis2/Docs/src/attributes.but,
+	  /NSIS/branches/nsis2/Docs/src/basic.but,
+	  /NSIS/branches/nsis2/Docs/src/callback.but,
+	  /NSIS/branches/nsis2/Docs/src/compiler.but,
+	  /NSIS/branches/nsis2/Docs/src/credits.but,
+	  /NSIS/branches/nsis2/Docs/src/generalpurpose.but,
+	  /NSIS/branches/nsis2/Docs/src/history.but,
+	  /NSIS/branches/nsis2/Docs/src/langs.but,
+	  /NSIS/branches/nsis2/Docs/src/misc.but,
+	  /NSIS/branches/nsis2/Docs/src/script.but,
+	  /NSIS/branches/nsis2/Docs/src/tutorial.but,
+	  /NSIS/branches/nsis2/Docs/src/var.but,
+	  /NSIS/branches/nsis2/Examples/bigtest.nsi,
+	  /NSIS/branches/nsis2/Examples/example2.nsi,
+	  /NSIS/branches/nsis2/Examples/makensis.nsi,
+	  /NSIS/branches/nsis2/Examples/Modern UI/StartMenu.nsi,
+	  /NSIS/branches/nsis2/Include/LogicLib.nsh,
+	  /NSIS/branches/nsis2/Include/StrFunc.nsh,
+	  /NSIS/branches/nsis2/Include/UpgradeDLL.nsh,
+	  /NSIS/branches/nsis2/SCons/config.py,
+	  /NSIS/branches/nsis2/SCons/Config/gnu,
+	  /NSIS/branches/nsis2/SCons/Tools/crossmingw.py,
+	  /NSIS/branches/nsis2/Scripts/release.py,
+	  /NSIS/branches/nsis2/Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	  /NSIS/branches/nsis2/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.cpp,
+	  /NSIS/branches/nsis2/Source/exehead/api.h,
+	  /NSIS/branches/nsis2/Source/exehead/exec.c,
+	  /NSIS/branches/nsis2/Source/exehead/fileform.c,
+	  /NSIS/branches/nsis2/Source/exehead/fileform.h,
+	  /NSIS/branches/nsis2/Source/exehead/Main.c,
+	  /NSIS/branches/nsis2/Source/exehead/Ui.c,
+	  /NSIS/branches/nsis2/Source/exehead/util.c,
+	  /NSIS/branches/nsis2/Source/lang.cpp,
+	  /NSIS/branches/nsis2/Source/makenssi.cpp,
+	  /NSIS/branches/nsis2/Source/script.cpp,
+	  /NSIS/branches/nsis2/Source/Tests/compression.cpp,
+	  /NSIS/branches/nsis2/Source/tokens.cpp,
+	  /NSIS/branches/nsis2/Source/tokens.h,
+	  /NSIS/branches/nsis2/Source/util.cpp,
+	  /NSIS/branches/nsis2/Source/util.h,
+	  /NSIS/branches/nsis2/Source/zlib/ZUTIL.H,
+	  /NSIS/branches/nsis2/TODO.txt: Backported some bugfixes from NSIS
+	  3
+
+2017-06-05 21:43  anders_k
+
+	* /NSIS/trunk/Source/exehead/util.c: Bring back optimized
+	  mystrcpy(tmpbuf, _T("NUL")) from NSIS2
+
+2017-06-05 20:20  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Afrikaans.nlf,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Asturian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Basque.nlf,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Bosnian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Breton.nlf,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nlf,
+	  /NSIS/trunk/Contrib/Language files/Cibemba.nlf,
+	  /NSIS/trunk/Contrib/Language files/Corsican.nlf,
+	  /NSIS/trunk/Contrib/Language files/Croatian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Czech.nlf,
+	  /NSIS/trunk/Contrib/Language files/Danish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Dutch.nlf,
+	  /NSIS/trunk/Contrib/Language files/Efik.nlf,
+	  /NSIS/trunk/Contrib/Language files/English.nlf,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Estonian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nlf,
+	  /NSIS/trunk/Contrib/Language files/French.nlf,
+	  /NSIS/trunk/Contrib/Language files/Galician.nlf,
+	  /NSIS/trunk/Contrib/Language files/Georgian.nlf,
+	  /NSIS/trunk/Contrib/Language files/German.nlf,
+	  /NSIS/trunk/Contrib/Language files/Greek.nlf,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Icelandic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Igbo.nlf,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Irish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Italian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Japanese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Khmer.nlf,
+	  /NSIS/trunk/Contrib/Language files/Korean.nlf,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Latvian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Luxembourgish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Macedonian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Malagasy.nlf,
+	  /NSIS/trunk/Contrib/Language files/Malay.nlf,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Norwegian.nlf,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nlf,
+	  /NSIS/trunk/Contrib/Language files/Pashto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Polish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/ScotsGaelic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Serbian.nlf,
+	  /NSIS/trunk/Contrib/Language files/SerbianLatin.nlf,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nlf,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nlf,
+	  /NSIS/trunk/Contrib/Language files/Swahili.nlf,
+	  /NSIS/trunk/Contrib/Language files/Swedish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Thai.nlf,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Valencian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Vietnamese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Welsh.nlf,
+	  /NSIS/trunk/Contrib/Language files/Yoruba.nlf,
+	  /NSIS/trunk/Source/lang.cpp: Add space between disk space value
+	  and unit (Bug #1132)
+
+2017-06-05 01:01  anders_k
+
+	* /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/Ui.c,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h: Don't use ShellExecute, only
+	  ShellExecuteEx
+
+2017-06-05 00:34  kichik
+
+	* /NSIS/trunk/README.md: add readme with build status
+	  partly https://github.com/kichik/nsis/pull/1
+
+2017-06-04 22:48  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/tutorial.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp: Unsupported SetRegView mode must
+	  fail all registry operations
+
+2017-06-03 02:56  anders_k
+
+	* /NSIS/trunk/.travis.yml, /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/utf.cpp,
+	  /web-scripts/trunk/cppunit.rb: TravisCI OSX instance needs
+	  cppunit v1.13.2
+
+2017-05-29 16:25  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/exec.c, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/Source/tokens.h: Added WriteRegNone
+
+2017-05-29 13:12  anders_k
+
+	* /NSIS/trunk/Source/script.cpp: SendMessage /TIMEOUT= parameter
+	  should not be case-sensitive.
+
+2017-05-27 01:21  anders_k
+
+	* /NSIS/trunk/Include/Win/COM.nsh: Added IGameExplorer to COM.nsh
+
+2017-05-22 18:10  anders_k
+
+	* /NSIS/trunk/Docs/src/attributes.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/Ui.c,
+	  /NSIS/trunk/Source/exehead/util.c: Variables used in Caption can
+	  now be set in .onGuiInit (RFE #539)
+
+2017-05-14 16:16  anders_k
+
+	* /NSIS/trunk/Contrib/Library/RegTool/RegTool.cpp,
+	  /NSIS/trunk/Contrib/Library/RegTool/SConscript,
+	  /NSIS/trunk/Include/Library.nsh,
+	  /NSIS/trunk/Include/UpgradeDLL.nsh, /NSIS/trunk/SConstruct,
+	  /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/util.h: Include
+	  CPU architecture in the RegTool filename so Library.nsh always
+	  picks the correct version
+
+2017-05-12 00:19  anders_k
+
+	* /NSIS/trunk/Contrib/Library/RegTool/RegTool.c,
+	  /NSIS/trunk/Contrib/Library/RegTool/RegTool.cpp,
+	  /NSIS/trunk/Contrib/Library/RegTool/SConscript,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/Library.nsh,
+	  /NSIS/trunk/Include/UpgradeDLL.nsh: TCHAR cannot be used in
+	  RegTool because it must be able to run on Win9x.
+	  
+	  RegTool now implements A and W functions in the same binary.
+	  Bitness mixing is still problematic.
+
+2017-05-03 22:31  kichik
+
+	* /NSIS/trunk/.travis.yml: notify slack
+
+2017-05-03 21:17  anders_k
+
+	* /NSIS/trunk/Include/UpgradeDLL.nsh: UpgradeDLL needs to use the
+	  correct RegTool version key
+
+2017-05-03 12:08  anders_k
+
+	* /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	  /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/lineparse.cpp,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/manifest.cpp,
+	  /NSIS/trunk/Source/manifest.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/SConscript, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/scriptpp.cpp, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: Refactored preprocessor instructions
+	  to separate source file
+
+2017-04-26 19:40  kichik
+
+	* /NSIS/trunk/.travis.yml: build osx on travis
+
+2017-04-25 13:58  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/script.cpp: Use a internal command to detect
+	  the CHM header because the !searchparse hack fails with a
+	  encoding error if the ACP codepage is 936.
+
+2017-04-25 13:09  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/timer.nsi,
+	  /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/lang.cpp,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h: Added
+	  !pragma warning (patch #267)
+
+2017-04-18 19:21  kichik
+
+	* /NSIS/trunk/Source/exehead/exec.c: log build fix for anders
+
+2017-04-18 08:20  kichik
+
+	* /NSIS/trunk/.travis.yml: test log build
+
+2017-04-14 21:48  anders_k
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/trunk/Source/zlib/ZUTIL.H: Fixed two GCC POSIX warnings
+
+2017-04-14 14:17  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Afrikaans.nlf,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Armenian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Asturian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Basque.nlf,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Bosnian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Breton.nlf,
+	  /NSIS/trunk/Contrib/Language files/Bulgarian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nlf,
+	  /NSIS/trunk/Contrib/Language files/Cibemba.nlf,
+	  /NSIS/trunk/Contrib/Language files/Corsican.nlf,
+	  /NSIS/trunk/Contrib/Language files/Croatian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Czech.nlf,
+	  /NSIS/trunk/Contrib/Language files/Danish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Dutch.nlf,
+	  /NSIS/trunk/Contrib/Language files/Efik.nlf,
+	  /NSIS/trunk/Contrib/Language files/English.nlf,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Estonian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Farsi.nlf,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nlf,
+	  /NSIS/trunk/Contrib/Language files/French.nlf,
+	  /NSIS/trunk/Contrib/Language files/Galician.nlf,
+	  /NSIS/trunk/Contrib/Language files/Georgian.nlf,
+	  /NSIS/trunk/Contrib/Language files/German.nlf,
+	  /NSIS/trunk/Contrib/Language files/Greek.nlf,
+	  /NSIS/trunk/Contrib/Language files/Hebrew.nlf,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Icelandic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Igbo.nlf,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Irish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Italian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Japanese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Khmer.nlf,
+	  /NSIS/trunk/Contrib/Language files/Korean.nlf,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Latvian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Luxembourgish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Macedonian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Malagasy.nlf,
+	  /NSIS/trunk/Contrib/Language files/Malay.nlf,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Norwegian.nlf,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nlf,
+	  /NSIS/trunk/Contrib/Language files/Pashto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Polish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Russian.nlf,
+	  /NSIS/trunk/Contrib/Language files/ScotsGaelic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Serbian.nlf,
+	  /NSIS/trunk/Contrib/Language files/SerbianLatin.nlf,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nlf,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nlf,
+	  /NSIS/trunk/Contrib/Language files/Swahili.nlf,
+	  /NSIS/trunk/Contrib/Language files/Swedish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Thai.nlf,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Uzbek.nlf,
+	  /NSIS/trunk/Contrib/Language files/Valencian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Vietnamese.nlf,
+	  /NSIS/trunk/Contrib/Language files/Welsh.nlf,
+	  /NSIS/trunk/Contrib/Language files/Yoruba.nlf,
+	  /NSIS/trunk/Source/lang.cpp, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: Default language file codepage is only
+	  ASCII compatible (Bug #1180)
+
+2017-04-13 21:00  kichik
+
+	* /NSIS/trunk/.travis.yml: drone.io is dead so use travis-ci.org
+	  instead
+
+2017-04-13 14:42  anders_k
+
+	* /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/util.h: Fix POSIX error
+
+2017-04-06 18:07  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Indonesian.nlf,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Docs/src/credits.but,
+	  /NSIS/trunk/Docs/src/history.but: Chinese (Traditional) updates
+	  by Walter Cheuk (Forum)
+
+2017-04-03 17:35  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/fileform.h: Added
+	  MUI_PAGE_CUSTOMFUNCTION_DESTROYED so custom image handles can be
+	  cleaned up
+
+2017-03-22 15:05  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi: Fix MUI dependencies check
+	  when Languages or Graphics are not installed
+
+2017-03-22 00:46  anders_k
+
+	* /NSIS/trunk/Docs/src/registry.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  Fixed SetRegView and $ProgramFiles[32|64] in 64-bit installers
+
+2017-03-21 22:12  anders_k
+
+	* /NSIS/trunk/Include/WinVer.nsh: WinVer server 2016 support (patch
+	  #282)
+
+2017-03-21 22:04  anders_k
+
+	* /NSIS/trunk/Docs/src/basic.but, /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h: Added
+	  ExecShellWait
+
+2017-01-30 20:04  anders_k
+
+	* /NSIS/trunk/Contrib/NSISdl/ReadMe.txt: Added note about not
+	  supporting HTTPS in NSISdl
+
+2017-01-28 18:49  anders_k
+
+	* /NSIS/trunk/Docs/src/basic.but: Added note about /REBOOTOK not
+	  working without admin. rights for bug #1174
+
+2017-01-20 21:15  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Source/exehead/Main.c: Fixed unbalanced push/pop in
+	  MUI_UNGETLANGUAGE (MUI v1)
+
+2017-01-15 15:20  anders_k
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c,
+	  /NSIS/trunk/Docs/src/history.but: Unicode nsExec now supports the
+	  /OEM switch (bug #1171)
+
+2017-01-02 03:51  anders_k
+
+	* /NSIS/trunk/Contrib/ExDLL/nsis_tchar.h,
+	  /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/SubStart/substart.c,
+	  /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/Call-amd64.S,
+	  /NSIS/trunk/Contrib/System/System.html, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/VB6RunTime.nsh,
+	  /NSIS/trunk/Source/7zip/7zGuids.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree2.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3Z.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3ZMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4b.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMF.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMFMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/IMatchFinder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMA.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBitTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderOpt.h,
+	  /NSIS/trunk/Source/7zip/7zip/ICoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/IStream.h,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.cpp,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.h,
+	  /NSIS/trunk/Source/7zip/Common/CRC.cpp,
+	  /NSIS/trunk/Source/7zip/Common/CRC.h,
+	  /NSIS/trunk/Source/7zip/Common/Defs.h,
+	  /NSIS/trunk/Source/7zip/Common/MyCom.h,
+	  /NSIS/trunk/Source/7zip/Common/MyGuidDef.h,
+	  /NSIS/trunk/Source/7zip/Common/MyUnknown.h,
+	  /NSIS/trunk/Source/7zip/Common/MyWindows.h,
+	  /NSIS/trunk/Source/7zip/Common/StdAfx.h,
+	  /NSIS/trunk/Source/7zip/Common/Types.h,
+	  /NSIS/trunk/Source/7zip/LZMADecode.c,
+	  /NSIS/trunk/Source/7zip/LZMADecode.h,
+	  /NSIS/trunk/Source/afxres.h, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/bzip2/blocksort.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.h,
+	  /NSIS/trunk/Source/bzip2/compress.c,
+	  /NSIS/trunk/Source/bzip2/decompress.c,
+	  /NSIS/trunk/Source/bzip2/huffman.c, /NSIS/trunk/Source/cbzip2.h,
+	  /NSIS/trunk/Source/clzma.cpp, /NSIS/trunk/Source/clzma.h,
+	  /NSIS/trunk/Source/compressor.h, /NSIS/trunk/Source/crc32.c,
+	  /NSIS/trunk/Source/crc32.h, /NSIS/trunk/Source/czlib.h,
+	  /NSIS/trunk/Source/DialogTemplate.cpp,
+	  /NSIS/trunk/Source/DialogTemplate.h,
+	  /NSIS/trunk/Source/dirreader.cpp, /NSIS/trunk/Source/dirreader.h,
+	  /NSIS/trunk/Source/exehead/afxres.h,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/bgbg.c,
+	  /NSIS/trunk/Source/exehead/components.c,
+	  /NSIS/trunk/Source/exehead/components.h,
+	  /NSIS/trunk/Source/exehead/config.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/lang.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/state.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/fileform.cpp, /NSIS/trunk/Source/fileform.h,
+	  /NSIS/trunk/Source/growbuf.cpp, /NSIS/trunk/Source/growbuf.h,
+	  /NSIS/trunk/Source/icon.cpp, /NSIS/trunk/Source/icon.h,
+	  /NSIS/trunk/Source/lang.cpp, /NSIS/trunk/Source/lang.h,
+	  /NSIS/trunk/Source/lineparse.cpp, /NSIS/trunk/Source/lineparse.h,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/manifest.cpp,
+	  /NSIS/trunk/Source/manifest.h, /NSIS/trunk/Source/mmap.cpp,
+	  /NSIS/trunk/Source/mmap.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/Plugins.cpp, /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/ShConstants.cpp,
+	  /NSIS/trunk/Source/ShConstants.h, /NSIS/trunk/Source/strlist.cpp,
+	  /NSIS/trunk/Source/strlist.h, /NSIS/trunk/Source/tchar.h,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/tstring.cpp, /NSIS/trunk/Source/tstring.h,
+	  /NSIS/trunk/Source/uservars.h, /NSIS/trunk/Source/utf.cpp,
+	  /NSIS/trunk/Source/utf.h, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h,
+	  /NSIS/trunk/Source/validateunicode.cpp,
+	  /NSIS/trunk/Source/validateunicode.h,
+	  /NSIS/trunk/Source/winchar.cpp, /NSIS/trunk/Source/winchar.h,
+	  /NSIS/trunk/Source/writer.cpp, /NSIS/trunk/Source/writer.h,
+	  /NSIS/trunk/Source/zlib/INFBLOCK.C,
+	  /NSIS/trunk/Source/zlib/ZCONF.H, /NSIS/trunk/Source/zlib/ZLIB.H,
+	  /NSIS/trunk/Source/zlib/ZUTIL.H: (C) 2017
+
+2016-12-30 00:52  anders_k
+
+	* /NSIS/trunk/Docs/src/basic.but: Minor documentation fix (bug
+	  #919)
+
+2016-12-30 00:39  anders_k
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: Taller
+	  MULTIUSER_INSTALLMODEPAGE_TEXT_TOP label (bug #916)
+
+2016-12-30 00:00  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/UninstallConfirm.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Added support for
+	  MUI_UNCONFIRMPAGE_VARIABLE (RFE #511)
+
+2016-12-29 22:11  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/French.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Minor French improvements
+	  (patch #221)
+
+2016-12-29 21:59  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/registry.but,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/lineparse.cpp, /NSIS/trunk/Source/lineparse.h,
+	  /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h: Added
+	  basic WriteRegMultiStr support (RFE #382, patch #219)
+
+2016-12-29 19:25  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp: Fixed minor 64-bit
+	  warnings (Bug #1170)
+
+2016-12-26 23:52  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html: Minor documentation fix
+	  (Patch #231)
+
+2016-12-26 23:48  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Basque.nsh: Added MultiUser
+	  text from patch #246. Still undecided if we should merge the rest
+	  of the patch...
+
+2016-12-26 23:23  anders_k
+
+	* /NSIS/trunk/Docs/src/langs.but: Add link to translations forum
+	  (Bug #1167)
+
+2016-12-26 23:01  anders_k
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/Readme.html,
+	  /NSIS/trunk/Docs/src/basic.but, /NSIS/trunk/Docs/src/history.but:
+	  MultiUser now supports $ProgramFiles64 (Bug #843)
+
 2016-12-11 21:47  kichik
 
 	* /NSIS/tags/v301: Tagging for release 3.01

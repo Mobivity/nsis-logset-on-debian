@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -492,6 +492,12 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define SHACF_FILESYSTEM 1
 #endif
 
+#ifndef SEE_MASK_NOCLOSEPROCESS
+#define SEE_MASK_NOCLOSEPROCESS 0x00000040
+#define SEE_MASK_FLAG_NO_UI     0x00000400
+#define SEE_MASK_FLAG_DDEWAIT   0x00000100
+#endif
+
 // other stuff
 
 #ifndef CP_ACP
@@ -642,15 +648,20 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define HKEY_DYN_DATA ((HKEY)0x80000006)
 #endif
 
+#ifndef KEY_WOW64_32KEY
+#  define KEY_WOW64_32KEY 0x200
+#endif
 #ifndef KEY_WOW64_64KEY
 #  define KEY_WOW64_64KEY 0x100
 #endif
 
 #ifndef REG_SZ
+#  define REG_NONE 0
 #  define REG_SZ 1
 #  define REG_EXPAND_SZ 2
 #  define REG_BINARY 3
 #  define REG_DWORD 4
+#  define REG_MULTI_SZ 7
 #endif
 
 // show modes
@@ -1022,7 +1033,11 @@ typedef struct tagVS_FIXEDFILEINFO {
 #endif
 
 
+#if defined(__clang__) && defined(__cplusplus) && __cplusplus < 201103L
+#define NSIS_CXX_THROWSPEC(throwspec) throw(throwspec) // Use exception specifications to avoid operator new missing-exception-spec warning
+#else
 #define NSIS_CXX_THROWSPEC(ignoredthrowspec) // Ignore c++ exception specifications
+#endif
 #define BUGBUG64TRUNCATE(cast,xpr) ( (cast) (xpr) )
 
 /*

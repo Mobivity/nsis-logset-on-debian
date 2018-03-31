@@ -2,7 +2,7 @@
  * This file is a part of the zlib compression module for NSIS.
  * 
  * Copyright and license information can be found below.
- * Modifications Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Modifications Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * The original zlib source code is available at
  * http://www.zlib.net/
@@ -69,6 +69,7 @@ typedef unsigned long  ulg;
 #    include "../exehead/util.h"
 #    define zmemcpy mini_memcpy
 #  else
+#    include <string.h> // Avoid "incompatible implicit declaration of built-in function"
 #    define zmemcpy memcpy
 #  endif
 #else

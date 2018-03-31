@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@
 enum
 {
   EW_INVALID_OPCODE,    // zero is invalid. useful for catching errors. (otherwise an all zeroes instruction
-                        // does nothing, which is easily ignored but means something is wrong.
+                        // does nothing, which is easily ignored but means something is wrong)
   EW_RET,               // return from function call
   EW_NOP,               // Nop/Jump, do nothing: 1, [?new address+1:advance one]
   EW_ABORT,             // Abort: 1 [status]
@@ -118,7 +118,7 @@ enum
 #endif
 
 #ifdef NSIS_SUPPORT_SHELLEXECUTE
-  EW_SHELLEXEC,         // ShellExecute program: 4, [shell action, complete commandline, parameters, showwindow]
+  EW_SHELLEXEC,         // ShellExecute program: 5, [SEE_MASK_FLAG_*, verb, file, parameters, showwindow] (Will wait if SEE_MASK_NOCLOSEPROCESS is set)
 #endif
 
 #ifdef NSIS_SUPPORT_EXECUTE
@@ -155,7 +155,7 @@ enum
 #endif
 
 #ifdef NSIS_SUPPORT_REGISTRYFUNCTIONS
-  EW_DELREG,            // DeleteRegValue/DeleteRegKey: 4, [root key(int), KeyName, ValueName, delkeyonlyifempty]. ValueName is -1 if delete key
+  EW_DELREG,            // DeleteRegValue/DeleteRegKey: 4, [root key(int), KeyName, ValueName, ActionAndFlags(DELREG*)]
   EW_WRITEREG,          // Write Registry value: 5, [RootKey(int),KeyName,ItemName,ItemData,typelen]
                         //  typelen=1 for str, 2 for dword, 3 for binary, 0 for expanded str
   EW_READREGSTR,        // ReadRegStr: 5 [output, rootkey(int), keyname, itemname, ==1?int::str]
@@ -203,7 +203,7 @@ enum
 
 #ifdef _UNICODE     // opcodes available only in Unicode installers must be at the end of the enumeration
 #ifdef NSIS_SUPPORT_FILEFUNCTIONS
-  EW_FPUTWS,            // FileWriteUTF16LE: 3 [handle, string, ?int:string]
+  EW_FPUTWS,            // FileWriteUTF16LE: 4 [handle, string, ?int:string, TryWriteBOM]
   EW_FGETWS,            // FileReadUTF16LE: 4 [handle, output, maxlen, ?getchar:gets]
 #endif//NSIS_SUPPORT_FILEFUNCTIONS
 #endif
@@ -504,11 +504,37 @@ typedef struct {
 #  define ctlcolors ctlcolors32
 #endif
 
+
 // constants for myDelete (util.c)
 #define DEL_DIR 1
 #define DEL_RECURSE 2
 #define DEL_REBOOT 4
 #define DEL_SIMPLE 8
+
+
+#define REGROOTVIEW32 0x40000000
+#define REGROOTVIEW64 0x20000000
+#define REGROOTVIEWTOSAMVIEW(rv) ( ((UINT_PTR)(rv)&(REGROOTVIEW32|REGROOTVIEW64)) >> 21 ) // REGROOTVIEWxx to KEY_WOW64_xxKEY
+#define IsRegRootkeyForcedView(hKey) ( ((UINT_PTR) (hKey) & (REGROOTVIEW32|REGROOTVIEW64)) )
+#define MAKEREGROOTVIEW(r, fv) ( (HKEY) ((UINT_PTR)(r) | (fv)) )
+#define HKSHCTX ( (HKEY) 0 ) // Converted to HKCU or HKLM by GetRegRootKey
+#define HKSHCTX32 MAKEREGROOTVIEW(HKSHCTX, REGROOTVIEW32)
+#define HKSHCTX64 MAKEREGROOTVIEW(HKSHCTX, REGROOTVIEW64)
+#define HKCR32 MAKEREGROOTVIEW(HKEY_CLASSES_ROOT, REGROOTVIEW32)
+#define HKCR64 MAKEREGROOTVIEW(HKEY_CLASSES_ROOT, REGROOTVIEW64)
+#define HKCU32 MAKEREGROOTVIEW(HKEY_CURRENT_USER, REGROOTVIEW32)
+#define HKCU64 MAKEREGROOTVIEW(HKEY_CURRENT_USER, REGROOTVIEW64)
+#define HKLM32 MAKEREGROOTVIEW(HKEY_LOCAL_MACHINE, REGROOTVIEW32)
+#define HKLM64 MAKEREGROOTVIEW(HKEY_LOCAL_MACHINE, REGROOTVIEW64)
+#define HKSHCTXANY MAKEREGROOTVIEW(HKSHCTX, REGROOTVIEW32|REGROOTVIEW64)
+#define HKCRANY MAKEREGROOTVIEW(HKEY_CLASSES_ROOT, REGROOTVIEW32|REGROOTVIEW64)
+#define HKCUANY MAKEREGROOTVIEW(HKEY_CURRENT_USER, REGROOTVIEW32|REGROOTVIEW64)
+#define HKLMANY MAKEREGROOTVIEW(HKEY_LOCAL_MACHINE, REGROOTVIEW32|REGROOTVIEW64)
+#define DELREG_VALUE 0 // TOK_DELETEREGVALUE
+#define DELREG_KEY 1 // TOK_DELETEREGKEY
+#define DELREGKEY_ONLYIFNOSUBKEYS 1 // Shifted and stored as 2 in the binary for compatibility with <= 3.1
+#define DELREGKEYFLAGSSHIFT 1 // parm4 is shifted so exehead can remove the DELREG_KEY bit
+
 
 #ifdef NSIS_SUPPORT_CREATESHORTCUT
 #define CS_HK_MASK 0xffff0000 // HotKey
@@ -520,6 +546,7 @@ typedef struct {
 #define CS_II_SHIFT 0
 #define CS_II_MAX (CS_II_MASK >> CS_II_SHIFT)
 #endif
+
 
 // special escape characters used in strings: (we use control codes in order to minimize conflicts with normal characters)
 #define NS_LANG_CODE  _T('\x01')    // for a langstring

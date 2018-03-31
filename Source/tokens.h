@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,6 +120,7 @@ enum
   TOK_P_ERROR,
 
   TOK_P_VERBOSE,
+  TOK_P_PRAGMA,
 
   TOK_P_MACRO,
   TOK_P_MACROEND,
@@ -176,6 +177,7 @@ enum
   TOK_EXEC,
   TOK_EXECWAIT,
   TOK_EXECSHELL,
+  TOK_EXECSHELLWAIT,
   TOK_CALLINSTDLL,
   TOK_REGDLL,
   TOK_UNREGDLL,
@@ -186,7 +188,9 @@ enum
   TOK_WRITEREGSTR,
   TOK_WRITEREGEXPANDSTR,
   TOK_WRITEREGBIN,
+  TOK_WRITEREGMULTISZ,
   TOK_WRITEREGDWORD,
+  TOK_WRITEREGNONE,
   TOK_DELETEINISEC,
   TOK_DELETEINISTR,
   TOK_FLUSHINI,
