@@ -1,9 +1,13 @@
 #include "growbuf.h"
 
-#include "Platform.h"
 #include <cstdlib> // for malloc/free
 #include <cstring> // for memcpy
 #include <cstdio> // for f*
+#include <algorithm> // for std::min
+
+#include "Platform.h"
+
+using namespace std;
 
 GrowBuf::GrowBuf() { m_alloc=m_used=m_zero=0; m_s=NULL; m_bs=32768; }
 GrowBuf::~GrowBuf() { free(m_s); }

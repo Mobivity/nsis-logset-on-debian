@@ -1,5 +1,8 @@
 NSIS Modern User Interface - VERSION HISTORY
 
+1.74 - September 4, 2005
+* Fixed compile error when checkboxes are used on multiple finish page pages
+
 1.73 - August 6, 2005
 * The checkboxes to run an application or show a Readme file can now also be used on an uninstaller
   finish pages or multiple finish pages
@@ -8,7 +11,7 @@ NSIS Modern User Interface - VERSION HISTORY
 * Fixed state of Finish page Cancel button when both an installer and uninstaller page is included
 
 1.71 - October 14, 2004
-* The selected language is only stored in the registry when installation was succesful
+* The selected language is only stored in the registry when installation was successful
 
 1.70 - February 6, 2004
 * Improved documentation

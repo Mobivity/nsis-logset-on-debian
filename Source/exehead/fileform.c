@@ -194,8 +194,7 @@ const char * NSISCALL loadHeaders(int cl_flags)
     {
       if (hwnd)
       {
-        MSG msg;
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
+        MessageLoop(0);
       }
       else if (GetTickCount() > verify_time)
         hwnd = CreateDialogParam(
@@ -238,7 +237,7 @@ const char * NSISCALL loadHeaders(int cl_flags)
   }
 #endif//NSIS_CONFIG_CRC_SUPPORT
 
-  data = (void *)my_GlobalAlloc(h.length_of_header);
+  data = (void *)GlobalAlloc(GPTR,h.length_of_header);
 
 #ifdef NSIS_COMPRESS_WHOLE
   inflateReset(&g_inflate_stream);
@@ -450,9 +449,8 @@ static int NSISCALL __ensuredata(int amount)
           {
             if (hwnd)
             {
-              MSG msg;
               m_pos=m_length-(amount-(dbd_size-dbd_pos));
-              while (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) DispatchMessage(&msg);
+              MessageLoop(0);
             }
             else if (GetTickCount() > verify_time)
             {

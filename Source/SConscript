@@ -52,19 +52,18 @@ libs = Split("""
 	pthread
 	stdc++
 	iconv
-	libiconv
 """)
 
-Import('env')
+Import('env AddAvailableLibs')
 
-##### Configure
+##### Use available libraries
 
-conf = env.Configure()
+AddAvailableLibs(env, libs)
 
-for lib in libs:
-	conf.CheckLib(lib)
+##### Configuration defines
 
-conf.Finish()
+env.Append(CPPDEFINES = ['_WIN32_IE=0x0500'])
+env.Append(CPPDEFINES = env['NSIS_CPPDEFINES'])
 
 ##### Set PCH
 

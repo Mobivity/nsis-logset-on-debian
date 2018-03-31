@@ -53,7 +53,6 @@ extern char g_log_file[1024];
 
 HANDLE NSISCALL myCreateProcess(char *cmd, char *dir);
 int NSISCALL my_MessageBox(const char *text, UINT type);
-void * NSISCALL my_GlobalAlloc(DWORD dwBytes);
 
 void NSISCALL myDelete(char *buf, int flags);
 
@@ -69,6 +68,9 @@ int NSISCALL is_valid_instpath(char *s);
 void NSISCALL validate_filename(char *fn);
 void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew);
 void NSISCALL mini_memcpy(void *out, const void *in, int len);
+
+void * NSISCALL myGetProcAddress(char *dll, char *func);
+void NSISCALL MessageLoop(UINT uCheckedMsg);
 
 // Turn a pair of chars into a word
 // Turn four chars into a dword

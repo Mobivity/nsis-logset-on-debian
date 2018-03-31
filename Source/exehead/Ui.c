@@ -20,10 +20,12 @@
 *  3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "../Platform.h"
 #include <windowsx.h>
 #include <shlobj.h>
 #include <shellapi.h>
+#include <shlwapi.h>
+
+#include "../Platform.h"
 
 #include "resource.h"
 
@@ -433,6 +435,8 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
       m_hwndCancel=GetDlgItem(hwndDlg,IDCANCEL);
       SetDlgItemTextFromLang(hwndDlg,IDC_VERSTR,LANG_BRANDING);
       SetClassLong(hwndDlg,GCL_HICON,(long)g_hIcon);
+      // use the following line instead of the above, if .rdata needs shirking
+      //SendMessage(hwndDlg,WM_SETICON,ICON_BIG,(LPARAM)g_hIcon);
 #if defined(NSIS_SUPPORT_CODECALLBACKS) && defined(NSIS_CONFIG_ENHANCEDUI_SUPPORT)
       g_quit_flag = ExecuteCallbackFunction(CB_ONGUIINIT);
 #endif
@@ -781,19 +785,24 @@ static BOOL CALLBACK UninstProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 static void NSISCALL SetSizeText(int dlgItem, int prefix, unsigned kb)
 {
   char scalestr[32], byte[32];
-  unsigned sh=20;
-  int scale=LANG_GIGA;
-  
-  if (kb < 1024) { sh=0; scale=LANG_KILO; }
-  else if (kb < 1024*1024) { sh=10; scale=LANG_MEGA; }
+  unsigned sh = 20;
+  int scale = LANG_GIGA;
+
+  if (kb < 1024 * 1024) { sh = 10; scale = LANG_MEGA; }
+  if (kb < 1024) { sh = 0; scale = LANG_KILO; }
+
+  if (kb < (0xFFFFFFFF - ((1 << 20) / 20))) // check for overflow
+    kb += (1 << sh) / 20; // round numbers for better display (e.g. 1.59 => 1.6)
 
   wsprintf(
-    GetNSISString(g_tmp,prefix)+mystrlen(g_tmp),
+    GetNSISString(g_tmp, prefix) + mystrlen(g_tmp),
     "%u.%u%s%s",
-    kb>>sh,
-    ((kb*10)>>sh)%10,
-    GetNSISString(scalestr,scale),
-    GetNSISString(byte,LANG_BYTE)
+    kb >> sh,
+    (((kb & 0x00FFFFFF) * 10) >> sh) % 10, // 0x00FFFFFF mask is used to
+                                           // prevent overflow that causes
+                                           // bad results
+    GetNSISString(scalestr, scale),
+    GetNSISString(byte, LANG_BYTE)
   );
 
   my_SetDialogItemText(m_curwnd,dlgItem,g_tmp);
@@ -837,6 +846,8 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
   }
   if (uMsg == WM_INITDIALOG)
   {
+    HWND hDir = GetUIItem(IDC_DIR);
+
 #ifdef NSIS_CONFIG_LOG
     if (GetAsyncKeyState(VK_SHIFT)&0x8000)
     {
@@ -847,10 +858,22 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 #endif
     if (validpathspec(dir) && !skip_root(dir))
       addtrailingslash(dir);
-    SetUITextNT(IDC_DIR,dir);
+    my_SetWindowText(hDir,dir);
     SetUITextFromLang(IDC_BROWSE,this_page->parms[2]);
     SetUITextFromLang(IDC_SELDIRTEXT,this_page->parms[1]);
-    SetActiveCtl(GetUIItem(IDC_DIR));
+    SetActiveCtl(hDir);
+
+    {
+      typedef HRESULT (WINAPI *SHAutoCompletePtr)(HWND, DWORD);
+      SHAutoCompletePtr fSHAutoComplete;
+      static const char shlwapi[] = "shlwapi.dll";
+      static const char shac[] = "SHAutoComplete";
+      fSHAutoComplete = (SHAutoCompletePtr) myGetProcAddress((char *) shlwapi, (char *) shac);
+      if (fSHAutoComplete)
+      {
+        fSHAutoComplete(hDir, SHACF_FILESYSTEM);
+      }
+    }
   }
   if (uMsg == WM_COMMAND)
   {
@@ -902,7 +925,6 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     int error = 0;
     int available_set = 0;
     unsigned total, available = 0xFFFFFFFF;
-    HMODULE hLib;
 
     GetUIText(IDC_DIR,dir);
     if (!is_valid_instpath(dir))
@@ -914,22 +936,23 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
       *p=0;
 
     // Test for and use the GetDiskFreeSpaceEx API
-    hLib = GetModuleHandle("KERNEL32.dll");
-    if (hLib)
     {
       BOOL (WINAPI *GDFSE)(LPCSTR, PULARGE_INTEGER, PULARGE_INTEGER, PULARGE_INTEGER) =
-        (void*)GetProcAddress(hLib, "GetDiskFreeSpaceExA");
+          myGetProcAddress("KERNEL32.dll", "GetDiskFreeSpaceExA");
       if (GDFSE)
       {
         ULARGE_INTEGER available64;
         ULARGE_INTEGER a, b;
         if (GDFSE(s, &available64, &a, &b))
         {
+#ifndef _NSIS_NO_INT64_SHR
           available = (int)(available64.QuadPart >> 10);
+#else
+          available = (int)(Int64ShrlMod32(available64.QuadPart, 10));
+#endif
           available_set++;
         }
       }
-
     }
 
     if (!available_set)
@@ -1113,7 +1136,7 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
     g_SectionHack=hwndDlg;
 
-    hTreeItems=(HTREEITEM*)my_GlobalAlloc(sizeof(HTREEITEM)*num_sections);
+    hTreeItems=(HTREEITEM*)GlobalAlloc(GPTR,sizeof(HTREEITEM)*num_sections);
 
     hBMcheck1=LoadBitmap(g_hInstance, MAKEINTRESOURCE(IDB_BITMAP1));
 

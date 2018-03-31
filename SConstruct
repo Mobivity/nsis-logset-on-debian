@@ -1,6 +1,5 @@
 ## TODO
 #
-#   * VPatch GenPat & distribution
 #   * Write SConscript for NSIS Menu
 #    - Use inheritance instead of current wxWidgets patches
 #    - Compile for POSIX too? wxWidgets is cross platform after all...
@@ -8,7 +7,7 @@
 ##
 
 EnsurePythonVersion(1,6)
-# no revision check yet - EnsureSConsVersion(0,96,90)
+EnsureSConsVersion(0,96,91)
 
 stubs = [
 	'bzip2',
@@ -41,18 +40,25 @@ utils = [
 	'Makensisw',
 	'NSIS Menu',
 	'UIs',
+	'VPatch/Source/GenPat',
 	'zip2exe'
 ]
 
 misc = [
 	'Graphics',
 	'Language files',
-	'Modern UI'
+	'Modern UI',
+	'VPatch'
 ]
 
 defenv = Environment()
-defenv.SConsignFile()
 Export('defenv')
+
+######################################################################
+#######  Includes                                                  ###
+######################################################################
+
+SConscript('SCons/utils.py')
 
 ######################################################################
 #######  Options                                                   ###
@@ -67,25 +73,34 @@ from time import strftime, gmtime
 cvs_version = strftime('%d-%b-%Y.cvs', gmtime())
 
 opts = Options()
+
+# version
 opts.Add(('VERSION', 'Version of NSIS', cvs_version))
 opts.Add(('VER_MAJOR', 'Major version of NSIS (recommended for dist-installer)', None))
 opts.Add(('VER_MINOR', 'Minor version of NSIS (recommended for dist-installer)', None))
 opts.Add(('VER_REVISION', 'Revision of NSIS (recommended for dist-installer)', None))
 opts.Add(('VER_BUILD', 'Build version of NSIS (recommended for dist-installer)', None))
+# installation
 opts.Add(PathOption('PREFIX', 'Installation prefix', None))
-opts.Add(BoolOption('MSTOOLKIT', 'Use Microsoft Visual C++ Toolkit', 'no'))
-opts.Add(BoolOption('DEBUG', 'Build executables with debugging information', 'no'))
-opts.Add(BoolOption('CHMDOCS', 'Build CHM documentation, requires hhc.exe', hhc))
-opts.Add(PathOption('CPPPATH', 'Path to search for include files', None))
-opts.Add(PathOption('LIBPATH', 'Path to search for libraries', None))
 opts.Add(ListOption('SKIPSTUBS', 'A list of stubs that will not be built', 'none', stubs))
 opts.Add(ListOption('SKIPPLUGINS', 'A list of plug-ins that will not be built', 'none', plugins))
 opts.Add(ListOption('SKIPUTILS', 'A list of utilities that will not be built', 'none', utils))
 opts.Add(ListOption('SKIPMISC', 'A list of plug-ins that will not be built', 'none', misc))
+# build tools
+opts.Add(BoolOption('MSTOOLKIT', 'Use Microsoft Visual C++ Toolkit', 'no'))
+opts.Add(BoolOption('CHMDOCS', 'Build CHM documentation, requires hhc.exe', hhc))
+opts.Add(PathOption('CPPPATH', 'Path to search for include files', None))
+opts.Add(PathOption('LIBPATH', 'Path to search for libraries', None))
+# build options
+opts.Add(BoolOption('DEBUG', 'Build executables with debugging information', 'no'))
 opts.Add(PathOption('CODESIGNER', 'A program used to sign executables', None))
+
 opts.Update(defenv)
 
 Help(opts.GenerateHelpText(defenv))
+
+# build configuration
+SConscript('SCons/config.py')
 
 ######################################################################
 #######  Functions                                                 ###
@@ -176,6 +191,7 @@ stub_env = envs[0]
 makensis_env = envs[1]
 plugin_env = envs[2]
 util_env = envs[3]
+cp_util_env = envs[4]
 
 ######################################################################
 #######  Aliases                                                   ###
@@ -245,7 +261,7 @@ def BuildStub(compression, solid):
 
 	exports = { 'env' : env, 'compression' : compression, 'solid_compression' : solid }
 
-	target = defenv.SConscript(dirs = 'Source/exehead', build_dir = build_dir, duplicate = 0, exports = exports)
+	target = defenv.SConscript(dirs = 'Source/exehead', build_dir = build_dir, duplicate = False, exports = exports)
 	env.SideEffect('%s/stub_%s.map' % (build_dir, stub), target)
 
 	env.DistributeAs('Stubs/%s%s' % (compression, suffix), target)
@@ -257,8 +273,8 @@ for stub in stubs:
 	if stub in defenv['SKIPSTUBS']:
 		continue
 
-	BuildStub(stub, 0)
-	BuildStub(stub, 1)
+	BuildStub(stub, False)
+	BuildStub(stub, True)
 
 defenv.DistributeAs('Stubs/uninst', 'Source/exehead/uninst.ico')
 
@@ -269,7 +285,7 @@ defenv.DistributeAs('Stubs/uninst', 'Source/exehead/uninst.ico')
 build_dir = '$BUILD_PREFIX/makensis'
 exports = { 'env' : makensis_env }
 
-makensis = defenv.SConscript(dirs = 'Source', build_dir = build_dir, duplicate = 0, exports = exports)
+makensis = defenv.SConscript(dirs = 'Source', build_dir = build_dir, duplicate = False, exports = exports)
 
 makensis_env.SideEffect('%s/makensis.map' % build_dir, makensis)
 
@@ -317,11 +333,11 @@ def DistributeExtras(env, target, examples, docs):
 def BuildPlugin(target, source, libs, examples = None, docs = None,
                 entry = 'DllMain', res = None, res_target = None,
                 resources = None, defines = None, flags = None, 
-                nodeflib = 1, cppused = 0):
+                nodeflib = True, cppused = False):
 	env = plugin_env.Copy()
 
 	if cppused and env['CPP_REQUIRES_STDLIB']:
-		nodeflib = 0
+		nodeflib = False
 
 	AddEnvStandardFlags(env, defines, flags, entry, nodeflib)
 
@@ -347,7 +363,7 @@ for plugin in plugins:
 	build_dir = '$BUILD_PREFIX/' + plugin
 	exports = {'BuildPlugin' : BuildPlugin, 'env' : plugin_env.Copy()}
 
-	defenv.SConscript(dirs = path, build_dir = build_dir, duplicate = 0, exports = exports)
+	defenv.SConscript(dirs = path, build_dir = build_dir, duplicate = False, exports = exports)
 
 ######################################################################
 #######  Utilities                                                 ###
@@ -355,9 +371,12 @@ for plugin in plugins:
 
 def BuildUtil(target, source, libs, entry = None, res = None, 
               resources = None, defines = None, flags = None,
-              nodeflib = 0, install = None, install_as = None,
-              examples = None, docs = None):
-	env = util_env.Copy()
+              nodeflib = False, install = None, install_as = None,
+              examples = None, docs = None, cross_platform = False):
+	if not cross_platform:
+		env = util_env.Copy()
+	else:
+		env = cp_util_env.Copy()
 
 	AddEnvStandardFlags(env, defines, flags, entry, nodeflib)
 
@@ -391,7 +410,7 @@ for util in utils:
 	build_dir = '$BUILD_PREFIX/' + util
 	exports = {'BuildUtil' : BuildUtil, 'env' : util_env.Copy()}
 
-	defenv.SConscript(dirs = path, build_dir = build_dir, duplicate = 0, exports = exports)
+	defenv.SConscript(dirs = path, build_dir = build_dir, duplicate = False, exports = exports)
 
 ######################################################################
 #######  Documentation                                             ###
@@ -400,7 +419,7 @@ for util in utils:
 halibut = defenv.SConscript(
 	dirs = 'Docs/src/bin/halibut',
 	build_dir = '$BUILD_PREFIX/halibut',
-	duplicate = 0,
+	duplicate = False,
 	exports = {'env' : defenv.Copy()}
 )
 
@@ -408,15 +427,15 @@ if defenv['CHMDOCS']:
 	defenv.SConscript(
 		dirs = 'Docs/src',
 		build_dir = '$BUILD_PREFIX/Docs/chm',
-		duplicate = 0,
-		exports = {'halibut' : halibut, 'env' : defenv.Copy(), 'build_chm' : 1}
+		duplicate = False,
+		exports = {'halibut' : halibut, 'env' : defenv.Copy(), 'build_chm' : True}
 	)
 else:
 	defenv.SConscript(
 		dirs = 'Docs/src',
 		build_dir = '$BUILD_PREFIX/Docs/html',
-		duplicate = 0,
-		exports = {'halibut' : halibut, 'env' : defenv.Copy(), 'build_chm' : 0}
+		duplicate = False,
+		exports = {'halibut' : halibut, 'env' : defenv.Copy(), 'build_chm' : False}
 	)
 
 ######################################################################
@@ -458,7 +477,7 @@ exports = {'env' : defenv.Copy()}
 
 defenv.SConscript(
 	dirs = 'Source/Tests',
-	duplicate = 0,
+	duplicate = False,
 	exports = exports,
 	build_dir = build_dir
 )

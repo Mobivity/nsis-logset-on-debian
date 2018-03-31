@@ -2,11 +2,9 @@ print "Using GNU tools configuration"
 
 Import('defenv')
 
-### workarounds
-
-# patch #1184316 for SCons
-# http://sourceforge.net/tracker/?func=detail&aid=1184316&group_id=30337&atid=398973
-defenv['RCCOM'] = '$RC $RCINCFLAGS $RCINCPREFIX $SOURCE.dir $RCFLAGS -i $SOURCE -o $TARGET'
+# patch #1313856 for SCons
+# http://sourceforge.net/tracker/?func=detail&aid=1313856&group_id=30337&atid=398973
+defenv['RCCOM'] = '$RC $_CPPDEFFLAGS $_CPPINCFLAGS ${INCPREFIX}${SOURCE.dir} $RCFLAGS -i $SOURCE -o $TARGET'
 
 ### cross compiling
 
@@ -42,11 +40,13 @@ if defenv['DEBUG']:
 stub_env = defenv.Copy()
 cross_env(stub_env)
 
-stub_env.Append(CCFLAGS = '-Os')                  # optimize for size
+if not defenv['DEBUG']:
+	stub_env.Append(CCFLAGS = '-Os')                # optimize for size
 stub_env.Append(CCFLAGS = '-Wall')                # all warnings
 stub_env.Append(CCFLAGS = '-x c')                 # force compile as c
 
-stub_env.Append(LINKFLAGS = '-s')                 # strip
+if not defenv['DEBUG']:
+	stub_env.Append(LINKFLAGS = '-s')               # strip
 stub_env.Append(LINKFLAGS = '-mwindows')          # build windows executables
 stub_env.Append(LINKFLAGS = '$NODEFLIBS_FLAG')    # no standard libraries
 stub_env.Append(LINKFLAGS = '$ALIGN_FLAG')        # 512 bytes align
@@ -57,10 +57,12 @@ stub_env.Append(LINKFLAGS = '$MAP_FLAG')          # generate map file
 
 makensis_env = defenv.Copy()
 
-makensis_env.Append(CCFLAGS = '-O2')              # optimize
+if not defenv['DEBUG']:
+	makensis_env.Append(CCFLAGS = '-O2')            # optimize
 makensis_env.Append(CCFLAGS = '-Wall')            # all warnings
 
-makensis_env.Append(LINKFLAGS = '-s')             # strip
+if not defenv['DEBUG']:
+	makensis_env.Append(LINKFLAGS = '-s')           # strip
 makensis_env.Append(LINKFLAGS = '$MAP_FLAG')      # generate map file
 
 ### plugin environment
@@ -68,27 +70,35 @@ makensis_env.Append(LINKFLAGS = '$MAP_FLAG')      # generate map file
 plugin_env = defenv.Copy()
 cross_env(plugin_env)
 
-plugin_env.Append(CCFLAGS = '-Os')                # optimize for size
+if not defenv['DEBUG']:
+	plugin_env.Append(CCFLAGS = '-Os')              # optimize for size
 plugin_env.Append(CCFLAGS = '-Wall')              # level 3 warnings
 
-plugin_env.Append(LINKFLAGS = '-s')               # strip
+if not defenv['DEBUG']:
+	plugin_env.Append(LINKFLAGS = '-s')             # strip
 plugin_env.Append(LINKFLAGS = '-mwindows')        # build windows executables
 plugin_env.Append(LINKFLAGS = '$ALIGN_FLAG')      # 512 bytes align
 plugin_env.Append(LINKFLAGS = '$MAP_FLAG')        # generate map file
 
+### cross-platform util environment
+
+cp_util_env = defenv.Copy()
+
+if not defenv['DEBUG']:
+	cp_util_env.Append(CCFLAGS = '-O2')                # optimize
+cp_util_env.Append(CCFLAGS = '-Wall')                # all warnings
+
+if not defenv['DEBUG']:
+	cp_util_env.Append(LINKFLAGS = '-s')               # strip
+cp_util_env.Append(LINKFLAGS = '$MAP_FLAG')          # generate map file
+
 ### util environment
 
-util_env = defenv.Copy()
+util_env = cp_util_env.Copy()
 cross_env(util_env)
 
-util_env.Append(CCFLAGS = '-O2')                  # optimize
-util_env.Append(CCFLAGS = '-Wall')                # all warnings
-
-util_env.Append(LINKFLAGS = '-s')                 # strip
 util_env.Append(LINKFLAGS = '-mwindows')          # build windows executables
 util_env.Append(LINKFLAGS = '$ALIGN_FLAG')        # 512 bytes align
-util_env.Append(LINKFLAGS = '$MAP_FLAG')          # generate map file
-
 
 ### weird GCC requirements
 
@@ -170,4 +180,4 @@ conf.Finish()
 
 ### return
 
-Return('stub_env makensis_env plugin_env util_env')
+Return('stub_env makensis_env plugin_env util_env cp_util_env')

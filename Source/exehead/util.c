@@ -90,10 +90,6 @@ int NSISCALL my_MessageBox(const char *text, UINT type) {
   return MessageBox(g_hwnd, text, g_caption, _type);
 }
 
-void * NSISCALL my_GlobalAlloc(DWORD dwBytes) {
-  return (void *)GlobalAlloc(GPTR, dwBytes);
-}
-
 void NSISCALL myDelete(char *buf, int flags)
 {
   static char lbuf[NSIS_MAX_STRLEN];
@@ -289,12 +285,18 @@ int NSISCALL is_valid_instpath(char *s)
 
   mystrcpy(tmp, s);
 
-  validate_filename(tmp);
-
   root = skip_root(tmp);
 
   if (!root)
     return 0;
+
+  // must be called after skip_root or AllowRootDirInstall won't work.
+  // validate_filename removes trailing blackslashes and so converts
+  // "C:\" to "C:" which is not a valid directory. skip_root returns
+  // NULL for "C:" so the above test returns 0.
+  // validate_filename is called so directories such as "C:\ " will
+  // not pass as a valid non-root directory.
+  validate_filename(root);
 
   if ((g_flags & CH_FLAGS_NO_ROOT_DIR) && (!*root || *root == '\\'))
     return 0;
@@ -379,16 +381,12 @@ char * NSISCALL my_GetTempFileName(char *buf, const char *dir)
 void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
 {
   BOOL fOk = 0;
-  HMODULE hLib=GetModuleHandle("KERNEL32.dll");
-  if (hLib)
+  typedef BOOL (WINAPI *mfea_t)(LPCSTR lpExistingFileName,LPCSTR lpNewFileName,DWORD dwFlags);
+  mfea_t mfea;
+  mfea=(mfea_t) myGetProcAddress("KERNEL32.dll","MoveFileExA");
+  if (mfea)
   {
-    typedef BOOL (WINAPI *mfea_t)(LPCSTR lpExistingFileName,LPCSTR lpNewFileName,DWORD dwFlags);
-    mfea_t mfea;
-    mfea=(mfea_t) GetProcAddress(hLib,"MoveFileExA");
-    if (mfea)
-    {
-      fOk=mfea(pszExisting, pszNew, MOVEFILE_DELAY_UNTIL_REBOOT|MOVEFILE_REPLACE_EXISTING);
-    }
+    fOk=mfea(pszExisting, pszNew, MOVEFILE_DELAY_UNTIL_REBOOT|MOVEFILE_REPLACE_EXISTING);
   }
 
   if (!fOk)
@@ -692,7 +690,10 @@ void NSISCALL validate_filename(char *in) {
   char *nono = "*?|<>/\":";
   char *out;
   char *out_save;
-  while (*in == ' ') in = CharNext(in);
+
+  // ignoring spaces is wrong, " C:\blah" is invalid
+  //while (*in == ' ') in = CharNext(in);
+
   if (in[0] == '\\' && in[1] == '\\' && in[2] == '?' && in[3] == '\\')
   {
     // at least four bytes
@@ -788,4 +789,22 @@ WIN32_FIND_DATA * NSISCALL file_exists(char *buf)
     return &fd;
   }
   return NULL;
+}
+
+void * NSISCALL myGetProcAddress(char *dll, char *func)
+{
+  HMODULE hModule = GetModuleHandle(dll);
+  if (!hModule)
+    hModule = LoadLibrary(dll);
+  if (!hModule)
+    return NULL;
+
+  return GetProcAddress(hModule, func);
+}
+
+void NSISCALL MessageLoop(UINT uCheckedMsg)
+{
+  MSG msg;
+  while (PeekMessage(&msg, NULL, uCheckedMsg, uCheckedMsg, PM_REMOVE))
+    DispatchMessage(&msg);
 }
