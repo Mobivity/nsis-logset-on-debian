@@ -1,3 +1,236 @@
+2008-07-12 17:51  kichik
+
+	* /NSIS/tags/v238: Tagging for release 2.38
+
+2008-07-12 17:48  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.38
+
+2008-07-12 17:11  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: added and verified another
+	  condition - both GetDiskFreeSpace and GetDiskFreeSpaceEx require
+	  a trailing backslash
+	  
+	  this needs a lot of optimization
+
+2008-07-12 16:48  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.38
+
+2008-07-12 16:40  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: added a safety mechanism to make
+	  sure the new directory rooting loop in DirProc() doesn't loop
+	  infinitely
+
+2008-07-09 20:45  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: fixed bug #2013317 -
+	  nsDialogs pollutes the stack if callbacks are not defined
+
+2008-07-09 20:39  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nsh: applied patch
+	  #2014106 - Updated Slovenian localization
+
+2008-07-09 20:32  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: fixed callback functions -
+	  ns_func wasn't modified in add_function but only for Call and
+	  friends which never happens for callback functions
+
+2008-07-09 20:22  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h: fix function calls
+	  by saving offset in nobj_function so it works for more than just
+	  the first use of the function
+
+2008-07-09 20:21  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: fixed label resolving in
+	  sections (resolve_instructions() wants size not end pointer)
+
+2008-07-09 20:21  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.h: bye bye
+	  nobj_section::get_section() and fileform.h include
+
+2008-07-09 20:20  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h: bye bye
+	  nobj_function::get_function() and fileform.h include, hello
+	  is_used()
+
+2008-07-09 20:19  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: extracted
+	  resolve_instructions() from resolve_coderefs() and
+	  resolve_call_int()
+
+2008-07-09 20:18  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: revive tests for open
+	  sections and functions at the end of the script
+
+2008-07-09 20:18  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: bye bye build_cursection,
+	  also fixes a bug that caused every section to execute the first
+	  section's code
+
+2008-07-09 20:17  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: removed tests that tested
+	  nothing meaningful
+
+2008-07-09 20:17  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: bye bye
+	  build_cursection_isfunc
+
+2008-07-09 20:16  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: convert from
+	  build_cusrsection_isfunc to build_cur_nobj_function where
+	  required
+
+2008-07-09 20:16  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: no more need for
+	  build_cursection in add_function()
+
+2008-07-09 20:15  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: build_cursection is no
+	  longer valid when doCommand() is called
+
+2008-07-09 20:15  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: check duplicate global
+	  labels using nobjs
+
+2008-07-09 20:14  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: add sections after script is
+	  parsed
+
+2008-07-09 20:14  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: nicer duplicate local label
+	  check
+
+2008-07-07 23:55  kichik
+
+	* /NSIS/trunk/Source/build.cpp: that define no longer exists
+
+2008-06-26 23:49  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: tabs to spaces
+
+2008-06-26 23:45  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: fixed bug #1964719 -
+	  Page callback function documentation
+
+2008-06-16 18:00  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh: fixed bug
+	  #1995024 - Typo in Finish.nsh causes var waste warning
+
+2008-06-13 17:25  kichik
+
+	* /NSIS/trunk/Source/exehead/exec.c: applied patch #1992325 -
+	  Logging - Change CreateDirectory logging to show recursion
+
+2008-06-13 16:51  kichik
+
+	* /NSIS/trunk/Docs/src/attributes.but: fixed bug #1990955 - Missing
+	  links in Documentation
+
+2008-06-13 16:50  kichik
+
+	* /NSIS/trunk/Examples/LogicLib.nsi: added IfNotThen
+
+2008-06-13 16:42  kichik
+
+	* /NSIS/trunk/Include/LogicLib.nsh: applied patch #1990761 -
+	  ${IfNotThen} macro for LogicLib
+
+2008-06-13 16:31  kichik
+
+	* /NSIS/trunk/Source/exehead/exec.c: applied patch #1986692 - Close
+	  LOG file when LogSet is set to Off.
+
+2008-06-12 19:10  kichik
+
+	* /NSIS/trunk/Contrib/Language files/French.nsh: fixed bug #1979491
+	  - Non-ANSI display name for French
+
+2008-06-12 18:58  kichik
+
+	* /NSIS/trunk/Contrib/Language files/French.nsh: fixed bug
+	  #1967032: French.nsh : fix on MUI_UNTEXT_FINISH_INFO_REBOOT
+
+2008-06-12 18:09  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: added missing Pop after
+	  nsDialogs::Create
+
+2008-05-29 21:17  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: fixed
+	  MUI_FINISHPAGE_CANCEL_ENABLED and removed some useless code
+
+2008-05-28 14:34  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh:
+	  MULTIUSER_INSTALLMODE_INSTDIR should not be used for the
+	  uninstaller
+
+2008-05-10 10:44  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: size optimization and a bit
+	  clearer code
+
+2008-05-10 10:42  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: fixed bug #1946112 - Wrong free
+	  space calculation
+
+2008-05-08 10:28  kichik
+
+	* /NSIS/trunk/Source/mmap.h: and m_iMappedSize as well
+
+2008-05-08 10:27  kichik
+
+	* /NSIS/trunk/Source/mmap.cpp, /NSIS/trunk/Source/mmap.h: mutable
+	  instead of const_cast for nicer code
+
+2008-05-04 12:55  joostverburg
+
+	* /NSIS/trunk/Include/VB6RunTime.nsh: msvbvm60.dll is protected by
+	  Windows Vista
+
+2008-05-04 08:30  pabs3
+
+	* /NSIS/trunk/SConstruct, /NSIS/trunk/Source/script.cpp: fixed bug
+	  #1951417 - fix and re-enable the HeaderBitmap.nsi test on Linux
+
 2008-05-03 13:58  kichik
 
 	* /NSIS/tags/v237: Tagging for release 2.37
