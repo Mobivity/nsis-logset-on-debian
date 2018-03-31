@@ -42,6 +42,7 @@ Description: Nullsoft Scriptable Install System (modified for Debian)
 
 Package: nsis-common
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Description: Nullsoft Scriptable Install System stubs and plugins
  NSIS is a tool for creating quick and user friendly installers for
@@ -51,6 +52,7 @@ Description: Nullsoft Scriptable Install System stubs and plugins
 
 Package: nsis-pluginapi
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Recommends: mingw-w64
 Enhances: nsis (>= ${source:Version})
@@ -63,6 +65,7 @@ Description: Nullsoft Scriptable Install System plugin API
 
 Package: nsis-doc
 Architecture: all
+Multi-Arch: foreign
 Section: doc
 Depends: ${misc:Depends}
 Description: Nullsoft Scriptable Install System documentation
