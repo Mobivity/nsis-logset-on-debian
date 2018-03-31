@@ -21,13 +21,13 @@ char g_log_file[1024];
 // which result in extra memory for extra variables without code to do allocation :)
 // nsis then removes the "DISCARDABLE" style from section (for safe)
 #ifdef _MSC_VER
-#  pragma bss_seg(VARS_SECTION_NAME)
+#  pragma bss_seg(NSIS_VARS_SECTION)
 NSIS_STRING g_usrvars[1];
 #  pragma bss_seg()
-#  pragma comment(linker, "/section:" VARS_SECTION_NAME ",rwd")
+#  pragma comment(linker, "/section:" NSIS_VARS_SECTION ",rwd")
 #else
 #  ifdef __GNUC__
-NSIS_STRING g_usrvars[1] __attribute__((section (VARS_SECTION_NAME)));
+NSIS_STRING g_usrvars[1] __attribute__((section (NSIS_VARS_SECTION)));
 #  else
 #    error Unknown compiler. You must implement the seperate PE section yourself.
 #  endif
@@ -126,12 +126,16 @@ void NSISCALL myDelete(char *buf, int flags)
     {
       do
       {
+        char *fdfn = fd.cFileName;
+        if (*findchar(fdfn, '?') && *fd.cAlternateFileName)
+          // name contains unicode, use short name
+          fdfn = fd.cAlternateFileName;
+
 #ifdef NSIS_SUPPORT_RMDIR
-        if (fd.cFileName[0] != '.' ||
-            (fd.cFileName[1] != '.' && fd.cFileName[1]))
+        if (fdfn[0] != '.' || (fdfn[1] != '.' && fdfn[1]))
 #endif//NSIS_SUPPORT_RMDIR
         {
-          mystrcpy(fn,fd.cFileName);
+          mystrcpy(fn,fdfn);
           if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
           {
 #ifdef NSIS_SUPPORT_RMDIR
@@ -396,8 +400,11 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
     static char tmpbuf[1024];
     int cchRenameLine;
     char *szRenameSec = "[Rename]\r\n";
-    HANDLE hfile, hfilemap;
-    DWORD dwFileSize, dwRenameLinePos;
+    HANDLE hfile;
+    DWORD dwFileSize;
+    DWORD dwBytes;
+    DWORD dwRenameLinePos;
+    char *pszWinInit;
 
     int spn;
 
@@ -425,13 +432,11 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
     if (hfile != INVALID_HANDLE_VALUE)
     {
       dwFileSize = GetFileSize(hfile, NULL);
-      hfilemap = CreateFileMapping(hfile, NULL, PAGE_READWRITE, 0, dwFileSize + cchRenameLine + 10, NULL);
+      pszWinInit = GlobalAlloc(GPTR, dwFileSize + cchRenameLine + 10);
 
-      if (hfilemap != NULL)
+      if (pszWinInit != NULL)
       {
-        LPSTR pszWinInit = (LPSTR) MapViewOfFile(hfilemap, FILE_MAP_WRITE, 0, 0, 0);
-
-        if (pszWinInit != NULL)
+        if (ReadFile(hfile, pszWinInit, dwFileSize, &dwBytes, NULL) && dwFileSize == dwBytes)
         {
           LPSTR pszRenameSecInFile = mystrstri(pszWinInit, szRenameSec);
           if (pszRenameSecInFile == NULL)
@@ -461,18 +466,16 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
           mini_memcpy(&pszWinInit[dwRenameLinePos], szRenameLine, cchRenameLine);
           dwFileSize += cchRenameLine;
 
-          UnmapViewOfFile(pszWinInit);
+          SetFilePointer(hfile, 0, NULL, FILE_BEGIN);
+          WriteFile(hfile, pszWinInit, dwFileSize, &dwBytes, NULL);
 
-          //fOk++;
+          GlobalFree(pszWinInit);
         }
-        CloseHandle(hfilemap);
       }
-      SetFilePointer(hfile, dwFileSize, NULL, FILE_BEGIN);
-      SetEndOfFile(hfile);
+      
       CloseHandle(hfile);
     }
   }
-  //return fOk;
 
 #ifdef NSIS_SUPPORT_REBOOT
   g_exec_flags.exec_reboot++;
@@ -544,7 +547,7 @@ int NSISCALL myatoi(char *s)
 // of a new function there should be about a couple of dozen or so calls.
 char * NSISCALL mystrcpy(char *out, const char *in)
 {
-  return lstrcpy(out, in);
+  return lstrcpyn(out, in, NSIS_MAX_STRLEN);
 }
 
 int NSISCALL mystrlen(const char *in)
@@ -602,21 +605,21 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           append = "\\Microsoft\\Internet Explorer\\Quick Launch";
           x = 2;
         }
-        if (fldrs[0] == CSIDL_PROGRAM_FILES_COMMON)
+        else if (fldrs[0] == CSIDL_PROGRAM_FILES_COMMON)
         {
           myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "CommonFilesDir", out);
         }
-        if (fldrs[0] == CSIDL_PROGRAM_FILES)
+        else if (fldrs[0] == CSIDL_PROGRAM_FILES)
         {
           myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "ProgramFilesDir", out);
           if (!*out)
             mystrcpy(out, "C:\\Program Files");
         }
-        if (fldrs[0] == CSIDL_SYSTEM)
+        else if (fldrs[0] == CSIDL_SYSTEM)
         {
           GetSystemDirectory(out, NSIS_MAX_STRLEN);
         }
-        if (fldrs[0] == CSIDL_WINDOWS)
+        else if (fldrs[0] == CSIDL_WINDOWS)
         {
           GetWindowsDirectory(out, NSIS_MAX_STRLEN);
         }
@@ -649,7 +652,6 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
         }
 
         validate_filename(out);
-        out += mystrlen(out);
       }
       else if (nVarIdx == NS_VAR_CODE)
       {
@@ -663,13 +665,12 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           // $LANGUAGE is just a number anyway...
           validate_filename(out);
         }
-        out += mystrlen(out);
       } // == VAR_CODES_START
       else if (nVarIdx == NS_LANG_CODE)
       {
         GetNSISString(out, -nData-1);
-        out += mystrlen(out);
       }
+      out += mystrlen(out);
     }
     else if (nVarIdx == NS_SKIP_CODE)
     {
@@ -682,7 +683,7 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
   } // while
   *out = 0;
   if (outbuf)
-    return lstrcpyn(outbuf, ps_tmpbuf, NSIS_MAX_STRLEN);
+    return mystrcpy(outbuf, ps_tmpbuf);
   return ps_tmpbuf;
 }
 

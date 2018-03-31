@@ -3277,10 +3277,17 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
             else
               wsprintf(str, "Nullsoft Install System %s", CONST_STR(NSIS_VERSION));
 
+            short old_width = td.GetItem(IDC_VERSTR)->sWidth;
+
             switch (trim) {
               case 1: td.LTrimToString(IDC_VERSTR, str, 4); break;
               case 2: td.RTrimToString(IDC_VERSTR, str, 4); break;
               case 3: td.CTrimToString(IDC_VERSTR, str, 4); break;
+            }
+
+            if (td.GetItem(IDC_VERSTR)->sWidth > old_width)
+            {
+              warning_fl("BrandingText: \"%s\" is too long, trimming has expanded the label", str);
             }
           }
 
@@ -4158,6 +4165,10 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
             else
             {
               warning_fl("%sFile: \"%s\" -> no files found",(which_token == TOK_FILE)?"":"Reserve",line.gettoken_str(a));
+
+              // workaround for bug #1299100
+              // add a nop opcode so relative jumps will work as expected
+              add_entry_direct(EW_NOP);
             }
           }
 
@@ -4465,12 +4476,14 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       SCRIPT_MSG("GetCurrentAddress: %s",line.gettoken_str(1));
     return add_entry(&ent);
     case TOK_STRCMP:
+    case TOK_STRCMPS:
       ent.which=EW_STRCMP;
       ent.offsets[0]=add_string(line.gettoken_str(1));
       ent.offsets[1]=add_string(line.gettoken_str(2));
+      ent.offsets[4]=which_token == TOK_STRCMPS;
       if (process_jump(line,3,&ent.offsets[2]) ||
           process_jump(line,4,&ent.offsets[3])) PRINTHELP()
-      SCRIPT_MSG("StrCmp \"%s\" \"%s\" equal=%s, nonequal=%s\n",line.gettoken_str(1),line.gettoken_str(2), line.gettoken_str(3),line.gettoken_str(4));
+      SCRIPT_MSG("%s \"%s\" \"%s\" equal=%s, nonequal=%s\n",line.gettoken_str(0),line.gettoken_str(1),line.gettoken_str(2), line.gettoken_str(3),line.gettoken_str(4));
     return add_entry(&ent);
     case TOK_GETDLLVERSIONLOCAL:
       {
@@ -4684,6 +4697,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_STRLEN:
     case TOK_STRCPY:
     case TOK_STRCMP:
+    case TOK_STRCMPS:
       ERROR_MSG("Error: %s specified, NSIS_SUPPORT_STROPTS not defined.\n",  line.gettoken_str(0));
     return PS_ERROR;
 #endif//!NSIS_SUPPORT_STROPTS
@@ -5162,7 +5176,10 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.which=EW_FGETS;
       ent.offsets[0]=GetUserVarIndex(line, 1); // file handle
       ent.offsets[1]=GetUserVarIndex(line, 2); // output string
-      ent.offsets[2]=add_string(line.gettoken_str(3)[0]?line.gettoken_str(3):"1023");
+      if (line.gettoken_str(3)[0])
+        ent.offsets[2]=add_string(line.gettoken_str(3));
+      else
+        ent.offsets[2]=add_intstring(NSIS_MAX_STRLEN-1);
       if (ent.offsets[0]<0 || ent.offsets[1]<0) PRINTHELP()
       SCRIPT_MSG("FileRead: %s->%s (max:%s)\n",line.gettoken_str(1),line.gettoken_str(2),line.gettoken_str(3));
     return add_entry(&ent);

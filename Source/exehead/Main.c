@@ -3,7 +3,7 @@
   Nullsoft Scriptable Install System (NSIS)
   main.c - executable header main code
 
-  Copyright (C) 1999-2005 Nullsoft, Inc.
+  Copyright (C) 1999-2006 Nullsoft, Inc.
   
   This license applies to everything in the NSIS package, except where otherwise noted.
 
@@ -124,7 +124,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
   }
   DeleteFile(state_command_line);
 
-  lstrcpyn(state_command_line, GetCommandLine(), NSIS_MAX_STRLEN);
+  mystrcpy(state_command_line, GetCommandLine());
 
 #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
   g_hInstance = GetModuleHandle(NULL);

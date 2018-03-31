@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999-2005 Nullsoft, Inc.
+*  Copyright (C) 1999-2006 Nullsoft, Inc.
 *  Portions Copyright (C) 2002 Jeff Doozan
 *
 *  This software is provided 'as-is', without any express or implied warranty.
@@ -51,7 +51,11 @@ int g_quit_flag; // set when Quit has been called (meaning bail out ASAP)
 
 int progress_bar_pos, progress_bar_len;
 
+#if NSIS_MAX_STRLEN < 1024
 static char g_tmp[4096];
+#else
+static char g_tmp[NSIS_MAX_STRLEN * 4];
+#endif
 
 static int m_page=-1,m_retcode,m_delta;
 static page *g_this_page;
@@ -174,7 +178,7 @@ int *cur_langtable;
 static void NSISCALL set_language()
 {
   LANGID lang_mask=(LANGID)~0;
-  LANGID lang=state_language[0]?myatoi(state_language):GetUserDefaultLangID();
+  LANGID lang=myatoi(state_language);
   char *language_table=0;
   int lang_num;
   int *selected_langtable=0;
@@ -228,10 +232,51 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
 {
   header *header = g_header;
   static WNDCLASS wc; // richedit subclassing and bgbg creation
-  g_exec_flags.autoclose=g_flags&CH_FLAGS_AUTO_CLOSE;
 
+  // detect default language
+  // more information at:
+  //   http://msdn.microsoft.com/library/default.asp?url=/library/en-us/intl/nls_0xrn.asp
+
+  LANGID (WINAPI *GUDUIL)();
+  static const char guduil[] = "GetUserDefaultUILanguage";
+
+  GUDUIL = myGetProcAddress("KERNEL32.dll", (char *) guduil);
+  if (GUDUIL)
+  {
+    // Windows ME/2000+
+    myitoa(state_language, GUDUIL());
+  }
+  else
+  {
+    *(DWORD*)state_language = CHAR4_TO_DWORD('0', 'x', 0, 0);
+
+    {
+      // Windows 9x
+      static const char reg_9x_locale[] = "Control Panel\\Desktop\\ResourceLocale";
+
+      myRegGetStr(HKEY_CURRENT_USER, reg_9x_locale, NULL, g_tmp);
+    }
+
+    if (!g_tmp[0])
+    {
+      // Windows NT
+      // This key exists on 9x as well, so it's only read if ResourceLocale wasn't found
+      static const char reg_nt_locale_key[] = ".DEFAULT\\Control Panel\\International";
+      static const char reg_nt_locale_val[] = "Locale";
+
+      myRegGetStr(HKEY_USERS, reg_nt_locale_key, reg_nt_locale_val, g_tmp);
+    }
+
+    mystrcat(state_language, g_tmp);
+  }
+
+  // set default language
   set_language();
 
+  // initialize auto close flag
+  g_exec_flags.autoclose=g_flags&CH_FLAGS_AUTO_CLOSE;
+
+  // read install directory from registry
   if (!is_valid_instpath(state_install_directory))
   {
     if (header->install_reg_key_ptr)
@@ -660,6 +705,11 @@ skipPage:
 
 #ifdef NSIS_CONFIG_LICENSEPAGE
 
+static void NSISCALL LoadAndSetCursor(LPCTSTR lpCursorName)
+{
+  SetCursor(LoadCursor(0, lpCursorName));
+}
+
 #define _RICHEDIT_VER 0x0200
 #include <richedit.h>
 #undef _RICHEDIT_VER
@@ -733,13 +783,13 @@ static BOOL CALLBACK LicenseProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM 
         };
         if (tr.chrg.cpMax-tr.chrg.cpMin < sizeof(ps_tmpbuf)) {
           SendMessage(hwLicense,EM_GETTEXTRANGE,0,(LPARAM)&tr);
-          SetCursor(LoadCursor(0,IDC_WAIT));
+          LoadAndSetCursor(IDC_WAIT);
           ShellExecute(hwndDlg,"open",tr.lpstrText,NULL,NULL,SW_SHOWNORMAL);
-          SetCursor(LoadCursor(0,IDC_ARROW));
+          LoadAndSetCursor(IDC_ARROW);
         }
       }
       if (enlink->msg==WM_SETCURSOR) {
-        SetCursor(LoadCursor(0,IDC_HAND));
+        LoadAndSetCursor(IDC_HAND);
       }
     }
     //Ximon Eighteen 8th September 2002 Capture return key presses in the rich
@@ -861,6 +911,22 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 #endif
     if (validpathspec(dir) && !skip_root(dir))
       addtrailingslash(dir);
+
+    // workaround for bug #1209843
+    //
+    // m_curwnd is only updated once WM_INITDIALOG returns.
+    // my_SetWindowText triggers an EN_CHANGE message that
+    // triggers a WM_IN_UPDATEMSG message that uses m_curwnd
+    // to get the selected directory (GetUIText).
+    // because m_curwnd is still outdated, dir varialble is
+    // filled with an empty string. by default, dir points
+    // to $INSTDIR.
+    //
+    // to solve this, m_curwnd is manually set to the correct
+    // window handle.
+
+    m_curwnd=hwndDlg;
+
     my_SetWindowText(hDir,dir);
     SetUITextFromLang(IDC_BROWSE,this_page->parms[2]);
     SetUITextFromLang(IDC_SELDIRTEXT,this_page->parms[1]);
@@ -1024,8 +1090,6 @@ static void FORCE_INLINE NSISCALL RefreshComponents(HWND hwTree, HTREEITEM *item
     item.hItem = items[i];
 
     item.mask = TVIF_STATE;
-    item.state = (flags & SF_BOLD) << 1; // (SF_BOLD << 1) == 16 == TVIS_BOLD
-    item.state |= flags & SF_EXPAND; // TVIS_EXPANDED == SF_EXPAND
 
     if (flags & SF_NAMECHG)
     {
@@ -1044,32 +1108,61 @@ static void FORCE_INLINE NSISCALL RefreshComponents(HWND hwTree, HTREEITEM *item
       if (flags & SF_RO) state += 3;
     }
 
+    item.state = (flags & SF_BOLD) << 1; // (SF_BOLD << 1) == 16 == TVIS_BOLD
+    item.state |= flags & SF_EXPAND; // TVIS_EXPANDED == SF_EXPAND
     item.state |= INDEXTOSTATEIMAGEMASK(state);
 
-    TreeView_Expand(hwTree, item.hItem, (flags & SF_EXPAND) ? TVE_EXPAND : TVE_COLLAPSE);
+    // TVE_COLLAPSE = 1, TVE_EXPAND = 2
+    TreeView_Expand(hwTree, item.hItem, TVE_COLLAPSE + ((flags & SF_EXPAND) / SF_EXPAND));
+
     TreeView_SetItem(hwTree, &item);
   }
+
+  // workaround for bug #1397031
+  //
+  // windows 95 doesn't erase the background of the state image
+  // before it draws a new one. because of this parts of the old
+  // state image will show where the new state image is masked.
+  //
+  // to solve this, the following line forces the background to
+  // be erased. sadly, this redraws the entire control. it might
+  // be a good idea to figure out where the state images are and
+  // redraw only those.
+
+  InvalidateRect(hwTree, NULL, TRUE);
 }
 
-HTREEITEM NSISCALL TreeHitTest(HWND tree)
+int NSISCALL TreeGetSelectedSection(HWND tree, BOOL mouse)
 {
-  TVHITTESTINFO ht;
-  DWORD dwpos = GetMessagePos();
+  HTREEITEM hItem = TreeView_GetSelection(tree);
+  TVITEM item;
 
-  ht.pt.x = GET_X_LPARAM(dwpos);
-  ht.pt.y = GET_Y_LPARAM(dwpos);
-  ScreenToClient(tree, &ht.pt);
+  if (mouse)
+  {
+    TVHITTESTINFO ht;
+    DWORD dwpos = GetMessagePos();
 
-  TreeView_HitTest(tree, &ht);
+    ht.pt.x = GET_X_LPARAM(dwpos);
+    ht.pt.y = GET_Y_LPARAM(dwpos);
+    ScreenToClient(tree, &ht.pt);
+
+    TreeView_HitTest(tree, &ht);
 
 #ifdef NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
-  if (ht.flags & TVHT_ONITEMSTATEICON)
+    if (!(ht.flags & TVHT_ONITEMSTATEICON))
 #else
-  if (ht.flags & (TVHT_ONITEMSTATEICON|TVHT_ONITEMLABEL|TVHT_ONITEMRIGHT|TVHT_ONITEM))
+    if (!(ht.flags & (TVHT_ONITEMSTATEICON|TVHT_ONITEMLABEL|TVHT_ONITEMRIGHT|TVHT_ONITEM)))
 #endif
-    return ht.hItem;
+      return -1;
 
-  return 0;
+    hItem = ht.hItem;
+  }
+
+  item.mask = TVIF_PARAM;
+  item.hItem = hItem;
+  TreeView_GetItem(tree, &item);
+
+  return (int) item.lParam;
 }
 
 static LONG oldTreeWndProc;
@@ -1086,21 +1179,8 @@ static DWORD WINAPI newTreeWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
   }
 #ifndef NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
   if (uMsg == WM_MOUSEMOVE) {
-    TVITEM tvItem;
-
     if (IsWindowVisible(hwnd)) {
-      tvItem.hItem = TreeHitTest(hwnd);
-
-      lParam = -1;
-
-      if (tvItem.hItem)
-      {
-        tvItem.mask = TVIF_PARAM;
-
-        TreeView_GetItem(hwnd, &tvItem);
-
-        lParam = tvItem.lParam;
-      }
+      lParam = TreeGetSelectedSection(hwnd, TRUE);
       uMsg = WM_NOTIFY_SELCHANGE;
     }
   }
@@ -1213,7 +1293,6 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
       SetWindowLong(hwndTree1,GWL_STYLE,GetWindowLong(hwndTree1,GWL_STYLE)&~(TVS_LINESATROOT));
     }
-    SendMessage(hwndTree1,WM_VSCROLL,SB_TOP,0);
 
     if (!noCombo)
     {
@@ -1238,48 +1317,39 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
       if (!(g_flags&CH_FLAGS_NO_CUSTOM) && (uMsg == WM_TREEVIEW_KEYHACK || lpnmh->code == NM_CLICK))
       {
-        TVITEM tvItem;
+        int secid = TreeGetSelectedSection(hwndTree1, uMsg != WM_TREEVIEW_KEYHACK);
 
-        if (uMsg != WM_TREEVIEW_KEYHACK)
-          tvItem.hItem=TreeHitTest(hwndTree1);
-        else
-          tvItem.hItem=TreeView_GetSelection(hwndTree1);
-
-        if (tvItem.hItem)
+        if (secid >= 0)
         {
-          tvItem.mask = TVIF_PARAM;
-          if (TreeView_GetItem(hwndTree1, &tvItem))
+          int flags = sections[secid].flags;
+
+          if ((flags & SF_RO) == 0)
           {
-            int flags = sections[tvItem.lParam].flags;
-
-            if ((flags & SF_RO) == 0)
+            if ((flags & SF_PSELECTED))
             {
-              if ((flags & SF_PSELECTED))
-              {
-                flags ^= SF_TOGGLED;
+              flags ^= SF_TOGGLED;
 
-                if (flags & SF_TOGGLED)
-                {
-                  flags |= SF_SELECTED;
-                }
-                else
-                {
-                  flags &= ~SF_SELECTED;
-                }
+              if (flags & SF_TOGGLED)
+              {
+                flags |= SF_SELECTED;
               }
               else
               {
-                flags ^= SF_SELECTED;
+                flags &= ~SF_SELECTED;
               }
-
-              sections[tvItem.lParam].flags = flags;
-
-              SectionFlagsChanged(tvItem.lParam);
-
-              wParam = 1;
-              lParam = !(g_flags & CH_FLAGS_COMP_ONLY_ON_CUSTOM);
-              uMsg = WM_IN_UPDATEMSG;
             }
+            else
+            {
+              flags ^= SF_SELECTED;
+            }
+
+            sections[secid].flags = flags;
+
+            SectionFlagsChanged(secid);
+
+            wParam = 1;
+            lParam = !(g_flags & CH_FLAGS_COMP_ONLY_ON_CUSTOM);
+            uMsg = WM_IN_UPDATEMSG;
           }
         } // was valid click
       } // was click or hack
@@ -1421,7 +1491,8 @@ void NSISCALL update_status_text(int strtab, const char *text) {
       new_item.pszText = tmp;
       new_item.iItem = ListView_GetItemCount(linsthwnd) - (updateflag & 1);
       new_item.iSubItem = 0;
-      SendMessage(linsthwnd, (updateflag & 1) ? LVM_SETITEM : LVM_INSERTITEM, 0, (LPARAM) &new_item);
+      // LVM_INSERTITEM - LVM_SETITEM = 1
+      SendMessage(linsthwnd, LVM_INSERTITEM - (updateflag & 1), 0, (LPARAM) &new_item);
       ListView_EnsureVisible(linsthwnd, new_item.iItem, 0);
     }
 

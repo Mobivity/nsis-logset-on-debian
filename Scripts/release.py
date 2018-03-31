@@ -24,10 +24,11 @@ CVS_EXT="C:\Program Files\PuTTY\plink.exe" -2 -l "%u" "%h"
 TAR_BZ2=7zatarbz2.bat %s %s
 ZIP="C:\Program Files\7-zip\7za.exe" a -tzip %s -mx9 -mfb=255 -mpass=4 %s
 
-[scp]
-SCP="pscp -2"
+[rsh]
+RSH="C:\Program Files\PuTTY\plink.exe" -2 -l kichik nsis.sourceforge.net
 
 [wiki]
+PURGE_URL=http://nsis.sourceforge.net/%s?action=purge
 UPDATE_URL=http://nsis.sourceforge.net/Special:Simpleupdate?action=raw
 =========================
 
@@ -43,7 +44,6 @@ TODO
 
  * Create release on SourceForge automatically
  * Edit update.php
- * Edit cl.sh
  * http://en.wikipedia.org/w/index.php?title=Nullsoft_Scriptable_Install_System&action=edit
  * Update Freshmeat
  * Update BetaNews
@@ -78,8 +78,9 @@ CVS_EXT = cfg.get('cvs', 'CVS_EXT')
 TAR_BZ2 = cfg.get('compression', 'TAR_BZ2')
 ZIP = cfg.get('compression', 'ZIP')
 
-SCP = cfg.get('scp', 'SCP')
+RSH = cfg.get('rsh', 'RSH')
 
+PURGE_URL = cfg.get('wiki', 'PURGE_URL')
 UPDATE_URL = cfg.get('wiki', 'UPDATE_URL')
 
 ### config env
@@ -291,12 +292,16 @@ ftp.quit()
 
 ### update some websites...
 
+# manual release
+
 print 'release url:'
 print '  http://sourceforge.net/project/admin/qrs.php?package_id=0&group_id=22049'
 print
 
 sys.stdout.write('What\'s the SF release id of the new version? ')
 release_id = raw_input()
+
+# update wiki
 
 print 'updating wiki...'
 
@@ -316,15 +321,33 @@ def update_wiki_page(page, data, summary):
 		print '  *** failed updating `%s` wiki page' % page
 		exit()
 
+def purge_wiki_page(page):
+	import urllib
+	urllib.urlopen(PURGE_URL % page).read()
+
 update_wiki_page('Template:NSISVersion', VERSION, 'new version')
 update_wiki_page('Template:NSISReleaseDate', time.strftime('%B %d, %Y'), 'new version')
 update_wiki_page('Template:NSISReleaseID', release_id, 'new version')
 
+purge_wiki_page('Main_Page')
+purge_wiki_page('Download')
+purge_wiki_page('Special_Builds')
+purge_wiki_page('What_is_the_latest_version_of_NSIS')
+purge_wiki_page('Change_Log')
+
+# update changelog start time
+
+run(
+	'%s touch /home/groups/n/ns/nsis/bin/cl.timestamp' % RSH,
+	'cl-timestamp',
+	'change log start time modification failed'
+)
+
+### still left to do
+
 print 'automatic phase done\n'
 print """
- * Add SourceForge release
  * Edit update.php
- * Edit cl.sh
  * http://en.wikipedia.org/w/index.php?title=Nullsoft_Scriptable_Install_System&action=edit
  * Update Freshmeat
  * Update BetaNews
