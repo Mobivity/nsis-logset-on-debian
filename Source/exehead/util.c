@@ -619,10 +619,10 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
     if (nVarIdx > NS_CODES_START)
     {
       nData = ((in[1] & 0x7F) << 7) | (in[0] & 0x7F);
-      fldrs[0] = in[0]; // current user
-      fldrs[1] = in[0] | CSIDL_FLAG_CREATE;
-      fldrs[2] = in[1]; // all users
-      fldrs[3] = in[1] | CSIDL_FLAG_CREATE;
+      fldrs[0] = in[0] | CSIDL_FLAG_CREATE; // current user
+      fldrs[1] = in[0];
+      fldrs[2] = in[1] | CSIDL_FLAG_CREATE; // all users
+      fldrs[3] = in[1];
       in += 2;
 
       if (nVarIdx == NS_SHELL_CODE)
@@ -637,12 +637,12 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
         SHGetFolderPath as provided by shfolder.dll is used to get special folders
         unless the installer is running on Windows 95/98. For 95/98 shfolder.dll is
         only used for the Application Data and Documents folder (if the DLL exists).
-        Oherwise, the old SHGetSpecialFolderLocation API is called.
+        Otherwise, the old SHGetSpecialFolderLocation API is called.
 
-        There reason for not using shfolder.dll for all folders on 95/98 is that
-        some unsupported folders (such as the Start Menu folder for all users) are
-        simulated instead of returning an error so whe can fall back on the folder
-        for the current user.
+        The reason for not using shfolder.dll for all folders on 95/98 is that some
+        unsupported folders (such as the Start Menu folder for all users) are
+        simulated instead of returning an error so we can fall back on the current
+        user folder.
 
         SHGetFolderPath in shell32.dll could be called directly for Windows versions
         later than 95/98 but there is no need to do so, because shfolder.dll is still
@@ -656,8 +656,8 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
 
           // Unless the Application Data or Documents folder is requested
           (
-            (fldrs[2] == CSIDL_COMMON_APPDATA) ||
-            (fldrs[2] == CSIDL_COMMON_DOCUMENTS)
+            (fldrs[3] == CSIDL_COMMON_APPDATA) ||
+            (fldrs[3] == CSIDL_COMMON_DOCUMENTS)
           );
 
         /* Carry on... shfolder stuff is over. */
@@ -667,19 +667,19 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           x = 4;
         }
 
-        if (fldrs[0] & 0x80)
+        if (fldrs[1] & 0x80)
         {
-          myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, GetNSISStringNP(fldrs[0] & 0x3F), out, fldrs[0] & 0x40);
+          myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, GetNSISStringNP(fldrs[1] & 0x3F), out, fldrs[1] & 0x40);
           if (!*out)
-            GetNSISString(out, fldrs[2]);
+            GetNSISString(out, fldrs[3]);
           x = 0;
         }
-        else if (fldrs[0] == CSIDL_SYSTEM)
+        else if (fldrs[1] == CSIDL_SYSTEM)
         {
           GetSystemDirectory(out, NSIS_MAX_STRLEN);
           x = 0;
         }
-        else if (fldrs[0] == CSIDL_WINDOWS)
+        else if (fldrs[1] == CSIDL_WINDOWS)
         {
           GetWindowsDirectory(out, NSIS_MAX_STRLEN);
           x = 0;
@@ -710,7 +710,7 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
         {
           // all users' version is CSIDL_APPDATA only for $QUICKLAUNCH
           // for normal $APPDATA, it'd be CSIDL_APPDATA_COMMON
-          if (fldrs[2] == CSIDL_APPDATA)
+          if (fldrs[3] == CSIDL_APPDATA)
           {
             mystrcat(out, QUICKLAUNCH);
           }

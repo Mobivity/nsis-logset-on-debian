@@ -52,7 +52,7 @@ using namespace std;
 
 #ifdef NSIS_SUPPORT_STANDARD_PREDEFINES
 // Added by Sunil Kamath 11 June 2003
-char *CEXEBuild::set_file_predefine(char *filename)
+char *CEXEBuild::set_file_predefine(const char *filename)
 {
   char *oldfilename = definedlist.find("__FILE__");
   if(oldfilename)
@@ -60,7 +60,7 @@ char *CEXEBuild::set_file_predefine(char *filename)
     oldfilename = strdup(oldfilename);
     definedlist.del("__FILE__");
   }
-  char *p = strrchr(filename,'\\');
+  const char *p = strrchr(filename,'\\');
   if(p) {
     p++;
   }
@@ -81,7 +81,7 @@ void CEXEBuild::restore_file_predefine(char *oldfilename)
   }
 }
 
-char *CEXEBuild::set_timestamp_predefine(char *filename)
+char *CEXEBuild::set_timestamp_predefine(const char *filename)
 {
   char *oldtimestamp = definedlist.find("__TIMESTAMP__");
   if(oldtimestamp) {
@@ -200,7 +200,7 @@ void CEXEBuild::del_date_time_predefines()
 }
 #endif
 
-int CEXEBuild::process_script(FILE *filepointer, char *filename)
+int CEXEBuild::process_script(FILE *filepointer, const char *filename)
 {
   linecnt = 0;
   fp = filepointer;
@@ -762,7 +762,7 @@ int CEXEBuild::includeScript(char *f)
 
   int last_linecnt=linecnt;
   linecnt=0;
-  char *last_filename=curfilename;
+  const char *last_filename=curfilename;
   curfilename=f;
   FILE *last_fp=fp;
   fp=incfp;
@@ -823,9 +823,9 @@ int CEXEBuild::MacroExists(const char *macroname)
   return 0;
 }
 
-int CEXEBuild::process_oneline(char *line, char *filename, int linenum)
+int CEXEBuild::process_oneline(char *line, const char *filename, int linenum)
 {
-  char *last_filename=curfilename;
+  const char *last_filename=curfilename;
   curfilename=filename;
   int last_linecnt=linecnt;
   linecnt=linenum;
@@ -1165,20 +1165,55 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
     case TOK_P_DELFILE:
       {
-        char *file = line.gettoken_str(1);
-#ifndef _WIN32
-        file = my_convert(file);
-#endif
-        int result = unlink(file);
-#ifndef _WIN32
-        my_convert_free(file);
-#endif
-        if (result == -1) {
-          ERROR_MSG("!delfile: \"%s\" couldn't be deleted.\n", line.gettoken_str(1));
-          return PS_ERROR;
+        int fatal = 1;
+        int a = 1;
+        char *fc = line.gettoken_str(a);
+        if (line.getnumtokens()==3)
+        {
+          if(!stricmp(fc,"/nonfatal"))
+          {
+            fatal = 0;
+            fc = line.gettoken_str(++a);
+          }
+          else PRINTHELP();
         }
 
-        SCRIPT_MSG("!delfile: \"%s\"\n", line.gettoken_str(1));
+        SCRIPT_MSG("!delfile: \"%s\"\n", line.gettoken_str(a));
+
+        string dir = get_dir_name(fc);
+        string spec = get_file_name(fc);
+        string basedir = dir + PLATFORM_PATH_SEPARATOR_STR;
+        if (dir == spec) {
+          // no path, just file name
+          dir = ".";
+          basedir = "";
+        }
+
+        boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
+        dr->read(dir);
+
+        for (dir_reader::iterator files_itr = dr->files().begin();
+             files_itr != dr->files().end();
+             files_itr++)
+        {
+          if (!dir_reader::matches(*files_itr, spec))
+            continue;
+
+          string file = basedir + *files_itr;
+
+          int result = unlink(file.c_str());
+          if (result == -1) {
+            ERROR_MSG("!delfile: \"%s\" couldn't be deleted.\n", file.c_str());
+            if (fatal)
+            {
+              return PS_ERROR;
+            }
+          }
+          else
+          {
+            SCRIPT_MSG("!delfile: deleted \"%s\"\n", file.c_str());
+          }
+        }
       }
     return PS_OK;
 
@@ -2911,9 +2946,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 #ifdef _WIN32
         int ret=sane_system(exec);
 #else
-        char *execfixed = my_convert(exec);
-        int ret=system(execfixed);
-        my_convert_free(execfixed);
+        PATH_CONVERT(exec);
+        int ret=system(exec);
 #endif
         if (comp == 0 && ret < cmpv);
         else if (comp == 1 && ret > cmpv);
@@ -2948,16 +2982,11 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         SCRIPT_MSG("!execute: \"%s\"\n",exec);
       }
     case TOK_P_ADDINCLUDEDIR:
-#ifdef _WIN32
-      include_dirs.add(line.gettoken_str(1),0);
-#else
       {
         char *f = line.gettoken_str(1);
-        char *fc = my_convert(f);
-        include_dirs.add(fc,0);
-        my_convert_free(fc);
+        PATH_CONVERT(f);
+        include_dirs.add(f,0);
       }
-#endif
     return PS_OK;
     case TOK_P_INCLUDE:
       {
@@ -2975,11 +3004,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           PRINTHELP();
         }
         
-#ifdef _WIN32
-        char *fc = f;
-#else
         char *fc = my_convert(f);
-#endif
         int included = 0;
 
         string dir = get_dir_name(fc);
@@ -2991,26 +3016,24 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           basedir = "";
         }
 
-#ifndef _WIN32
         my_convert_free(fc);
-#endif
 
         // search working directory
-          boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
-          dr->read(dir);
+        boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
+        dr->read(dir);
 
-          for (dir_reader::iterator files_itr = dr->files().begin();
-               files_itr != dr->files().end();
-               files_itr++)
-          {
-            if (!dir_reader::matches(*files_itr, spec))
-              continue;
+        for (dir_reader::iterator files_itr = dr->files().begin();
+             files_itr != dr->files().end();
+             files_itr++)
+        {
+          if (!dir_reader::matches(*files_itr, spec))
+            continue;
 
-            string incfile = basedir + *files_itr;
+          string incfile = basedir + *files_itr;
 
-            if (includeScript((char *) incfile.c_str()) != PS_OK) {
-              return PS_ERROR;
-            }
+          if (includeScript((char *) incfile.c_str()) != PS_OK) {
+            return PS_ERROR;
+          }
 
           included++;
         }
@@ -3114,6 +3137,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           char str[MAX_LINELENGTH];
           for (;;)
           {
+            tmpstr.resize(0);
             for (;;)
             {
               str[0]=0;
@@ -3130,7 +3154,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
               if (tmpstr.getlen() || endSlash) tmpstr.add(str,strlen(str));
 
               if (!endSlash) break;
-            }            
+            }
+
+            if (!str[0] && !tmpstr.getlen()) break; // failed
 
             char *thisline=str;
             if (tmpstr.getlen()) 
@@ -3138,7 +3164,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
               tmpstr.add("\0",1);
               thisline=(char *)tmpstr.get();
             }
-
 
             DefineList *tlist = searchParseString(thisline,&line,parmOffs,ignCase,true);
             if (tlist && tlist->getnum())
@@ -3152,8 +3177,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
               else delete list;
             }
             // parse line
-
-            tmpstr.resize(0);
           }
           fclose(fp);
           if (!noErrors)
@@ -3841,7 +3864,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     return add_entry(&ent);
     case TOK_SETOUTPATH:
       {
-        char *op=line.gettoken_str(1);
+        const char *op=line.gettoken_str(1);
         if (!strcmp(op,"-"))
         {
           op="$INSTDIR";
@@ -3904,8 +3927,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.offsets[3]=SW_SHOWNORMAL;
       if (line.getnumtokens() > 4)
       {
-        int tab[4]={SW_SHOWNORMAL,SW_SHOWMAXIMIZED,SW_SHOWMINIMIZED,SW_HIDE};
-        int a=line.gettoken_enum(4,"SW_SHOWNORMAL\0SW_SHOWMAXIMIZED\0SW_SHOWMINIMIZED\0SW_HIDE\0");
+        int tab[5]={SW_SHOWDEFAULT,SW_SHOWNORMAL,SW_SHOWMAXIMIZED,SW_SHOWMINIMIZED,SW_HIDE};
+        int a=line.gettoken_enum(4,"SW_SHOWDEFAULT\0SW_SHOWNORMAL\0SW_SHOWMAXIMIZED\0SW_SHOWMINIMIZED\0SW_HIDE\0");
         if (a < 0) PRINTHELP()
         ent.offsets[3]=tab[a];
       }
@@ -4004,7 +4027,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         struct
         {
           int id;
-          char *str;
+          const char *str;
         } list[]=
         {
           MBD(MB_ABORTRETRYIGNORE)
@@ -4332,6 +4355,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_CREATEFONT:
       ent.which=EW_CREATEFONT;
       ent.offsets[0]=GetUserVarIndex(line, 1);
+      if (ent.offsets[0] < 0) PRINTHELP()
       ent.offsets[1]=add_string(line.gettoken_str(2));
       SCRIPT_MSG("CreateFont: output=%s \"%s\"",line.gettoken_str(1),line.gettoken_str(2));
       {
@@ -4549,13 +4573,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           }
 
           int tf=0;
-#ifdef _WIN32
-          int v=do_add_file(line.gettoken_str(a), attrib, 0, &tf, on);
-#else
-          char *fn = my_convert(line.gettoken_str(a));
+          char *fn = line.gettoken_str(a);
+          PATH_CONVERT(fn);
           int v=do_add_file(fn, attrib, 0, &tf, on);
-          my_convert_free(fn);
-#endif
           if (v != PS_OK) return v;
           if (tf > 1) PRINTHELP()
           if (!tf)
@@ -4607,13 +4627,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
             t=buf;
           }
           int tf=0;
-#ifdef _WIN32
-          int v=do_add_file(t, attrib, rec, &tf, NULL, which_token == TOK_FILE, NULL, excluded);
-#else
           char *fn = my_convert(t);
           int v=do_add_file(fn, attrib, rec, &tf, NULL, which_token == TOK_FILE, NULL, excluded);
           my_convert_free(fn);
-#endif
           if (v != PS_OK) return v;
           if (!tf)
           {
@@ -4685,7 +4701,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         struct
         {
           int id;
-          char *str;
+          const char *str;
         } list[]=
         {
           MBD(FILE_ATTRIBUTE_NORMAL)
@@ -4991,8 +5007,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_DELETEINISEC:
     case TOK_DELETEINISTR:
       {
-        char *vname="";
-        char *space="";
+        const char *vname="";
+        const char *space="";
         ent.which=EW_WRITEINI;
         ent.offsets[0]=add_string(line.gettoken_str(2)); // section name
         if (line.getnumtokens() > 3)
@@ -5499,7 +5515,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     return add_entry(&ent);
     case TOK_FILESEEK:
       {
-        char *modestr;
+        const char *modestr;
         int tab[3]={FILE_BEGIN,FILE_CURRENT,FILE_END};
         int mode=line.gettoken_enum(3,"SET\0CUR\0END\0");
         ent.which=EW_FSEEK;
@@ -5798,7 +5814,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           warning_fl("%s: %s language not loaded, using default \"1033-English\"", line.gettoken_str(0), line.gettoken_str(1));
 
         unsigned int codepage;
-        char *lang_name = GetLangNameAndCP(LangID, &codepage);
+        const char *lang_name = GetLangNameAndCP(LangID, &codepage);
 
         if ( rVersionInfo.SetKeyValue(LangID, codepage, pKey, pValue) )
         {
@@ -5835,13 +5851,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       if (line.getnumtokens() == 2)
       {
         SCRIPT_MSG("PluginDir: \"%s\"\n",line.gettoken_str(1));
-#ifdef _WIN32
-        m_plugins.FindCommands(line.gettoken_str(1), display_info?true:false);
-#else
-        char *converted_path = my_convert(line.gettoken_str(1));
-        m_plugins.FindCommands(converted_path, display_info?true:false);
-        my_convert_free(converted_path);
-#endif
+        char *path = line.gettoken_str(1);
+        PATH_CONVERT(path);
+        m_plugins.FindCommands(path, display_info?true:false);
         return PS_OK;
       }
     }
@@ -6382,7 +6394,6 @@ int CEXEBuild::do_add_file_create_dir(const string& local_dir, const string& dir
 
 
 
-
 DefineList *CEXEBuild::searchParseString(const char *source_string, LineParser *line, int parmOffs, bool ignCase, bool noErrors)
 {
   const char *tok = line->gettoken_str(parmOffs++);
@@ -6425,7 +6436,7 @@ DefineList *CEXEBuild::searchParseString(const char *source_string, LineParser *
         return NULL;
       }
       
-    }          
+    }
  
     if (defout && defout[0])
     {
