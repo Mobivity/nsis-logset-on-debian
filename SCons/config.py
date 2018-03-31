@@ -29,6 +29,14 @@ cfg.Add(
 )
 
 cfg.Add(
+  (
+    'NSIS_VARS_SECTION',
+    'defines the name of the PE section containing the runtime variables',
+    '.ndata'
+  )
+)
+
+cfg.Add(
   BoolOption(
     'NSIS_CONFIG_UNINSTALL_SUPPORT',
     "enables the uninstaller support. Turn it off if your installers don't need uninstallers. Adds less than 1kb.",
@@ -137,6 +145,14 @@ cfg.Add(
   BoolOption(
     'NSIS_CONFIG_LOG_ODS',
     'makes the logging facility use OutputDebugString instead of a file.',
+    'no'
+  )
+)
+
+cfg.Add(
+  BoolOption(
+    'NSIS_CONFIG_LOG_STDOUT',
+    'makes the logging facility use stdout instead of a file.',
     'no'
   )
 )
@@ -423,6 +439,9 @@ def AddBoolDefine(define):
   if env[define]:
     defenv.Append(NSIS_CPPDEFINES = [define])
 
+def AddStringDefine(define):
+  defenv.Append(NSIS_CPPDEFINES = [(define, '"%s"' % env[define])])
+
 AddValuedDefine('NSIS_MAX_STRLEN')
 AddValuedDefine('NSIS_MAX_INST_TYPES')
 AddValuedDefine('NSIS_DEFAULT_LANG')
@@ -443,6 +462,7 @@ AddBoolDefine('NSIS_CONFIG_CRC_SUPPORT')
 AddBoolDefine('NSIS_CONFIG_CRC_ANAL')
 AddBoolDefine('NSIS_CONFIG_LOG')
 AddBoolDefine('NSIS_CONFIG_LOG_ODS')
+AddBoolDefine('NSIS_CONFIG_LOG_STDOUT')
 AddBoolDefine('NSIS_SUPPORT_BGBG')
 AddBoolDefine('NSIS_SUPPORT_CODECALLBACKS')
 AddBoolDefine('NSIS_SUPPORT_MOVEONREBOOT')
@@ -476,3 +496,5 @@ AddBoolDefine('NSIS_LOCKWINDOW_SUPPORT')
 AddBoolDefine('NSIS_CONFIG_PLUGIN_SUPPORT')
 AddBoolDefine('NSIS_FIX_COMMENT_HANDLING')
 AddBoolDefine('NSIS_CONFIG_CONST_DATA_PATH')
+
+AddStringDefine('NSIS_VARS_SECTION')

@@ -9,7 +9,7 @@
 #include "ui.h"
 
 #ifdef NSIS_CONFIG_LOG
-#ifndef NSIS_CONFIG_LOG_ODS
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
 char g_log_file[1024];
 #endif
 #endif
@@ -132,7 +132,8 @@ void NSISCALL myDelete(char *buf, int flags)
           fdfn = fd.cAlternateFileName;
 
 #ifdef NSIS_SUPPORT_RMDIR
-        if (fdfn[0] != '.' || (fdfn[1] != '.' && fdfn[1]))
+        if (fdfn[0] == '.' && !fdfn[1]) continue;
+        if (fdfn[0] == '.' && fdfn[1] == '.' && !fdfn[2]) continue;
 #endif//NSIS_SUPPORT_RMDIR
         {
           mystrcpy(fn,fdfn);
@@ -730,7 +731,7 @@ void NSISCALL validate_filename(char *in) {
 int log_dolog;
 char log_text[NSIS_MAX_STRLEN*4];
 
-#ifndef NSIS_CONFIG_LOG_ODS
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
 void NSISCALL log_write(int close)
 {
   static HANDLE fp=INVALID_HANDLE_VALUE;
@@ -759,7 +760,7 @@ void NSISCALL log_write(int close)
     }
   }
 }
-#endif//!NSIS_CONFIG_LOG_ODS
+#endif//!NSIS_CONFIG_LOG_ODS && !NSIS_CONFIG_LOG_STDOUT
 
 const char * _RegKeyHandleToName(HKEY hKey)
 {
@@ -817,7 +818,16 @@ void log_printf(char *format, ...)
 #ifdef NSIS_CONFIG_LOG_ODS
   if (log_dolog)
     OutputDebugString(log_text);
-#else
+#endif
+#ifdef NSIS_CONFIG_LOG_STDOUT
+  if (log_dolog && GetStdHandle(STD_OUTPUT_HANDLE) != INVALID_HANDLE_VALUE)
+  {
+    DWORD dwBytes;
+    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), log_text, lstrlen(log_text), &dwBytes, NULL);
+    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), "\n", 1, &dwBytes, NULL);
+  }
+#endif
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
   log_write(0);
 #endif
 }

@@ -3,6 +3,8 @@
 #include "exehead/config.h"
 #include "exehead/fileform.h"
 
+#include "version.h"
+
 #include "build.h"
 #include "util.h"
 
@@ -84,7 +86,7 @@ CEXEBuild::CEXEBuild() :
   ns_func.add("",0); // make sure offset 0 is special on these (i.e. never used by a label)
   ns_label.add("",0);
 
-  definedlist.add("NSIS_VERSION", CONST_STR(NSIS_VERSION));
+  definedlist.add("NSIS_VERSION", NSIS_VERSION);
 
 #define intdef2str_(x) #x
 #define intdef2str(x) intdef2str_(x)
@@ -126,6 +128,12 @@ CEXEBuild::CEXEBuild() :
 #endif
 #ifdef NSIS_CONFIG_LOG
   definedlist.add("NSIS_CONFIG_LOG");
+#endif
+#ifdef NSIS_CONFIG_LOG_ODS
+  definedlist.add("NSIS_CONFIG_LOG_ODS");
+#endif
+#ifdef NSIS_CONFIG_LOG_STDOUT
+  definedlist.add("NSIS_CONFIG_LOG_STDOUT");
 #endif
 #ifdef NSIS_CONFIG_PLUGIN_SUPPORT
   definedlist.add("NSIS_CONFIG_PLUGIN_SUPPORT");
@@ -474,7 +482,7 @@ void CEXEBuild::initialize(const char *makensis_path)
 #ifndef NSIS_CONFIG_CONST_DATA_PATH
     nsis_dir = get_executable_dir(makensis_path);
 #else
-    nsis_dir = CONST_STR(PREFIX_DATA);
+    nsis_dir = PREFIX_DATA;
 #endif
   }
   definedlist.add("NSISDIR", nsis_dir.c_str());

@@ -3,6 +3,8 @@
 
 #ifndef APSTUDIO_INVOKED // keep msdev's resource editor from mangling the .rc file
 
+#include "sconf.h"
+
 #ifndef NSIS_CONFIG_VISIBLE_SUPPORT
   #ifdef NSIS_CONFIG_LICENSEPAGE
     #undef NSIS_CONFIG_LICENSEPAGE
@@ -27,6 +29,12 @@
 #ifdef NSIS_CONFIG_LOG_ODS
   #ifndef NSIS_CONFIG_LOG
     #error NSIS_CONFIG_LOG_ODS relies on NSIS_CONFIG_LOG, but NSIS_CONFIG_LOG is not defined
+  #endif
+#endif
+
+#ifdef NSIS_CONFIG_LOG_STDOUT
+  #ifndef NSIS_CONFIG_LOG
+    #error NSIS_CONFIG_LOG_STDOUT relies on NSIS_CONFIG_LOG, but NSIS_CONFIG_LOG is not defined
   #endif
 #endif
 
@@ -125,13 +133,6 @@
 #ifndef NSIS_DEFAULT_LANG
   #define NSIS_DEFAULT_LANG 1033
 #endif
-
-typedef char NSIS_STRING[NSIS_MAX_STRLEN];
-
-// I'd love to move this one to config.py, but it must have quotes for #pragma
-// and at the same time can't have quotes because the shell will kill it...
-
-#define NSIS_VARS_SECTION ".ndata"
 
 #endif//!APSTUDIO_INVOKED
 

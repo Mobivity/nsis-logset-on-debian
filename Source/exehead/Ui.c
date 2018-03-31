@@ -165,7 +165,7 @@ static BOOL NSISCALL _HandleStaticBkColor(UINT uMsg, WPARAM wParam, LPARAM lPara
 #endif//!NSIS_CONFIG_ENHANCEDUI_SUPPORT
 
 #ifdef NSIS_CONFIG_LOG
-#ifndef NSIS_CONFIG_LOG_ODS
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
 void NSISCALL build_g_logfile()
 {
   mystrcat(addtrailingslash(mystrcpy(g_log_file,state_install_directory)),"install.log");
@@ -329,7 +329,7 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
 #ifdef NSIS_CONFIG_LOG
   if (g_flags & CH_FLAGS_SILENT_LOG && !g_is_uninstaller)
   {
-#ifndef NSIS_CONFIG_LOG_ODS
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
     build_g_logfile();
 #endif
     log_dolog=1;
@@ -705,11 +705,6 @@ skipPage:
 
 #ifdef NSIS_CONFIG_LICENSEPAGE
 
-static void NSISCALL LoadAndSetCursor(LPCTSTR lpCursorName)
-{
-  SetCursor(LoadCursor(0, lpCursorName));
-}
-
 #define _RICHEDIT_VER 0x0200
 #include <richedit.h>
 #undef _RICHEDIT_VER
@@ -783,13 +778,10 @@ static BOOL CALLBACK LicenseProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM 
         };
         if (tr.chrg.cpMax-tr.chrg.cpMin < sizeof(ps_tmpbuf)) {
           SendMessage(hwLicense,EM_GETTEXTRANGE,0,(LPARAM)&tr);
-          LoadAndSetCursor(IDC_WAIT);
+          SetCursor(LoadCursor(0, IDC_WAIT));
           ShellExecute(hwndDlg,"open",tr.lpstrText,NULL,NULL,SW_SHOWNORMAL);
-          LoadAndSetCursor(IDC_ARROW);
+          SetCursor(LoadCursor(0, IDC_ARROW));
         }
-      }
-      if (enlink->msg==WM_SETCURSOR) {
-        LoadAndSetCursor(IDC_HAND);
       }
     }
     //Ximon Eighteen 8th September 2002 Capture return key presses in the rich
@@ -890,7 +882,7 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     GetUIText(IDC_DIR,dir);
     validate_filename(dir);
 #ifdef NSIS_CONFIG_LOG
-#ifndef NSIS_CONFIG_LOG_ODS
+#if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
     build_g_logfile();
 #endif
     if (GetUIItem(IDC_CHECK1) != NULL)
@@ -1513,6 +1505,17 @@ static DWORD WINAPI install_thread(LPVOID p)
     g_hres|=OleInitialize(NULL);
   }
 #endif
+
+  // workaround for bug #1400995
+  //
+  // for an unexplained reason, MessageBox with MB_TOPMOST
+  // will fail, if no other messages were sent from this
+  // thread to the GUI thread before it.
+  //
+  // the source of the problem couldn't be found, so a
+  // WM_NULL is sent to work around it.
+
+  NotifyCurWnd(WM_NULL);
 
   while (m_inst_sec--)
   {

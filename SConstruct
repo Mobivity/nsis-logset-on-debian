@@ -142,6 +142,25 @@ Help(opts.GenerateHelpText(defenv))
 # build configuration
 SConscript('SCons/config.py')
 
+# add prefixes defines
+if defenv['PLATFORM'] != 'win32':
+	defenv.Append(NSIS_CPPDEFINES = [('PREFIX_CONF', '"%s"' % defenv['PREFIX_CONF'])])
+	defenv.Append(NSIS_CPPDEFINES = [('PREFIX_DATA', '"%s"' % defenv['PREFIX_DATA'])])
+
+# write configuration into sconf.h
+f = open(File('#Source/exehead/sconf.h').abspath, 'w')
+for i in defenv['NSIS_CPPDEFINES']:
+	if type(i) is not str:
+		f.write('#define %s %s\n' % (i[0], i[1]))
+	else:
+		f.write('#define %s\n' % (i))
+f.close()
+
+# write version into version.h
+f = open(File('#Source/version.h').abspath, 'w')
+f.write('#define NSIS_VERSION "%s"' % defenv['VERSION'])
+f.close()
+
 ######################################################################
 #######  Functions                                                 ###
 ######################################################################
@@ -157,10 +176,6 @@ if defenv.has_key('CODESIGNER'):
 defenv.Execute(Delete('$ZIPDISTDIR'))
 defenv.Execute(Delete('$INSTDISTDIR'))
 defenv.Execute(Delete('$TESTDISTDIR'))
-
-if defenv['PLATFORM'] != 'win32':
-	defenv.Append(NSIS_CPPDEFINES = [('PREFIX_CONF', defenv['PREFIX_CONF'])])
-	defenv.Append(NSIS_CPPDEFINES = [('PREFIX_DATA', defenv['PREFIX_DATA'])])
 
 def Distribute(files, names, component, path, subpath, alias, install_alias=None):
 	if isinstance(files, (str, type(File('SConstruct')))):
@@ -281,6 +296,7 @@ makensis_env = envs[1]
 plugin_env = envs[2]
 util_env = envs[3]
 cp_util_env = envs[4]
+test_env = envs[5]
 
 ######################################################################
 #######  Distribution                                              ###
@@ -566,7 +582,7 @@ for i in misc:
 # test code
 
 build_dir = '$BUILD_PREFIX/tests'
-exports = {'env' : defenv.Copy()}
+exports = {'env' : test_env.Copy()}
 
 defenv.SConscript(
 	dirs = 'Source/Tests',
@@ -579,9 +595,9 @@ defenv.Ignore('$BUILD_PREFIX', '$BUILD_PREFIX/tests')
 
 # test scripts
 
-test_env = defenv.Copy(ENV = os.environ) # env needed for some scripts
-test_env['ENV']['NSISDIR'] = os.path.abspath(str(defenv['TESTDISTDIR']))
-test_env['ENV']['NSISCONFDIR'] = os.path.abspath(str(defenv['TESTDISTDIR']))
+test_scripts_env = defenv.Copy(ENV = os.environ) # env needed for some scripts
+test_scripts_env['ENV']['NSISDIR'] = os.path.abspath(str(defenv['TESTDISTDIR']))
+test_scripts_env['ENV']['NSISCONFDIR'] = os.path.abspath(str(defenv['TESTDISTDIR']))
 
 def test_scripts(target, source, env):
 	from os import walk, sep
@@ -600,8 +616,8 @@ def test_scripts(target, source, env):
 
 	return None
 
-test = test_env.Command('test-scripts.log', '$TESTDISTDIR', test_scripts)
-test_env.Alias('test-scripts', test)
+test = test_scripts_env.Command('test-scripts.log', '$TESTDISTDIR', test_scripts)
+test_scripts_env.Alias('test-scripts', test)
 
 # test all
 

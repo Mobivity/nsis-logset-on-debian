@@ -51,6 +51,77 @@ d\
 i\
 f
 
+# tests for !if statement
+!if 'test' == 'test'
+ !if 1 <= 2
+  !if ! 100 < 99.99
+   !if 2.2 > 1.12
+    !if ! 23 >= 37
+     !if 1 && 1
+      !if ! 0 || 0
+
+        # this should be compiled
+
+      !else
+       !error "!if ! 0 || 0 is true!"
+      !endif
+     !else
+      !error "!if 1 && 1 is true!"
+     !endif
+    !else
+     !error "!if ! 23 >= 37 is true!"
+    !endif
+   !else
+    !error "!if 2.2 > 1.12 is true!"
+   !endif
+  !else
+   !error "!if ! 100 < 99.99 is true!"
+  !endif
+ !else
+  !error "!if 1 <= 2 is true!"
+ !endif
+!else
+ !error "!if 'test' == 'test' is true!"
+!endif
+
+; testing of two math functions and a macro hack :)
+!define increase "!insertmacro increase"
+!macro increase DEFINE
+  !define /math ${DEFINE}_MACROTEMP ${${DEFINE}} + 1
+  !undef ${DEFINE}
+  !define ${DEFINE} ${${DEFINE}_MACROTEMP}
+  !undef ${DEFINE}_MACROTEMP
+!macroend
+
+!define number1 1 #  1
+!define /math number2 2 + 3
+!define /math number3 ${number2} - ${number1}
+${increase} number3
+!define /math number4 2 * ${number3}
+!define /math number5 ${number4} % 3
+
+!if ${number1} != 1
+  !error "number1 != 1"
+!endif
+
+!if ${number2} != 5
+  !error "number2 != 5"
+!endif
+
+!if ${number3} != 5
+  !error "number3 != 5"
+!endif
+
+!if ${number4} != 10
+  !error "number4 != 10"
+!endif
+
+!if ${number5} != 1
+  !error "number5 != 1"
+!endif
+
+; end math functions
+
 # this should just give a warning, not an error
 !include /NONFATAL file_that_doesnt_exist.nsh
 

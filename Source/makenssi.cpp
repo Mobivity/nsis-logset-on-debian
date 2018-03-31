@@ -44,6 +44,8 @@
 #include "build.h"
 #include "util.h"
 
+#include "version.h"
+
 using namespace std;
 
 int g_noconfig=0;
@@ -85,7 +87,7 @@ static void print_logo()
          "Portions Copyright (C) 1996-2002 Julian R Seward (bzip2).\n"
          "Portions Copyright (C) 1999-2003 Igor Pavlov (lzma).\n"
          "\n"
-         "Contributors: nnop@newmail.ru, Ryan Geiss, Andras Varga, Drew Davidson, Peter Windridge, Dave Laundon, Robert Rainwater, Yaroslav Faybishenko, Jeff Doozan, Amir Szekely, Ximon Eighteen, et al.\n\n",CONST_STR(NSIS_VERSION));
+         "Contributors: nnop@newmail.ru, Ryan Geiss, Andras Varga, Drew Davidson, Peter Windridge, Dave Laundon, Robert Rainwater, Yaroslav Faybishenko, Jeff Doozan, Amir Szekely, Ximon Eighteen, et al.\n\n",NSIS_VERSION);
   fflush(g_output);
 }
 
@@ -254,7 +256,7 @@ int main(int argc, char **argv)
 
   if (argc > 1 && !stricmp(argv[1], OPT_STR "VERSION"))
   {
-    fprintf(g_output,CONST_STR(NSIS_VERSION));
+    fprintf(g_output,NSIS_VERSION);
     fflush(g_output);
     return 0;
   }
@@ -396,7 +398,7 @@ int main(int argc, char **argv)
 #ifndef NSIS_CONFIG_CONST_DATA_PATH
           main_conf = get_executable_dir(argv[0]);
 #else
-          main_conf = CONST_STR(PREFIX_CONF);
+          main_conf = PREFIX_CONF;
 #endif
         else main_conf = env_var;
         main_conf += PLATFORM_PATH_SEPARATOR_STR;
