@@ -1,3 +1,415 @@
+2008-05-03 13:58  kichik
+
+	* /NSIS/tags/v237: Tagging for release 2.37
+
+2008-05-03 13:57  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.37
+
+2008-05-03 13:44  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.37
+
+2008-05-03 13:16  kichik
+
+	* /NSIS/trunk/Contrib/LangDLL/LangDLL.c: allow 'A' to be specified
+	  anywhere in the flags field
+
+2008-05-03 10:12  kichik
+
+	* /NSIS/branches/nobjs/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.dsp,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.dsw,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.h,
+	  /NSIS/branches/nobjs/Contrib/InstallOptions/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/branches/nobjs/Contrib/Language files/Albanian.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Albanian.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Dutch.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/English.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/French.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/French.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/German.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Hebrew.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Italian.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Polish.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Polish.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Slovak.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Slovak.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Spanish.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language
+	  files/SpanishInternational.nsh,
+	  /NSIS/branches/nobjs/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Deprecated.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Interface.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/License.txt,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Components.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/StartMenu.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/SConscript,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/License.txt,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/System.nsh,
+	  /NSIS/branches/nobjs/Contrib/MultiUser,
+	  /NSIS/branches/nobjs/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/branches/nobjs/Contrib/MultiUser/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/MultiUser/SConscript,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/browse.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/input.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/nsExec/nsexec.c,
+	  /NSIS/branches/nobjs/Contrib/NSIS Menu/nsismenu/nsismenu.cpp,
+	  /NSIS/branches/nobjs/Contrib/NSIS Menu/nsismenu/nslinks.cpp,
+	  /NSIS/branches/nobjs/Contrib/NSIS Menu/SConscript,
+	  /NSIS/branches/nobjs/Contrib/VPatch/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/VPatch/Source/GUI,
+	  /NSIS/branches/nobjs/Contrib/VPatch/Source/Plugin/SConscript,
+	  /NSIS/branches/nobjs/COPYING,
+	  /NSIS/branches/nobjs/Docs/src/basic.but,
+	  /NSIS/branches/nobjs/Docs/src/chm_config.but,
+	  /NSIS/branches/nobjs/Docs/src/config.but,
+	  /NSIS/branches/nobjs/Docs/src/headers.but,
+	  /NSIS/branches/nobjs/Docs/src/history.but,
+	  /NSIS/branches/nobjs/Docs/src/library.but,
+	  /NSIS/branches/nobjs/Docs/src/license.but,
+	  /NSIS/branches/nobjs/Docs/src/misc.but,
+	  /NSIS/branches/nobjs/Docs/src/modernui.but,
+	  /NSIS/branches/nobjs/Docs/src/pages.but,
+	  /NSIS/branches/nobjs/Docs/src/SConscript,
+	  /NSIS/branches/nobjs/Docs/src/silent.but,
+	  /NSIS/branches/nobjs/Docs/src/tutorial.but,
+	  /NSIS/branches/nobjs/Docs/src/usefulfunc.but,
+	  /NSIS/branches/nobjs/Docs/src/var.but,
+	  /NSIS/branches/nobjs/Examples/bigtest.nsi,
+	  /NSIS/branches/nobjs/Examples/example1.nsi,
+	  /NSIS/branches/nobjs/Examples/example2.nsi,
+	  /NSIS/branches/nobjs/Examples/FileFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/FileFuncTest.nsi,
+	  /NSIS/branches/nobjs/Examples/gfx.nsi,
+	  /NSIS/branches/nobjs/Examples/languages.nsi,
+	  /NSIS/branches/nobjs/Examples/Library.nsi,
+	  /NSIS/branches/nobjs/Examples/LogicLib.nsi,
+	  /NSIS/branches/nobjs/Examples/makensis.nsi,
+	  /NSIS/branches/nobjs/Examples/Memento.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/Basic.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/HeaderBitmap.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/InstallOptions.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/ioA.ini,
+	  /NSIS/branches/nobjs/Examples/Modern UI/ioB.ini,
+	  /NSIS/branches/nobjs/Examples/Modern UI/ioC.ini,
+	  /NSIS/branches/nobjs/Examples/Modern UI/MultiLanguage.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/StartMenu.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/WelcomeFinish.nsi,
+	  /NSIS/branches/nobjs/Examples/one-section.nsi,
+	  /NSIS/branches/nobjs/Examples/primes.nsi,
+	  /NSIS/branches/nobjs/Examples/rtest.nsi,
+	  /NSIS/branches/nobjs/Examples/SConscript,
+	  /NSIS/branches/nobjs/Examples/silent.nsi,
+	  /NSIS/branches/nobjs/Examples/StrFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/TextFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/TextFuncTest.nsi,
+	  /NSIS/branches/nobjs/Examples/UserVars.nsi,
+	  /NSIS/branches/nobjs/Examples/viewhtml.nsi,
+	  /NSIS/branches/nobjs/Examples/waplugin.nsi,
+	  /NSIS/branches/nobjs/Examples/WordFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/WordFuncTest.nsi,
+	  /NSIS/branches/nobjs/Include/LangFile.nsh,
+	  /NSIS/branches/nobjs/Include/LogicLib.nsh,
+	  /NSIS/branches/nobjs/Include/Memento.nsh,
+	  /NSIS/branches/nobjs/Include/SConscript,
+	  /NSIS/branches/nobjs/Include/StrFunc.nsh,
+	  /NSIS/branches/nobjs/Include/VB6RunTime.nsh,
+	  /NSIS/branches/nobjs/Include/WordFunc.nsh,
+	  /NSIS/branches/nobjs/Menu/compiler.html,
+	  /NSIS/branches/nobjs/Menu/docs.html,
+	  /NSIS/branches/nobjs/Menu/images/clear.gif,
+	  /NSIS/branches/nobjs/Menu/images/header.gif,
+	  /NSIS/branches/nobjs/Menu/images/menu.gif,
+	  /NSIS/branches/nobjs/Menu/images/menud.gif,
+	  /NSIS/branches/nobjs/Menu/index.html,
+	  /NSIS/branches/nobjs/Menu/intro.html,
+	  /NSIS/branches/nobjs/Menu/notinstalled.html,
+	  /NSIS/branches/nobjs/Menu/update.html,
+	  /NSIS/branches/nobjs/Menu/websites.html,
+	  /NSIS/branches/nobjs/SCons/Config/gnu,
+	  /NSIS/branches/nobjs/SConstruct,
+	  /NSIS/branches/nobjs/Scripts/release.py,
+	  /NSIS/branches/nobjs/Source/7zip/LZMADecode.c,
+	  /NSIS/branches/nobjs/Source/7zip/LZMADecode.h,
+	  /NSIS/branches/nobjs/Source/afxres.h,
+	  /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/bzip2/blocksort.c,
+	  /NSIS/branches/nobjs/Source/bzip2/bzlib.c,
+	  /NSIS/branches/nobjs/Source/bzip2/bzlib.h,
+	  /NSIS/branches/nobjs/Source/bzip2/compress.c,
+	  /NSIS/branches/nobjs/Source/bzip2/decompress.c,
+	  /NSIS/branches/nobjs/Source/bzip2/huffman.c,
+	  /NSIS/branches/nobjs/Source/cbzip2.h,
+	  /NSIS/branches/nobjs/Source/clzma.cpp,
+	  /NSIS/branches/nobjs/Source/clzma.h,
+	  /NSIS/branches/nobjs/Source/compressor.h,
+	  /NSIS/branches/nobjs/Source/crc32.c,
+	  /NSIS/branches/nobjs/Source/crc32.h,
+	  /NSIS/branches/nobjs/Source/czlib.h,
+	  /NSIS/branches/nobjs/Source/dirreader.cpp,
+	  /NSIS/branches/nobjs/Source/dirreader.h,
+	  /NSIS/branches/nobjs/Source/exehead/afxres.h,
+	  /NSIS/branches/nobjs/Source/exehead/bgbg.c,
+	  /NSIS/branches/nobjs/Source/exehead/components.c,
+	  /NSIS/branches/nobjs/Source/exehead/components.h,
+	  /NSIS/branches/nobjs/Source/exehead/config.h,
+	  /NSIS/branches/nobjs/Source/exehead/exec.c,
+	  /NSIS/branches/nobjs/Source/exehead/exec.h,
+	  /NSIS/branches/nobjs/Source/exehead/fileform.c,
+	  /NSIS/branches/nobjs/Source/exehead/fileform.h,
+	  /NSIS/branches/nobjs/Source/exehead/lang.h,
+	  /NSIS/branches/nobjs/Source/exehead/Main.c,
+	  /NSIS/branches/nobjs/Source/exehead/state.h,
+	  /NSIS/branches/nobjs/Source/exehead/Ui.c,
+	  /NSIS/branches/nobjs/Source/exehead/ui.h,
+	  /NSIS/branches/nobjs/Source/exehead/util.c,
+	  /NSIS/branches/nobjs/Source/exehead/util.h,
+	  /NSIS/branches/nobjs/Source/fileform.cpp,
+	  /NSIS/branches/nobjs/Source/fileform.h,
+	  /NSIS/branches/nobjs/Source/growbuf.cpp,
+	  /NSIS/branches/nobjs/Source/growbuf.h,
+	  /NSIS/branches/nobjs/Source/icon.cpp,
+	  /NSIS/branches/nobjs/Source/icon.h,
+	  /NSIS/branches/nobjs/Source/lang.cpp,
+	  /NSIS/branches/nobjs/Source/lang.h,
+	  /NSIS/branches/nobjs/Source/lineparse.cpp,
+	  /NSIS/branches/nobjs/Source/lineparse.h,
+	  /NSIS/branches/nobjs/Source/makenssi.cpp,
+	  /NSIS/branches/nobjs/Source/manifest.cpp,
+	  /NSIS/branches/nobjs/Source/manifest.h,
+	  /NSIS/branches/nobjs/Source/mmap.cpp,
+	  /NSIS/branches/nobjs/Source/mmap.h,
+	  /NSIS/branches/nobjs/Source/Platform.h,
+	  /NSIS/branches/nobjs/Source/Plugins.cpp,
+	  /NSIS/branches/nobjs/Source/Plugins.h,
+	  /NSIS/branches/nobjs/Source/ResourceEditor.cpp,
+	  /NSIS/branches/nobjs/Source/ResourceEditor.h,
+	  /NSIS/branches/nobjs/Source/ResourceVersionInfo.cpp,
+	  /NSIS/branches/nobjs/Source/ResourceVersionInfo.h,
+	  /NSIS/branches/nobjs/Source/script.cpp,
+	  /NSIS/branches/nobjs/Source/ShConstants.cpp,
+	  /NSIS/branches/nobjs/Source/strlist.cpp,
+	  /NSIS/branches/nobjs/Source/strlist.h,
+	  /NSIS/branches/nobjs/Source/Tests/compression.cpp,
+	  /NSIS/branches/nobjs/Source/Tests/icons.py,
+	  /NSIS/branches/nobjs/Source/tokens.cpp,
+	  /NSIS/branches/nobjs/Source/tokens.h,
+	  /NSIS/branches/nobjs/Source/util.cpp,
+	  /NSIS/branches/nobjs/Source/util.h,
+	  /NSIS/branches/nobjs/Source/winchar.cpp,
+	  /NSIS/branches/nobjs/Source/winchar.h,
+	  /NSIS/branches/nobjs/Source/writer.cpp,
+	  /NSIS/branches/nobjs/Source/writer.h,
+	  /NSIS/branches/nobjs/Source/zlib/deflate.c,
+	  /NSIS/branches/nobjs/Source/zlib/DEFLATE.H,
+	  /NSIS/branches/nobjs/Source/zlib/INFBLOCK.C,
+	  /NSIS/branches/nobjs/Source/zlib/trees.c,
+	  /NSIS/branches/nobjs/Source/zlib/ZCONF.H,
+	  /NSIS/branches/nobjs/Source/zlib/ZLIB.H,
+	  /NSIS/branches/nobjs/Source/zlib/ZUTIL.H: updated nobjs branch
+	  with trunk changes 5408:5627
+
+2008-05-02 20:21  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/Source/GUI: we don't use the GUI and
+	  its source code is available from tibed.net
+
+2008-05-02 20:15  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/Readme.html: fixed patch #1840709 -
+	  VPatch CLI and test suite
+	  removed reference to test suite
+
+2008-05-02 20:14  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/Readme.html: typo fix backported from
+	  3.2
+
+2008-05-02 19:34  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Polish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Polish.nsh: applied patch
+	  #1927421 - Polish translation for 2.35
+
+2008-05-02 19:33  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Slovak.nsh: don't use special
+	  chars in language name
+
+2008-05-02 19:32  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Slovak.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nsh: applied patch
+	  #1939669 - Slovak (sk) translation update
+
+2008-05-02 19:07  kichik
+
+	* /NSIS/trunk/Source/Tests/icons.py: massive icon tester
+
+2008-05-02 19:04  kichik
+
+	* /NSIS/trunk/Source/build.cpp: applied patch #1948700 - support
+	  for files between 1.6 and 2 GB
+
+2008-05-02 18:43  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/browse.c: fixed bug #1955803 -
+	  SelectFileDialog returns stack garbage if user cancels
+
+2008-05-02 18:21  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: fixed bug #1956350 - wrong icon
+	  order since 2.32
+
+2008-05-02 16:47  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: added IconPairs typedef
+
+2008-05-01 20:31  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Include/StrFunc.nsh: check whether function from
+	  StrFunc.nsh is already included
+
+2008-04-25 09:29  kichik
+
+	* /NSIS/trunk/Contrib/BgImage/BgImage.cpp: applied patch #1951248 -
+	  BgImage::Destroy re-enter crash fix
+
+2008-04-23 15:29  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/tokens.cpp: avoid build_cursection
+	  and build_cursection_isfunc where possible
+
+2008-04-23 15:28  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: use section_remove_flags
+	  instead of messing with build_cursection directly
+
+2008-04-23 15:23  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: TODO
+
+2008-04-23 15:22  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: added build_cur_nobj_code
+	  which can be either build_cur_nobj_function or
+	  build_cur_nobj_section depending on the context and used it where
+	  we don't care if it's a function or a section
+
+2008-04-23 15:01  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/entry.cpp: i said no
+	  platform.h...
+
+2008-04-23 14:52  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/code.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/entry.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/int.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/jump.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/label.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/str.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/var.cpp: no need for Platform.h,
+	  which for some reason can no longer be found (probably new scons
+	  doesn't pass /ISource)
+
+2008-04-22 20:28  joostverburg
+
+	* /NSIS/trunk/Docs/src/library.but: correct name of header file
+
+2008-04-22 17:45  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.h: added missing int
+	  status_update;
+
+2008-04-22 13:51  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: fixed bug #1947388 -
+	  ${NSD_OnBack} doesn't work
+
+2008-04-22 13:42  kichik
+
+	* /NSIS/trunk/Docs/src/SConscript, /NSIS/trunk/SConstruct: scons
+	  0.98 with an even uglier hack to reverse the result of hhc.exe
+
+2008-04-21 23:01  kichik
+
+	* /NSIS/trunk/Source/build.cpp: fixed bug #1947702 - Wrong default
+	  for PROGRAMFILES64 on Win2000
+	  default to $PROGRAMFIELS if $PROGRAMFILES64 can't be found
+	  instead of "C:\Program Files"
+
+2008-04-18 22:08  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: reverted last commit
+	  it forced usage of GetDiskFreeSpace instead of GetDiskFreeSpaceEx
+	  for non-existent directories or anything GetDiskFreeSpaceEx
+	  deemed invalid
+
+2008-04-18 21:55  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: partial fix for bug #1946112 -
+	  Wrong free space calculation
+	  still need to get the lowest existing directory so
+	  C:\mount-point\non-existent-dir still works
+
+2008-04-18 17:20  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Interface.nsh: what is that doing
+	  there?
+
+2008-04-18 17:14  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh: Add
+	  MULTIUSER_INSTALLMODEPAGE (niwrad777)
+
+2008-04-10 18:00  kichik
+
+	* /NSIS/trunk/Contrib/LangDLL/LangDLL.c: fixed bug #1939571 -
+	  LangDLL auto select with only 1 language
+
+2008-04-10 17:58  kichik
+
+	* /NSIS/trunk/Contrib/LangDLL/LangDLL.c: make sure at least one
+	  language is specified without creating a dialog
+
+2008-03-31 18:46  kichik
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh: updates by
+	  Felipe and deguix
+
+2008-03-30 10:24  pabs3
+
+	* /NSIS/trunk/SConstruct: Disable the System.nsi test on Unix, it
+	  requires System::Call
+
+2008-03-29 22:36  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: after-last-minutes english
+	  fixes
+
 2008-03-29 22:04  kichik
 
 	* /NSIS/tags/v236: Tagging for release 2.36
