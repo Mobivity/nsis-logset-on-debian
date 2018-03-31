@@ -1,3 +1,1366 @@
+2009-02-05 01:43  kichik
+
+	* /NSIS/tags/v243: Tagging for release 2.43
+
+2009-02-05 01:41  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.43
+
+2009-02-05 01:38  kichik
+
+	* /NSIS/trunk/Include/Win/WinDef.nsh,
+	  /NSIS/trunk/Include/Win/WinError.nsh,
+	  /NSIS/trunk/Include/Win/WinNT.nsh,
+	  /NSIS/trunk/Include/Win/WinUser.nsh,
+	  /NSIS/trunk/Include/WinCore.nsh: native eol
+
+2009-02-05 01:23  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.43
+
+2009-02-05 01:01  kichik
+
+	* /NSIS/trunk/Source/exehead/plugin.c: tabs to spaces
+
+2009-02-05 00:52  kichik
+
+	* /NSIS/trunk/SCons/Config/gnu: proper flags order to avoid the
+	  horrible non-virtual destructor warning
+
+2009-02-05 00:50  kichik
+
+	* /NSIS/trunk/Source/ResourceEditor.cpp: signed/unsigned comparison
+
+2009-02-05 00:02  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: updated file paths
+
+2009-02-04 21:29  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.dsp,
+	  /NSIS/trunk/Contrib/ExDLL/exdll-vs2008.vcproj: fix for new paths
+
+2009-02-04 14:08  pabs3
+
+	* /NSIS/trunk/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/trunk/Contrib/Banner/Banner.c,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/trunk/Contrib/Dialer/dialer.c,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.c,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.h,
+	  /NSIS/trunk/Contrib/ExDLL/SConscript,
+	  /NSIS/trunk/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/trunk/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/trunk/Contrib/Library/TypeLib/TypeLib.cpp,
+	  /NSIS/trunk/Contrib/Math/Source/Math.c,
+	  /NSIS/trunk/Contrib/Math/Source/Math.h,
+	  /NSIS/trunk/Contrib/nsDialogs/browse.c,
+	  /NSIS/trunk/Contrib/nsDialogs/input.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/rtl.c,
+	  /NSIS/trunk/Contrib/nsExec/nsexec.c,
+	  /NSIS/trunk/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/trunk/Contrib/Splash/splash.c,
+	  /NSIS/trunk/Contrib/StartMenu/StartMenu.c,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.h,
+	  /NSIS/trunk/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/trunk/Contrib/VPatch/Source/Plugin/vpatchdll.c,
+	  /NSIS/trunk/INSTALL: Install the pluginapi stuff in a
+	  subdirectory.
+
+2009-02-04 14:05  pabs3
+
+	* /NSIS/trunk/Docs/src/SConscript,
+	  /NSIS/trunk/SCons/Config/default, /NSIS/trunk/SCons/Config/gnu,
+	  /NSIS/trunk/SCons/Config/hpc++, /NSIS/trunk/SCons/Config/ms,
+	  /NSIS/trunk/SConstruct, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/exehead/config.h, /NSIS/trunk/Source/lang.cpp,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/manifest.cpp,
+	  /NSIS/trunk/Source/script.cpp: fix bug #2497148 - allow out of
+	  tree builds on POSIX platforms
+
+2009-02-04 13:47  kichik
+
+	* /NSIS/trunk/Docs/src/tutorial.but: fixed bug #2564005 - Link to
+	  NSIS Wiki not correct
+
+2009-02-03 01:07  kichik
+
+	* /NSIS/branches/nobjs,
+	  /NSIS/branches/nobjs/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/branches/nobjs/Contrib/Banner/Banner.c,
+	  /NSIS/branches/nobjs/Contrib/Banner/Example.nsi,
+	  /NSIS/branches/nobjs/Contrib/Banner/Readme.txt,
+	  /NSIS/branches/nobjs/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/branches/nobjs/Contrib/BgImage/BgImage.txt,
+	  /NSIS/branches/nobjs/Contrib/BgImage/Example.nsi,
+	  /NSIS/branches/nobjs/Contrib/Dialer/dialer.c,
+	  /NSIS/branches/nobjs/Contrib/Dialer/SConscript,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.c,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.dsp,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll.h,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll-vs2008.sln,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/exdll-vs2008.vcproj,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/pluginapi.c,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/pluginapi.h,
+	  /NSIS/branches/nobjs/Contrib/ExDLL/SConscript,
+	  /NSIS/branches/nobjs/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/branches/nobjs/Contrib/InstallOptions/InstallOptions.nsh,
+	  /NSIS/branches/nobjs/Contrib/InstallOptions/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/InstallOptions/testnotify.nsi,
+	  /NSIS/branches/nobjs/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/branches/nobjs/Contrib/Language files/Bulgarian.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/English.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Esperanto.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Malay.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/SConscript,
+	  /NSIS/branches/nobjs/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/SimpChinese.nsh,
+	  /NSIS/branches/nobjs/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/branches/nobjs/Contrib/Library/LibraryLocal/SConscript,
+	  /NSIS/branches/nobjs/Contrib/Library/RegTool/RegTool.c,
+	  /NSIS/branches/nobjs/Contrib/Library/TypeLib/TypeLib.cpp,
+	  /NSIS/branches/nobjs/Contrib/Makensisw/resource.rc,
+	  /NSIS/branches/nobjs/Contrib/Math/math.nsi,
+	  /NSIS/branches/nobjs/Contrib/Math/Math.txt,
+	  /NSIS/branches/nobjs/Contrib/Math/mathtest.nsi,
+	  /NSIS/branches/nobjs/Contrib/Math/SConscript,
+	  /NSIS/branches/nobjs/Contrib/Math/Source/Math.c,
+	  /NSIS/branches/nobjs/Contrib/Math/Source/Math.h,
+	  /NSIS/branches/nobjs/Contrib/Math/Source/plugin.c,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/License.txt,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Directory.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/StartMenu.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/License.txt,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/Modern UI/System.nsh,
+	  /NSIS/branches/nobjs/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/browse.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/defs.h,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/example.nsi,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/input.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.def,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsis.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsis.h,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/rtl.c,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/SConscript,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/timer.nsi,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/welcome.nsi,
+	  /NSIS/branches/nobjs/Contrib/nsExec/nsexec.c,
+	  /NSIS/branches/nobjs/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/branches/nobjs/Contrib/Splash/splash.c,
+	  /NSIS/branches/nobjs/Contrib/StartMenu/Readme.txt,
+	  /NSIS/branches/nobjs/Contrib/StartMenu/StartMenu.c,
+	  /NSIS/branches/nobjs/Contrib/System/Resource,
+	  /NSIS/branches/nobjs/Contrib/System/Resource.dll,
+	  /NSIS/branches/nobjs/Contrib/System/Resource/Icon.ico,
+	  /NSIS/branches/nobjs/Contrib/System/Resource/Main.c,
+	  /NSIS/branches/nobjs/Contrib/System/Resource/Resource.h,
+	  /NSIS/branches/nobjs/Contrib/System/Resource/Resource.rc,
+	  /NSIS/branches/nobjs/Contrib/System/SConscript,
+	  /NSIS/branches/nobjs/Contrib/System/Source/Buffers.c,
+	  /NSIS/branches/nobjs/Contrib/System/Source/Buffers.h,
+	  /NSIS/branches/nobjs/Contrib/System/Source/Call.S,
+	  /NSIS/branches/nobjs/Contrib/System/Source/Plugin.c,
+	  /NSIS/branches/nobjs/Contrib/System/Source/Plugin.h,
+	  /NSIS/branches/nobjs/Contrib/System/Source/stdafx.h,
+	  /NSIS/branches/nobjs/Contrib/System/Source/System.c,
+	  /NSIS/branches/nobjs/Contrib/System/Source/System.h,
+	  /NSIS/branches/nobjs/Contrib/System/System.html,
+	  /NSIS/branches/nobjs/Contrib/System/System.nsi,
+	  /NSIS/branches/nobjs/Contrib/UIs/default.rc,
+	  /NSIS/branches/nobjs/Contrib/UIs/modern.rc,
+	  /NSIS/branches/nobjs/Contrib/UIs/sdbarker_tiny.rc,
+	  /NSIS/branches/nobjs/Contrib/UserInfo/SConscript,
+	  /NSIS/branches/nobjs/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/branches/nobjs/Contrib/VPatch/Source/Plugin/SConscript,
+	  /NSIS/branches/nobjs/Contrib/VPatch/Source/Plugin/vpatchdll.c,
+	  /NSIS/branches/nobjs/COPYING,
+	  /NSIS/branches/nobjs/Docs/src/chm_config.but,
+	  /NSIS/branches/nobjs/Docs/src/compilerflags.but,
+	  /NSIS/branches/nobjs/Docs/src/config.but,
+	  /NSIS/branches/nobjs/Docs/src/credits.but,
+	  /NSIS/branches/nobjs/Docs/src/defines.but,
+	  /NSIS/branches/nobjs/Docs/src/generalpurpose.but,
+	  /NSIS/branches/nobjs/Docs/src/headers.but,
+	  /NSIS/branches/nobjs/Docs/src/history.but,
+	  /NSIS/branches/nobjs/Docs/src/library.but,
+	  /NSIS/branches/nobjs/Docs/src/license.but,
+	  /NSIS/branches/nobjs/Docs/src/plugin.but,
+	  /NSIS/branches/nobjs/Docs/src/usefulinfos.but,
+	  /NSIS/branches/nobjs/Examples/bigtest.nsi,
+	  /NSIS/branches/nobjs/Examples/FileFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/FileFuncTest.nsi,
+	  /NSIS/branches/nobjs/Examples/Library.nsi,
+	  /NSIS/branches/nobjs/Examples/makensis.nsi,
+	  /NSIS/branches/nobjs/Examples/Modern UI/MultiLanguage.nsi,
+	  /NSIS/branches/nobjs/Examples/TextFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/TextFuncTest.nsi,
+	  /NSIS/branches/nobjs/Examples/VersionInfo.nsi,
+	  /NSIS/branches/nobjs/Examples/WordFunc.nsi,
+	  /NSIS/branches/nobjs/Examples/WordFuncTest.nsi,
+	  /NSIS/branches/nobjs/Include/LangFile.nsh,
+	  /NSIS/branches/nobjs/Include/Library.nsh,
+	  /NSIS/branches/nobjs/Include/SConscript,
+	  /NSIS/branches/nobjs/Include/StrFunc.nsh,
+	  /NSIS/branches/nobjs/Include/Util.nsh,
+	  /NSIS/branches/nobjs/Include/VB6RunTime.nsh,
+	  /NSIS/branches/nobjs/Include/Win,
+	  /NSIS/branches/nobjs/Include/Win/WinDef.nsh,
+	  /NSIS/branches/nobjs/Include/Win/WinError.nsh,
+	  /NSIS/branches/nobjs/Include/Win/WinNT.nsh,
+	  /NSIS/branches/nobjs/Include/Win/WinUser.nsh,
+	  /NSIS/branches/nobjs/Include/WinCore.nsh,
+	  /NSIS/branches/nobjs/Include/WinMessages.nsh,
+	  /NSIS/branches/nobjs/Include/WinVer.nsh,
+	  /NSIS/branches/nobjs/Menu/images/header.gif,
+	  /NSIS/branches/nobjs/SCons/config.py,
+	  /NSIS/branches/nobjs/SCons/Config/default,
+	  /NSIS/branches/nobjs/SCons/Config/gnu,
+	  /NSIS/branches/nobjs/SCons/Config/hpc++,
+	  /NSIS/branches/nobjs/SCons/Config/ms,
+	  /NSIS/branches/nobjs/SCons/Tools/crossmingw.py,
+	  /NSIS/branches/nobjs/SCons/utils.py,
+	  /NSIS/branches/nobjs/SConstruct,
+	  /NSIS/branches/nobjs/Scripts/release.py,
+	  /NSIS/branches/nobjs/Source,
+	  /NSIS/branches/nobjs/Source/7zip/LZMADecode.c,
+	  /NSIS/branches/nobjs/Source/7zip/LZMADecode.h,
+	  /NSIS/branches/nobjs/Source/afxres.h,
+	  /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/bzip2/blocksort.c,
+	  /NSIS/branches/nobjs/Source/bzip2/bzlib.c,
+	  /NSIS/branches/nobjs/Source/bzip2/bzlib.h,
+	  /NSIS/branches/nobjs/Source/bzip2/compress.c,
+	  /NSIS/branches/nobjs/Source/bzip2/decompress.c,
+	  /NSIS/branches/nobjs/Source/bzip2/huffman.c,
+	  /NSIS/branches/nobjs/Source/cbzip2.h,
+	  /NSIS/branches/nobjs/Source/clzma.cpp,
+	  /NSIS/branches/nobjs/Source/clzma.h,
+	  /NSIS/branches/nobjs/Source/compressor.h,
+	  /NSIS/branches/nobjs/Source/crc32.c,
+	  /NSIS/branches/nobjs/Source/crc32.h,
+	  /NSIS/branches/nobjs/Source/czlib.h,
+	  /NSIS/branches/nobjs/Source/dirreader.cpp,
+	  /NSIS/branches/nobjs/Source/dirreader.h,
+	  /NSIS/branches/nobjs/Source/exehead,
+	  /NSIS/branches/nobjs/Source/exehead/afxres.h,
+	  /NSIS/branches/nobjs/Source/exehead/api.h,
+	  /NSIS/branches/nobjs/Source/exehead/bgbg.c,
+	  /NSIS/branches/nobjs/Source/exehead/components.c,
+	  /NSIS/branches/nobjs/Source/exehead/components.h,
+	  /NSIS/branches/nobjs/Source/exehead/config.h,
+	  /NSIS/branches/nobjs/Source/exehead/exec.c,
+	  /NSIS/branches/nobjs/Source/exehead/exec.h,
+	  /NSIS/branches/nobjs/Source/exehead/fileform.c,
+	  /NSIS/branches/nobjs/Source/exehead/fileform.h,
+	  /NSIS/branches/nobjs/Source/exehead/lang.h,
+	  /NSIS/branches/nobjs/Source/exehead/Main.c,
+	  /NSIS/branches/nobjs/Source/exehead/plugin.c,
+	  /NSIS/branches/nobjs/Source/exehead/plugin.h,
+	  /NSIS/branches/nobjs/Source/exehead/resource.rc,
+	  /NSIS/branches/nobjs/Source/exehead/SConscript,
+	  /NSIS/branches/nobjs/Source/exehead/state.h,
+	  /NSIS/branches/nobjs/Source/exehead/Ui.c,
+	  /NSIS/branches/nobjs/Source/exehead/ui.h,
+	  /NSIS/branches/nobjs/Source/exehead/util.c,
+	  /NSIS/branches/nobjs/Source/exehead/util.h,
+	  /NSIS/branches/nobjs/Source/fileform.cpp,
+	  /NSIS/branches/nobjs/Source/fileform.h,
+	  /NSIS/branches/nobjs/Source/growbuf.cpp,
+	  /NSIS/branches/nobjs/Source/growbuf.h,
+	  /NSIS/branches/nobjs/Source/icon.cpp,
+	  /NSIS/branches/nobjs/Source/icon.h,
+	  /NSIS/branches/nobjs/Source/lang.cpp,
+	  /NSIS/branches/nobjs/Source/lang.h,
+	  /NSIS/branches/nobjs/Source/lineparse.cpp,
+	  /NSIS/branches/nobjs/Source/lineparse.h,
+	  /NSIS/branches/nobjs/Source/makenssi.cpp,
+	  /NSIS/branches/nobjs/Source/manifest.cpp,
+	  /NSIS/branches/nobjs/Source/manifest.h,
+	  /NSIS/branches/nobjs/Source/mmap.cpp,
+	  /NSIS/branches/nobjs/Source/mmap.h,
+	  /NSIS/branches/nobjs/Source/Platform.h,
+	  /NSIS/branches/nobjs/Source/Plugins.cpp,
+	  /NSIS/branches/nobjs/Source/Plugins.h,
+	  /NSIS/branches/nobjs/Source/ResourceEditor.cpp,
+	  /NSIS/branches/nobjs/Source/ResourceEditor.h,
+	  /NSIS/branches/nobjs/Source/ResourceVersionInfo.cpp,
+	  /NSIS/branches/nobjs/Source/ResourceVersionInfo.h,
+	  /NSIS/branches/nobjs/Source/script.cpp,
+	  /NSIS/branches/nobjs/Source/ShConstants.cpp,
+	  /NSIS/branches/nobjs/Source/strlist.cpp,
+	  /NSIS/branches/nobjs/Source/strlist.h,
+	  /NSIS/branches/nobjs/Source/Tests/SConscript,
+	  /NSIS/branches/nobjs/Source/Tests/winver.nsi,
+	  /NSIS/branches/nobjs/Source/tokens.cpp,
+	  /NSIS/branches/nobjs/Source/tokens.h,
+	  /NSIS/branches/nobjs/Source/util.cpp,
+	  /NSIS/branches/nobjs/Source/util.h,
+	  /NSIS/branches/nobjs/Source/winchar.cpp,
+	  /NSIS/branches/nobjs/Source/winchar.h,
+	  /NSIS/branches/nobjs/Source/writer.cpp,
+	  /NSIS/branches/nobjs/Source/writer.h,
+	  /NSIS/branches/nobjs/Source/zlib/deflate.c,
+	  /NSIS/branches/nobjs/Source/zlib/DEFLATE.H,
+	  /NSIS/branches/nobjs/Source/zlib/INFBLOCK.C,
+	  /NSIS/branches/nobjs/Source/zlib/trees.c,
+	  /NSIS/branches/nobjs/Source/zlib/ZCONF.H,
+	  /NSIS/branches/nobjs/Source/zlib/ZLIB.H,
+	  /NSIS/branches/nobjs/Source/zlib/ZUTIL.H: updated nobjs branch
+	  with trunk changes 5629:5918 (excluding FileFunc.nsh,
+	  TextFunc.nsh and WordFunc.nsh)
+
+2009-02-02 23:38  kichik
+
+	* /NSIS/trunk/Contrib/Makensisw/resource.rc: implemented rfe
+	  #2557392 - makensisw: Shortcut to abort compilation
+
+2009-02-01 14:44  kichik
+
+	* /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Docs/src/chm_config.but,
+	  /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Docs/src/license.but,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/VB6RunTime.nsh,
+	  /NSIS/trunk/Source/7zip/LZMADecode.c,
+	  /NSIS/trunk/Source/7zip/LZMADecode.h,
+	  /NSIS/trunk/Source/afxres.h,
+	  /NSIS/trunk/Source/bzip2/blocksort.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.h,
+	  /NSIS/trunk/Source/bzip2/compress.c,
+	  /NSIS/trunk/Source/bzip2/decompress.c,
+	  /NSIS/trunk/Source/bzip2/huffman.c, /NSIS/trunk/Source/cbzip2.h,
+	  /NSIS/trunk/Source/clzma.cpp, /NSIS/trunk/Source/clzma.h,
+	  /NSIS/trunk/Source/compressor.h, /NSIS/trunk/Source/crc32.c,
+	  /NSIS/trunk/Source/crc32.h, /NSIS/trunk/Source/czlib.h,
+	  /NSIS/trunk/Source/dirreader.cpp, /NSIS/trunk/Source/dirreader.h,
+	  /NSIS/trunk/Source/exehead/afxres.h,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/bgbg.c,
+	  /NSIS/trunk/Source/exehead/components.c,
+	  /NSIS/trunk/Source/exehead/components.h,
+	  /NSIS/trunk/Source/exehead/config.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/lang.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/state.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/fileform.cpp, /NSIS/trunk/Source/fileform.h,
+	  /NSIS/trunk/Source/growbuf.cpp, /NSIS/trunk/Source/growbuf.h,
+	  /NSIS/trunk/Source/icon.h, /NSIS/trunk/Source/lang.cpp,
+	  /NSIS/trunk/Source/lang.h, /NSIS/trunk/Source/lineparse.cpp,
+	  /NSIS/trunk/Source/lineparse.h, /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/manifest.cpp, /NSIS/trunk/Source/manifest.h,
+	  /NSIS/trunk/Source/mmap.cpp, /NSIS/trunk/Source/mmap.h,
+	  /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/Plugins.cpp,
+	  /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/ShConstants.cpp,
+	  /NSIS/trunk/Source/strlist.cpp, /NSIS/trunk/Source/strlist.h,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h,
+	  /NSIS/trunk/Source/winchar.cpp, /NSIS/trunk/Source/winchar.h,
+	  /NSIS/trunk/Source/writer.cpp, /NSIS/trunk/Source/writer.h,
+	  /NSIS/trunk/Source/zlib/deflate.c,
+	  /NSIS/trunk/Source/zlib/DEFLATE.H,
+	  /NSIS/trunk/Source/zlib/INFBLOCK.C,
+	  /NSIS/trunk/Source/zlib/trees.c, /NSIS/trunk/Source/zlib/ZCONF.H,
+	  /NSIS/trunk/Source/zlib/ZLIB.H, /NSIS/trunk/Source/zlib/ZUTIL.H:
+	  happy new year!
+
+2009-02-01 12:35  kichik
+
+	* /NSIS/trunk/Contrib/Banner/Banner.c: a comment explaining
+	  foreground issues
+
+2009-02-01 12:32  kichik
+
+	* /NSIS/trunk/Contrib/UIs/default.rc,
+	  /NSIS/trunk/Contrib/UIs/modern.rc,
+	  /NSIS/trunk/Contrib/UIs/sdbarker_tiny.rc,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/resource.rc: revert r5314 - if the
+	  banner plug-in shows IDD_VERIFY in its own thread and that thread
+	  sets it as the foreground window because of the WS_VISIBLE style,
+	  the main thread loses the ability to set the foreground window.
+	  this causes the installer window to start on the background if
+	  banner is used in .oninit.
+
+2009-02-01 12:06  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll-vs2008.sln,
+	  /NSIS/trunk/Contrib/ExDLL/exdll-vs2008.vcproj,
+	  /NSIS/trunk/Contrib/ExDLL/SConscript,
+	  /NSIS/trunk/Examples/makensis.nsi: added exdll vs2008 project
+	  files, thanks to TobbeSweden
+
+2009-02-01 00:29  kichik
+
+	* /NSIS/trunk/Contrib/Banner/Example.nsi: saner waiting times
+
+2009-01-31 16:30  kichik
+
+	* /NSIS/trunk/Contrib/Language files/SConscript: list every
+	  language only once
+
+2009-01-31 16:26  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nsh,
+	  /NSIS/trunk/Contrib/Language files/SConscript,
+	  /NSIS/trunk/Docs/src/credits.but, /NSIS/trunk/Examples/Modern
+	  UI/MultiLanguage.nsi: added Esperanto
+	  http://forums.winamp.com/showthread.php?s=&threadid=302218
+
+2009-01-31 16:17  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Malay.nlf: Qump?!
+
+2009-01-31 15:46  kichik
+
+	* /NSIS/trunk/Source/icon.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h: fixed bug #2533431 - Script
+	  compiling fails with !packhdr, but succeeds without?!
+
+2009-01-24 22:09  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: applied patch #2500960
+	  - NSD_SetIcon support
+
+2009-01-17 22:32  kichik
+
+	* /NSIS/trunk/Source/mmap.cpp, /NSIS/trunk/Source/mmap.h,
+	  /NSIS/trunk/Source/strlist.h, /NSIS/trunk/Source/util.cpp:
+	  applied patch #2497172 - Fixes for POSIX build on Solaris, plus a
+	  regression
+
+2009-01-15 13:51  kichik
+
+	* /NSIS/trunk/Source/util.cpp: fixed bug #2497290 - The TRUE/FALSE
+	  bug on MacOS X, revisited
+
+2009-01-13 16:54  pabs3
+
+	* /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Examples/VersionInfo.nsi,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/StrFunc.nsh,
+	  /NSIS/trunk/Include/VB6RunTime.nsh: Remove some gratuitous use of
+	  non-ANSI characters that were making the Unicode patch harder to
+	  review.
+
+2009-01-11 09:48  pabs3
+
+	* /NSIS/trunk/Contrib/ExDLL/SConscript,
+	  /NSIS/trunk/SCons/Tools/crossmingw.py, /NSIS/trunk/SConstruct:
+	  Fix up plugin API header/lib installation for non-Windows
+	  platforms.
+
+2009-01-10 22:53  kichik
+
+	* /NSIS/trunk/SCons/utils.py: pydoc should be in the function
+
+2009-01-10 22:51  kichik
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/SConscript,
+	  /NSIS/trunk/SCons/utils.py: make sure iconv exists
+
+2009-01-10 22:38  kichik
+
+	* /NSIS/trunk/SCons/Tools/crossmingw.py: and a dash
+
+2009-01-10 22:29  kichik
+
+	* /NSIS/trunk/SCons/Tools/crossmingw.py: wrong prefix in bug report
+
+2009-01-10 22:14  kichik
+
+	* /NSIS/trunk/SCons/Tools/crossmingw.py: fink prefixes for bug
+	  #2495138
+
+2009-01-10 22:12  kichik
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp: since
+	  we're already using winchar...
+
+2009-01-10 22:10  kichik
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/SConscript: fixed bug
+	  #2494539 - Missing iconv dependency in LibraryLocal in 2.42
+
+2009-01-10 22:04  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Directory.nsh: fixed bug
+	  #2494528 - MUI_DIRECTORYPAGE_BGCOLOR
+
+2009-01-10 21:53  kichik
+
+	* /NSIS/trunk/Source/Platform.h: shell api for shell stuff that's
+	  not automatically included in latest sdks
+
+2009-01-10 21:49  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: wow... so many typos
+	  in one paragraph. was i drunk?
+
+2009-01-10 21:48  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: typo
+
+2009-01-01 01:04  kichik
+
+	* /NSIS/trunk/Include/SConscript: WinDef.nsh -> WinCore.nsh
+
+2009-01-01 00:55  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Bulgarian.nsh: that ending
+	  quote shouldn't be there
+
+2008-12-27 14:09  anders_k
+
+	* /NSIS/trunk/Include/WinCore.nsh: Updated description comment to
+	  new filename
+
+2008-12-27 14:05  anders_k
+
+	* /NSIS/trunk/Include/WinCore.nsh, /NSIS/trunk/Include/WinDef.nsh:
+	  Renamed WinDef.nsh to WinCore.nsh
+
+2008-12-27 13:25  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Include/SConscript: Added WinDef.nsh and friends to
+	  SCons and makensis.nsi
+
+2008-12-26 14:39  anders_k
+
+	* /NSIS/trunk/Include/Win, /NSIS/trunk/Include/Win/WinDef.nsh,
+	  /NSIS/trunk/Include/Win/WinError.nsh,
+	  /NSIS/trunk/Include/Win/WinNT.nsh,
+	  /NSIS/trunk/Include/Win/WinUser.nsh,
+	  /NSIS/trunk/Include/WinDef.nsh: Added WinDef.nsh and Win subdir -
+	  New headers with common windows stuff
+
+2008-12-24 23:40  kichik
+
+	* /NSIS/trunk/SCons/config.py, /NSIS/trunk/SConstruct: scons 1.2.0
+	  - Options -> Variables
+
+2008-12-21 19:14  anders_k
+
+	* /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h: changed
+	  RegisterPluginCallback return from BOOL to int to support a more
+	  detailed return value
+
+2008-12-21 00:49  pabs3
+
+	* /NSIS/trunk/Examples/Library.nsi: Fix Library.nsi test script on
+	  non-Windows by making it use Contrib/UIs/default.exe instead of
+	  makensis.exe, which isn't built except on Windows.
+
+2008-12-20 15:50  kichik
+
+	* /NSIS/trunk/Scripts/release.py: update for mediawiki 1.13 that
+	  insists on adding new lines
+
+2008-12-20 12:27  kichik
+
+	* /NSIS/tags/v242: Tagging for release 2.42
+
+2008-12-20 12:26  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: missing nsdialogs example
+
+2008-12-20 12:16  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.42
+
+2008-12-20 12:00  kichik
+
+	* /NSIS/trunk/Scripts/release.py: syntax error
+
+2008-12-20 11:55  kichik
+
+	* /NSIS/trunk/Include/Library.nsh: extract recurring string
+	  REGTOOL_KEY so version is defined only once
+
+2008-12-20 11:48  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.42
+
+2008-12-20 11:19  kichik
+
+	* /NSIS/trunk/Docs/src/credits.but: more credits
+
+2008-12-20 09:26  kichik
+
+	* /NSIS/trunk/Source/exehead/api.h: add NSISCALL definition for
+	  external plug-ins not built with scons
+
+2008-12-20 09:02  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: forgot util.nsh
+
+2008-12-20 08:57  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: renamed plugin.* to
+	  pluginapi.*
+
+2008-12-20 08:49  kichik
+
+	* /NSIS/trunk/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/trunk/Contrib/Banner/Banner.c,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/trunk/Contrib/Dialer/dialer.c,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.c,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.dsp,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.h,
+	  /NSIS/trunk/Contrib/ExDLL/plugin.c,
+	  /NSIS/trunk/Contrib/ExDLL/plugin.h,
+	  /NSIS/trunk/Contrib/ExDLL/pluginapi.c,
+	  /NSIS/trunk/Contrib/ExDLL/pluginapi.h,
+	  /NSIS/trunk/Contrib/ExDLL/SConscript,
+	  /NSIS/trunk/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/trunk/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/trunk/Contrib/Library/TypeLib/TypeLib.cpp,
+	  /NSIS/trunk/Contrib/Math/Source/Math.c,
+	  /NSIS/trunk/Contrib/Math/Source/Math.h,
+	  /NSIS/trunk/Contrib/nsDialogs/browse.c,
+	  /NSIS/trunk/Contrib/nsDialogs/input.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/rtl.c,
+	  /NSIS/trunk/Contrib/nsExec/nsexec.c,
+	  /NSIS/trunk/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/trunk/Contrib/Splash/splash.c,
+	  /NSIS/trunk/Contrib/StartMenu/StartMenu.c,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.h,
+	  /NSIS/trunk/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/trunk/Contrib/VPatch/Source/Plugin/vpatchdll.c: renamed
+	  plugin.* to pluginapi.*
+
+2008-12-20 08:17  kichik
+
+	* /NSIS/trunk/Contrib/InstallOptions/InstallOptions.nsh,
+	  /NSIS/trunk/Contrib/InstallOptions/testnotify.nsi,
+	  /NSIS/trunk/Contrib/Math/mathtest.nsi, /NSIS/trunk/Contrib/Modern
+	  UI 2/Pages/Finish.nsh, /NSIS/trunk/Contrib/Modern UI
+	  2/Pages/StartMenu.nsh, /NSIS/trunk/Contrib/Modern UI
+	  2/Pages/Welcome.nsh, /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Contrib/System/System.nsi,
+	  /NSIS/trunk/Docs/src/compilerflags.but,
+	  /NSIS/trunk/Docs/src/generalpurpose.but,
+	  /NSIS/trunk/Docs/src/headers.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/plugin.but,
+	  /NSIS/trunk/Docs/src/usefulinfos.but,
+	  /NSIS/trunk/Examples/FileFunc.nsi,
+	  /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Examples/TextFunc.nsi,
+	  /NSIS/trunk/Examples/WordFunc.nsi,
+	  /NSIS/trunk/Include/FileFunc.nsh,
+	  /NSIS/trunk/Include/TextFunc.nsh, /NSIS/trunk/Include/WinVer.nsh,
+	  /NSIS/trunk/Source/tokens.cpp: deprecate SetPluginUnload and
+	  /NOUNLOAD
+	  plug-ins are now responsible to keeping themselves loaded using
+	  the new api
+
+2008-12-20 07:59  kichik
+
+	* /NSIS/trunk/Contrib/BgImage/BgImage.txt: a brief explanation on
+	  the section restriction
+
+2008-12-20 07:54  kichik
+
+	* /NSIS/trunk/Source/exehead/plugin.c: GlobalAlloc should get GPTR
+	  not LPTR
+
+2008-12-20 07:22  justin1014
+
+	* /NSIS/trunk/Docs/src/defines.but, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h: Added
+	  !searchreplace preprocessor command for compiletime text
+	  search/replaces
+
+2008-12-20 06:23  justin1014
+
+	* /NSIS/branches/justin/datablock-reordering,
+	  /NSIS/branches/justin/datablock-reordering/Source/build.cpp,
+	  /NSIS/branches/justin/datablock-reordering/Source/build.h: an
+	  experimental datablock reordering -- I saw this give me ~1% gains
+	  for REAPER installers, though once I turned up the LZMA
+	  dictionary size it evaporated.. here in case we ever find it
+	  useful, which may be doubtful.
+
+2008-12-20 06:22  justin1014
+
+	* /NSIS/branches/justin: my experimental nonsense
+
+2008-12-15 21:51  kichik
+
+	* /NSIS/trunk/SCons/Config/gnu: again, force quotation around
+	  stdcall to avoid parenthesis madness
+
+2008-12-14 23:56  kichik
+
+	* /NSIS/trunk/SCons/Config/default, /NSIS/trunk/SCons/Config/gnu,
+	  /NSIS/trunk/SCons/Config/hpc++, /NSIS/trunk/SCons/Config/ms: use
+	  lists instead of dicts so scons will not treat the dict as a
+	  string when a list is also appended
+
+2008-12-12 19:57  kichik
+
+	* /NSIS/trunk/Contrib/StartMenu/StartMenu.c: initialize everything
+	  when creating a new dialog to avoid setting leaking from the last
+	  dialog
+
+2008-12-12 19:52  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: clean-up onBack
+	  setting so it won't propagate from one page to the next
+
+2008-12-12 19:31  kichik
+
+	* /NSIS/trunk/Contrib/Banner/Banner.c,
+	  /NSIS/trunk/Contrib/Banner/Example.nsi,
+	  /NSIS/trunk/Contrib/Banner/Readme.txt,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.txt,
+	  /NSIS/trunk/Contrib/BgImage/Example.nsi,
+	  /NSIS/trunk/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/trunk/Contrib/StartMenu/Readme.txt,
+	  /NSIS/trunk/Contrib/StartMenu/StartMenu.c: no more /UNLOAD with
+	  new plug-in api
+
+2008-12-12 19:27  kichik
+
+	* /NSIS/trunk/Contrib/Math/math.nsi,
+	  /NSIS/trunk/Contrib/Math/Math.txt,
+	  /NSIS/trunk/Contrib/Math/SConscript,
+	  /NSIS/trunk/Contrib/Math/Source/Math.c,
+	  /NSIS/trunk/Contrib/Math/Source/Math.h,
+	  /NSIS/trunk/Contrib/Math/Source/plugin.c: convert to plug-in
+	  library and never unload so user variables are saved
+
+2008-12-12 19:22  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: set focus on the radio buttons
+	  in the existing installation page
+
+2008-12-12 18:45  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Contrib/nsDialogs/timer.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/welcome.nsi: use new plug-in
+	  callbacks to avoid /NOUNLOAD
+
+2008-12-12 18:24  kichik
+
+	* /NSIS/trunk/Contrib/System/Source/Buffers.c,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.c,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.h,
+	  /NSIS/trunk/Contrib/System/Source/System.c: use new plug-in
+	  library wherever possible, which is not a lot...
+
+2008-12-12 17:57  kichik
+
+	* /NSIS/trunk/SCons/Tools/crossmingw.py: added support for lib
+	  building on cross mingw
+
+2008-12-12 17:51  kichik
+
+	* /NSIS/trunk/Contrib/Dialer/SConscript,
+	  /NSIS/trunk/Contrib/UserInfo/SConscript,
+	  /NSIS/trunk/Contrib/VPatch/Source/Plugin/SConscript: plugin.lib
+	  requires user32.lib, but it's later optimized out of the dll
+
+2008-12-12 17:47  kichik
+
+	* /NSIS/trunk/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/trunk/Contrib/Banner/Banner.c,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/trunk/Contrib/LangDLL/LangDLL.c: removed private atoi
+	  implementations
+
+2008-12-12 17:45  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/plugin.c,
+	  /NSIS/trunk/Contrib/ExDLL/plugin.h: simpler atoi for LangDLL and
+	  Banner
+
+2008-12-12 17:39  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/browse.c,
+	  /NSIS/trunk/Contrib/nsDialogs/input.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsis.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsis.h,
+	  /NSIS/trunk/Contrib/nsDialogs/rtl.c,
+	  /NSIS/trunk/Contrib/nsDialogs/SConscript: remove special
+	  implementation of stack operations and use plugin.lib instead
+
+2008-12-12 17:37  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/plugin.c,
+	  /NSIS/trunk/Contrib/ExDLL/plugin.h: some more functions, required
+	  by nsDialogs and probably more plug-ins
+
+2008-12-12 17:19  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.dsp: update for plugin.h and
+	  plugin.lib
+
+2008-12-12 17:18  kichik
+
+	* /NSIS/trunk/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/trunk/Contrib/Banner/Banner.c,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/trunk/Contrib/Dialer/dialer.c,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.c,
+	  /NSIS/trunk/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/trunk/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/trunk/Contrib/Library/TypeLib/TypeLib.cpp,
+	  /NSIS/trunk/Contrib/nsExec/nsexec.c,
+	  /NSIS/trunk/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/trunk/Contrib/Splash/splash.c,
+	  /NSIS/trunk/Contrib/StartMenu/StartMenu.c,
+	  /NSIS/trunk/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/trunk/Contrib/VPatch/Source/Plugin/vpatchdll.c: switch to
+	  plugin.h
+
+2008-12-12 17:13  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/plugin.c: allow passing NULL to
+	  popstring() for InstallOptions and probably more plug-ins
+
+2008-12-12 17:07  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/plugin.h: hello c++!
+
+2008-12-12 17:07  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.h: use plugin.h and try to force
+	  plugin.lib for backward compatibility
+
+2008-12-12 17:02  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI/System.nsh: don't allow both
+	  "reboot now" and "reboot later" to be turned on at the same time
+
+2008-12-12 16:46  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/SConscript: update CPPPATH (include
+	  directory) as well so plug-ins can find everything
+
+2008-12-12 16:33  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/plugin.c,
+	  /NSIS/trunk/Contrib/ExDLL/plugin.h,
+	  /NSIS/trunk/Contrib/ExDLL/SConscript,
+	  /NSIS/trunk/Examples/makensis.nsi, /NSIS/trunk/SConstruct: -
+	  create plugin.lib that contains all
+	  - distribute plugin.h, api.h and plugin.lib
+	  - remove inc_c stuff because we don't really want to install
+	  win32 header files as something that can be used on linux (this
+	  should be revisited later)
+	  - fix up MakeFileList for newer versions of SCons (should be
+	  removed in the future)
+
+2008-12-12 16:29  kichik
+
+	* /NSIS/trunk/Source/exehead: ignore sconf.h
+
+2008-12-12 16:28  kichik
+
+	* /NSIS/trunk/Source: ignore those pesky two
+
+2008-12-09 23:18  kichik
+
+	* /NSIS/trunk/Source/Platform.h: HMODULE is used in api.h which is
+	  included by build.cpp which is also built on POSIX
+
+2008-12-09 23:13  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/script.cpp: now
+	  with proper #include
+
+2008-12-09 23:11  kichik
+
+	* /NSIS/trunk/Source/exehead/fileform.h: that need not be here
+	  (kills LibraryLocal build on gcc)
+
+2008-12-09 23:10  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h, /NSIS/trunk/Source/script.cpp:
+	  gcc fixes
+
+2008-12-09 23:06  kichik
+
+	* /NSIS/trunk/SCons/Config/gnu: force quoting to avoid problems
+	  with the parenthesis
+
+2008-12-09 23:01  kichik
+
+	* /NSIS/trunk/Source/exehead/api.h: move definitions common to both
+	  plug-ins and stubs to api.h (part of patch #2359978)
+
+2008-12-09 22:54  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.h: use api.h in exdll.h (part of
+	  patch #2359978)
+
+2008-12-09 22:53  kichik
+
+	* /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h:
+	  move definitions common to both plug-ins and stubs to api.h (part
+	  of patch #2359978)
+
+2008-12-09 22:42  kichik
+
+	* /NSIS/trunk/SCons/Config/default, /NSIS/trunk/SCons/Config/gnu,
+	  /NSIS/trunk/SCons/Config/hpc++, /NSIS/trunk/SCons/Config/ms,
+	  /NSIS/trunk/Source/Platform.h: moved NSISCALL detection to scons
+
+2008-12-09 22:20  kichik
+
+	* /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h: add standard license headers
+
+2008-12-06 22:20  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html: fixed bug #2386821 -
+	  MUI_CUSTOMFUNCTION_MOUSEOVERSECTION documentation error
+
+2008-12-02 22:41  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: more tests from the forum
+
+2008-12-01 22:35  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: get just one char for windows 9x
+	  "service pack"
+
+2008-11-29 22:03  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.h,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.c,
+	  /NSIS/trunk/Contrib/System/Source/Plugin.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/SConscript,
+	  /NSIS/trunk/Source/exehead/Ui.c: applied patch #1912699 -
+	  "Pinned" / always loaded plugins support
+	  this patch also adds plugin_api_version to exec_flags so your
+	  plug-in can now tell if features it needs are available
+	  more plug-ins that need this will be converted once the patch to
+	  make both the stubs and the plug-ins use the same header file is
+	  in place
+
+2008-11-29 21:15  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: bring back WinVerGetMajor,
+	  WinVerGetMinor and WinVerGetBuild
+
+2008-11-29 21:03  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh,
+	  /NSIS/trunk/Source/Tests/winver.nsi: make
+	  ${WinVerGetServicePackLevel} accept an output variable again
+
+2008-11-29 18:05  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.def,
+	  /NSIS/trunk/Contrib/nsDialogs/SConscript: oops... KillTimer is
+	  taken
+
+2008-11-29 18:01  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/timer.nsi: accidentally committed
+	  the wrong version
+	  this new version uses macros to make the script nicer
+
+2008-11-29 17:56  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Contrib/nsDialogs/SConscript,
+	  /NSIS/trunk/Contrib/nsDialogs/timer.nsi,
+	  /NSIS/trunk/Include/WinMessages.nsh: applied patch #2135855 -
+	  Timer support for nsDialogs
+	  
+	  also added progress bar support for the example
+
+2008-11-29 13:53  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: vista sp1
+
+2008-11-29 13:43  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: windows 2003 test
+
+2008-11-29 13:26  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: allocate 156 bytes so
+	  non-existing fields will be zero for OSVERSIONINFO
+
+2008-11-29 13:21  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: test service pack inequality
+	  as well
+
+2008-11-29 13:21  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: and also in calls...
+
+2008-11-29 13:19  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: no need for outvar
+
+2008-11-29 12:23  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: remove some code duplication
+
+2008-11-29 12:18  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: missing !include
+
+2008-11-29 01:35  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: and update expected failure
+	  as well...
+
+2008-11-28 23:28  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: update expected results
+
+2008-11-28 20:01  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: fixed bug #2053642 - WinVer
+	  95/NT4 ambiguity
+	  
+	  also, the last huge commit was based on a patch by Anders
+
+2008-11-28 19:25  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: new test infrastructure for
+	  WinVer so I don't have to power up a zillion virtual machines for
+	  every little change
+
+2008-11-28 19:21  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: implemented RFE #1949260 -
+	  Windows Server 2008 support
+	  fixed bug #2053700 - Windows XP x64 is reported as Windows 2003
+	  
+	  added support for 9x "SP" by converting A, B, C to a SP number
+	  
+	  also added IsServer, IsWin2003R2, IsStarterEdition,
+	  OSHasMediaCenter and OSHasTabletSupport
+
+2008-11-23 21:15  kichik
+
+	* /NSIS/trunk/Contrib/System/Source/Call.S: only save and restore
+	  ebp when stack generation is turned on (for parameters taken or
+	  returned on the nsis stack), just like in the old working code
+
+2008-11-22 20:16  kichik
+
+	* /NSIS/trunk/Contrib/Language files/English.nlf,
+	  /NSIS/trunk/Source/lang.cpp: fixed bug #2323452 - Grammar,
+	  License Agreement
+
+2008-11-21 13:26  kichik
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/welcome.nsi: no need for function
+	  usage deceleration or un. suffix anymore
+
+2008-11-21 13:22  kichik
+
+	* /NSIS/trunk/Examples/FileFunc.nsi,
+	  /NSIS/trunk/Examples/FileFuncTest.nsi,
+	  /NSIS/trunk/Examples/TextFunc.nsi,
+	  /NSIS/trunk/Examples/TextFuncTest.nsi,
+	  /NSIS/trunk/Examples/WordFunc.nsi,
+	  /NSIS/trunk/Examples/WordFuncTest.nsi: no need for function usage
+	  deceleration or un. suffix anymore
+
+2008-11-21 09:57  kichik
+
+	* /NSIS/trunk/Contrib/System/Source/Call.S: fixed bug #2318670 -
+	  New System plug-in never unloads
+	  ebp was never restored from the stack and so edi, esi, ebx and
+	  ebp were corrupted when CallProc returned
+
+2008-11-21 09:34  kichik
+
+	* /NSIS/trunk/Contrib/System/Source/System.h: tabs to spaces
+
+2008-11-21 08:47  kichik
+
+	* /NSIS/trunk/SCons/Config/gnu: spaces are now frowned upon and
+	  quoted for unknown reason
+
+2008-11-21 01:12  kichik
+
+	* /NSIS/trunk/Docs/src/headers.but,
+	  /NSIS/trunk/Include/FileFunc.nsh,
+	  /NSIS/trunk/Include/TextFunc.nsh, /NSIS/trunk/Include/Util.nsh,
+	  /NSIS/trunk/Include/WordFunc.nsh: use new artificial functions to
+	  remove the need to declare usage of functions from the header
+	  files and to remove the unnecessary differentiation between
+	  install and uninstall functions
+
+2008-11-21 00:04  kichik
+
+	* /NSIS/trunk/Include/SConscript, /NSIS/trunk/Include/Util.nsh,
+	  /NSIS/trunk/Include/WinVer.nsh: extract CallArtificialFunction to
+	  Util.nsh
+
+2008-11-20 23:39  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: support for uninstaller
+
+2008-11-20 22:54  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: extract the common artificial
+	  function code to a macro
+
+2008-11-20 22:37  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: fake functions so version
+	  detection code isn't massively duplicated
+
+2008-11-20 21:54  kichik
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/trunk/Contrib/Library/RegTool/RegTool.c,
+	  /NSIS/trunk/Docs/src/library.but,
+	  /NSIS/trunk/Examples/Library.nsi,
+	  /NSIS/trunk/Include/Library.nsh: implemented RFE #2315740 -
+	  Library support for ActiveX exe /regserver
+
+2008-11-20 21:04  kichik
+
+	* /NSIS/trunk/Contrib/System/SConscript,
+	  /NSIS/trunk/Contrib/System/Source/Buffers.h,
+	  /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/stdafx.h,
+	  /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/Source/System.h,
+	  /NSIS/trunk/SCons/Config/ms, /NSIS/trunk/SConstruct: applied
+	  patch #2193442 - port System::Call and related functions to GCC
+
+2008-11-20 20:59  kichik
+
+	* /NSIS/trunk/Scripts/release.py: show some progress on screen for
+	  sftp
+
+2008-11-20 20:57  kichik
+
+	* /NSIS/trunk/Scripts/release.py: semi-automatic purge, assuming
+	  the browser is logged on as admin
+
+2008-11-20 20:14  kichik
+
+	* /NSIS/tags/v241: Tagging for release 2.41
+
+2008-11-20 20:13  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.41
+
+2008-11-20 20:06  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.41
+
+2008-11-20 19:20  kichik
+
+	* /NSIS/trunk/Source/exehead/Ui.c: applied patch #1982084 - wrong
+	  UI behaviour on size texts (VS2005)
+
+2008-11-15 21:54  kichik
+
+	* /NSIS/trunk/SCons/Config/gnu, /NSIS/trunk/SCons/Config/hpc++,
+	  /NSIS/trunk/SCons/Config/ms, /NSIS/trunk/SCons/utils.py,
+	  /NSIS/trunk/SConstruct: scons 1.1.0 support
+
+2008-11-15 15:48  kichik
+
+	* /NSIS/trunk/Contrib/LangDLL/LangDLL.c: fixed bug #1939573 -
+	  LangDLL Memory leaks
+
+2008-11-08 14:56  kichik
+
+	* /NSIS/trunk/Contrib/Language files/SimpChinese.nlf: applied patch
+	  #2189117 - description is not consistent with button text
+
+2008-11-07 22:04  kichik
+
+	* /NSIS/trunk/Source/ResourceEditor.cpp: fixed bug #2167958 -
+	  Big-Endian issue in ResourceEditor
+
+2008-11-07 22:02  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: fixed bug #2166401 - Uninstaller
+	  icon errors on big-endian system
+
+2008-11-01 20:10  kichik
+
+	* /NSIS/trunk/Contrib/System/Resource/Main.c,
+	  /NSIS/trunk/Contrib/System/SConscript: gotta have a main...
+
+2008-10-28 10:42  pabs3
+
+	* /NSIS/trunk/Contrib/System/Resource,
+	  /NSIS/trunk/Contrib/System/Resource.dll,
+	  /NSIS/trunk/Contrib/System/Resource/Icon.ico,
+	  /NSIS/trunk/Contrib/System/Resource/Resource.h,
+	  /NSIS/trunk/Contrib/System/Resource/Resource.rc,
+	  /NSIS/trunk/Contrib/System/SConscript: Build System Resource.dll
+	  from source code instead of shipping the binary.
+
+2008-10-24 18:44  joostverburg
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh: improvements
+	  by Felipe
+
+2008-10-10 21:35  kichik
+
+	* /NSIS/tags/v240: Tagging for release 2.40
+
+2008-10-10 21:33  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.40
+
+2008-10-10 21:18  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.40
+
+2008-10-10 21:13  kichik
+
+	* /NSIS/trunk/Source/Tests/SConscript: use the test as well...
+
+2008-10-10 21:11  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: basic winver tests to avoid
+	  another 2.39-ish disgrace
+
+2008-10-10 20:57  kichik
+
+	* /NSIS/trunk/Include/FileFunc.nsh: fixed bug #2067946 -
+	  GetParameters returns an incorrect result in some situation.
+
+2008-10-10 20:56  kichik
+
+	* /NSIS/trunk/Examples/FileFuncTest.nsi: documented the weird
+	  result
+
+2008-10-10 20:46  kichik
+
+	* /NSIS/trunk/Examples/FileFuncTest.nsi: some real tests for
+	  GetParameters
+
+2008-10-03 10:46  kichik
+
+	* /NSIS/trunk/Scripts/release.py: tag revision identification is
+	  now automatic
+
+2008-09-16 19:38  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/browse.c,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: applied patch #2016003
+	  - nsDialogs: Initial folder for SelectFileDialog
+
+2008-09-14 19:39  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: applied patch #2095363 - Patch
+	  for bug #2070708 (WinVer.nsh, service pack macros)
+
+2008-09-14 19:11  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh: fixed bug
+	  #2110357 - MUI2 FinishPage readme not focused
+
+2008-09-05 16:23  kichik
+
+	* /NSIS/trunk/Contrib/Language files/SimpChinese.nlf,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nsh: applied patch
+	  #2056906 - wrong Simplified Chinese button texts
+
+2008-09-05 16:11  kichik
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh: fixed bug
+	  #2086988 - Some minor errors in the PortugueseBR language file
+
+2008-08-19 18:24  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: fixed bug #2059651 -
+	  minor error in nsDialogs documentation
+
+2008-08-16 20:34  kichik
+
+	* /NSIS/trunk/Scripts/release.py: upload script missing new line
+
+2008-08-16 20:26  kichik
+
+	* /NSIS/trunk/Scripts/release.py: need to close the file so it can
+	  be deleted
+
 2008-08-16 20:11  kichik
 
 	* /NSIS/tags/v239: Tagging for release 2.39

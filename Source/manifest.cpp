@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2008 Nullsoft and Contributors
+ * Copyright (C) 1999-2009 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #include "Platform.h"
 #include "manifest.h"
-#include "version.h"
+#include <nsis-version.h>
 
 namespace manifest
 {

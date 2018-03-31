@@ -13,40 +13,49 @@ defenv['CPP_FLAG'] = ''
 defenv['CPP_REQUIRES_STDLIB'] = 0
 defenv['SUBSYS_CON'] = ''
 defenv['MSVCRT_FLAG'] = ''
+defenv['STDCALL'] = ''
+
+### defines
+
+defenv.Append(CPPDEFINES = [('NSISCALL', '$STDCALL')])
 
 ### stub environment
 
 stub_env = defenv.Clone()
 
+stub_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+
 ### makensis environment
 
 makensis_env = defenv.Clone()
 
+makensis_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+
 ### use "$CXX -Ae" as the "$CC" compiler to build makensis
 
 makensis_env['CC'] = makensis_env['CXX']
-makensis_env.Append(CFLAGS = '-Ae')
+makensis_env.Append(CFLAGS = ['-Ae'])
 
 ### required to build makensis
 
-makensis_env.Append(LINKFLAGS = '-AA')
-makensis_env.Append(LINKFLAGS = '+DD32')
-makensis_env.Append(LINKFLAGS = '-mt')
+makensis_env.Append(LINKFLAGS = ['-AA'])
+makensis_env.Append(LINKFLAGS = ['+DD32'])
+makensis_env.Append(LINKFLAGS = ['-mt'])
 
-makensis_env.Append(CXXFLAGS = '-AA')
-makensis_env.Append(CCFLAGS = '+DD32')
-makensis_env.Append(CCFLAGS = '-mt')
+makensis_env.Append(CXXFLAGS = ['-AA'])
+makensis_env.Append(CCFLAGS = ['+DD32'])
+makensis_env.Append(CCFLAGS = ['-mt'])
 
 ### debug for makensis
 
 if makensis_env['DEBUG']:
-	makensis_env.Append(CCFLAGS = '-g')
-	makensis_env.Append(LINKFLAGS = '-g')
+	makensis_env.Append(CCFLAGS = ['-g'])
+	makensis_env.Append(LINKFLAGS = ['-g'])
 
 ### strip for makensis
 
 if not makensis_env['DEBUG'] and makensis_env['STRIP']:
-	makensis_env.Append(LINKFLAGS = '-s')
+	makensis_env.Append(LINKFLAGS = ['-s'])
 
 #
 # aCC defines _BIG_ENDIAN, but we use __BIG_ENDIAN__ so check and define as
@@ -106,9 +115,13 @@ util_env = defenv.Clone()
 
 cp_util_env = util_env.Clone()
 
+cp_util_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+
 ### test environment
 
 test_env = defenv.Clone()
+
+test_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
 
 # return
 

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2008 Nullsoft and Contributors
+ * Copyright (C) 1999-2009 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #ifndef APSTUDIO_INVOKED // keep msdev's resource editor from mangling the .rc file
 
-#include "sconf.h"
+#include <nsis-sconf.h>
 
 #ifndef NSIS_CONFIG_VISIBLE_SUPPORT
   #ifdef NSIS_CONFIG_LICENSEPAGE

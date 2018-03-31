@@ -1,7 +1,8 @@
 #include <windows.h>
 
+#include <nsis/pluginapi.h> // nsis plugin
+
 #include "defs.h"
-#include "nsis.h"
 #include "input.h"
 #include "rtl.h"
 
@@ -236,12 +237,19 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
+static UINT_PTR PluginCallback(enum NSPIM msg)
+{
+  return 0;
+}
+
 void __declspec(dllexport) Create(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
 {
   HWND hwPlacementRect;
   RECT rcPlacement;
 
   EXDLL_INIT();
+
+  extra->RegisterPluginCallback(g_hInstance, PluginCallback);
 
   g_dialog.hwParent = hwndParent;
   g_pluginParms = extra;
@@ -275,6 +283,8 @@ void __declspec(dllexport) Create(HWND hwndParent, int string_size, char *variab
   g_dialog.controlCount = 0;
   g_dialog.controls = (struct nsControl*) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 0);
 
+  g_dialog.callbacks.onBack = 0;
+
   pushint((int) g_dialog.hwDialog);
 }
 
@@ -299,19 +309,19 @@ void __declspec(dllexport) CreateControl(HWND hwndParent, int string_size, char 
     return;
   }
 
-  if (popstring(className, 0))
+  if (popstringn(className, 0))
   {
     pushstring("error");
     HeapFree(GetProcessHeap(), 0, className);
     return;
   }
 
-  style = (DWORD) popint();
-  exStyle = (DWORD) popint();
+  style = (DWORD) popint_or();
+  exStyle = (DWORD) popint_or();
 
   PopPlacement(&x, &y, &width, &height);
 
-  if (popstring(text, 0))
+  if (popstringn(text, 0))
   {
     pushstring("error");
     HeapFree(GetProcessHeap(), 0, className);
@@ -418,7 +428,7 @@ void __declspec(dllexport) SetUserData(HWND hwndParent, int string_size, char *v
 
   // set user data
 
-  popstring(ctl->userData, USERDATA_SIZE);
+  popstringn(ctl->userData, USERDATA_SIZE);
 }
 
 void __declspec(dllexport) GetUserData(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
@@ -449,6 +459,47 @@ void __declspec(dllexport) GetUserData(HWND hwndParent, int string_size, char *v
   // return user data
 
   pushstring(ctl->userData);
+}
+
+void CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+  // we use a timer proc instead of WM_TIMER to make sure no one messes with the ids but us
+  g_pluginParms->ExecuteCodeSegment(idEvent - 1, 0);
+}
+
+void __declspec(dllexport) CreateTimer(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
+{
+  UINT callback;
+  UINT interval;
+
+  // get info from stack
+
+  callback = popint();
+  interval = popint();
+
+  if (!callback || !interval)
+    return;
+
+  // create timer
+
+  SetTimer(
+    g_dialog.hwDialog,
+    callback,
+    interval,
+    TimerProc);
+}
+
+void nsdKillTimer(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
+{
+  UINT id;
+
+  // get timer id from stack
+
+  id = popint();
+
+  // kill timer
+
+  KillTimer(g_dialog.hwDialog, id);
 }
 
 void NSDFUNC SetControlCallback(size_t callbackIdx)

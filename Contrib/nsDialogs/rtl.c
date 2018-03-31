@@ -1,8 +1,9 @@
 #include <windows.h>
 #include <commctrl.h>
 
+#include <nsis/pluginapi.h> // nsis plugin
+
 #include "defs.h"
-#include "nsis.h"
 
 #ifndef WS_EX_RIGHT
 #  define WS_EX_RIGHT 0x1000

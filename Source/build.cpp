@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "exehead/config.h"
 
-#include "version.h"
+#include <nsis-version.h>
 
 #include "build.h"
 #include "util.h"
@@ -28,9 +28,11 @@
 #include "manifest.h"
 #include "icon.h"
 
+#include "exehead/api.h"
+#include "exehead/resource.h"
+
 #include <stdexcept>
 
-#include "exehead/resource.h"
 #include "ResourceEditor.h"
 #include "DialogTemplate.h"
 #include "ResourceVersionInfo.h"
@@ -110,7 +112,7 @@ CEXEBuild::CEXEBuild() :
   definedlist.add("NSIS_VERSION", NSIS_VERSION);
 
   // automatically generated header file containing all defines
-#include "defines.h"
+#include <nsis-defines.h>
 
   // no longer optional
   definedlist.add("NSIS_SUPPORT_STANDARD_PREDEFINES");
@@ -3232,7 +3234,7 @@ void CEXEBuild::build_plugin_table(void)
   INFO_MSG("\n");
 }
 
-#define FLAG_OFFSET(flag) (FIELD_OFFSET(exec_flags, flag)/sizeof(int))
+#define FLAG_OFFSET(flag) (FIELD_OFFSET(exec_flags_t, flag)/sizeof(int))
 
 int CEXEBuild::add_plugins_dir_initializer(void)
 {
