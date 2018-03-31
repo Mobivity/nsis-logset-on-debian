@@ -1,3 +1,58 @@
+2015-12-27 05:36  kichik
+
+	* /NSIS/tags/v250: Tagging for release 2.50
+
+2015-12-27 05:34  kichik
+
+	* /NSIS/branches/nsis2/Menu/images/header.gif: 2.50
+
+2015-12-27 05:32  kichik
+
+	* /NSIS/branches/nsis2/Docs/src/history.but: update 2.50 changelog
+
+2015-12-24 00:50  anders_k
+
+	* /NSIS/branches/nsis2/Docs/src/attributes.but,
+	  /NSIS/branches/nsis2/Docs/src/history.but,
+	  /NSIS/branches/nsis2/Source/build.cpp: RequestExecutionLevel now
+	  defaults to admin
+
+2015-12-24 00:43  anders_k
+
+	* /NSIS/branches/nsis2/Source/exehead/Main.c: Preload some system
+	  libraries (bug #1125) (Ported from trunk)
+
+2015-12-24 00:40  anders_k
+
+	* /NSIS/trunk/Source/exehead/Main.c: Preload some system libraries
+	  (bug #1125)
+
+2015-12-16 07:45  kichik
+
+	* /NSIS/tags/v249: Tagging for release 2.49
+
+2015-12-16 07:45  kichik
+
+	* /NSIS/branches/nsis2/Menu/images/header.gif: 2.49
+
+2015-12-15 23:11  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/Main.c: Fixed CreateShortcut failure
+	  on Vista caused by security changes in r6645/2.47
+
+2015-12-15 23:08  anders_k
+
+	* /NSIS/branches/nsis2/Docs/src/history.but,
+	  /NSIS/branches/nsis2/Source/exehead/Main.c: Fixed CreateShortcut
+	  failure on Vista caused by security changes in 2.47
+
+2015-12-11 20:25  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/SConscript: Merge history and chm fix from
+	  2.48
+
 2015-12-11 07:09  kichik
 
 	* /NSIS/tags/v248: Tagging for release 2.48
