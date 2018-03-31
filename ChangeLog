@@ -1,3 +1,170 @@
+2008-08-16 20:11  kichik
+
+	* /NSIS/tags/v239: Tagging for release 2.39
+
+2008-08-16 20:09  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.39
+
+2008-08-16 19:59  kichik
+
+	* /NSIS/trunk/Scripts/release.py: spaces to tabs
+
+2008-08-16 19:57  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: english, use it
+
+2008-08-16 19:55  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.39
+
+2008-08-16 07:49  kichik
+
+	* /NSIS/trunk/Docs/src/generalpurpose.but: typo
+
+2008-08-15 19:54  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: use System's r1 instead of $1
+
+2008-08-15 18:50  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: added service pack support for
+	  old versions of nt that didn't support OSVERSIONINFOEX
+
+2008-08-15 18:39  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: applied patch #2036802 - Windows
+	  service pack versions in WinVer.nsh
+
+2008-08-15 18:13  kichik
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/System.html: applied patch #2025721 -
+	  Patch for Feature Request 1961307
+	  also closes RFE #1961307
+
+2008-08-15 17:59  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: fixed bug #2053522 -
+	  nsDialogs doesn't RemoveProp
+
+2008-08-15 17:46  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/defs.h: cosmetics
+
+2008-08-15 17:36  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/defs.h,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/rtl.c: applied patch #2004129 -
+	  nsDialogs: Hand cursor for link
+
+2008-08-15 17:13  kichik
+
+	* /NSIS/trunk/Include/WinMessages.nsh: EM_EXLIMITTEXT from patch
+	  #2004129
+
+2008-08-15 17:07  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: it's listbox_HWND not
+	  combo_HWND
+
+2008-08-15 17:07  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: applied patch #2041919
+	  - nsDialogs: controls for listboxes
+
+2008-08-15 16:38  kichik
+
+	* /NSIS/trunk/Scripts/release.py: no more ftp too... sftp now
+
+2008-08-15 16:20  kichik
+
+	* /NSIS/trunk/Scripts/release.py: QRS is gone :(
+
+2008-07-26 14:49  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: no more add_intstring in
+	  nobjs
+
+2008-07-26 14:45  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: remove usage of
+	  add_intstring
+
+2008-07-26 14:45  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/entry.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/entry.h: add string parameter
+	  from integer
+
+2008-07-26 14:44  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/str.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/str.h: add ctor from integer
+
+2008-07-26 12:43  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: extracted
+	  init_script_variables(), init_script_constants() and
+	  init_script_constants_pf_cf() from CEXEBuild ctor
+
+2008-07-26 12:12  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: now add_nobj_entry_parm
+	  really never returns outside the `if'
+
+2008-07-26 12:07  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: fixed variable usage in
+	  entries
+
+2008-07-26 11:58  kichik
+
+	* /NSIS/branches/nobjs,
+	  /NSIS/branches/nobjs/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/branches/nobjs/Contrib/Language files/French.nsh,
+	  /NSIS/branches/nobjs/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/branches/nobjs/Contrib/Language files/Slovenian.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/branches/nobjs/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/branches/nobjs/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/branches/nobjs/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/branches/nobjs/Docs/src/attributes.but,
+	  /NSIS/branches/nobjs/Docs/src/defines.but,
+	  /NSIS/branches/nobjs/Docs/src/history.but,
+	  /NSIS/branches/nobjs/Examples/LogicLib.nsi,
+	  /NSIS/branches/nobjs/Examples/makensis.nsi,
+	  /NSIS/branches/nobjs/Include/LogicLib.nsh,
+	  /NSIS/branches/nobjs/Include/VB6RunTime.nsh,
+	  /NSIS/branches/nobjs/Menu/images/header.gif,
+	  /NSIS/branches/nobjs/SConstruct,
+	  /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/exehead/exec.c,
+	  /NSIS/branches/nobjs/Source/exehead/Ui.c,
+	  /NSIS/branches/nobjs/Source/mmap.cpp,
+	  /NSIS/branches/nobjs/Source/mmap.h,
+	  /NSIS/branches/nobjs/Source/script.cpp,
+	  /NSIS/branches/nobjs/Source/tokens.cpp,
+	  /NSIS/branches/nobjs/Source/tokens.h: updated nobjs branch with
+	  trunk changes 5628:5683
+
+2008-07-13 01:02  justin1014
+
+	* /NSIS/trunk/Docs/src/defines.but: updated documentation for
+	  previous commit, !define /file and !searchparse
+
+2008-07-13 00:37  justin1014
+
+	* /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h:
+	  !searchparse and !define /file support
+
 2008-07-12 17:51  kichik
 
 	* /NSIS/tags/v238: Tagging for release 2.38

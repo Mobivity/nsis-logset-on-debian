@@ -200,7 +200,7 @@ Header file for creating custom installer pages with nsDialogs
 !define __NSD_BrowseButton_STYLE ${DEFAULT_STYLES}|${WS_TABSTOP}
 !define __NSD_BrowseButton_EXSTYLE 0
 
-!define __NSD_Link_CLASS BUTTON
+!define __NSD_Link_CLASS LINK
 !define __NSD_Link_STYLE ${DEFAULT_STYLES}|${WS_TABSTOP}|${BS_OWNERDRAW}
 !define __NSD_Link_EXSTYLE 0
 
@@ -436,6 +436,30 @@ Header file for creating custom installer pages with nsDialogs
 
 !define NSD_LB_AddString "!insertmacro _NSD_LB_AddString"
 
+!macro __NSD_LB_DelString CONTROL STRING
+
+	SendMessage ${CONTROL} ${LB_DELETESTRING} 0 `STR:${STRING}`
+
+!macroend
+
+!define NSD_LB_DelString `!insertmacro __NSD_LB_DelString`
+
+!macro __NSD_LB_Clear CONTROL VAR
+
+	SendMessage ${CONTROL} ${LB_RESETCONTENT} 0 0 ${VAR}
+
+!macroend
+
+!define NSD_LB_Clear `!insertmacro __NSD_LB_Clear`
+
+!macro __NSD_LB_GetCount CONTROL VAR
+
+	SendMessage ${CONTROL} ${LB_GETCOUNT} 0 0 ${VAR}
+
+!macroend
+
+!define NSD_LB_GetCount `!insertmacro __NSD_LB_GetCount`
+
 !macro _NSD_LB_SelectString CONTROL STRING
 
 	SendMessage ${CONTROL} ${LB_SELECTSTRING} -1 `STR:${STRING}`
@@ -443,6 +467,17 @@ Header file for creating custom installer pages with nsDialogs
 !macroend
 
 !define NSD_LB_SelectString "!insertmacro _NSD_LB_SelectString"
+
+!macro __NSD_LB_GetSelection CONTROL VAR
+
+	SendMessage ${CONTROL} ${LB_GETCURSEL} 0 0 ${VAR}
+	System::Call 'user32::SendMessage(i ${CONTROL}, i ${LB_GETTEXT}, i ${VAR}, t .s)'
+	Pop ${VAR}
+
+!macroend
+
+!define NSD_LB_GetSelection `!insertmacro __NSD_LB_GetSelection`
+
 
 !macro __NSD_SetImage CONTROL IMAGE HANDLE
 
