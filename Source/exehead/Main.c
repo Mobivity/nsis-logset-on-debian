@@ -166,15 +166,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
   if (g_is_uninstaller)
   {
-    char *p = findchar(realcmds, 0);
+    char *p = findchar(state_command_line, 0);
 
     // state_command_line has state_install_directory right after it in memory, so reading
     // a bit over state_command_line won't do any harm
-    while (p >= realcmds && *(LPDWORD)p != CHAR4_TO_DWORD(' ', '_', '?', '=')) p--;
+    while (p >= state_command_line && *(LPDWORD)p != CHAR4_TO_DWORD(' ', '_', '?', '=')) p--;
 
     m_Err = _LANG_UNINSTINITERROR;
 
-    if (p >= realcmds)
+    if (p >= state_command_line)
     {
       *p=0; // terminate before "_?="
       p+=4; // skip over " _?="
@@ -195,12 +195,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
 
       for (x = 0; x < 26; x ++)
       {
-        static char s[]="A~NSISu_.exe";
+        static char s[]="Au_.exe";
         static char buf2[NSIS_MAX_STRLEN*2];
         static char ibuf[NSIS_MAX_STRLEN];
 
         buf2[0]='\"';
         mystrcpy(buf2+1,state_temp_dir);
+        lstrcat(buf2,"~nsu.tmp\\");
+        CreateDirectory(buf2+1,NULL);
         lstrcat(buf2,s);
 
         DeleteFile(buf2+1); // clean up after all the other ones if they are there
@@ -227,7 +229,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
             lstrcat(buf2,ibuf);
             // add a trailing backslash to make sure is_valid_instpath will not fail when it shouldn't
             addtrailingslash(buf2);
-            hProc=myCreateProcess(buf2,state_temp_dir);
+            hProc=myCreateProcess(buf2,state_install_directory);
             if (hProc)
             {
               CloseHandle(hProc);

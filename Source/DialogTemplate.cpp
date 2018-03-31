@@ -21,14 +21,16 @@
 */
 
 #include "DialogTemplate.h"
-#include "util.h"
 #include <cassert> // for assert(3)
 #ifndef _WIN32
+#  include "util.h" // for Unicode conversion functions
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include <iconv.h>
 #  include <errno.h>
 #endif
+
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Utilities
@@ -83,7 +85,7 @@ void ReadVarLenArr(LPBYTE &seeker, char* &readInto, unsigned int uCodePage) {
       seeker += sizeof(WORD); \
     } \
     else { \
-      int us = MultiByteToWideChar(m_uCodePage, 0, x, -1, (WCHAR*)seeker, dwSize); \
+      int us = MultiByteToWideChar(m_uCodePage, 0, x, -1, (WCHAR*)seeker, dwSize - DWORD(seeker - pbDlg)); \
       if (!us) { \
         throw runtime_error("WriteStringOrId - Unicode conversion failed."); \
       } \

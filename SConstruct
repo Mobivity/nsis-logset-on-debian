@@ -4,7 +4,6 @@
 #   * Write SConscript for NSIS Menu
 #    - Use inheritance instead of current wxWidgets patches
 #    - Compile for POSIX too? wxWidgets is cross platform after all...
-#   * Write SConscript for Library RegTool (needs to compile makensis with smaller configuration)
 #
 ##
 
@@ -33,19 +32,19 @@ plugins = [
 ]
 
 utils = [
-	'Library/RegTool',
 	'Library/LibraryLocal',
+	'Library/RegTool',
 	'MakeLangId',
 	'Makensisw',
 	'NSIS Menu',
+	'UIs',
 	'zip2exe'
 ]
 
 misc = [
 	'Graphics',
 	'Language files',
-	'Modern UI',
-	'UIs'
+	'Modern UI'
 ]
 
 defenv = Environment()
@@ -90,10 +89,16 @@ Help(opts.GenerateHelpText(defenv))
 
 defenv['ZIPDISTDIR'] = defenv.Dir('#nsis-$VERSION')
 defenv['INSTDISTDIR'] = defenv.Dir('#.instdist')
+defenv['TESTDISTDIR'] = defenv.Dir('#.test')
+
+defenv.Execute(Delete('$ZIPDISTDIR'))
+defenv.Execute(Delete('$INSTDISTDIR'))
+defenv.Execute(Delete('$TESTDISTDIR'))
 
 def Distribute(dir, files):
 	defenv.Install('$ZIPDISTDIR/%s' % dir, files)
 	defenv.Install('$INSTDISTDIR/%s' % dir, files)
+	defenv.Install('$TESTDISTDIR/%s' % dir, files)
 	if defenv.has_key('PREFIX') and defenv['PREFIX']:
 		ins = defenv.Install('$PREFIX/%s' % dir, files)
 		return ins
@@ -102,6 +107,7 @@ def Distribute(dir, files):
 def DistributeAs(path, file):
 	defenv.InstallAs('$ZIPDISTDIR/%s' % path, file)
 	defenv.InstallAs('$INSTDISTDIR/%s' % path, file)
+	defenv.InstallAs('$TESTDISTDIR/%s' % path, file)
 	if defenv.has_key('PREFIX') and defenv['PREFIX']:
 		ins = defenv.InstallAs('$PREFIX/%s' % path, file)
 		return ins
@@ -134,7 +140,7 @@ else:
 if defenv['MSTOOLKIT']:
 	defenv.Tool('mstoolkit', toolpath = ['SCons/Tools'])
 
-Default(defenv['BUILD_PREFIX'])
+defenv.Default('$BUILD_PREFIX')
 
 tools = defenv['TOOLS']
 
@@ -188,8 +194,8 @@ if defenv.has_key('VER_MAJOR') and defenv.has_key('VER_MINOR') \
 
 installer_target = defenv.Command('nsis-${VERSION}.exe',
                                   '$INSTDISTDIR' + os.sep + 'Examples' + os.sep + 'makensis.nsi',
-																	'$INSTDISTDIR' + os.sep + 'makensis.exe ' +
-																	'/DOUTFILE=$TARGET.abspath $INSTVER $SOURCE')
+                                  '$INSTDISTDIR' + os.sep + 'makensis$PROGSUFFIX ' +
+                                  '/DOUTFILE=$TARGET.abspath $INSTVER $SOURCE')
 defenv.Depends(installer_target, '$INSTDISTDIR')
 defenv.Alias('dist-installer', installer_target)
 
@@ -208,32 +214,31 @@ defenv.Distribute('', 'nsisconf.nsh')
 #######  Stubs                                                     ###
 ######################################################################
 
-for stub in stubs:
-	if stub in defenv['SKIPSTUBS']:
-		continue
-
-	build_dir = '$BUILD_PREFIX/stub_%s' % stub
+def BuildStub(compression, solid):
 	env = stub_env.Copy()
-	env.Append(LINKFLAGS = '$MAP_FLAG')
-	exports = { 'env' : env, 'compression' : stub, 'solid_compression' : 0 }
+
+	suffix = ''
+	if solid:
+		suffix = '_solid'
+
+	build_dir = '$BUILD_PREFIX/stub_%s%s' % (compression, suffix)
+
+	exports = { 'env' : env, 'compression' : compression, 'solid_compression' : solid }
 
 	target = defenv.SConscript(dirs = 'Source/exehead', build_dir = build_dir, duplicate = 0, exports = exports)
 	env.SideEffect('%s/stub_%s.map' % (build_dir, stub), target)
 
-	defenv.DistributeAs('Stubs/%s' % stub, target)
+	env.DistributeAs('Stubs/%s%s' % (compression, suffix), target)
 
-	build_dir = '$BUILD_PREFIX/stub_%s_solid' % stub
-	env = stub_env.Copy()
-	env.Append(LINKFLAGS = '$MAP_FLAG')
-	exports = { 'env' : env, 'compression' : stub, 'solid_compression' : 1 }
+	defenv.Alias(compression, target)
+	defenv.Alias('stubs', target)
 
-	solid_target = defenv.SConscript(dirs = 'Source/exehead', build_dir = build_dir, duplicate = 0, exports = exports)
-	env.SideEffect('%s/stub_%s.map' % (build_dir, stub), solid_target)
+for stub in stubs:
+	if stub in defenv['SKIPSTUBS']:
+		continue
 
-	defenv.DistributeAs('Stubs/%s_solid' % stub, solid_target)
-
-	defenv.Alias(stub, target + solid_target)
-	defenv.Alias('stubs', target + solid_target)
+	BuildStub(stub, 0)
+	BuildStub(stub, 1)
 
 defenv.DistributeAs('Stubs/uninst', 'Source/exehead/uninst.ico')
 
@@ -244,8 +249,6 @@ defenv.DistributeAs('Stubs/uninst', 'Source/exehead/uninst.ico')
 build_dir = '$BUILD_PREFIX/makensis'
 exports = { 'env' : makensis_env }
 
-makensis_env.Append(LINKFLAGS = '$MAP_FLAG')
-
 makensis = defenv.SConscript(dirs = 'Source', build_dir = build_dir, duplicate = 0, exports = exports)
 
 makensis_env.SideEffect('%s/makensis.map' % build_dir, makensis)
@@ -254,6 +257,38 @@ defenv.Alias('makensis', makensis)
 
 ins = defenv.Distribute('', makensis)
 defenv.Alias('install-compiler', ins)
+
+######################################################################
+#######  Common Functions                                          ###
+######################################################################
+
+def AddEnvStandardFlags(env, defines, flags, entry, nodeflib):
+	if defines:
+		env.Append(CPPDEFINES = defines)
+	if flags:
+		env.Append(CCFLAGS = flags)
+
+	if entry:
+		env.Append(LINKFLAGS = '${ENTRY_FLAG("%s")}' % entry)
+
+	if nodeflib:
+		env.Append(LINKFLAGS = '$NODEFLIBS_FLAG') # no default libraries
+
+def AppendRES(env, source, res, resources, target_name = None):
+	if res:
+		target_res = env.RES(target_name, res)
+		if resources:
+			env.Depends(target_res, resources)
+		source.append(target_res)
+
+def CleanMap(env, target, target_name):
+	env.Clean(target, File(target_name + '.map'))
+
+def DistributeExtras(env, target, examples, docs):
+	if examples:
+		env.DistributeExamples(target, examples)
+	if docs:
+		env.DistributeDocs(target, docs)
 
 ######################################################################
 #######  Plug-ins                                                  ###
@@ -268,37 +303,19 @@ def BuildPlugin(target, source, libs, examples = None, docs = None,
 	if cppused and env['CPP_REQUIRES_STDLIB']:
 		nodeflib = 0
 
-	if defines:
-		env.Append(CPPDEFINES = defines)
-	if flags:
-		env.Append(CCFLAGS = flags)
+	AddEnvStandardFlags(env, defines, flags, entry, nodeflib)
 
-	if entry:
-		env.Append(LINKFLAGS = '${ENTRY_FLAG("%s")}' % entry)
-
-	if nodeflib:
-		env.Append(LINKFLAGS = '$NODEFLIBS_FLAG') # no default libraries
-
-	env.Append(LINKFLAGS = '$MAP_FLAG')
-
-	if res:
-		target_res = env.RES(res_target, res)
-		if resources:
-			env.Depends(target_res, resources)
-		source = source + target_res
+	AppendRES(env, source, res, resources, res_target)
 
 	plugin = env.SharedLibrary(target, source, LIBS = libs)
 	defenv.Alias(target, plugin)
 	defenv.Alias('plugins', plugin)
 
-	env.Clean(plugin, File(target + '.map'))
+	CleanMap(env, plugin, target)
 
 	env.Distribute('Plugins', plugin)
 
-	if examples:
-		env.DistributeExamples(target, examples)
-	if docs:
-		env.DistributeDocs(target, docs)
+	DistributeExtras(env, target, examples, docs)
 
 for plugin in plugins:
 	if plugin in defenv['SKIPPLUGINS']:
@@ -316,39 +333,31 @@ for plugin in plugins:
 
 def BuildUtil(target, source, libs, entry = None, res = None, 
               resources = None, defines = None, flags = None,
-              install = None, examples = None, docs = None):
+              nodeflib = 0, install = None, install_as = None,
+              examples = None, docs = None):
 	env = util_env.Copy()
 
-	if defines:
-		env.Append(CPPDEFINES = defines)
-	if flags:
-		env.Append(CCFLAGS = flags)
+	AddEnvStandardFlags(env, defines, flags, entry, nodeflib)
 
-	if entry:
-		env.Append(LINKFLAGS = '${ENTRY_FLAG("%s")}' % entry)
-
-	env.Append(LINKFLAGS = '$MAP_FLAG')
-
-	if res:
-		target_res = env.RES(res)
-		if resources:
-			env.Depends(target_res, resources)
-		source = source + target_res
+	AppendRES(env, source, res, resources)
 
 	util = env.Program(target, source, LIBS = libs)
 	defenv.Alias(target, util)
 	defenv.Alias('utils', util)
 
-	env.Clean(util, File(target + '.map'))
+	CleanMap(env, util, target)
 
 	if install is not None:
 		ins = env.Distribute(install, util)
 		defenv.Alias('install-utils', ins)
 
-	if examples:
-		env.DistributeExamples(target, examples)
-	if docs:
-		env.DistributeDocs(target, docs)
+	if install_as is not None:
+		ins = env.DistributeAs(install_as, util)
+		defenv.Alias('install-utils', ins)
+
+	DistributeExtras(env, target, examples, docs)
+
+	return util
 
 for util in utils:
 	if util in defenv['SKIPUTILS']:
@@ -413,3 +422,47 @@ for i in misc:
 		continue
 
 	defenv.SConscript(dirs = 'Contrib/%s' % i)
+
+######################################################################
+#######  Tests                                                     ###
+######################################################################
+
+# test code
+
+build_dir = '$BUILD_PREFIX/tests'
+exports = {'env' : defenv.Copy()}
+
+defenv.SConscript(
+	dirs = 'Source/Tests',
+	duplicate = 0,
+	exports = exports,
+	build_dir = build_dir
+)
+
+defenv.Ignore('$BUILD_PREFIX', '$BUILD_PREFIX/tests')
+
+# test scripts
+
+def test_scripts(target, source, env):
+	from os import walk, sep
+
+	instdir = source[0].path
+
+	makensis = instdir + sep + 'makensis'
+
+	for root, dirs, files in walk(instdir):
+		for file in files:
+			if file[-4:] == '.nsi':
+				nsi = root + sep + file
+				cmd = env.Command(None, nsi, '%s $SOURCE' % makensis)
+				AlwaysBuild(cmd)
+				env.Alias('test-scripts', cmd)
+
+	return None
+
+test = defenv.Command('test-scripts.log', '$TESTDISTDIR', test_scripts)
+defenv.Alias('test-scripts', test)
+
+# test all
+
+defenv.Alias('test', ['test-code', 'test-scripts'])

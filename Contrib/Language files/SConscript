@@ -2,6 +2,7 @@ languages = Split("""
 	Albanian.nlf
 	Arabic.nlf
 	Belarusian.nlf
+	Bosnian.nlf
 	Breton.nlf
 	Bulgarian.nlf
 	Catalan.nlf
@@ -23,6 +24,7 @@ languages = Split("""
 	Italian.nlf
 	Japanese.nlf
 	Korean.nlf
+	Kurdish.nlf
 	Latvian.nlf
 	Lithuanian.nlf
 	Luxembourgish.nlf

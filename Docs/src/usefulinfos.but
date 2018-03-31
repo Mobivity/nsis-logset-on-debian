@@ -2,7 +2,7 @@
 
 \H{errorlevels}Error Levels
 
-Like other applications installers made by NSIS return error levels as a result of their execution. Checking the error level can be useful if you call an NSIS installer from another application or installer.
+Like other applications, installers made by NSIS return error levels as a result of their execution. Checking the error level can be useful if you call an NSIS installer from another application or installer.
 
 \b 0 - Normal execution (no error)
 
@@ -73,7 +73,7 @@ If both NoModify and NoRepair are set to 1, the button displays "Remove" instead
 Some install processes are required to call functions contained inside third party DLLs. A prime example of this is when installing a Palm(TM) conduit.
 
 \\<b\\>Some background about System.dll\\</b\\> \\<br\\>
-The System.dll plug-in (by Brainsucker) enables calling of external DLLs by providing the 'Call' function. There are a number of other functions provided by System.dll, but they will not be covered here. For more details about the other functions, lock the doors, take the phone off the hook, screw your head on *real* tight and head on over to the Contrib/System directory and read the docs there.
+The System.dll plug-in (by Brainsucker) enables calling of external DLLs by providing the 'Call' function. There are a number of other functions provided by System.dll, but they will not be covered here. For more details about the other functions, lock the doors, take the phone off the hook, screw your head on *real* tight and head on over to the \L{../Docs/System/System.html}{System readme}.
 
 \\<u\\>Data Types\\</u\\> \\<br\\>
 System.dll recognises the following data types:
@@ -212,7 +212,7 @@ Good Luck!
 
 This function will dump the log of the installer (installer details) to a file of your choice. I created this function for Afrow_UK who requested a way to dump the log to a file in \W{http://forums.winamp.com/showthread.php?s=&threadid=125431}{this forum thread}.
 
-To use it push a file name and call it. It will dump the log to the file specified. For example:
+To use it, push a file name and call it. It will dump the log to the file specified. For example:
 
 
 \c GetTempFileName $0
