@@ -16,7 +16,14 @@ def cross_env(env):
 
 ### flags
 
-defenv['ENTRY_FLAG'] = lambda x: '-Wl,-e,_' + x + '@16'
+def entry(x):
+	if x == 'WinMain':
+		x = '_WinMain@16'
+	elif x == 'DllMain':
+		x = '_DllMain@12'
+	return '-Wl,-e%s' % x
+
+defenv['ENTRY_FLAG'] = entry
 defenv['MAP_FLAG'] = '-Wl,-Map,${TARGET.base}.map'
 defenv['EXCEPTION_FLAG'] = ''
 defenv['NODEFLIBS_FLAG'] = '-nostdlib -Wl,--exclude-libs,msvcrt.a'
@@ -65,6 +72,7 @@ plugin_env.Append(CCFLAGS = '-Os')                # optimize for size
 plugin_env.Append(CCFLAGS = '-Wall')              # level 3 warnings
 
 plugin_env.Append(LINKFLAGS = '-s')               # strip
+plugin_env.Append(LINKFLAGS = '-mwindows')        # build windows executables
 plugin_env.Append(LINKFLAGS = '$ALIGN_FLAG')      # 512 bytes align
 plugin_env.Append(LINKFLAGS = '$MAP_FLAG')        # generate map file
 
@@ -94,7 +102,7 @@ util_env.Append(LINKFLAGS = '$MAP_FLAG')          # generate map file
 # sure the sections will be written in the correct order.
 #
 
-stub_env.Append(LINKFLAGS = '-Wl,%s' % File('linker_script').abspath)
+stub_env.Append(LINKFLAGS = '-T %s' % File('linker_script').abspath)
 
 #
 # GCC requires some functions from the CRT to be present, if certain

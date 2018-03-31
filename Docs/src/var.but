@@ -10,14 +10,17 @@ User variables can be declared with the \R{var}{Var} command. You can use these 
 
 \S2{var} Var
 
-\c var_name
+\c [/GLOBAL] var_name
 
-Declare a user variable. Allowed characters for variables names: [a-z][A-Z][0-9] and '_'. Variables cannot be declared in sections or functions.
+Declare a user variable. Allowed characters for variables names: [a-z][A-Z][0-9] and '_'. All defined variables are global, even if defined in a section or a function. To make this clear, variables defined in a section or a function must use the /GLOBAL flag. The /GLOBAL flag is not required outside of sections and functions.
 
 \c Var example
 \c
 \c Function testVar
+\c   Var /GLOBAL example2
+\c 
 \c   StrCpy $example "example value"
+\c   StrCpy $example2 "another example value"
 \c FunctionEnd
 
 \S1{varother} Other Writable Variables
@@ -228,7 +231,7 @@ The decimal HWND of the parent window.
 
 \e{$PLUGINSDIR}
 
-The path to a temporary folder created upon the first usage of a plugin or a call to \R{initpluginsdir}{InitPluginsDir}. This folder is automatically deleted when the installer exits. This makes this folder the ideal folder to hold INI files for \L{../Docs/InstallOptions/Readme.html}{InstallOptions}, bitmaps for the splash plugin, or any other file that a plugin needs to work.
+The path to a temporary folder created upon the first usage of a plug-in or a call to \R{initpluginsdir}{InitPluginsDir}. This folder is automatically deleted when the installer exits. This makes this folder the ideal folder to hold INI files for \L{../Docs/InstallOptions/Readme.html}{InstallOptions}, bitmaps for the splash plug-in, or any other file that a plug-in needs to work.
 
 \S1{varstrings} Constants Used in Strings
 

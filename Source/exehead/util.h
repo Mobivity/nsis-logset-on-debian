@@ -12,6 +12,7 @@ int NSISCALL myatoi(char *s);
 void NSISCALL myitoa(char *s, int d);
 char * NSISCALL mystrcpy(char *out, const char *in);
 int NSISCALL mystrlen(const char *in);
+char * NSISCALL mystrcat(char *out, const char *concat);
 char * NSISCALL mystrstr(char *a, char *b);
 WIN32_FIND_DATA * NSISCALL file_exists(char *buf);
 char * NSISCALL my_GetTempFileName(char *buf, const char *dir);
@@ -65,7 +66,7 @@ char * NSISCALL findchar(char *str, char c);
 void NSISCALL trimslashtoend(char *buf);
 char * NSISCALL skip_root(char *path);
 int NSISCALL is_valid_instpath(char *s);
-char * NSISCALL validate_filename(char *fn);
+void NSISCALL validate_filename(char *fn);
 void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew);
 void NSISCALL mini_memcpy(void *out, const void *in, int len);
 

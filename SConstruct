@@ -7,6 +7,9 @@
 #
 ##
 
+EnsurePythonVersion(1,6)
+# no revision check yet - EnsureSConsVersion(0,96,90)
+
 stubs = [
 	'bzip2',
 	'lzma',
@@ -79,6 +82,7 @@ opts.Add(ListOption('SKIPSTUBS', 'A list of stubs that will not be built', 'none
 opts.Add(ListOption('SKIPPLUGINS', 'A list of plug-ins that will not be built', 'none', plugins))
 opts.Add(ListOption('SKIPUTILS', 'A list of utilities that will not be built', 'none', utils))
 opts.Add(ListOption('SKIPMISC', 'A list of plug-ins that will not be built', 'none', misc))
+opts.Add(PathOption('CODESIGNER', 'A program used to sign executables', None))
 opts.Update(defenv)
 
 Help(opts.GenerateHelpText(defenv))
@@ -90,6 +94,10 @@ Help(opts.GenerateHelpText(defenv))
 defenv['ZIPDISTDIR'] = defenv.Dir('#nsis-$VERSION')
 defenv['INSTDISTDIR'] = defenv.Dir('#.instdist')
 defenv['TESTDISTDIR'] = defenv.Dir('#.test')
+defenv['DISTSUFFIX'] = ''
+
+if defenv.has_key('CODESIGNER'):
+	defenv['DISTSUFFIX'] = '-signed'
 
 defenv.Execute(Delete('$ZIPDISTDIR'))
 defenv.Execute(Delete('$INSTDISTDIR'))
@@ -99,18 +107,22 @@ def Distribute(dir, files):
 	defenv.Install('$ZIPDISTDIR/%s' % dir, files)
 	defenv.Install('$INSTDISTDIR/%s' % dir, files)
 	defenv.Install('$TESTDISTDIR/%s' % dir, files)
+
 	if defenv.has_key('PREFIX') and defenv['PREFIX']:
 		ins = defenv.Install('$PREFIX/%s' % dir, files)
 		return ins
+
 	return []
 
 def DistributeAs(path, file):
 	defenv.InstallAs('$ZIPDISTDIR/%s' % path, file)
 	defenv.InstallAs('$INSTDISTDIR/%s' % path, file)
 	defenv.InstallAs('$TESTDISTDIR/%s' % path, file)
+
 	if defenv.has_key('PREFIX') and defenv['PREFIX']:
 		ins = defenv.InstallAs('$PREFIX/%s' % path, file)
 		return ins
+
 	return []
 
 def DistributeExamples(dir, examples):
@@ -122,11 +134,18 @@ def DistributeDocs(dir, docs):
 def DistributeContribs(dir, contribs):
 	return Distribute('Contrib/%s' % dir, contribs)
 
+def Sign(targets):
+	if defenv.has_key('CODESIGNER'):
+		for t in targets:
+			a = defenv.Action('$CODESIGNER "%s"' % t.path)
+			defenv.AddPostAction(t, a)
+
 defenv.Distribute = Distribute
 defenv.DistributeAs = DistributeAs
 defenv.DistributeExamples = DistributeExamples
 defenv.DistributeDocs = DistributeDocs
 defenv.DistributeContribs = DistributeContribs
+defenv.Sign = Sign
 
 ######################################################################
 #######  Environments                                              ###
@@ -178,7 +197,7 @@ defenv.Alias('install-includes', '$PREFIX/Include')
 #######  Distribution                                              ###
 ######################################################################
 
-dist_zip = 'nsis-${VERSION}.zip'
+dist_zip = 'nsis-${VERSION}${DISTSUFFIX}.zip'
 zip_target = defenv.Zip(dist_zip, '$ZIPDISTDIR')
 defenv.Alias('dist-zip', zip_target)
 
@@ -192,11 +211,12 @@ if defenv.has_key('VER_MAJOR') and defenv.has_key('VER_MINOR') \
 	defenv['INSTVER'] += ' /DVER_REVISION=$VER_REVISION'
 	defenv['INSTVER'] += ' /DVER_BUILD=$VER_BUILD'
 
-installer_target = defenv.Command('nsis-${VERSION}.exe',
+installer_target = defenv.Command('nsis-${VERSION}${DISTSUFFIX}.exe',
                                   '$INSTDISTDIR' + os.sep + 'Examples' + os.sep + 'makensis.nsi',
                                   '$INSTDISTDIR' + os.sep + 'makensis$PROGSUFFIX ' +
                                   '/DOUTFILE=$TARGET.abspath $INSTVER $SOURCE')
 defenv.Depends(installer_target, '$INSTDISTDIR')
+defenv.Sign(installer_target)
 defenv.Alias('dist-installer', installer_target)
 
 AlwaysBuild(defenv.AddPostAction(installer_target, Delete('$INSTDISTDIR')))
@@ -311,6 +331,8 @@ def BuildPlugin(target, source, libs, examples = None, docs = None,
 	defenv.Alias(target, plugin)
 	defenv.Alias('plugins', plugin)
 
+	defenv.Sign(plugin)
+
 	CleanMap(env, plugin, target)
 
 	env.Distribute('Plugins', plugin)
@@ -344,6 +366,8 @@ def BuildUtil(target, source, libs, entry = None, res = None,
 	util = env.Program(target, source, LIBS = libs)
 	defenv.Alias(target, util)
 	defenv.Alias('utils', util)
+
+	defenv.Sign(util)
 
 	CleanMap(env, util, target)
 
@@ -443,6 +467,8 @@ defenv.Ignore('$BUILD_PREFIX', '$BUILD_PREFIX/tests')
 
 # test scripts
 
+test_env = defenv.Copy(ENV = os.environ) # env needed for some scripts
+
 def test_scripts(target, source, env):
 	from os import walk, sep
 
@@ -460,8 +486,8 @@ def test_scripts(target, source, env):
 
 	return None
 
-test = defenv.Command('test-scripts.log', '$TESTDISTDIR', test_scripts)
-defenv.Alias('test-scripts', test)
+test = test_env.Command('test-scripts.log', '$TESTDISTDIR', test_scripts)
+test_env.Alias('test-scripts', test)
 
 # test all
 
