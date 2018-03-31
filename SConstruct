@@ -133,7 +133,6 @@ if 'msvc' in defenv['TOOLS'] or 'mstoolkit' in defenv['TOOLS']:
 	ignore_tests = 'none'
 else:
 	ignore_tests = ','.join(Split("""
-Examples/System/System.nsi
 Examples/LogicLib.nsi
 Examples/StrFunc.nsi
 Examples/TextFunc.nsi
@@ -145,8 +144,9 @@ Examples/makensis.nsi
 Examples/gfx.nsi
 Examples/nsDialogs/example.nsi
 Examples/nsDialogs/InstallOptions.nsi
-Examples/nsDialogs/welcome.nsi
-"""))
+Examples/nsDialogs/welcome.nsi""")
+ + ['Examples/Modern UI/WelcomeFinish.nsi']
+ + ['Examples/Modern UI/HeaderBitmap.nsi'])
 
 # version
 opts.Add(('VERSION', 'Version of NSIS', cvs_version))

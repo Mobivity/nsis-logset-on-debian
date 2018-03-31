@@ -1,3 +1,329 @@
+2008-03-29 22:04  kichik
+
+	* /NSIS/tags/v236: Tagging for release 2.36
+
+2008-03-29 22:03  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.36
+
+2008-03-29 21:58  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Albanian.nsh: what is this
+	  line doing there?
+
+2008-03-29 21:47  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.36
+
+2008-03-29 18:22  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed error when a
+	  custom installation mode initialization function is used only for
+	  the installer
+
+2008-03-29 18:02  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed error when a
+	  custom installation mode initialization function is used only for
+	  the installer
+
+2008-03-29 17:59  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: implemented RFE
+	  #1910005 - nsDialogs: support for ComboBox onChange
+
+2008-03-29 17:53  kichik
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c: fixed bug #1909458 - nsEcec:
+	  cannot handle exit code 259
+
+2008-03-29 17:50  joostverburg
+
+	* /NSIS/trunk/Include/StrFunc.nsh: allow StrFunc.nsh to be included
+	  multiple times
+
+2008-03-29 17:34  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: add missing
+	  control_HWND for NSD_On* docs
+
+2008-03-29 17:32  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: patch #1900588 - More
+	  nsDialogs macros
+	  - NSD_AddStyle
+	  - NSD_AddExStyle
+	  - NSD_SetTextLimit
+	  - NSD_CB_AddString
+	  - NSD_CB_SelectString
+	  - NSD_LB_AddString
+	  - NSD_LB_SelectString
+
+2008-03-29 17:06  kichik
+
+	* /NSIS/trunk/Contrib/Language files/French.nlf: patch #1916564 -
+	  French.nlf : fix on ^ComponentsSubText1
+
+2008-03-29 17:05  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Albanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nsh: patch #1919360 -
+	  Update for Albanian language files
+
+2008-03-29 16:42  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: added NSD_CreateNumber
+	  with ES_NUMBER
+
+2008-03-29 15:35  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Include/LangFile.nsh: * New LangFile.nsh macro
+	  LANGFILE_INCLUDE_WITHDEFAULT to load language file with defaults
+	  being obtained from a default file. This replaces the
+	  LANGFILE_DEFAULT setting and makes it easier to use LangFile.nsh
+	  for multiple sets of languages file without having to care about
+	  the different LANGFILE_DEFAULT settings.
+	  * Allow LangFile.nsh to be included multiple times.
+
+2008-03-23 21:00  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed typo in
+	  MULTIUSER_NOUNINSTALL setting
+
+2008-03-21 16:26  kichik
+
+	* /NSIS/trunk/Examples/bigtest.nsi: read from correct value in
+	  InstallDirRegKey
+
+2008-03-16 19:42  kichik
+
+	* /NSIS/trunk/Include/Memento.nsh: added missing
+	  ${MementoSectionDone}
+
+2008-03-12 20:39  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed bug #1913029 -
+	  default installation mode based on registry key is now set
+	  correctly
+
+2008-03-07 22:23  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: labels now have click
+	  notification, so fix docs up
+
+2008-03-07 08:57  kichik
+
+	* /NSIS/trunk/Contrib/ExDLL/exdll.dsp,
+	  /NSIS/trunk/Contrib/ExDLL/exdll.dsw: avoid corruption messages
+
+2008-03-07 08:55  kichik
+
+	* /NSIS/trunk/Scripts/release.py: Visual Studio's files should also
+	  be CRLF or else it chokes
+
+2008-03-06 17:32  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: fixed bug #1908732 -
+	  nsDialogs - OnClick support for static controls not working
+
+2008-03-04 16:59  kichik
+
+	* /NSIS/trunk/Source/util.cpp: already using namespace std
+
+2008-03-03 18:39  kichik
+
+	* /NSIS/trunk/SConstruct: we need regular Split() as it's not
+	  promised those lines will be separated by just \n and not \r\n
+
+2008-03-03 18:24  kichik
+
+	* /NSIS/trunk/Examples/Modern UI/HeaderBitmap.nsi: revert
+	  AddBrandingImage as it's not needed
+
+2008-03-03 16:33  pabs3
+
+	* /NSIS/trunk/SCons/Config/gnu: Fix FTBFS on Debian GNU/Linux amd64
+	  due to not enough use of -m32
+
+2008-03-03 14:04  pabs3
+
+	* /NSIS/trunk/Source/util.cpp: Fix Debian bug #456082: fix FTBFS
+	  with GCC 4.3
+
+2008-03-03 12:21  pabs3
+
+	* /NSIS/trunk/SConstruct: Ignore 'Examples/Modern
+	  UI/HeaderBitmap.nsi' on Linux since AddBrandingImage is disabled
+	  for non Win32 platforms.
+
+2008-03-03 12:21  pabs3
+
+	* /NSIS/trunk/Examples/Modern UI/HeaderBitmap.nsi: Use
+	  AddBrandingImage since MUI_LANGUAGE seems to indirectly use
+	  SetBrandingImage.
+
+2008-03-03 12:00  pabs3
+
+	* /NSIS/trunk/SConstruct: Ignore 'Examples/Modern
+	  UI/WelcomeFinish.nsi' on Linux since it uses System::Call
+
+2008-03-03 11:59  pabs3
+
+	* /NSIS/trunk/SConstruct: Use python split instead of scons Split
+	  so we can have spaces in file names for ignored tests.
+
+2008-02-24 17:33  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: fixed #1900585 -
+	  NSD_SetText doesn't work
+
+2008-02-23 16:32  kichik
+
+	* /NSIS/trunk/Source/Tests/compression.cpp: use
+	  CPPUNIT_ASSERT_EQUAL
+
+2008-02-23 16:28  kichik
+
+	* /NSIS/trunk/Source/exehead/fileform.c: fixed bug #1874297 - Error
+	  decompressing data! Corrupted installer?
+	  
+	  problem was that decompression ended prematurely. instead of
+	  waiting for zlib to return Z_STREAM_END, it checked if no more
+	  output was required. this could cause a case where zlib wouldn't
+	  read its entire stream. in this particular case, the compressed
+	  headers were 0x4001 bytes long and compressed data input buffer
+	  size is only 0x4000. instead of waiting for another run of
+	  inflate() to read the last byte, which is probably eof,
+	  _dodecmop() broke the loop and didn't read that extra byte. since
+	  loadHeaders() relays on _dodecomp() to read the entire header so
+	  it can calculate where the data block begins, all reads from the
+	  data block suddenly became off by one, causing "decompression
+	  errors".
+
+2008-02-23 15:04  kichik
+
+	* /NSIS/trunk/Source/exehead/fileform.h: update structure comments
+
+2008-02-23 12:38  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/Source/Plugin/SConscript: implemented
+	  RFE #1900226 - expose MD5 function from VPatch
+
+2008-02-23 11:35  pabs3
+
+	* /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nsismenu.cpp,
+	  /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nslinks.cpp: Fix 1900233:
+	  add some tweaks to allow building the NSIS Menu with wxGTK on
+	  Debian GNU/Linux.
+
+2008-02-23 10:20  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: fixed bug #1900098 - SVN trunk FTBFS
+	  on Debian GNU/Linux
+
+2008-02-22 18:36  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: use new
+	  nsDialogs macros for image handling
+
+2008-02-22 18:32  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: added ${NSD_SetImage},
+	  ${NSD_SetStretchedImage}, ${NSD_ClearImage} and ${NSD_FreeImage}
+
+2008-02-22 17:37  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: HTML fixes
+
+2008-02-22 17:34  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: document macros
+
+2008-02-22 17:01  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: added NSD_SetText,
+	  NSD_SetState, NSD_Check and NSD_Uncheck
+
+2008-02-20 22:34  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Components.nsh: add missing
+	  macros for descriptions on uninstaller components page
+
+2008-02-19 23:37  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: fixed bug #1896803 -
+	  nsDialogs::SelectFolderDialog Bug 1841120 still open?
+
+2008-02-18 23:24  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: fixed bug #1896500 - Exception
+	  during compile
+
+2008-02-16 21:46  kichik
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c: it should call the old code
+	  path if NOT running under WOW64 (though the hack wouldn't work
+	  anyway... :( )
+
+2008-02-16 18:30  kichik
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c: implemented RFE #1778973 -
+	  nsExec & ExecDos - Support DisableX64FSRedirection feature
+	  also fixed bug #1889317
+
+2008-02-16 17:53  kichik
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp: fixed bug #1891066 -
+	  Open Script Folder runs executable instead
+
+2008-02-16 17:37  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh: fixed bug
+	  #1891106 - Error flag not cleared after ReadRegStr in MUI
+	  StartMenu
+
+2008-02-16 17:34  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Polish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Polish.nsh: applied patch
+	  #1894983 - Polish language files for NSIS 2.35+
+
+2008-02-16 16:18  kichik
+
+	* /NSIS/trunk/Docs/src/misc.but: fixed bug #1894033 - typo in help
+	  file
+
+2008-02-11 20:33  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: fixed bug #1891266 -
+	  Modern UI Documentation
+
+2008-02-10 21:48  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: context is already aware
+	  to uninstaller code in resolve_call_int()
+
+2008-02-10 21:40  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h: only add function's
+	  code when it's really used
+	  no more fake optimization of zeroing out the code
+
+2008-02-09 19:27  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html: macros itself ->
+	  macros themselves
+
 2008-02-08 21:16  kichik
 
 	* /NSIS/tags/v235: Tagging for release 2.35

@@ -32,12 +32,12 @@ Var MultiUser.InstallMode
 
 !ifdef MULTIUSER_INSTALLMODE_COMMANDLINE
   !insertmacro GetParameters
-  !ifndef MULTIUSER_NOUNINSTALLER
+  !ifndef MULTIUSER_NOUNINSTALL
     !insertmacro un.GetParameters
   !endif
   !include StrFunc.nsh
   ${StrStr}
-  !ifndef MULTIUSER_NOUNINSTALLER
+  !ifndef MULTIUSER_NOUNINSTALL
     ${UnStrStr}
   !endif
   
@@ -102,7 +102,7 @@ Install modes
   
     !endif
   
-    !ifdef MULTIUSER_INSTALLMODE_FUNCTION
+    !ifdef MULTIUSER_INSTALLMODE_${UNINSTALLER_PREFIX}FUNCTION
       Call "${MULTIUSER_INSTALLMODE_${UNINSTALLER_PREFIX}FUNCTION}"
     !endif
     
@@ -138,7 +138,7 @@ Install modes
   
     !endif
   
-    !ifdef MULTIUSER_INSTALLMODE_FUNCTION
+    !ifdef MULTIUSER_INSTALLMODE_${UNINSTALLER_PREFIX}FUNCTION
       Call "${MULTIUSER_INSTALLMODE_${UNINSTALLER_PREFIX}FUNCTION}"
     !endif
   
@@ -253,7 +253,7 @@ Installer/uninstaller initialization
             ${if} $MultiUser.DefaultKeyValue == ""
               ReadRegStr $MultiUser.DefaultKeyValue HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}"
               ${if} $MultiUser.DefaultKeyValue != ""
-                Call ${UNINSTALLER_FUNCPREFIX}MultiUser.InstallMode.AllUsers
+                Call ${UNINSTALLER_FUNCPREFIX}MultiUser.InstallMode.CurrentUser
               ${endif}
             ${endif}
           !else
@@ -261,7 +261,7 @@ Installer/uninstaller initialization
             ${if} $MultiUser.DefaultKeyValue == ""
               ReadRegStr $MultiUser.DefaultKeyValue HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}"
               ${if} $MultiUser.DefaultKeyValue != ""
-                Call ${UNINSTALLER_FUNCPREFIX}MultiUser.InstallMode.CurrentUser
+                Call ${UNINSTALLER_FUNCPREFIX}MultiUser.InstallMode.AllUsers
               ${endif}
             ${endif}
           !endif
