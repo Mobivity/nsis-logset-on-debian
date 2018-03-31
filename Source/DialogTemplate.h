@@ -1,24 +1,18 @@
 /*
-  Copyright (C) 2002 Amir Szekely <kichik@netvision.net.il>
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-  claim that you wrote the original software. If you use this software
-  in a product, an acknowledgment in the product documentation would be
-  appreciated but is not required.
-
-  2. Altered source versions must be plainly marked as such, and must not be
-  misrepresented as being the original software.
-
-  3. This notice may not be removed or altered from any source distribution.
-*/
+ * DialogTemplate.h
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 2002 Amir Szekely <kichik@netvision.net.il>
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #if !defined(AFX_DIALOGTEMPLATE_H__C5A973AF_0F56_4BEC_814A_79318E2EB4AC__INCLUDED_)
 #define AFX_DIALOGTEMPLATE_H__C5A973AF_0F56_4BEC_814A_79318E2EB4AC__INCLUDED_
@@ -49,8 +43,8 @@ struct DialogItemTemplate {
   DWORD  dwStyle;
   WORD   wId;
 
-  char  *szClass;
-  char  *szTitle;
+  WCHAR *szClass;
+  WCHAR *szTitle;
   char  *szCreationData;
 
   WORD  wCreateDataSize;
@@ -150,16 +144,16 @@ private:
   DWORD m_dwExtStyle;
   DWORD m_dwStyle;
 
-  char* m_szMenu;
-  char* m_szClass;
-  char* m_szTitle;
+  WCHAR *m_szMenu;
+  WCHAR *m_szClass;
+  WCHAR *m_szTitle;
 
    // Only if DS_FONT style is set
   short m_sFontSize;
   short m_sFontWeight; // Extended only
   BYTE  m_bItalic; // Extended only
   BYTE  m_bCharset; // Extended only
-  char* m_szFont;
+  WCHAR *m_szFont;
 
   // For (en/de)coding Unicode
   unsigned int m_uCodePage;

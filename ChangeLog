@@ -1,0 +1,2002 @@
+2007-03-31  kichik
+
+	* ../Scripts/release.py: log the correct directory
+
+2007-03-31  kichik
+
+	* ../Examples/makensis.nsi: Examples\Plugin, not Contrib\ExDLL or
+	Contrib\Plugin
+
+2007-03-31  kichik
+
+	* ../Menu/images/header.gif: 2.25
+
+2007-03-31  kichik
+
+	* ../Source/DialogTemplate.cpp: don't delete if it wasn't allocated
+
+2007-03-31  kichik
+
+	* ../Docs/src/history.but: 2.25
+
+2007-03-31  kichik
+
+	* ../Contrib/Makensisw/Readme.txt, ../Contrib/Makensisw/SConscript:
+	version bump
+
+2007-03-31  kichik
+
+	* ../Contrib/InstallOptions/Changelog.txt,
+	../Contrib/InstallOptions/Readme.html: version bump
+
+2007-03-31  pabs3
+
+	* ../Contrib/VPatch/oldfile.txt, ../Contrib/VPatch/newfile.txt:
+	Convert LF linefeeds to CRLF
+
+2007-03-31  kichik
+
+	* ../Docs/src/library.but: unshared dll example
+
+2007-03-30  kichik
+
+	* ../Contrib/Math/SConscript, ../Contrib/Math/Source/Math.c: use
+	default crt entry point
+
+2007-03-30  kichik
+
+	* ../Contrib/Math/Source/MyMath.c: formatting without _floatp10
+
+2007-03-30  kichik
+
+	* ../Contrib/NSIS Menu/SConscript: distribute nsis.exe.manifest for
+	the nsis menu as it's dynamically linked
+
+2007-03-27  kichik
+
+	* ../Contrib/NSIS Menu/wx/wxbuild.bat: cd /D so WXWIN on other
+	drives will work
+
+2007-03-24  kichik
+
+	* ../Contrib/Makensisw/jnetlib/asyncdns.cpp,
+	../Contrib/Makensisw/jnetlib/asyncdns.h,
+	../Contrib/zip2exe/main.cpp: applied patch #1680556 - fixes to
+	allow zip2exe & Makensisw to build in winelib
+
+2007-03-21  kichik
+
+	* ../Contrib/StartMenu/StartMenu.c: don't enter message loop when
+	window failed creation (because of input error or anything else)
+
+2007-03-20  kichik
+
+	* ../Contrib/StartMenu/Example.nsi: better error handling
+
+2007-03-20  kichik
+
+	* ../Contrib/InstallOptions/InstallerOptions.cpp,
+	../Contrib/InstallOptions/SConscript,
+	../Contrib/StartMenu/SConscript: size optimization it's official.
+	even msdn now says SHGetMalloc returns the same allocator
+	CoTaskMemFree uses and a little debugging backs this even on
+	Windows 95
+
+2007-03-20  kichik
+
+	* ../Include/LogicLib.nsh: not using System.dll for case-sensitive
+	comparison anymore
+
+2007-03-18  kichik
+
+	* ../SCons/Config/gnu: more of bug #1635841 - gcc strict-aliasing
+	and build system
+
+2007-03-18  kichik
+
+	* ../Docs/src/compiler.but, ../Source/build.cpp,
+	../Source/Tests/preprocessor.nsi: more of patch #1644712 - new
+	compiler predefines
+
+2007-03-15  pabs3
+
+	* ../Contrib/ExDLL/SConscript: fixed bug #1680944: Woooops, add the
+	SConscript for ExDLL
+
+2007-03-12  pabs3
+
+	* ../INSTALL, ../SConstruct, ../Docs/src/generalpurpose.but,
+	../Docs/src/tutorial.but: Install the example plugin and C header
+	by default
+
+2007-03-11  pabs3
+
+	* ../Source/lang.cpp: Missed a warning
+
+2007-03-11  pabs3
+
+	* ../Contrib/BgImage/BgImage.cpp,
+	../Contrib/MakeLangId/MakeLangId.cpp,
+	../Contrib/Makensisw/makensisw.cpp,
+	../Contrib/Makensisw/makensisw.h, ../Contrib/Makensisw/noclib.h,
+	../Contrib/Makensisw/toolbar.cpp, ../Contrib/Makensisw/toolbar.h,
+	../Contrib/Makensisw/utils.cpp, ../Contrib/Makensisw/utils.h,
+	../Contrib/Makensisw/version.cpp,
+	../Contrib/Makensisw/jnetlib/util.cpp,
+	../Contrib/Math/Source/MyMath.h, ../Contrib/Math/Source/plugin.c,
+	../Contrib/NSISdl/nsisdl.cpp, ../Contrib/NSISdl/util.cpp,
+	../Contrib/UserInfo/UserInfo.c,
+	../Contrib/VPatch/Source/GenPat/main.cpp,
+	../Contrib/VPatch/Source/Plugin/checksum.h,
+	../Contrib/nsExec/nsexec.c, ../Source/Tests/endian.cpp,
+	../Source/Tests/textrunner.cpp: Kill some compiler warnings under
+	Linux and mingw32
+
+2007-03-10  kichik
+
+	* ../Include/Memento.nsh: don't Return from macro, use Goto
+
+2007-03-10  kichik
+
+	* ../Examples/Memento.nsi: use HKCU
+
+2007-03-10  kichik
+
+	* ../Examples/SConscript, ../Include/SConscript: remember
+	previously selected sections
+
+2007-03-10  kichik
+
+	* ../Source/tokens.cpp: it's /o not /0
+
+2007-03-09  kichik
+
+	* ../Contrib/NSIS Menu/nsismenu/nsismenu.cpp: fixed bug #1667976 -
+	new nsis menu is larger
+
+2007-03-08  pabs3
+
+	* ../Contrib/NSIS Menu/nsismenu/nslinks.cpp: partially fixed bug
+	#1672315: NSIS Menu not portable to Linux wxGTK
+
+2007-03-07  kichik
+
+	* ../Docs/src/headers.but: typo
+
+2007-03-07  pabs3
+
+	* ../Source/exehead/exec.c: FTBFS due to using the wrong log_printf
+	function
+
+2007-03-06  kichik
+
+	* ../SCons/Config/ms: listing file is fun
+
+2007-03-06  kichik
+
+	* ../Source/exehead/Ui.c, ../Source/exehead/util.c,
+	../Source/exehead/util.h: size optimization it's official. even
+	msdn now says SHGetMalloc returns the same allocator CoTaskMemFree
+	uses and a little debugging backs this even on Windows 95
+
+2007-03-04  kichik
+
+	* ../Source/exehead/fileform.c: size optimization - GlobalFree
+	isn't called in any other case, no need here as well
+
+2007-03-04  kichik
+
+	* ../Docs/src/build.but: fixed cross-reference
+
+2007-03-03  kichik
+
+	* ../Source/exehead/Main.c: oops... comment line continuation
+
+2007-03-03  kichik
+
+	* ../Source/build.h, ../Source/fileform.cpp,
+	../Source/exehead/fileform.h: size optimization - use GetNSISString
+	to do complicated stirng processing
+
+2007-03-03  kichik
+
+	* ../Source/script.cpp: size optimization - no need for both
+	GetEnvironmentVariable and ExpandEnvironmentStrings
+
+2007-03-03  kichik
+
+	* ../Docs/src/intro.but: match language number on site
+
+2007-03-03  kichik
+
+	* ../Docs/src/langs.but: default UI language
+
+2007-03-02  kichik
+
+	* ../SCons/Config/default: added MSVCRT_FLAG
+
+2007-03-02  pabs3
+
+	* ../Source/Platform.h, ../Source/makenssi.cpp: fixed bug #1661503:
+	inconsistency between Win32/Linux makensis command line options
+
+2007-02-27  kichik
+
+	* ../Docs/src/defines.but: implemented RFE #1669513 - bitwise
+	operators for !define /math
+
+2007-02-24  kichik
+
+	* ../Contrib/NSIS Menu/wx/build.txt, ../Contrib/NSIS
+	Menu/wx/setup.h, ../Menu/compiler.html, ../Menu/docs.html,
+	../Menu/index.html, ../Menu/intro.html, ../Menu/notinstalled.html,
+	../Menu/update.html, ../Menu/websites.html: build NSIS Menu from
+	source (requires wxWidgets)
+
+2007-02-24  kichik
+
+	* ../Source/Tests/decompress.cpp: fixed bug #1667637 - build, test
+	failures in nsis CVS on Debian GNU/Linux
+
+2007-02-23  kichik
+
+	* ../Examples/Modern UI/StartMenu.nsi: fixed bug #1664957 - Vista
+	Start Menu
+
+2007-02-23  kichik
+
+	* ../Contrib/Makensisw/resource.h,
+	../Contrib/Makensisw/resource.rc: implemeneted RFE #1666501 -
+	MakeNSISw: esc -> close
+
+2007-02-20  kichik
+
+	* ../Include/Sections.nsh: fixed bug #1664648 - Sections.nsh
+	doesn't like $0
+
+2007-02-20  kichik
+
+	* ../Contrib/Modern UI/Language files/Galician.nsh: fixed bug
+	#1663795 - Galician language is broken in MUI installers
+
+2007-02-20  kichik
+
+	* ../Examples/Modern UI/MultiLanguage.nsi: added Galician for the
+	compliation tests
+
+2007-02-17  kichik
+
+	* ../Docs/src/attributes.but: applied patch #1662419 -
+	Documentation typo fixes
+
+2007-02-17  kichik
+
+	* ../Source/winchar.cpp, ../Source/winchar.h: copyright notice
+
+2007-02-17  kichik
+
+	* ../Source/ResourceEditor.cpp: use winchar_strdup
+
+2007-02-17  kichik
+
+	* ../Source/DialogTemplate.h: fixed bug #1662190 - dialog template
+	unicode conversion is lossy
+
+2007-02-17  kichik
+
+	* ../Source/Tests/winchar.cpp: added winchar_strdup
+
+2007-02-17  kichik
+
+	* ../Include/TextFunc.nsh: clear error flag in
+	_TextFunc_TempFileForFile
+
+2007-02-08  kichik
+
+	* ../Docs/src/callback.but: clarification for patch #1649187 -
+	OnInstTypeChange callback
+
+2007-02-02  kichik
+
+	* ../COPYING, ../Docs/src/license.but: add "except where otherwise
+	noted" to zlib license general application on the entire package
+	halibut is an example of this exception, it's under bsd
+
+2007-01-31  kichik
+
+	* ../Contrib/ExDLL/exdll.h: include windows.h for HWND, GPTR and
+	friends
+
+2007-01-27  kichik
+
+	* ../Docs/src/usage.but: applied patch #1638974 - option to set
+	process priority of makensis
+
+2007-01-27  kichik
+
+	* ../Include/Library.nsh: fixed UnInstallLib for installers
+
+2007-01-25  kichik
+
+	* ../Source/zlib/INFBLOCK.C, ../Source/zlib/ZUTIL.H: clean-up for
+	posix tests compatibility
+
+2007-01-25  kichik
+
+	* ../Source/Tests/SConscript: lzma needs pthread on posix
+
+2007-01-25  kichik
+
+	* ../Source/Tests/memcpy.c: util.h isn't really needed and only
+	causes problems when compiling the tests
+
+2007-01-25  kichik
+
+	* ../Source/bzip2/bzlib.h, ../Source/7zip/LZMADecode.h: util.h
+	isn't really needed and only causes problems when compiling the
+	tests
+
+2007-01-25  kichik
+
+	* ../Contrib/nsExec/test.nsi: nsExec::Exec example
+
+2007-01-25  kichik
+
+	* ../Source/ResourceVersionInfo.cpp: convert all StrToWstrAlloc
+
+2007-01-25  kichik
+
+	* ../Source/ResourceEditor.h: GetResourceSize ->
+	GetResourceSizeA/GetResourceSizeW
+
+2007-01-25  kichik
+
+	* ../Source/util.cpp: UpdateResource->UpdateResourceA
+
+2007-01-25  kichik
+
+	* ../Source/SConscript: wcs* use wchar_t on POSIX, which is not the
+	same as WCHAR so, winchar_* is introduced which uses WCHAR
+
+2007-01-24  kichik
+
+	* ../Source/lineparse.cpp, ../Source/lineparse.h: slight name
+	changes to better fit the "standard"
+
+2007-01-23  kichik
+
+	* ../Include/x64.nsh: proper comment, $SYSDIR doesn't change
+
+2007-01-23  kichik
+
+	* ../Source/Tests/compression.cpp, ../Source/Tests/decompress.h:
+	compression tests
+
+2007-01-23  kichik
+
+	* ../Source/cbzip2.h: return >0 only when really finished
+
+2007-01-23  kichik
+
+	* ../Source/bzip2/blocksort.c: no need for #ifdef anymore with the
+	new build system
+
+2007-01-23  kichik
+
+	* ../Source/bzip2/bzlib.c, ../Source/bzip2/decompress.c,
+	../Source/bzip2/huffman.c: no need for #ifdef anymore with the new
+	build system
+
+2007-01-22  kichik
+
+	* ../Source/clzma.cpp, ../Source/compressor.h: don't return 0 from
+	CLZMA::Comrpess when finished, return 1
+
+2007-01-19  kichik
+
+	* ../Contrib/Language files/Galician.nlf, ../Contrib/Language
+	files/SConscript, ../Contrib/Modern UI/SConscript,
+	../Docs/src/credits.but: patch #1631765 - New Galician translation
+	available
+
+2007-01-16  kichik
+
+	* ../Docs/src/SConscript: fixed scons 0.96.94 compatibility
+
+2007-01-13  kichik
+
+	* ../Contrib/VPatch/Readme.html: tabs to spaces
+
+2007-01-13  kichik
+
+	* ../Contrib/Modern UI/License.txt, ../Contrib/Modern
+	UI/Readme.html, ../Contrib/Modern UI/System.nsh,
+	../Docs/src/chm_config.but, ../Docs/src/config.but,
+	../Source/7zip/LZMADecode.c, ../Source/Plugins.cpp,
+	../Source/Plugins.h, ../Source/ResourceVersionInfo.h,
+	../Source/ShConstants.cpp, ../Source/afxres.h, ../Source/clzma.h,
+	../Source/crc32.c, ../Source/crc32.h, ../Source/czlib.h,
+	../Source/dirreader.cpp, ../Source/dirreader.h,
+	../Source/fileform.h, ../Source/growbuf.cpp, ../Source/growbuf.h,
+	../Source/lang.h, ../Source/manifest.cpp, ../Source/manifest.h,
+	../Source/mmap.cpp, ../Source/mmap.h, ../Source/strlist.cpp,
+	../Source/strlist.h, ../Source/tokens.h, ../Source/util.h,
+	../Source/writer.cpp, ../Source/writer.h,
+	../Source/bzip2/compress.c, ../Source/exehead/afxres.h,
+	../Source/exehead/bgbg.c, ../Source/exehead/components.c,
+	../Source/exehead/components.h, ../Source/exehead/config.h,
+	../Source/exehead/exec.h, ../Source/exehead/lang.h,
+	../Source/exehead/state.h, ../Source/exehead/ui.h,
+	../Source/zlib/DEFLATE.H, ../Source/zlib/ZCONF.H,
+	../Source/zlib/ZLIB.H, ../Source/zlib/deflate.c,
+	../Source/zlib/trees.c: 2006 -> 2007
+
+2006-12-22  kichik
+
+	* ../Contrib/System/Source/Buffers.c: fixed bug #1620178 -
+	System::Store l crash installer when private stack is empty
+
+2006-12-15  kichik
+
+	* ../Contrib/System/Source/System.c: fixed bug #1616267 - System
+	plugin crash with parenthesis in filename
+
+2006-12-09  kichik
+
+	* ../Source/Tests/mmap.cpp: applied patch #1611866 - Fix
+	MMapFile::release(void *pView, int size)
+
+2006-12-08  kichik
+
+	* ../Contrib/VPatch/Source/GenPat/POSIXUtil.cpp: use the safer
+	mkstemp instead of tmpnam
+
+2006-12-06  kichik
+
+	* ../SCons/Tools/mstoolkit.py: spaces to tabs
+
+2006-11-27  kichik
+
+	* ../Docs/src/compilerflags.but: links in SetPluginUnload
+
+2006-11-25  kichik
+
+	* ../Contrib/Language files/Lithuanian.nlf: fixed bug #1602673 -
+	error in Lithuanian language file
+
+2006-11-13  joostverburg
+
+	* ../Examples/Modern UI/InstallOptions.nsi: updated info about
+	reserving files
+
+2006-11-03  kichik
+
+	* ../Contrib/Language files/Slovenian.nlf, ../Contrib/Modern
+	UI/Language files/Slovenian.nsh: patch #1590108 - Another update
+	for Slovenian localization
+
+2006-11-03  kichik
+
+	* ../Include/WinVer.nsh: !verbose 3
+
+2006-11-02  kichik
+
+	* ../Contrib/nsExec/nsExec.txt: typo
+
+2006-11-02  kichik
+
+	* ../Contrib/Language files/Breton.nlf, ../Contrib/Modern
+	UI/Language files/Breton.nsh: minor fixes by solenn
+
+2006-10-28  joostverburg
+
+	* ../Contrib/Language files/Uzbek.nlf, ../Contrib/Modern
+	UI/Language files/Uzbek.nsh: Uzbek language files by Emil Garipov
+
+2006-10-28  joostverburg
+
+	* ../Source/7zip/7zGuids.cpp,
+	../Source/7zip/7zip/Common/InBuffer.cpp,
+	../Source/7zip/7zip/Common/InBuffer.h,
+	../Source/7zip/7zip/Common/OutBuffer.cpp,
+	../Source/7zip/7zip/Common/OutBuffer.h,
+	../Source/7zip/7zip/Common/StreamUtils.cpp,
+	../Source/7zip/7zip/Common/StreamUtils.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree2.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree3.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree3Z.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree3ZMain.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree4.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTree4b.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMF.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMFMain.h,
+	../Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMain.h,
+	../Source/7zip/7zip/Compress/LZMA/LZMA.h,
+	../Source/7zip/7zip/Compress/LZMA/LZMAEncoder.cpp,
+	../Source/7zip/7zip/Compress/LZMA/LZMAEncoder.h,
+	../Source/ShConstants.h, ../Source/7zip/7zip/ICoder.h,
+	../Source/7zip/7zip/IStream.h,
+	../Source/7zip/7zip/Compress/LZ/IMatchFinder.h,
+	../Source/7zip/7zip/Compress/LZ/LZInWindow.cpp,
+	../Source/7zip/7zip/Compress/LZ/LZInWindow.h,
+	../Source/7zip/7zip/Compress/LZ/LZOutWindow.cpp,
+	../Source/7zip/7zip/Compress/LZ/LZOutWindow.h,
+	../Source/7zip/7zip/Compress/RangeCoder/RangeCoder.h,
+	../Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.cpp,
+	../Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.h,
+	../Source/7zip/7zip/Compress/RangeCoder/RangeCoderBitTree.h,
+	../Source/7zip/7zip/Compress/RangeCoder/RangeCoderOpt.h,
+	../Source/7zip/Common/Alloc.cpp, ../Source/7zip/Common/Alloc.h,
+	../Source/7zip/Common/CRC.cpp, ../Source/7zip/Common/CRC.h,
+	../Source/7zip/Common/Defs.h, ../Source/7zip/Common/MyCom.h,
+	../Source/7zip/Common/MyGuidDef.h,
+	../Source/7zip/Common/MyUnknown.h,
+	../Source/7zip/Common/MyWindows.h, ../Source/7zip/Common/StdAfx.h,
+	../Source/7zip/Common/Types.h, ../Source/uservars.h: * The LZMA
+	compression module for NSIS is now licensed under the Common Public
+	License version 1.0 * Added license and copyright notice to every
+	source file * The new COPYING file and license section in the Users
+	Manual list the terms of all relevant licenses
+
+2006-10-28  kichik
+
+	* ../Docs/src/sections.but: emphasize that section_idx is a !define
+
+2006-10-28  kichik
+
+	* ../Docs/src/sec.but: added code examples
+
+2006-10-16  kichik
+
+	* ../Contrib/MakeLangId/SConscript: call InitCommonControls
+
+2006-10-16  kichik
+
+	* ../Source/7zip/7zip/Common/StdAfx.h,
+	../Source/7zip/7zip/Compress/LZMA/StdAfx.h,
+	../Source/7zip/7zip/Compress/LZ/StdAfx.h,
+	../Source/7zip/7zip/Compress/RangeCoder/StdAfx.h,
+	../Source/7zip/sdk.diff: upgraded to lzma sdk 4.43 for faster
+	compression
+
+2006-10-06  kichik
+
+	* ../Include/FileFunc.nsh: Instructor fixed handle leak in Locate
+
+2006-10-06  kichik
+
+	* ../Contrib/Language files/Bulgarian.nlf, ../Contrib/Modern
+	UI/Language files/Bulgarian.nsh: small fixes for better view by
+	Dumperbg
+
+2006-10-02  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Danish.nsh: language name
+
+2006-09-29  kichik
+
+	* ../Docs/src/usefulfunc.but: oops, forgot to remove lbl_error
+
+2006-09-24  kichik
+
+	* ../Contrib/Language files/Valencian.nlf, ../Contrib/Modern
+	UI/Language files/Valencian.nsh: patch #1558822 - Valencian
+	translation
+
+2006-09-23  kichik
+
+	* ../Contrib/Modern UI/Changelog.txt: implemented RFE #1547844 -
+	default button of the abort warning
+
+2006-09-22  kichik
+
+	* ../Contrib/MakeLangId/MakeLangId.xml,
+	../Contrib/Makensisw/makensisw.xml, ../Contrib/zip2exe/zip2exe.xml:
+	specifically request for no execution level change on vista this is
+	a workaround for vista's incorrect flagging of all manifested nsis
+	applications as installers
+
+2006-09-15  kichik
+
+	* ../Docs/src/log.but, ../Docs/src/var.but: build settings passed
+	from config.h to scons
+
+2006-09-09  kichik
+
+	* ../Docs/src/script.but: explain about comments being extended
+
+2006-09-08  kichik
+
+	* ../Contrib/Modern UI/Language files/French.nsh: better
+	MUI_UNTEXT_WELCOME_INFO_TEXT translation (SuperPat)
+
+2006-09-01  kichik
+
+	* ../Contrib/Language files/Ukrainian.nlf, ../Contrib/Modern
+	UI/Language files/Ukrainian.nsh: corrections by Osidach Vitaly
+
+2006-08-29  kichik
+
+	* ../Contrib/Language files/Danish.nlf: fixed bug #1548190 - Danish
+	"Browse" words not translated
+
+2006-08-28  kichik
+
+	* ../TODO.txt: DirShow is no longer desired, as discussed in patch
+	#1539701
+
+2006-08-25  kichik
+
+	* ../Contrib/Language files/Italian.nlf: fixed bug #1546183 -
+	Italian language file has duplicate access key
+
+2006-08-19  kichik
+
+	* ../Contrib/Language files/Swedish.nlf: fixed bug #1542680 -
+	Untranslated entry in Swedish.nlf
+
+2006-08-18  kichik
+
+	* ../Contrib/Language files/Turkish.nlf: fixed bug #1542765 -
+	Turkish.nlf is encoded using UTF-8
+
+2006-08-09  pabs3
+
+	* ../Examples/Library.nsi: TypeLib.dll doesn't have a resource
+	section, use LangDLL.dll instead
+
+2006-08-08  kichik
+
+	* ../Contrib/Language files/Spanish.nlf, ../Contrib/Modern
+	UI/Language files/Spanish.nsh: (Joel) Retranslate some text strings
+	to fit some static controls
+
+2006-08-04  kichik
+
+	* ../Docs/src/file.but, ../Docs/src/int.but: improvements by Joe
+	Siebenmann
+
+2006-08-02  kichik
+
+	* ../Contrib/Language files/French.nlf: fixed bug #1531874 - Typos
+	in french translation
+
+2006-07-30  kichik
+
+	* ../Contrib/NSISdl/asyncdns.cpp, ../Contrib/NSISdl/asyncdns.h:
+	max_cache_entries isn't used anywhere
+
+2006-07-30  kichik
+
+	* ../Contrib/Language files/NorwegianNynorsk.nlf, ../Contrib/Modern
+	UI/Language files/NorwegianNynorsk.nsh: patch #1503208 - Norwegian
+	nynorsk language file
+
+2006-07-24  kichik
+
+	* ../Contrib/System/System.html: typo
+
+2006-06-30  kichik
+
+	* ../Contrib/Language files/Serbian.nlf, ../Contrib/Language
+	files/SerbianLatin.nlf, ../Contrib/Modern UI/Language
+	files/Serbian.nsh, ../Contrib/Modern UI/Language
+	files/SerbianLatin.nsh: updates by Obucinac: - Fixed unclear
+	semantics - Fixed grammar - Fixed typos - Tuned to match serbian
+	translation of Windows XP interface
+
+2006-06-17  joostverburg
+
+	* ../Contrib/Language files/PortugueseBR.nlf: corrections by
+	Jeferson Hultmann, from Mozilla bug #340885
+
+2006-06-17  joostverburg
+
+	* ../Contrib/Language files/Irish.nlf: corrections by Kevin P.
+	Scannell, from Mozilla bug #340979
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Language files/Finnish.nlf: corrections by the
+	Mozilla.fi crew, from Mozilla bug #341643
+
+2006-06-16  kichik
+
+	* ../Docs/src/basic.but: no wildcards for RMDir
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Irish.nsh: Irish language
+	files by by Kevin Scannell (NSIS patch #1503639, Mozilla bug
+	#340979)
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Language files/Catalan.nlf: standard Windows binary
+	prefix for kilo
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Language files/Romanian.nlf: corrections by Iulian
+	Ursache-Dogariu, from Mozilla bug #340645
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Catalan.nsh: Corrections by
+	Toni Hermoso Pulido (NSIS bug #1504104, Mozilla bug #341094)
+
+2006-06-16  joostverburg
+
+	* ../Contrib/Language files/Polish.nlf: corrections by Marek
+	Stepien, from Mozilla bug #224532
+
+2006-06-01  kichik
+
+	* ../Include/WordFunc.nsh: updates by Instructor:  *
+	GetFileAttributes corrections  * Prevent error in case of multiple
+	header inclusion
+
+2006-05-20  kichik
+
+	* ../Contrib/Language files/Thai.nlf: corrections
+
+2006-05-19  joostverburg
+
+	* ../Contrib/Language files/Dutch.nlf: fixes by Milan Bast
+
+2006-05-19  kichik
+
+	* ../Contrib/Language files/Icelandic.nlf, ../Contrib/Modern
+	UI/Language files/Icelandic.nsh: updates by grelli
+
+2006-04-28  kichik
+
+	* ../SCons/utils.py: fixed bug #1474597 - Mac OS X 10.4 build
+	failures
+
+2006-04-28  kichik
+
+	* ../Contrib/Language files/Hebrew.nlf: fixed bug #1474587 - Hebrew
+	typo
+
+2006-04-18  kichik
+
+	* ../Contrib/Library/TypeLib/TypeLib.cpp: always push something in
+	TypeLib::GetLibVersion to avoid stack corruption
+
+2006-04-07  kichik
+
+	* ../Contrib/Makensisw/update.cpp: fixed bug #1466486 - typo and
+	menu problems in MakeNSISw
+
+2006-04-05  kichik
+
+	* ../Source/Tests/DialogTemplate.cpp: oops, that shouldn't be there
+
+2006-04-05  kichik
+
+	* ../SCons/config.py: implemented RFE #1460586 - Put time stamps in
+	the install log
+
+2006-04-05  kichik
+
+	* ../Contrib/Language files/Basque.nlf, ../Contrib/Modern
+	UI/Language files/Basque.nsh: Basque language files
+
+2006-04-05  kichik
+
+	* ../Docs/src/silent.but: fixed bug #1077439 - nonstandatd behavior
+	of example for command line parameters
+
+2006-04-05  kichik
+
+	* ../Docs/src/chmlink.js: fixed bug #1449879 - NSIS User Manual
+	script error
+
+2006-03-25  kichik
+
+	* ../Source/Tests/ResourceEditor.cpp: original data of
+	MakeLangID.exe, without aligned virtual section size
+
+2006-03-23  kichik
+
+	* ../Contrib/VPatch/Source/GenPat/PatchGenerator.h: applied patch
+	#1456861 - PatchGenerator syntax error
+
+2006-03-17  kichik
+
+	* ../Source/exehead/SConscript: moved _NSIS_NO_INT64_SHR test to
+	SCons/Config/ms so it'll only be called once and not for each stub
+	and because it's a better location being a vc specific problem
+
+2006-03-11  kichik
+
+	* ../Docs/src/ui.but: link to GetDlgItem
+
+2006-03-08  kichik
+
+	* ../Contrib/NSISdl/httpget.cpp: fixed bug #1445735 - WinProxy
+	headers not read by NSISdl
+
+2006-02-24  kichik
+
+	* ../SCons/Tools/crossmingw.py: applied patch #1434174 - GCC 4.2
+	patches
+
+2006-02-24  kichik
+
+	* ../Contrib/Modern UI/Language files/Italian.nsh: applied patch
+	#1416988 - small italian translation bug
+
+2006-02-24  kichik
+
+	* ../Contrib/Modern UI/Language files/Czech.nsh: applied patch
+	#1427189 - Czech grammar mistakes
+
+2006-02-11  kichik
+
+	* ../Docs/src/misc.but: added Nop
+
+2006-02-10  kichik
+
+	* ../Examples/WordFuncTest.nsi: Updates by Instructor:	- Added
+	/NOUNLOAD flag for the system plugin calls. Functions that uses
+	system plugin calls several times, now 25-75% faster.	- Added
+	tests for new WordReplace options "{", "}", "{*", "}*"
+
+2006-02-10  kichik
+
+	* ../Examples/FileFunc.nsi, ../Examples/FileFuncTest.nsi,
+	../Examples/TextFunc.nsi, ../Examples/TextFuncTest.nsi: Updates by
+	Instructor
+
+	1. "WordReplace"    -Added options "{", "}", "{*", "}*"
+
+	2. "GetOptions"    -Now sets error flag if option does not found
+
+	3. "ConfigRead"    -Now sets error flag if entry does not found
+
+	4. New case sensitive functions:       "WordFindS", "WordFind2XS",
+	"WordFind3XS", "WordReplaceS",	     "WordAddS", "WordInsertS",
+	"StrFilterS", "TextCompareS",	    "ConfigReadS", "ConfigWriteS",
+	"GetOptionsS"
+
+2006-01-26  kichik
+
+	* ../Contrib/Modern UI/Language files/Mongolian.nsh: - added
+	another version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE - more updates
+
+2006-01-21  pabs3
+
+	* ../Contrib/Graphics/SConscript,
+	../Contrib/Library/LibraryLocal/SConscript,
+	../Contrib/Library/RegTool/SConscript, ../Contrib/UIs/SConscript,
+	../Contrib/VPatch/SConscript,
+	../Contrib/VPatch/Source/GenPat/SConscript,
+	../Contrib/zip2exe/SConscript: Merge patch for better installs on
+	POSIX platforms.
+
+2006-01-19  kichik
+
+	* ../Contrib/Language files/Mongolian.nlf: [no log message]
+
+2006-01-06  kichik
+
+	* ../Docs/src/flowcontrol.but: applied patch #1381929 - StrCmpS -
+	case-sensitive string comparison
+
+2005-12-23  kichik
+
+	* ../Examples/Modern UI/WelcomeFinish.nsi: removed extra spaces
+
+2005-12-23  kichik
+
+	* ../Docs/src/jumps.but: added information about relative jumps and
+	macros
+
+2005-12-10  kichik
+
+	* ../Contrib/Modern UI/Language files/Swedish.nsh: wrong finish
+	button translation in finish page text
+
+2005-11-26  kichik
+
+	* ../Source/Tests/root.txt: root instdir related bugs that cannot
+	be automatically tested
+
+2005-11-24  kichik
+
+	* ../Contrib/UIs/sdbarker_tiny.rc: added missing checkbox for
+	logging
+
+2005-11-24  kichik
+
+	* ../Contrib/Math/mathtest.nsi: there's no such function as len(),
+	only l()
+
+2005-11-12  kichik
+
+	* ../Contrib/Makensisw/jnetlib/connection.cpp: tabs to spaces
+
+2005-11-12  kichik
+
+	* ../Contrib/zip2exe/res.rc: version bump
+
+2005-11-12  joostverburg
+
+	* ../Menu/images/header-notext.gif: for auto generation
+
+2005-11-11  kichik
+
+	* ../Contrib/LangDLL/LangDLL.c: check for CB_ERR return value from
+	CB_GETITEMDATA
+
+2005-10-26  joostverburg
+
+	* ../Examples/bigtest.nsi: language improvements
+
+2005-10-25  kichik
+
+	* ../Contrib/Graphics/Checks/red.bmp: width should be 96, not 95
+
+2005-10-22  kichik
+
+	* ../Contrib/MakeLangId/resource.rc: added manifest for xp style
+
+2005-10-22  kichik
+
+	* ../Contrib/LangDLL/resource.rc: sort the combo box
+
+2005-10-21  kichik
+
+	* ../Contrib/NSISdl/ReadMe.txt: added information about /PROXY
+
+2005-10-21  kichik
+
+	* ../Contrib/zip2exe/Base.nsh, ../Contrib/zip2exe/resource.h:
+	applied patch #1334155 - zip2exe: checkbox for solid compression
+
+2005-10-12  kichik
+
+	* ../Include/UpgradeDLL.nsh: extract RegTool with the random data
+	as well
+
+2005-10-11  kichik
+
+	* ../Contrib/InstallOptions/testnotify.nsi: write HWND and HWND2
+	entries to the INI with the control's HWND no more weird
+	calculations when there's a browse button
+
+2005-10-08  joostverburg
+
+	* ../Contrib/UIs/modern.rc: larger browse button, localized texts
+	will fit in better
+
+2005-10-07  kichik
+
+	* ../Contrib/Library/LibraryLocal/LibraryLocal.cpp: get output file
+	from command line
+
+2005-10-03  joostverburg
+
+	* ../Contrib/Modern UI/Language files/SimpChinese.nsh: updates by
+	QFox
+
+2005-09-23  kichik
+
+	* ../Docs/src/pages.but: documented /ENABLECANCEL
+
+2005-09-20  kichik
+
+	* ../Contrib/VPatch/Source/Plugin/checksum.c,
+	../Contrib/VPatch/Source/Plugin/md5.c,
+	../Contrib/VPatch/Source/Plugin/vpatchdll.c: fixed portability
+
+2005-09-17  kichik
+
+	* ../Contrib/VPatch/VPatchLib.nsh, ../Contrib/VPatch/example.nsi,
+	../Contrib/VPatch/patch.pat,
+	../Contrib/VPatch/Source/GUI/AboutForm.dfm,
+	../Contrib/VPatch/Source/GUI/DLLWrapper.pas,
+	../Contrib/VPatch/Source/GUI/MainForm.dfm,
+	../Contrib/VPatch/Source/GUI/MainForm.pas,
+	../Contrib/VPatch/Source/GUI/OSUtil.pas,
+	../Contrib/VPatch/Source/GUI/PatchClasses.pas,
+	../Contrib/VPatch/Source/GUI/VPatch.ico,
+	../Contrib/VPatch/Source/GUI/VPatchGUI.bdsproj,
+	../Contrib/VPatch/Source/GUI/VPatchGUI.cfg,
+	../Contrib/VPatch/Source/GUI/VPatchGUI.dpr,
+	../Contrib/VPatch/Source/GUI/VPatchGUI.res,
+	../Contrib/VPatch/Source/GUI/clean.bat,
+	../Contrib/VPatch/Source/GUI/vdsp_crc.pas,
+	../Contrib/VPatch/Source/GenPat/Checksums.cpp,
+	../Contrib/VPatch/Source/GenPat/Checksums.h,
+	../Contrib/VPatch/Source/GenPat/ChunkedFile.cpp,
+	../Contrib/VPatch/Source/GenPat/ChunkedFile.h,
+	../Contrib/VPatch/Source/GenPat/FileFormat1.cpp,
+	../Contrib/VPatch/Source/GenPat/FileFormat1.h,
+	../Contrib/VPatch/Source/GenPat/GlobalTypes.cpp,
+	../Contrib/VPatch/Source/GenPat/GlobalTypes.h,
+	../Contrib/VPatch/Source/GenPat/POSIXUtil.h,
+	../Contrib/VPatch/Source/GenPat/PatchGenerator.cpp,
+	../Contrib/VPatch/Source/GenPat/adler32.cpp,
+	../Contrib/VPatch/Source/GenPat/adler32.h,
+	../Contrib/VPatch/Source/GenPat/md5.c,
+	../Contrib/VPatch/Source/GenPat/md5.h,
+	../Contrib/VPatch/Source/Plugin/SConscript,
+	../Contrib/VPatch/Source/Plugin/apply_patch.c,
+	../Contrib/VPatch/Source/Plugin/apply_patch.h,
+	../Contrib/VPatch/Source/Plugin/md5.h: VPatch 3.0
+
+2005-09-17  kichik
+
+	* ../Contrib/NSISdl/SConscript, ../Contrib/System/SConscript: use
+	True/False instead of 1/0
+
+2005-09-16  kichik
+
+	* ../Contrib/AdvSplash/Example.nsi,
+	../Contrib/AdvSplash/advsplash.txt,
+	../Contrib/Makensisw/jnetlib/connection.h,
+	../Contrib/Math/Math.txt, ../Contrib/NSISdl/connection.h,
+	../Contrib/Splash/Example.nsi, ../Contrib/Splash/splash.txt,
+	../Contrib/System/WhatsNew.txt, ../Examples/StrFunc.nsi,
+	../Include/StrFunc.txt: typos (thanks Jamyn!)
+
+2005-08-17  joostverburg
+
+	* ../Contrib/Graphics/Wizard/arrow.bmp: removed rounded edges
+
+2005-08-14  kichik
+
+	* ../Examples/example1.nsi, ../Examples/example2.nsi: applied part
+	of patch #1248335 for greater portability
+
+2005-08-09  joostverburg
+
+	* ../Contrib/Language files/Malay.nlf, ../Contrib/Modern
+	UI/Language files/Malay.nsh: updated Malay language files
+
+2005-08-06  kichik
+
+	* ../Examples/LogicLib.nsi: no more need for these defines
+
+2005-08-06  kichik
+
+	* ../Examples/UserVars.nsi: Var can now be used in sections and
+	functions, but only with the /GLOBAL flag
+
+2005-08-05  kichik
+
+	* ../SCons/Config/linker_script: replaced with a complete linker
+	script taken from ld --verbose
+
+2005-08-05  kichik
+
+	* ../Contrib/Modern UI/Language files/Luxembourgish.nsh: proper
+	case
+
+2005-07-29  kichik
+
+	* ../Docs/src/plugin.but, ../Docs/src/usefulinfos.but: plugin ->
+	plug-in
+
+2005-07-27  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Kurdish.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2005-07-26  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Thai.nsh: updated Thai
+	language files by SoKoOLz
+
+2005-07-22  kichik
+
+	* ../Contrib/zip2exe/zlib/adler32.c,
+	../Contrib/zip2exe/zlib/crc32.c, ../Contrib/zip2exe/zlib/crypt.h,
+	../Contrib/zip2exe/zlib/inffast.c,
+	../Contrib/zip2exe/zlib/inflate.c,
+	../Contrib/zip2exe/zlib/inflate.h,
+	../Contrib/zip2exe/zlib/inftrees.c,
+	../Contrib/zip2exe/zlib/inftrees.h,
+	../Contrib/zip2exe/zlib/ioapi.c, ../Contrib/zip2exe/zlib/ioapi.h,
+	../Contrib/zip2exe/zlib/unzip.c, ../Contrib/zip2exe/zlib/unzip.h,
+	../Contrib/zip2exe/zlib/zconf.h, ../Contrib/zip2exe/zlib/zlib.h,
+	../Contrib/zip2exe/zlib/zutil.c, ../Contrib/zip2exe/zlib/zutil.h:
+	zlib 1.2.3
+
+2005-07-21  joostverburg
+
+	* ../Contrib/Language files/Luxembourgish.nlf: corrections by Philo
+
+2005-07-21  joostverburg
+
+	* ../Contrib/Language files/Kurdish.nlf: Kurdish language files by
+	Erdal Ronahi
+
+2005-07-21  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Default.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2005-07-09  kichik
+
+	* ../Examples/waplugin.nsi: don't fail compiling, if winamp is not
+	installed
+
+2005-07-09  kichik
+
+	* ../Contrib/UIs/modern_headerbmp.rc,
+	../Contrib/UIs/modern_headerbmpr.rc,
+	../Contrib/UIs/modern_nodesc.rc,
+	../Contrib/UIs/modern_smalldesc.rc: passed rc files through msvc to
+	fix compatibility with mingw
+
+2005-07-02  kichik
+
+	* ../SCons/Config/memcpy.c, ../SCons/Config/memset.c: files needed
+	by gnu configuration
+
+2005-06-30  kichik
+
+	* ../Contrib/Language files/Bosnian.nlf, ../Contrib/Modern
+	UI/Language files/Bosnian.nsh: Bosnian translation by Salih CAVKIC
+
+2005-06-23  kichik
+
+	* ../Contrib/Library/RegTool/RegTool.c: Library improvements with
+	lots of help from stb:	- InstallLib will register DLLs after
+	reboot in the order they were specified in the script  - InstallLib
+	will register every DLL on reboot if the reboot flag is already set
+	- rewrote RegTool in C  - RegTool compiles from source code  -
+	RegTool will not run when double clicked  - RegTool will register
+	each DLL on a separate process to avoid conflicts
+
+2005-06-22  kichik
+
+	* ../Contrib/UIs/default.rc, ../Contrib/UIs/resource.h,
+	../Contrib/UIs/ui.c: build UIs from source
+
+2005-06-22  kichik
+
+	* ../Source/exehead/resource.rc: caption is not needed for license
+	dialogs
+
+2005-06-22  kichik
+
+	* ../Docs/src/bin/halibut/input.c: applied patch #1225167 - halibut
+	fails on macro usage at beginning of line
+
+2005-06-21  kichik
+
+	* ../Examples/FileFunc.ini, ../Examples/TextFunc.ini,
+	../Examples/WordFunc.ini, ../Examples/WordFunc.nsi: header files of
+	useful functions (Instructor)
+
+2005-06-20  kichik
+
+	* ../Docs/src/modernui.but: updated links for new directory
+	structure
+
+2005-06-20  kichik
+
+	* ../Contrib/Makensisw/jnetlib/httpget.cpp: back-ported fixes from
+	nsisdl
+
+2005-06-20  kichik
+
+	* ../Contrib/Makensisw/update.h: update source code
+
+2005-06-20  kichik
+
+	* ../Contrib/InstallOptions/testimgs.nsi,
+	../Contrib/System/SysFunc.nsh, ../Contrib/System/System.nsi,
+	../Examples/languages.nsi, ../Examples/Modern UI/Basic.nsi,
+	../Examples/Modern UI/HeaderBitmap.nsi: fixed for new paths
+
+2005-06-19  kichik
+
+	* ../Contrib/Makensisw/jnetlib/httpget.h,
+	../Contrib/Makensisw/jnetlib/netinc.h,
+	../Contrib/Makensisw/jnetlib/util.h: moved update back to makensisw
+
+2005-06-18  kichik
+
+	* ../Contrib/Language files/Estonian.nlf: Changed details button to
+	begin with capital letter like other buttons.
+
+2005-06-13  kichik
+
+	* ../Contrib/NSISdl/netinc.h: delete [] x is more correct, although
+	it doesn't really matter with our implementation of new and delete
+
+2005-05-28  kichik
+
+	* ../Include/WinMessages.nsh: L shouldn't be there
+
+2005-05-20  kichik
+
+	* ../Contrib/Language files/Welsh.nlf, ../Contrib/Modern
+	UI/Language files/Welsh.nsh: Welsh translation by Rhoslyn Prys
+
+2005-05-14  kichik
+
+	* ../Contrib/Makensisw/icon.ico: icon for makensisw copied from
+	Contrib\Graphics\Icons
+
+2005-05-12  kichik
+
+	* ../Contrib/Makensisw/afxres.h: _WIN32_IE 0x0400 where needed
+
+2005-05-10  kichik
+
+	* ../Docs/src/bin/halibut/bk_xhtml.c: set chm_toc and chm_ind to
+	NULL after closing them
+
+2005-05-06  kichik
+
+	* ../Contrib/System/Source/System.h: don't typedef struct twice
+
+2005-05-03  kichik
+
+	* ../Contrib/AdvSplash/SConscript: applied parts of patch #1193692
+	- fixes to scons Contrib stuff
+
+2005-04-30  kichik
+
+	* ../Contrib/Banner/SConscript, ../Contrib/BgImage/SConscript,
+	../Contrib/Dialer/SConscript, ../Contrib/Splash/SConscript,
+	../Contrib/UserInfo/SConscript, ../Contrib/nsExec/SConscript:
+	install and distribute examples, contribs and documentation
+
+2005-04-26  kichik
+
+	* ../Contrib/Language files/Russian.nlf, ../Contrib/Modern
+	UI/Language files/Russian.nsh: update by Dmitry
+
+2005-04-24  kichik
+
+	* ../Contrib/StartMenu/StartMenu.rc: no need for afxres.h,
+	windows.h is enough
+
+2005-04-24  kichik
+
+	* ../Docs/src/bin/halibut/SConscript: use our default environment
+	for building halibut
+
+2005-04-24  kichik
+
+	* ../Docs/src/bin/halibut/version.c: don't pass version as define
+
+2005-04-23  kichik
+
+	* ../Contrib/zip2exe/zlib/crc32.h,
+	../Contrib/zip2exe/zlib/inffast.h,
+	../Contrib/zip2exe/zlib/inffixed.h: new zlib version (1.2.2) with
+	lower case file names
+
+2005-04-22  kichik
+
+	* ../Contrib/LangDLL/SConscript,
+	../Contrib/Library/TypeLib/SConscript: less code in SConscripts,
+	more shared code in SConstruct
+
+2005-04-21  kichik
+
+	* ../Examples/VersionInfo.nsi: applied patch #1184571 - Some fixes
+	to the examples (case sensitive filenames)
+
+2005-04-16  kichik
+
+	* ../Contrib/System/Source/Plugin.h: use #ifdef instead of #pragma
+	once
+
+2005-04-16  kichik
+
+	* ../Contrib/Dialer/dialer.c: manually use LoadLibrary and
+	GetProcAddress instead of /DELAYLOAD
+
+2005-04-12  kichik
+
+	* ../Docs/src/bin/halibut/contents.c: applied patch #1180886 - fix
+	halibut segfaults on powerpc (and maybe other platforms)
+
+2005-04-08  kichik
+
+	* ../Docs/src/registry.but: added information about non-existing
+	environment variables used in ExpandEnvStrings
+
+2005-04-08  kichik
+
+	* ../Include/Colors.nsh: some more useful macros
+
+2005-03-17  kichik
+
+	* ../Contrib/AdvSplash/advsplash.c, ../Contrib/Banner/Banner.c,
+	../Contrib/Splash/splash.c: applied patch #1164307 - Fixes to allow
+	building Contrib/ on debian (minus Makefiles)
+
+2005-03-04  kichik
+
+	* ../Contrib/StartMenu/Readme.txt: implemented feature request
+	#711900 - StartMenu SetCtlColors support
+
+2005-02-17  kichik
+
+	* ../Contrib/Language files/Belarusian.nlf, ../Contrib/Modern
+	UI/Language files/Belarusian.nsh: Byelorussian by glory_man
+
+2005-01-21  kichik
+
+	* ../Contrib/InstallOptions/testimgs.ini: example of displaying
+	images and icons
+
+2005-01-14  joostverburg
+
+	* ../Contrib/Modern UI/Language files/German.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2005-01-14  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Dutch.nsh: typo
+
+2005-01-04  kichik
+
+	* ../Contrib/Modern UI/Language files/Estonian.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2005-01-04  kichik
+
+	* ../Contrib/Modern UI/Language files/Farsi.nsh: - fixes - added
+	another version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2005-01-04  kichik
+
+	* ../Contrib/Language files/Farsi.nlf: fixes
+
+2005-01-03  kichik
+
+	* ../Contrib/Modern UI/Language files/Croatian.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-12-16  kichik
+
+	* ../Contrib/Language files/SimpChinese.nlf: updates
+
+2004-12-16  kichik
+
+	* ../Contrib/Modern UI/Language files/TradChinese.nsh: added
+	another version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-12-14  kichik
+
+	* ../Contrib/Language files/TradChinese.nlf: fixes
+
+2004-12-14  kichik
+
+	* ../Contrib/Language files/Korean.nlf: address update
+
+2004-12-14  kichik
+
+	* ../Contrib/Modern UI/Language files/Korean.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-12-10  kichik
+
+	* ../Source/Tests/specmatch.cpp: added a test for
+	dir_reader::matches
+
+2004-12-03  kichik
+
+	* ../Contrib/Modern UI/Language files/Finnish.nsh: updated by
+	Puuhis
+
+2004-12-02  kichik
+
+	* ../Contrib/Language files/Macedonian.nlf: fixes
+
+2004-12-02  kichik
+
+	* ../Contrib/Modern UI/Language files/Macedonian.nsh: e-mail change
+
+2004-12-02  kichik
+
+	* ../Contrib/Modern UI/Language files/Lithuanian.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-12-02  kichik
+
+	* ../Contrib/Modern UI/Language files/Japanese.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE (patch #1077370)
+
+2004-11-30  kichik
+
+	* ../Contrib/Modern UI/Language files/Greek.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE (patch #1075188)
+
+2004-11-29  ramon18
+
+	* ../Contrib/Modern UI/Language files/Portuguese.nsh: updated
+	Portuguese.nsh
+
+2004-11-27  kichik
+
+	* ../Contrib/Modern UI/Language files/PortugueseBR.nsh: added
+	another version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-11-27  kichik
+
+	* ../Contrib/Modern UI/Language files/English.nsh,
+	../Contrib/Modern UI/Language files/Hebrew.nsh: added another
+	version of MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO for
+	NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
+
+2004-11-23  kichik
+
+	* ../Docs/src/usection.but: added information about $INSTDIR not
+	having the same value in installer and uninstaller
+
+2004-10-24  joostverburg
+
+	* ../Contrib/Modern UI/Language files/Polish.nsh: fixes
+
+2004-10-23  kichik
+
+	* ../Contrib/ExDLL/exdll.c: Added another parameter to plug-in
+	functions. This parameter is a structure with pointers to
+	exec_flags and ExecuteCodeSegment. This is backward compatible with
+	older plug-ins because plug-in functions use the __cdecl calling
+	convention which means NSIS clears the stack.
+
+2004-10-23  kichik
+
+	* ../Include/StrFunc.nsh: StrFunc 1.09 by deguix:  - Fixed stack
+	problems involving: StrCase, StrRep, StrSort, StrTok.	- Fixed
+	StrClb: When "Action" = "<>", handle was wrongly outputed as text.
+	- Fixed StrSort, StrStrAdv documentation examples.   - Fixed
+	StrIOToNSIS, StrLoc, StrNSISToIO, StrRep, StrStr: sometimes didn't
+	find "StrToSearch" at all.
+
+2004-10-15  oripel
+
+	* ../Source/boost/checked_delete.hpp,
+	../Source/boost/scoped_array.hpp, ../Source/boost/scoped_ptr.hpp,
+	../Source/boost/detail/workaround.hpp: Imported and modified some
+	sources from Boost (http://www.boost.org)
+
+2004-10-14  kichik
+
+	* ../Docs/src/reboot.but, ../Docs/src/uninstall.but: made the
+	Reboot command first quit and then reboot  - fixed bug #989690	-
+	the installer now denies reboots while running	- the Reboot
+	instruction no longer returns or sets the error flag  - added
+	.onRebootFailed which is called when Reboot fails  - installer
+	should now always clean-up when rebooting
+
+2004-10-11  joostverburg
+
+	* ../Contrib/Language files/Albanian.nlf, ../Contrib/Modern
+	UI/Language files/Albanian.nsh: Albanian language files by Besnik
+	Bleta
+
+2004-10-10  kichik
+
+	* ../Docs/src/functions.but, ../Docs/src/labels.but,
+	../Docs/src/stack.but, ../Docs/src/string.but: added small usage
+	examples
+
+2004-09-03  kichik
+
+	* ../Contrib/Banner/Example.nsi: 1*2000 is not 1000
+
+2004-09-03  kichik
+
+	* ../Contrib/Banner/Readme.txt: three functions, not two
+
+2004-08-18  kichik
+
+	* ../Contrib/MakeLangId/resource.h: Bin\\MakeLangId.exe source code
+
+2004-08-13  kichik
+
+	* ../Contrib/Modern UI/Language files/Arabic.nsh, ../Contrib/Modern
+	UI/Language files/Hungarian.nsh, ../Contrib/Modern UI/Language
+	files/Indonesian.nsh, ../Contrib/Modern UI/Language
+	files/Latvian.nsh, ../Contrib/Modern UI/Language
+	files/Norwegian.nsh, ../Contrib/Modern UI/Language
+	files/Romanian.nsh, ../Contrib/Modern UI/Language files/Slovak.nsh,
+	../Contrib/Modern UI/Language files/Turkish.nsh: - patch #1005664 -
+	nlf inclusion problems on case sensitive platforms - fixed
+	Mongolian.nsh
+
+2004-08-01  joostverburg
+
+	* ../Contrib/Language files/Latvian.nlf: fixes
+
+2004-06-04  kichik
+
+	* ../Contrib/System/Source/System.vcproj: (brainsucker)
+	bug-fix-release, 4.06.2004 1. System::Copy /SIZE fixed (Kichik).
+	2. System::Copy with destination auto-allocation now pushes
+	destination address on stack.  3. Callbacks fixed (Kichik's kick is
+	awesome).
+
+2004-03-14  joostverburg
+
+	* ../Contrib/Language files/English.nlf: updated error messagebox
+	text
+
+2004-03-11  joostverburg
+
+	* ../Contrib/Language files/Arabic.nlf: fixes
+
+2004-02-29  joostverburg
+
+	* ../Contrib/Graphics/Header/orange-nsis.bmp,
+	../Contrib/Graphics/Header/orange-r-nsis.bmp,
+	../Contrib/Graphics/Header/orange-r.bmp,
+	../Contrib/Graphics/Header/orange-uninstall-nsis.bmp,
+	../Contrib/Graphics/Header/orange-uninstall-r-nsis.bmp,
+	../Contrib/Graphics/Header/orange-uninstall-r.bmp,
+	../Contrib/Graphics/Header/orange-uninstall.bmp,
+	../Contrib/Graphics/Header/orange.bmp,
+	../Contrib/Graphics/Icons/orange-install-nsis.ico,
+	../Contrib/Graphics/Icons/orange-install.ico,
+	../Contrib/Graphics/Icons/orange-uninstall-nsis.ico,
+	../Contrib/Graphics/Icons/orange-uninstall.ico,
+	../Contrib/Graphics/Wizard/orange-nsis.bmp,
+	../Contrib/Graphics/Wizard/orange-uninstall-nsis.bmp,
+	../Contrib/Graphics/Wizard/orange-uninstall.bmp,
+	../Contrib/Graphics/Wizard/orange.bmp: new Orange theme graphics
+
+2004-02-07  joostverburg
+
+	* ../Menu/images/menu.gif, ../Menu/images/menud.gif,
+	../Menu/images/site.gif: NSIS 2.0
+
+2004-02-07  joostverburg
+
+	* ../Contrib/Modern UI/images/closed.gif, ../Contrib/Modern
+	UI/images/header.gif, ../Contrib/Modern UI/images/open.gif,
+	../Contrib/Modern UI/images/screen1.png, ../Contrib/Modern
+	UI/images/screen2.png: Modern UI 1.70  * Improved documentation  *
+	New Init custom function for Welcome and Finish page
+
+2004-02-06  kichik
+
+	* ../Examples/silent.nsi: typo
+
+2004-02-05  kichik
+
+	* ../nsisconf.nsh: UninstallIcon, not UnIcon
+
+2004-01-26  joostverburg
+
+	* ../Contrib/Language files/Indonesian.nlf: Indonesian language
+	files
+
+2004-01-20  joostverburg
+
+	* ../Contrib/Language files/Norwegian.nlf: fixes
+
+2004-01-12  joostverburg
+
+	* ../Contrib/Graphics/Checks/colorful.bmp,
+	../Contrib/Graphics/Checks/modern.bmp,
+	../Contrib/Graphics/Checks/simple-round.bmp,
+	../Contrib/Graphics/Checks/simple-round2.bmp,
+	../Contrib/Graphics/Checks/simple.bmp: new, updated graphics
+
+2004-01-08  joostverburg
+
+	* ../Contrib/Graphics/Icons/arrow2-install.ico,
+	../Contrib/Graphics/Icons/arrow2-uninstall.ico: new icons
+
+2004-01-04  eccles
+
+	* ../Contrib/InstallOptions/testlink.ini,
+	../Contrib/InstallOptions/testnotify.ini: DLL version 2.4
+	(1/4/2004) * Initial focus is set in "initDialog" making it
+	possible to override it from NSIS prior to calling "show" - When
+	initial focus is to a Text field InstallOptions now follows
+	standard Windows behaviour by having the text selected - Label and
+	other static fields no longer have State= written to the INI file
+	when leaving the dialog - NOTIFY flag can now be used with Link
+	fields (State should be omitted in this case) - Likewise, State can
+	now be used with Button fields (behaves the same as with Link
+	fields) - NOTIFY flag can also now be used with ListBox and
+	DropList fields to have NSIS notified when the selection changes -
+	Meaning of RIGHT flag is now reversed in right-to-left language
+	mode - HSCROLL and VSCROLL flags are no longer restricted to Text
+	fields - Various Link field fixes - Text box colour bug fix
+
+2004-01-02  joostverburg
+
+	* ../Contrib/Makensisw/toolbar24d.bmp: more diabled images, free
+	image lists
+
+2004-01-02  joostverburg
+
+	* ../Contrib/Makensisw/toolbar.bmp,
+	../Contrib/Makensisw/toolbar24.bmp,
+	../Contrib/Makensisw/toolbar24h.bmp: modern 24-bit toolbar for
+	comctl32 => 4.70
+
+2003-12-31  joostverburg
+
+	* ../Contrib/Language files/German.nlf: added some missing commas
+
+2003-12-25  kichik
+
+	* ../Examples/one-section.nsi: typo fixed
+
+2003-12-23  kichik
+
+	* ../Contrib/InstallOptions/ioptdll.rc: include winresrc.h instead
+	of afxresh which is not available on non Microsoft compilers (part
+	of MFC it seems)
+
+2003-12-18  kichik
+
+	* ../Contrib/Language files/Croatian.nlf, ../Contrib/Language
+	files/Czech.nlf, ../Contrib/Language files/Greek.nlf,
+	../Contrib/Language files/Hungarian.nlf, ../Contrib/Language
+	files/Japanese.nlf, ../Contrib/Language files/Portuguese.nlf,
+	../Contrib/Language files/Slovak.nlf: - Added SS_NOPREFIX for the
+	static control above the install log so both will show the same
+	when an ampersand is present in the string - Added another
+	parameter for Name. It will be used in places where doubled
+	ampersands are required for text to render as expected. Use it if
+	you have an ampersand in your name. See the updated documentation
+	about the Name command for more information about usage.
+
+2003-12-14  joostverburg
+
+	* ../Docs/style.css: documented new features, font size
+
+2003-11-26  kichik
+
+	* ../Docs/src/bin/halibut/LICENSE: Added modification notice
+
+2003-11-24  joostverburg
+
+	* ../Contrib/Modern UI/ioSpecial.ini: Modern UI 1.68
+
+	* New settings for extra space for title and text on Welcome page
+	and Finish page.  * Improved handling of verbose settings. Define
+	MUI_VERBOSE the set the Modern UI verbose level (1-4).	* Language
+	file string for uninstaller reboot information * Setting for folder
+	validation in leave function * Fixed finish page text settings for
+	multiple pages
+
+2003-11-21  icemank
+
+	* ../Contrib/Makensisw/noclib.cpp: Fixed handling of command line
+	SetCompressor option.
+
+2003-11-19  joostverburg
+
+	* ../Examples/rtest.nsi: test GetFunctionAddress too
+
+2003-11-19  kichik
+
+	* ../Examples/viewhtml.nsi: Chapter1.html no longer comes with the
+	default package
+
+2003-11-19  joostverburg
+
+	* ../Contrib/Graphics/Icons/nsis1-install.ico: added 16x16 icon
+
+2003-11-18  joostverburg
+
+	* ../Contrib/Graphics/Header/nsis-r.bmp,
+	../Contrib/Graphics/Header/nsis.bmp: header image RTL support,
+	fixed NOSTRETCH settings
+
+2003-11-18  kichik
+
+	* ../Contrib/BgImage/BgImage.txt: Do not call SetBg from a section
+
+2003-11-17  kichik
+
+	* ../Contrib/ExDLL/exdll.dpr, ../Contrib/ExDLL/exdll_with_unit.dpr,
+	../Contrib/ExDLL/nsis.pas: Applied patch #838864 - some more
+	optimizations
+
+2003-11-16  kichik
+
+	* ../Contrib/InstallOptions/test.ini: - PROMPT_CREATE doesn't work
+	with REQ_SAVE - Example INI file had old flag names
+
+2003-11-12  kichik
+
+	* ../Contrib/ExDLL/exdll.dsp: Call the same DllMain for debug and
+	release builds
+
+2003-11-06  joostverburg
+
+	* ../Contrib/BgImage/Example.nsi: new Graphics folder
+
+2003-11-05  joostverburg
+
+	* ../Contrib/Graphics/Header/win.bmp: 256 colors
+
+2003-11-05  joostverburg
+
+	* ../Contrib/Graphics/Wizard/llama.bmp,
+	../Contrib/Graphics/Wizard/nsis.bmp,
+	../Contrib/Graphics/Wizard/nullsoft.bmp: 16 colors
+
+2003-11-03  kichik
+
+	* ../Docs/src/bin/halibut/error.c,
+	../Docs/src/bin/halibut/halibut.h, ../Docs/src/bin/halibut/main.c,
+	../Docs/src/bin/halibut/malloc.c, ../Docs/src/bin/halibut/misc.c,
+	../Docs/src/bin/halibut/tree234.c,
+	../Docs/src/bin/halibut/ustring.c, ../Docs/src/nsis.hhp: CHM
+	documentation generates using Halibut. Thanks Nike!
+
+2003-10-08  joostverburg
+
+	* ../Examples/makensis.ini: check for already installed versions
+
+2003-10-02  joostverburg
+
+	* ../Contrib/Graphics/Icons/classic-install.ico,
+	../Contrib/Graphics/Icons/win-install.ico: improved 16x16 icons
+
+2003-10-01  joostverburg
+
+	* ../Menu/images/clear.gif: Quick Launch page
+
+2003-09-30  joostverburg
+
+	* ../Contrib/Graphics/Icons/win-uninstall.ico: 16 colors, added
+	16x16 icons
+
+2003-09-29  joostverburg
+
+	* ../Contrib/Graphics/Icons/classic-uninstall.ico,
+	../Contrib/Graphics/Icons/nsis1-uninstall.ico: classic/nsis1
+	uninstall icons
+
+2003-09-28  joostverburg
+
+	* ../Contrib/zip2exe/Classic.nsh, ../Contrib/zip2exe/Modern.nsh:
+	Zip2Exe 0.3: based on header files, improved interface, Modern UI
+	support, new script code, improved folder detection
+
+2003-09-23  joostverburg
+
+	* ../Contrib/Makensisw/shell.ico, ../Contrib/NSIS
+	Menu/nsismenu/nsisicon.ico, ../Examples/gfx.nsi,
+	../Contrib/Graphics/Checks/big.bmp,
+	../Contrib/Graphics/Checks/classic-cross.bmp,
+	../Contrib/Graphics/Checks/classic.bmp,
+	../Contrib/Graphics/Checks/grey-cross.bmp,
+	../Contrib/Graphics/Checks/grey.bmp,
+	../Contrib/Graphics/Checks/red-round.bmp,
+	../Contrib/Graphics/Icons/arrow-install.ico,
+	../Contrib/Graphics/Icons/arrow-uninstall.ico,
+	../Contrib/Graphics/Icons/box-install.ico,
+	../Contrib/Graphics/Icons/box-uninstall.ico,
+	../Contrib/Graphics/Icons/llama-blue.ico,
+	../Contrib/Graphics/Icons/llama-grey.ico,
+	../Contrib/Graphics/Icons/modern-install-blue-full.ico,
+	../Contrib/Graphics/Icons/modern-install-blue.ico,
+	../Contrib/Graphics/Icons/modern-install-colorful.ico,
+	../Contrib/Graphics/Icons/modern-install-full.ico,
+	../Contrib/Graphics/Icons/modern-install.ico,
+	../Contrib/Graphics/Icons/modern-uninstall-blue-full.ico,
+	../Contrib/Graphics/Icons/modern-uninstall-blue.ico,
+	../Contrib/Graphics/Icons/modern-uninstall-colorful.ico,
+	../Contrib/Graphics/Icons/modern-uninstall-full.ico,
+	../Contrib/Graphics/Icons/modern-uninstall.ico,
+	../Contrib/Graphics/Icons/pixel-install.ico,
+	../Contrib/Graphics/Icons/pixel-uninstall.ico,
+	../Contrib/Graphics/Wizard/win.bmp: new Graphics folder with a good
+	structure, updated icons
+
+2003-09-23  kichik
+
+	* ../Contrib/Math/mathtest.ini: 1. Unary-Pre operators detection
+	fixed.	2. Unary Minus operator added (now legal, worked before?).
+	3. GetReference operator (&). For example (a=&b; *a=3;) will set
+	b=3.  4. Operators precedence added (C-like), much more
+	intellectual expressions parsing.  5. Functions redefenition added,
+	use "#name", like "func()(1); #func()(2);".
+
+2003-09-22  joostverburg
+
+	* ../Menu/images/line.gif: NSIS Menu updates: new design, source
+	fixes, use wxWindows 2.4.2
+
+2003-09-16  kichik
+
+	* ../Contrib/Math/math.nsi, ../Contrib/Math/mathtest.txt,
+	../Contrib/Math/Source/Math.h: Another cool plug-in by brainsucker,
+	a calculator :)
+
+2003-09-05  joostverburg
+
+	* ../Examples/primes.nsi: page commands
+
+2003-09-04  kichik
+
+	* ../Contrib/System/System.nsh,
+	../Contrib/System/Source/System.sln, ../Source/exehead/resource.h:
+	* PageEx - every page can be used everywhere and as many times as
+	needed * DirVar - easy way to add another dir page * default
+	strings in the language file (Page directory is enough, no need for
+	DirText) * strings from the language file are now LangStrings that
+	can be used in the script * no more /LANG - one string for all
+	languages * any lang strings can be used everywhere, installer or
+	uninstaller (no un.) * no more unprocessed strings - variables can
+	be used almost everywhere (except in licenseData and
+	InstallDirRegKey) * DirText parm for browse dialog text *
+	SetBkColor -> SetCtlColors - can now set text color too * fixed
+	SetOutPath and File /r bug * fixed File /a /oname bug * added
+	$_CLICK for pages * added quotes support in lang files (patch
+	#752620) * extraction progress * separate RTL dialogs for RTL langs
+	(improved RTL too) * InstallOptions RTL * StartMenu RTL * fixed
+	RegDLL? * added IfSilent and SetSilent (SetSilent only works from
+	.onInit) * fixed verify window (it never showed) (bug #792494) *
+	fixed ifnewer readonly file problem (patch #783782) * fixed
+	wininit.ini manipulation when there is another section after
+	[rename] * fixed some ClearType issues * fixed a minor bug in the
+	resource editor * fixed !ifdef/!endif stuff, rewritten * lots of
+	code and comments clean ups * got rid of some useless exceptions
+	handling and STL classes (still much more to go) * lots of
+	optimizations, of course ;) * updated system.dll with support for
+	GUID, WCHAR, and fast VTable calling (i.e. COM ready) * minor bug
+	fixes
+
+2003-08-11  joostverburg
+
+	* ../Contrib/VPatch/Source/GUI/AboutForm.pas,
+	../Contrib/VPatch/Source/GUI/ProgressForm.dfm,
+	../Contrib/VPatch/Source/GUI/ProgressForm.pas: VPatch 2.0 final
+
+2003-08-07  ramon18
+
+	* ../Contrib/ExDLL/extdll.inc: New MASM32 header for NSIS plug-ins
+
+2003-06-16  ramon18
+
+	* ../Contrib/InstallOptions/testlink.nsi: Added new control "LINK"
+	and example
+
+2003-06-12  ramon18
+
+	* ../Examples/Modern UI/ioA.ini: READONLY in text box
+
+2003-06-10  ramon18
+
+	* ../Contrib/InstallOptions/test.nsi: Added MULTILINE support for
+	edit box, better tab order between ReqFile, DirReq and it's browse
+	button
+
+2003-05-26  joostverburg
+
+	* ../Contrib/NSIS Menu/nsismenu/nsismenu.rc, ../Contrib/NSIS
+	Menu/nsismenu/resource.h: NSIS Menu source
+
+2003-05-02  kichik
+
+	* ../Contrib/UserInfo/UserInfo.nsi: Done after error
+
+2003-04-04  kichik
+
+	* ../Docs/src/bin/halibut/biblio.c, ../Docs/src/bin/halibut/help.c,
+	../Docs/src/bin/halibut/index.c,
+	../Docs/src/bin/halibut/keywords.c,
+	../Docs/src/bin/halibut/licence.c,
+	../Docs/src/bin/halibut/tree234.h: Hopefully readable now: indent
+	-nut -kr -bl -bli0 -i2 *
+
+2003-03-27  kichik
+
+	* ../Contrib/System/Source/stdafx.h: Source code for latest fixes
+	(brainsucker)
+
+2003-03-22  joostverburg
+
+	* ../Contrib/System/Source/chkstk.obj: Updated System plugin -
+	Win9x fixes and more
+
+2003-03-18  joostverburg
+
+	* ../Contrib/Dialer/Dialer.txt: ConnectInternet function
+
+2003-02-19  joostverburg
+
+	* ../Contrib/NSISdl/License.txt: updated readme
+
+2003-02-07  kichik
+
+	* ../Include/MUI.nsh: If we already have include directories, why
+	not use them?
+
+2002-12-14  joostverburg
+
+	* ../Examples/Modern UI/ioB.ini, ../Examples/Modern UI/ioC.ini:
+	Modern UI 1.62
+
+2002-12-04  kichik
+
+	* ../Contrib/NSISdl/connection.cpp, ../Contrib/NSISdl/util.h:
+	Smaller
+
+2002-11-11  kichik
+
+	* ../Contrib/StartMenu/resource.h: Added /checknoshortcuts
+
+2002-11-01  kichik
+
+	* ../Docs/src/bin/halibut/style.c: Hacked up halibut source code
+
+2002-10-31  kichik
+
+	* ../Contrib/System/Source/Buffers.h,
+	../Contrib/System/Source/Plugin.c,
+	../Contrib/System/Source/stdafx.c,
+	../Contrib/System/Source/vc7ldvrm.obj,
+	../Contrib/System/Source/vc7lmul.obj,
+	../Contrib/System/Source/vc7lshl.obj,
+	../Contrib/System/Source/vc7lshr.obj: Source files to Source
+	directory
+
+2002-10-31  joostverburg
+
+	* ../Contrib/System/Resource.dll: version 2 final
+
+2002-10-10  rainwater
+
+	* ../Contrib/Makensisw/logo.bmp: Minor logo.bmp update; Small docs
+	updates
+
+2002-10-09  rainwater
+
+	* ../Contrib/Makensisw/logo.psp: Added new About dialog
+
+2002-09-20  justin1014
+
+	* ../Source/exehead/bitmap1.bmp: updated with magentagaynessbg[tm]
+
+2002-09-11  rainwater
+
+	* ../Source/exehead/nsis.ico: Updated NSIS icon
+
+2002-09-10  rainwater
+
+	* ../Contrib/zip2exe/icon.ico: Updated Zip2Exe's GUI
+
+2002-08-29  kichik
+
+	* ../Contrib/LangDLL/resource.h: [no log message]
+
+2002-08-26  rainwater
+
+	* ../Contrib/Makensisw/License.txt: license update
+
+2002-08-02  kichik
+
+	* ../Contrib/ExDLL/exdll.dsw, ../Contrib/InstallOptions/resource.h,
+	../Contrib/NSISdl/httpget.h, ../Source/exehead/uninst.ico: no
+	message
+

@@ -1,18 +1,25 @@
+/*
+ * tokens.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "Platform.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "build.h"
 #include "tokens.h"
-
-// token placement
-#define TP_SEC    1
-#define TP_FUNC   2
-#define TP_CODE   (TP_SEC | TP_FUNC)
-#define TP_GLOBAL 4
-#define TP_PAGEEX 8
-#define TP_PG     (TP_GLOBAL | TP_PAGEEX)
-#define TP_ALL    (TP_CODE | TP_PG)
 
 typedef struct 
 {
@@ -147,7 +154,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_RENAME,"Rename",2,1,"[/REBOOTOK] source_file destination_file",TP_CODE},
 {TOK_RET,"Return",0,0,"",TP_CODE},
 {TOK_RMDIR,"RMDir",1,2,"[/r] [/REBOOTOK] directory_name",TP_CODE},
-{TOK_SECTION,"Section",0,3,"[/0] [-][un.][section_name] [section index output]",TP_GLOBAL},
+{TOK_SECTION,"Section",0,3,"[/o] [-][un.][section_name] [section index output]",TP_GLOBAL},
 {TOK_SECTIONEND,"SectionEnd",0,0,"",TP_SEC},
 {TOK_SECTIONIN,"SectionIn",1,-1,"InstTypeIdx [InstTypeIdx [...]]",TP_SEC},
 {TOK_SUBSECTION,"SubSection",1,2,"deprecated - use SectionGroup",TP_GLOBAL},
@@ -219,6 +226,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_WRITEREGEXPANDSTR,"WriteRegExpandStr",4,0,"rootkey subkey entry_name new_value_string\n    root_key=(HKCR|HKLM|HKCU|HKU|HKCC|HKDD|HKPD|SHCTX)",TP_CODE},
 {TOK_WRITEUNINSTALLER,"WriteUninstaller",1,0,"uninstall_exe_name",TP_CODE},
 {TOK_XPSTYLE, "XPStyle",1,0,"(on|off)",TP_GLOBAL},
+{TOK_REQEXECLEVEL, "RequestExecutionLevel",1,0,"none|user|highest|admin",TP_GLOBAL},
 {TOK_P_PACKEXEHEADER,"!packhdr",2,0,"temp_file_name command_line_to_compress_that_temp_file",TP_ALL},
 {TOK_P_SYSTEMEXEC,"!system",1,2,"command [<|>|<>|=) retval]",TP_ALL},
 {TOK_P_EXECUTE,"!execute",1,0,"command",TP_ALL},
@@ -229,7 +237,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_IFDEF,"!ifdef",1,-1,"symbol [| symbol2 [& symbol3 [...]]]",TP_ALL},
 {TOK_P_IFNDEF,"!ifndef",1,-1,"symbol [| symbol2 [& symbol3 [...]]]",TP_ALL},
 {TOK_P_ENDIF,"!endif",0,0,"",TP_ALL},
-{TOK_P_DEFINE,"!define",1,4,"([/date|/utcdate] symbol [value]) | (/math symbol val1 OP val2)\n    OP=(+ - * / %)",TP_ALL},
+{TOK_P_DEFINE,"!define",1,4,"([/date|/utcdate] symbol [value]) | (/math symbol val1 OP val2)\n    OP=(+ - * / % & | ^)",TP_ALL},
 {TOK_P_UNDEF,"!undef",1,1,"symbol [value]",TP_ALL},
 {TOK_P_ELSE,"!else",0,-1,"[if[macro][n][def] ...]",TP_ALL},
 {TOK_P_ECHO,"!echo",1,0,"message",TP_ALL},
@@ -289,6 +297,14 @@ void CEXEBuild::print_help(char *commandname)
 
 }
 
+bool CEXEBuild::is_valid_token(char *s)
+{
+  for (int x = 0; x < TOK__LAST; x ++)
+    if (!stricmp(tokenlist[x].name,s)) 
+      return true;
+  return false;
+}
+
 int CEXEBuild::get_commandtoken(char *s, int *np, int *op, int *pos)
 {
   int x;
@@ -303,69 +319,77 @@ int CEXEBuild::get_commandtoken(char *s, int *np, int *op, int *pos)
   return -1;
 }
 
+int CEXEBuild::GetCurrentTokenPlace()
+{
+  if (build_cursection)
+  {
+    if (build_cursection_isfunc)
+    {
+      return TP_FUNC;
+    }
+    else
+    {
+      return TP_SEC;
+    }
+  }
+
+  if (cur_page)
+    return TP_PAGEEX;
+
+  return TP_GLOBAL;
+}
+
 int CEXEBuild::IsTokenPlacedRight(int pos, char *tok)
 {
   if ((unsigned int) pos > (sizeof(tokenlist) / sizeof(tokenType)))
     return PS_OK;
 
   int tp = tokenlist[pos].placement;
-  if (build_cursection && !build_cursection_isfunc)
-  {
-    // section
-    if (tp & TP_SEC)
-      return PS_OK;
-    ERROR_MSG("Error: command %s not valid in section\n", tok);
-    return PS_ERROR;
+  int cp = GetCurrentTokenPlace();
+  if (tp & cp) {
+    return PS_OK;
   }
-  else if (build_cursection && build_cursection_isfunc)
-  {
-    // function
-    if (tp & TP_FUNC)
-      return PS_OK;
-    ERROR_MSG("Error: command %s not valid in function\n", tok);
-    return PS_ERROR;
-  }
-  else if (cur_page)
-  {
-    // pageex
-    if (tp & TP_PAGEEX)
-      return PS_OK;
-    ERROR_MSG("Error: command %s not valid in PageEx\n", tok);
-    return PS_ERROR;
-  }
-  else
-  {
-    // global
-    if (tp & TP_GLOBAL)
-      return PS_OK;
+  else {
     char err[1024];
-    strcpy(err, "Error: command %s not valid outside ");
-    if (tp & TP_SEC)
-      strcat(err, "section");
-    if (tp & TP_FUNC)
+    if (cp == TP_SEC) {
+      strcpy(err, "Error: command %s not valid in Section\n");
+    }
+    else if (cp == TP_FUNC) {
+      strcpy(err, "Error: command %s not valid in Function\n");
+    }
+    else if (cp == TP_PAGEEX) {
+      strcpy(err, "Error: command %s not valid in PageEx\n");
+    }
+    else
     {
+      strcpy(err, "Error: command %s not valid outside ");
       if (tp & TP_SEC)
+        strcat(err, "Section");
+      if (tp & TP_FUNC)
       {
-        if (tp & TP_PAGEEX)
+        if (tp & TP_SEC)
         {
-          strcat(err, ", ");
+          if (tp & TP_PAGEEX)
+          {
+            strcat(err, ", ");
+          }
+          else
+          {
+            strcat(err, " or ");
+          }
         }
-        else
+        strcat(err, "Function");
+      }
+      if (tp & TP_PAGEEX)
+      {
+        if (tp & TP_CODE)
         {
           strcat(err, " or ");
         }
+        strcat(err, "PageEx");
       }
-      strcat(err, "function");
+      strcat(err, "\n");
     }
-    if (tp & TP_PAGEEX)
-    {
-      if (tp & TP_CODE)
-      {
-        strcat(err, " or ");
-      }
-      strcat(err, "PageEx");
-    }
-    strcat(err, "\n");
     ERROR_MSG(err, tok);
     return PS_ERROR;
   }

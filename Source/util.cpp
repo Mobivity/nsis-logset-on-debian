@@ -1,3 +1,19 @@
+/*
+ * util.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "Platform.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -106,7 +122,7 @@ int update_bitmap(CResourceEditor* re, WORD id, const char* filename, int width/
   }
   fclose(f);
 
-  re->UpdateResource(RT_BITMAP, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG, bitmap, dwSize);
+  re->UpdateResourceA(RT_BITMAP, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG, bitmap, dwSize);
 
   free(bitmap);
 
@@ -185,7 +201,7 @@ void replace_icon(CResourceEditor* re, WORD wIconId, const char* filename)
   int i = 1;
 
   // Delete old icons
-  while (re->UpdateResource(RT_ICON, MAKEINTRESOURCE(i++), NSIS_DEFAULT_LANG, 0, 0));
+  while (re->UpdateResourceA(RT_ICON, MAKEINTRESOURCE(i++), NSIS_DEFAULT_LANG, 0, 0));
 
   for (i = 0; i < igh.wCount; i++) {
     fread(ige, sizeof(FileIconGroupEntry)-sizeof(DWORD), 1, f);
@@ -212,7 +228,7 @@ void replace_icon(CResourceEditor* re, WORD wIconId, const char* filename)
       throw bad_alloc();
     }
     fread(iconData, sizeof(BYTE), dwRawSize, f);
-    re->UpdateResource(RT_ICON, MAKEINTRESOURCE(i+1), NSIS_DEFAULT_LANG, iconData, dwRawSize);
+    re->UpdateResourceA(RT_ICON, MAKEINTRESOURCE(i+1), NSIS_DEFAULT_LANG, iconData, dwRawSize);
     free(iconData);
 
     fsetpos(f, &pos);
@@ -224,7 +240,7 @@ void replace_icon(CResourceEditor* re, WORD wIconId, const char* filename)
 
   fclose(f);
 
-  re->UpdateResource(RT_GROUP_ICON, MAKEINTRESOURCE(wIconId), NSIS_DEFAULT_LANG, rsrcIconGroup, sizeof(IconGroupHeader) + igh.wCount*SIZEOF_RSRC_ICON_GROUP_ENTRY);
+  re->UpdateResourceA(RT_GROUP_ICON, MAKEINTRESOURCE(wIconId), NSIS_DEFAULT_LANG, rsrcIconGroup, sizeof(IconGroupHeader) + igh.wCount*SIZEOF_RSRC_ICON_GROUP_ENTRY);
 
   free(rsrcIconGroup);
 }

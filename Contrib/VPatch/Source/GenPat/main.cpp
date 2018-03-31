@@ -166,6 +166,8 @@ int main( int argc, char * argv[] ) {
   targetCRC->mode = TChecksum::MD5;  // default
 
   string tempFileName = POSIX::getTempFile();
+  if (tempFileName == "")
+    return 2;
 
   // open the files
   bifstream source;
@@ -178,7 +180,7 @@ int main( int argc, char * argv[] ) {
   // remove existing patch with sourceCRC
   TFileOffset fileCount = 0;
   while(true) {
-    TFileOffset previousPatchSize;
+    TFileOffset previousPatchSize = 0;
     try {
       previousPatchSize = POSIX::getFileSize(patchFileName.c_str());
     } catch(const char* s) {

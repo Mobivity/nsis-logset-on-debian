@@ -1,3 +1,19 @@
+/*
+ * fileform.c
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "../Platform.h"
 #include "fileform.h"
 #include "util.h"
@@ -114,7 +130,7 @@ const char * NSISCALL loadHeaders(int cl_flags)
 
   HANDLE db_hFile;
 
-  GetModuleFileName(g_hInstance, state_exe_directory, NSIS_MAX_STRLEN);
+  GetModuleFileName(NULL, state_exe_directory, NSIS_MAX_STRLEN);
 
   g_db_hFile = db_hFile = myOpenFile(state_exe_directory, GENERIC_READ, OPEN_EXISTING);
   if (db_hFile == INVALID_HANDLE_VALUE)
@@ -150,14 +166,18 @@ const char * NSISCALL loadHeaders(int cl_flags)
            h.nsinst[0] == FH_INT1
          )
       {
-        if (h.length_of_all_following_data > left)
-          return _LANG_INVALIDCRC;
-
         g_filehdrsize = m_pos;
 
-#if defined(NSIS_CONFIG_CRC_SUPPORT) || (defined(NSIS_CONFIG_SILENT_SUPPORT) && defined(NSIS_CONFIG_VISIBLE_SUPPORT))
+#if defined(NSIS_CONFIG_CRC_SUPPORT) || defined(NSIS_CONFIG_SILENT_SUPPORT)
         cl_flags |= h.flags;
 #endif
+
+#ifdef NSIS_CONFIG_SILENT_SUPPORT
+        g_exec_flags.silent |= cl_flags & FH_FLAGS_SILENT;
+#endif
+
+        if (h.length_of_all_following_data > left)
+          return _LANG_INVALIDCRC;
 
 #ifdef NSIS_CONFIG_CRC_SUPPORT
         if ((cl_flags & FH_FLAGS_FORCE_CRC) == 0)
@@ -260,18 +280,10 @@ const char * NSISCALL loadHeaders(int cl_flags)
 
   if (GetCompressedDataFromDataBlockToMemory(-1, data, h.length_of_header) != h.length_of_header)
   {
-    GlobalFree((HGLOBAL)data);
     return _LANG_INVALIDCRC;
   }
 
   header = g_header = data;
-
-#ifdef NSIS_CONFIG_SILENT_SUPPORT
-  if (cl_flags & FH_FLAGS_SILENT)
-    header->flags |= CH_FLAGS_SILENT;
-
-  g_exec_flags.silent = header->flags & (CH_FLAGS_SILENT | CH_FLAGS_SILENT_LOG);
-#endif
 
   g_flags = header->flags;
 

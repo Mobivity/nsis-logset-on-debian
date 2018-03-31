@@ -1,35 +1,18 @@
-/* 
-
-  Nullsoft Scriptable Install System (NSIS)
-  makensis.cpp - installer compiler code
-
-  Copyright (C) 1999-2006 Nullsoft, Inc.
-  
-  This license applies to everything in the NSIS package, except where otherwise noted.
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-
-  This is the zlib/libpng license, which is approved by opensource.org.
-
-  Portions Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler (zlib).
-  Portions Copyright (C) 1996-2002 Julian R Seward (bzip2).
-  Portions Copyright (C) 1999-2003 Igor Pavlov (lzma).
-
-*/
+/*
+ * makenssi.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #include "Platform.h"
 #include <stdio.h>
@@ -109,20 +92,17 @@ static void init_signals()
 
 static void print_logo()
 {
-  fprintf(g_output,"MakeNSIS %s - Copyright 1999-2006 Nullsoft, Inc.\n"
-         "\n"
-         "Portions Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler (zlib).\n"
-         "Portions Copyright (C) 1996-2002 Julian R Seward (bzip2).\n"
-         "Portions Copyright (C) 1999-2003 Igor Pavlov (lzma).\n"
-         "\n"
-         "Contributors: nnop@newmail.ru, Ryan Geiss, Andras Varga, Drew Davidson, Peter Windridge, Dave Laundon, Robert Rainwater, Yaroslav Faybishenko, Jeff Doozan, Amir Szekely, Ximon Eighteen, et al.\n\n",NSIS_VERSION);
+  fprintf(g_output,"MakeNSIS %s - Copyright 1995-2007 Contributors\n"
+         "See the file COPYING for license details.\n"
+         "Credits can be found in the Users Manual.\n\n", NSIS_VERSION);
   fflush(g_output);
 }
 
 static void print_license()
 {
-  fprintf(g_output,"Copyright (C) 1999-2006 Nullsoft, Inc.\n\n"
-       "This license applies to everything in the NSIS package, except where otherwise\nnoted.\n\n"
+  fprintf(g_output,"Copyright (C) 1999-2007 Nullsoft and Contributors\n\n"
+       "This license applies to everything in the NSIS package, except where otherwise\n"
+       "noted.\n\n"
        "This software is provided 'as-is', without any express or implied warranty.\n"
        "In no event will the authors be held liable for any damages arising from the\n"
        "use of this software.\n\n"
@@ -135,7 +115,9 @@ static void print_license()
        "     appreciated but is not required.\n"
        "  2. Altered source versions must be plainly marked as such, and must not be\n"
        "     misrepresented as being the original software.\n"
-       "  3. This notice may not be removed or altered from any source distribution.\n\n");
+       "  3. This notice may not be removed or altered from any source distribution.\n\n"
+       "In addition to this license, different licenses apply to the included\n"
+       "compression modules. See the file COPYING for details.\n");
   fflush(g_output);
 }
 
@@ -148,6 +130,8 @@ static void print_usage()
          "    " OPT_STR "HDRINFO prints information about what options makensis was compiled with\n"
          "    " OPT_STR "LICENSE prints the makensis software license\n"
          "    " OPT_STR "VERSION prints the makensis version and exits\n"
+         "    " OPT_STR "Px sets the compiler process priority, where x is 5=realtime,4=high,\n"
+         "    "         "    3=above normal,2=normal,1=below normal,0=idle\n"
          "    " OPT_STR "Vx verbosity where x is 4=all,3=no script,2=no info,1=no warnings,0=none\n"
          "    " OPT_STR "Ofile specifies a text file to log compiler output (default is stdout)\n"
          "    " OPT_STR "PAUSE pauses after execution\n"
@@ -156,7 +140,11 @@ static void print_usage()
          "    " OPT_STR "Ddefine[=value] defines the symbol \"define\" for the script [to value]\n"
          "    " OPT_STR "Xscriptcmd executes scriptcmd in script (i.e. \"" OPT_STR "XOutFile poop.exe\")\n"
          "   parameters are processed by order (" OPT_STR "Ddef ins.nsi != ins.nsi " OPT_STR "Ddef)\n"
-         "   for script file name, you can use - to read from the standard input\n");
+         "   for script file name, you can use - to read from the standard input\n"
+#ifdef _WIN32	
+         "   you can also use - as an option character: -PAUSE as well as /PAUSE\n"
+#endif
+         "   you can use a double-dash to end options processing: makensis -- -ins.nsi\n");
   fflush(g_output);
 }
 
@@ -267,9 +255,7 @@ int main(int argc, char **argv)
   FILE *fp;
   int tmpargpos=1;
   int no_logo=0;
-#ifndef _WIN32
   int in_files=0;
-#endif
 
   try
   {
@@ -282,13 +268,13 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  if (argc > 1 && !stricmp(argv[1], OPT_STR "VERSION"))
+  if (argc > 1 && IS_OPT(argv[1]) && !stricmp(&argv[1][1],"VERSION"))
   {
     fprintf(g_output,NSIS_VERSION);
     fflush(g_output);
     return 0;
   }
-  if (argc > 1 && argv[1][0]==OPT_C && (argv[1][1]=='v' || argv[1][1]=='V'))
+  if (argc > 1 && IS_OPT(argv[1]) && (argv[1][1]=='v' || argv[1][1]=='V'))
   {
     tmpargpos++;
     if (argv[1][2] <= '2' && argv[1][2] >= '0')
@@ -299,7 +285,7 @@ int main(int argc, char **argv)
   
   if (!no_logo)
   {
-    if (argc > tmpargpos && argv[tmpargpos][0]==OPT_C && (argv[tmpargpos][1]=='o' || argv[tmpargpos][1]=='O') && argv[tmpargpos][2])
+    if (argc > tmpargpos && IS_OPT(argv[tmpargpos]) && (argv[tmpargpos][1]=='o' || argv[tmpargpos][1]=='O') && argv[tmpargpos][2])
     {
       g_output=fopen(argv[tmpargpos]+2,"w");
       if (!g_output) 
@@ -317,13 +303,9 @@ int main(int argc, char **argv)
   if (!g_output) g_output=stdout;
   while (argpos < argc)
   {
-#ifndef _WIN32
     if (!strcmp(argv[argpos], "--"))
       in_files=1;
-    else if (argv[argpos][0] == OPT_C && strcmp(argv[argpos], "-") && !in_files)
-#else
-    if (argv[argpos][0] == OPT_C && strcmp(argv[argpos], "-"))
-#endif
+    else if (IS_OPT(argv[argpos]) && strcmp(argv[argpos], "-") && !in_files)
     {
       if ((argv[argpos][1]=='D' || argv[argpos][1]=='d') && argv[argpos][2])
       {
@@ -405,16 +387,45 @@ int main(int argc, char **argv)
         print_stub_info(build);
         nousage++;
       }
+      else if ((argv[argpos][1]=='P' || argv[argpos][1]=='p') &&
+               argv[argpos][2] >= '0' && argv[argpos][2] <= '5' && !argv[argpos][3])
+      {
+#ifdef _WIN32
+        // priority setting added 01-2007 by Comm@nder21
+        int p=argv[argpos][2]-'0';
+        HANDLE hProc = GetCurrentProcess();
+        
+        struct
+        {
+          DWORD priority;
+          DWORD fallback;
+        } classes[] = {
+          {IDLE_PRIORITY_CLASS,         IDLE_PRIORITY_CLASS},
+          {BELOW_NORMAL_PRIORITY_CLASS, IDLE_PRIORITY_CLASS},
+          {NORMAL_PRIORITY_CLASS,       NORMAL_PRIORITY_CLASS},
+          {ABOVE_NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS},
+          {HIGH_PRIORITY_CLASS,         HIGH_PRIORITY_CLASS},
+          {REALTIME_PRIORITY_CLASS,     REALTIME_PRIORITY_CLASS}
+        };
+
+        if (SetPriorityClass(hProc, classes[p].priority) == FALSE)
+        {
+          SetPriorityClass(hProc, classes[p].fallback);
+        }
+
+        if (p == 5)
+          build.warning("makensis is running in REALTIME priority mode!");
+
+#else
+        build.warning(OPT_STR "Px is disabled for non Win32 platforms.");
+#endif
+      }
       else break;
     }
     else
     {
       files_processed++;
-#ifndef _WIN32
       if (!strcmp(argv[argpos],"-") && !in_files)
-#else
-      if (!strcmp(argv[argpos],"-"))
-#endif
         g_dopause=0;
       if (!g_noconfig)
       {
@@ -449,11 +460,7 @@ int main(int argc, char **argv)
 
       {
         char sfile[1024];
-#ifndef _WIN32
         if (!strcmp(argv[argpos],"-") && !in_files)
-#else
-        if (!strcmp(argv[argpos],"-"))
-#endif
         {
           fp=stdin;
           strcpy(sfile,"stdin");

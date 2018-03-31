@@ -1,3 +1,19 @@
+/*
+ * util.h
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "../Platform.h"
 #include "config.h"
 #include <shlobj.h>
@@ -16,7 +32,6 @@ char * NSISCALL mystrcat(char *out, const char *concat);
 char * NSISCALL mystrstr(char *a, char *b);
 WIN32_FIND_DATA * NSISCALL file_exists(char *buf);
 char * NSISCALL my_GetTempFileName(char *buf, const char *dir);
-void NSISCALL FreePIDL(LPITEMIDLIST idl);
 
 //BOOL NSISCALL my_SetWindowText(HWND hWnd, const char *val);
 #define my_SetWindowText SetWindowText
@@ -74,6 +89,7 @@ int NSISCALL is_valid_instpath(char *s);
 void NSISCALL validate_filename(char *fn);
 void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew);
 void NSISCALL mini_memcpy(void *out, const void *in, int len);
+void NSISCALL remove_ro_attr(char *file);
 
 void * NSISCALL myGetProcAddress(char *dll, char *func);
 void NSISCALL MessageLoop(UINT uCheckedMsg);

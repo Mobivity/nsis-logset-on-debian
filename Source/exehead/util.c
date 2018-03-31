@@ -1,3 +1,19 @@
+/*
+ * util.c
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "../Platform.h"
 #include <shellapi.h>
 #include "util.h"
@@ -32,17 +48,6 @@ NSIS_STRING g_usrvars[1] __attribute__((section (NSIS_VARS_SECTION)));
 #    error Unknown compiler. You must implement the seperate PE section yourself.
 #  endif
 #endif
-
-void NSISCALL FreePIDL(LPITEMIDLIST idl)
-{
-  IMalloc *m;
-  SHGetMalloc(&m);
-  if (m)
-  {
-    m->lpVtbl->Free(m, idl);
-    m->lpVtbl->Release(m);
-  }
-}
 
 HANDLE NSISCALL myCreateProcess(char *cmd, char *dir)
 {
@@ -149,7 +154,7 @@ void NSISCALL myDelete(char *buf, int flags)
           else
           {
             log_printf2("Delete: DeleteFile(\"%s\")",buf);
-            SetFileAttributes(buf,fd.dwFileAttributes&(~FILE_ATTRIBUTE_READONLY));
+            remove_ro_attr(buf);
             if (!DeleteFile(buf))
             {
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
@@ -192,7 +197,7 @@ void NSISCALL myDelete(char *buf, int flags)
     {
       addtrailingslash(buf);
       log_printf2("RMDir: RemoveDirectory(\"%s\")",buf);
-      SetFileAttributes(buf,FILE_ATTRIBUTE_NORMAL);
+      remove_ro_attr(buf);
       if (!RemoveDirectory(buf))
       {
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
@@ -354,6 +359,13 @@ void NSISCALL mini_memcpy(void *out, const void *in, int len)
   }
 }
 
+void NSISCALL remove_ro_attr(char *file)
+{
+  int attr = GetFileAttributes(file);
+  if (attr != INVALID_FILE_ATTRIBUTES)
+    SetFileAttributes(file,attr&(~FILE_ATTRIBUTE_READONLY));
+}
+
 HANDLE NSISCALL myOpenFile(const char *fn, DWORD da, DWORD cd)
 {
   int attr = GetFileAttributes(fn);
@@ -425,11 +437,8 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
       return;
     cchRenameLine = wsprintf(szRenameLine,"%s=%s\r\n",tmpbuf,wininit);
 
-    GetWindowsDirectory(wininit, 1024-16);
-    mystrcat(wininit, "\\wininit.ini");
-    hfile = CreateFile(wininit,
-        GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    GetNSISString(wininit, g_header->str_wininit);
+    hfile = myOpenFile(wininit, GENERIC_READ | GENERIC_WRITE, OPEN_ALWAYS);
 
     if (hfile != INVALID_HANDLE_VALUE)
     {
@@ -593,45 +602,13 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
 
       if (nVarIdx == NS_SHELL_CODE)
       {
-        // NOTE 1: the code CSIDL_PRINTERS, is used for QUICKLAUNCH
-        // NOTE 2: the code CSIDL_BITBUCKET is used for COMMONFILES
-        // NOTE 3: the code CSIDL_CONTROLS is used for PROGRAMFILES
         LPITEMIDLIST idl;
-        char *append = 0;
 
-        int x = 0;
+        int x = 2;
 
-        *out = 0;
-
-        if (fldrs[2] == CSIDL_PRINTERS) // QUICKLAUNCH
-        {
-          append = "\\Microsoft\\Internet Explorer\\Quick Launch";
-          x = 2;
-        }
-        else if (fldrs[0] == CSIDL_PROGRAM_FILES_COMMON)
-        {
-          myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "CommonFilesDir", out);
-        }
-        else if (fldrs[0] == CSIDL_PROGRAM_FILES)
-        {
-          myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "ProgramFilesDir", out);
-          if (!*out)
-            mystrcpy(out, "C:\\Program Files");
-        }
-        else if (fldrs[0] == CSIDL_SYSTEM)
-        {
-          GetSystemDirectory(out, NSIS_MAX_STRLEN);
-        }
-        else if (fldrs[0] == CSIDL_WINDOWS)
-        {
-          GetWindowsDirectory(out, NSIS_MAX_STRLEN);
-        }
-
-        if (!*out)
+        if (g_exec_flags.all_user_var)
         {
           x = 4;
-          if (!g_exec_flags.all_user_var)
-            x = 2;
         }
 
         while (x--)
@@ -639,19 +616,46 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           if (!SHGetSpecialFolderLocation(g_hwnd, fldrs[x], &idl))
           {
             BOOL res = SHGetPathFromIDList(idl, out);
-            FreePIDL(idl);
+            CoTaskMemFree(idl);
             if (res)
             {
               break;
             }
           }
-          else
-            *out=0;
+          *out=0;
         }
 
-        if (*out && append)
+        // resort to old registry methods, only when CSIDL failed
+        if (!*out)
         {
-          mystrcat(out, append);
+          if (fldrs[0] == CSIDL_PROGRAM_FILES_COMMON)
+          {
+            myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "CommonFilesDir", out);
+          }
+          else if (fldrs[0] == CSIDL_PROGRAM_FILES)
+          {
+            myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "ProgramFilesDir", out);
+            if (!*out)
+              mystrcpy(out, "C:\\Program Files");
+          }
+          else if (fldrs[0] == CSIDL_SYSTEM)
+          {
+            GetSystemDirectory(out, NSIS_MAX_STRLEN);
+          }
+          else if (fldrs[0] == CSIDL_WINDOWS)
+          {
+            GetWindowsDirectory(out, NSIS_MAX_STRLEN);
+          }
+        }
+
+        if (*out)
+        {
+          // all users' version is CSIDL_APPDATA only for $QUICKLAUNCH
+          // for normal $APPDATA, it'd be CSIDL_APPDATA_COMMON
+          if (fldrs[2] == CSIDL_APPDATA)
+          {
+            mystrcat(out, "\\Microsoft\\Internet Explorer\\Quick Launch");
+          }
         }
 
         validate_filename(out);

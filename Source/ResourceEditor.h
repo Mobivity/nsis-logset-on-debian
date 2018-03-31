@@ -1,24 +1,18 @@
 /*
-  Copyright (C) 2002-2006 Amir Szekely <kichik@users.sourceforge.net>
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-  claim that you wrote the original software. If you use this software
-  in a product, an acknowledgment in the product documentation would be
-  appreciated but is not required.
-
-  2. Altered source versions must be plainly marked as such, and must not be
-  misrepresented as being the original software.
-
-  3. This notice may not be removed or altered from any source distribution.
-*/
+ * ResourceEditor.h
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 2002-2007 Amir Szekely <kichik@users.sourceforge.net>
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #if !defined(AFX_RESOURCEEDITOR_H__683BF710_E805_4093_975B_D5729186A89A__INCLUDED_)
 #define AFX_RESOURCEEDITOR_H__683BF710_E805_4093_975B_D5729186A89A__INCLUDED_
@@ -108,17 +102,27 @@ typedef struct RESOURCE_DIRECTORY {
   MY_IMAGE_RESOURCE_DIRECTORY_ENTRY Entries[1];
 } *PRESOURCE_DIRECTORY;
 
+#define GetMemberFromOptionalHeader(optionalHeader, member) \
+    ( (optionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) ? \
+      &((PIMAGE_OPTIONAL_HEADER32)&optionalHeader)->member : \
+      &((PIMAGE_OPTIONAL_HEADER64)&optionalHeader)->member \
+    )
 class CResourceEditor {
 public:
   CResourceEditor(BYTE* pbPE, int iSize);
   virtual ~CResourceEditor();
 
-  bool  UpdateResource(char* szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResource(WORD szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResource(char* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
   bool  UpdateResource(WORD szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  BYTE* GetResource(char* szType, char* szName, LANGID wLanguage);
-  int   GetResourceSize(char* szType, char* szName, LANGID wLanguage);
+  bool  UpdateResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  bool  UpdateResourceW(WORD szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  bool  UpdateResourceW(WCHAR* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  bool  UpdateResourceA(char* szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  bool  UpdateResourceA(WORD szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  bool  UpdateResourceA(char* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  BYTE* GetResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage);
+  BYTE* GetResourceA(char* szType, char* szName, LANGID wLanguage);
+  int   GetResourceSizeW(WCHAR* szType, WCHAR* szName, LANGID wLanguage);
+  int   GetResourceSizeA(char* szType, char* szName, LANGID wLanguage);
   void  FreeResource(BYTE* pbResource);
 
   bool  AddExtraVirtualSize2PESection(const char* pszSectionName, int addsize);
@@ -166,7 +170,7 @@ public:
   void AddEntry(CResourceDirectoryEntry* entry);
   void RemoveEntry(int i);
   int  CountEntries();
-  int  Find(char* szName);
+  int  Find(WCHAR* szName);
   int  Find(WORD wId);
 
   DWORD GetSize();
@@ -182,12 +186,12 @@ private:
 
 class CResourceDirectoryEntry {
 public:
-  CResourceDirectoryEntry(char* szName, CResourceDirectory* rdSubDir);
-  CResourceDirectoryEntry(char* szName, CResourceDataEntry* rdeData);
+  CResourceDirectoryEntry(WCHAR* szName, CResourceDirectory* rdSubDir);
+  CResourceDirectoryEntry(WCHAR* szName, CResourceDataEntry* rdeData);
   virtual ~CResourceDirectoryEntry();
 
   bool HasName();
-  char* GetName();
+  WCHAR* GetName();
   int GetNameLength();
 
   WORD GetId();
@@ -201,10 +205,8 @@ public:
 
 private:
   bool m_bHasName;
-  union {
-    char* m_szName;
-    WORD m_wId;
-  };
+  WCHAR* m_szName;
+  WORD m_wId;
 
   bool m_bIsDataDirectory;
   union {

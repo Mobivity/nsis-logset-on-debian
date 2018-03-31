@@ -1,3 +1,19 @@
+/*
+ * mmap.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "mmap.h"
 
 #include <cstdio> // for f*
@@ -274,7 +290,7 @@ void *MMapFile::get(int offset, int *sizep) const
   return (void *)((char *)m_pView + offset - alignedoffset);
 }
 
-void *MMapFile::getmore(int offset, int *size) const
+void *MMapFile::getmore(int offset, int size) const
 {
   void *pView;
   void *pViewBackup = m_pView;
@@ -308,6 +324,9 @@ void MMapFile::release(void *pView, int size)
   if (!pView)
     return;
 
+  unsigned int alignment = ((unsigned int)pView) % m_iAllocationGranularity;
+  pView = (char *)pView - alignment;
+  size += alignment;
 #ifdef _WIN32
   UnmapViewOfFile(pView);
 #else
@@ -358,7 +377,7 @@ void *MMapFake::get(int offset, int *size) const
   return (void *)(m_pMem + offset);
 }
 
-void *MMapFake::getmore(int offset, int *size) const
+void *MMapFake::getmore(int offset, int size) const
 {
   return get(offset, size);
 }
@@ -461,7 +480,7 @@ void *MMapBuf::get(int offset, int size) const
   return (void *) ((char *) m_gb.get() + offset);
 }
 
-void *MMapBuf::getmore(int offset, int *size) const
+void *MMapBuf::getmore(int offset, int size) const
 {
   if (m_gb_u)
     return m_fm.getmore(offset, size);

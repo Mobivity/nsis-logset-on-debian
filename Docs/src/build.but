@@ -6,7 +6,7 @@ NSIS version 2.07 introduced a new build system, based on \W{http://www.scons.or
 
 Source code is available in \W{http://nsis.cvs.sourceforge.net/nsis}{CVS} and as a separate package with every \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{NSIS distribution}.
 
-To build NSIS \W{http://www.python.org/}{Python} and \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 0.96.91. Any version of Python above 1.6 is supported.
+To build NSIS \W{http://www.python.org/}{Python} and \W{http://www.scons.org/}{SCons} must be installed. Currently, the supported version of SCons is version 0.96.93. Any version of Python above 1.6 is supported.
 
 To build, open a console, change the working directory to the root directory of NSIS and type \c{scons}. That's it. For example:
 
@@ -51,7 +51,9 @@ To get a complete list of options SCons has to offer, type:
 
 \H{build_windows} Building on Windows
 
-If Microsoft Visual C++ is installed, SCons will automatically detect and use it. \W{http://msdn.microsoft.com/visualc/vctoolkit2003/}{Visual C++ Toolkit} and \W{http://www.microsoft.com/msdownload/platformsdk/sdkupdate/}{Platform SDK} is a free alternative. The build system doesn't automatically recognize the toolkit. It must be given a hint:
+SCons will automatically detect Microsoft Visual C++. If you are looking for a free compiler to compile NSIS, we recommend \W{http://msdn.microsoft.com/vstudio/express/visualc/download/}{Microsoft Visual C++ 2005 Express Edition}.
+
+When using the Microsoft Visual C++ Toolkit 2003, add MSTOOLKIT=yes to the build command line:
 
 \c scons MSTOOLKIT=yes
 
@@ -73,9 +75,11 @@ As of NSIS 2.01, the compiler, makensis, also compiles on POSIX platforms. POSIX
 
 If no cross-compiler is available, use the following:
 
-\c scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no
+\c scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all
+\c       NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip
+\c       install-compiler
 
-This should only build makensis. Once makensis is built, drop it in a downloaded precompiled package such as the \R{build_nightly}{nightly build} or a \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{zipped release version} (nsis-x.xx.zip). Note that the in order for this to work, the precompiled package must be compiled using the exact same sources as makensis. In particular, \c{Source\\exehead\\config.h} and \c{Source\\exehead\\fileform.h} must be identical.
+This should only build makensis and install it to the directory where a precompiled package, such as the \R{build_nightly}{nightly build} or a \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{zipped release version} (nsis-x.xx.zip), is extracted. Note that the in order for this to work, the precompiled package must be compiled using the exact same sources as makensis. In particular, \c{Source\\exehead\\config.h}, the options passed to scons and \c{Source\\exehead\\fileform.h} must be identical. Nightly builds and zipped release versions are built with the default options.
 
 Currently, the System plug-in \W{http://forums.winamp.com/showthread.php?s=&threadid=227304}{can't be built} using a cross-compiler, but only with MSVC. When building with a cross compiler, always use at least the following flags:
 

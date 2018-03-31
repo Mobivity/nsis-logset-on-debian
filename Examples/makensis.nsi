@@ -23,12 +23,15 @@ InstType "Minimal"
 InstallDir $PROGRAMFILES\NSIS
 InstallDirRegKey HKLM Software\NSIS ""
 
+RequestExecutionLevel admin
+
 ;--------------------------------
 ;Header Files
 
 !include "MUI.nsh"
 !include "Sections.nsh"
 !include "LogicLib.nsh"
+!include "Memento.nsh"
 
 ;--------------------------------
 ;Definitions
@@ -43,6 +46,10 @@ InstallDirRegKey HKLM Software\NSIS ""
 Name "NSIS"
 Caption "NSIS ${VERSION} Setup"
 
+;Memento Settings
+!define MEMENTO_REGISTRY_ROOT HKLM
+!define MEMENTO_REGISTRY_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS"
+
 ;Interface Settings
 !define MUI_ABORTWARNING
 
@@ -56,7 +63,7 @@ Caption "NSIS ${VERSION} Setup"
 !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of NSIS (Nullsoft Scriptable Install System) ${VERSION}, the next generation of the Windows installer and uninstaller system that doesn't suck and isn't huge.\r\n\r\nNSIS 2 includes a new Modern User Interface, LZMA compression, support for multiple languages and an easy plug-in system.\r\n\r\n$_CLICK"
 
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "..\license.txt"
+!insertmacro MUI_PAGE_LICENSE "..\COPYING"
 !ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
 Page custom PageReinstall PageLeaveReinstall
 !endif
@@ -95,7 +102,7 @@ Page custom PageReinstall PageLeaveReinstall
 ;--------------------------------
 ;Installer Sections
 
-Section "NSIS Core Files (required)" SecCore
+${MementoSection} "NSIS Core Files (required)" SecCore
 
   SetDetailsPrint textonly
   DetailPrint "Installing NSIS Core Files..."
@@ -108,10 +115,11 @@ Section "NSIS Core Files (required)" SecCore
   SetOverwrite on
   File ..\makensis.exe
   File ..\makensisw.exe
-  File ..\license.txt
+  File ..\COPYING
   File ..\NSIS.chm
-
   File ..\NSIS.exe
+  File /nonfatal ..\NSIS.exe.manifest
+
   IfFileExists $INSTDIR\nsisconf.nsi "" +2
   Rename $INSTDIR\nsisconf.nsi $INSTDIR\nsisconf.nsh
   SetOverwrite off
@@ -138,6 +146,9 @@ Section "NSIS Core Files (required)" SecCore
   File ..\Include\FileFunc.nsh
   File ..\Include\TextFunc.nsh
   File ..\Include\WordFunc.nsh
+  File ..\Include\WinVer.nsh
+  File ..\Include\x64.nsh
+  File ..\Include\Memento.nsh
 
   SetOutPath $INSTDIR\Docs\StrFunc
   File ..\Docs\StrFunc\StrFunc.txt
@@ -199,9 +210,9 @@ Section "NSIS Core Files (required)" SecCore
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 
-SectionEnd
+${MementoSectionEnd}
 
-Section "Script Examples" SecExample
+${MementoSection} "Script Examples" SecExample
 
   SetDetailsPrint textonly
   DetailPrint "Installing Script Examples..."
@@ -236,17 +247,29 @@ Section "Script Examples" SecExample
   File ..\Examples\WordFunc.nsi
   File ..\Examples\WordFunc.ini
   File ..\Examples\WordFuncTest.nsi
-SectionEnd
+  File ..\Examples\Memento.nsi
+
+  SetOutPath $INSTDIR\Examples\Plugin
+  File ..\Examples\Plugin\exdll.c
+  File ..\Examples\Plugin\exdll.dpr
+  File ..\Examples\Plugin\exdll.dsp
+  File ..\Examples\Plugin\exdll.dsw
+  File ..\Examples\Plugin\exdll.h
+  File ..\Examples\Plugin\exdll_with_unit.dpr
+  File ..\Examples\Plugin\extdll.inc
+  File ..\Examples\Plugin\nsis.pas
+
+${MementoSectionEnd}
 
 !ifndef NO_STARTMENUSHORTCUTS
-Section "Start Menu and Desktop Shortcuts" SecShortcuts
+${MementoSection} "Start Menu and Desktop Shortcuts" SecShortcuts
 
   SetDetailsPrint textonly
   DetailPrint "Installing Start Menu and Desktop Shortcuts..."
   SetDetailsPrint listonly
 
 !else
-Section "Desktop Shortcut" SecShortcuts
+${MementoSection} "Desktop Shortcut" SecShortcuts
 
   SetDetailsPrint textonly
   DetailPrint "Installing Desktop Shortcut..."
@@ -270,11 +293,11 @@ Section "Desktop Shortcut" SecShortcuts
 
   CreateShortCut "$DESKTOP\Nullsoft Install System.lnk" "$INSTDIR\NSIS.exe"
 
-SectionEnd
+${MementoSectionEnd}
 
 SectionGroup "User Interfaces" SecInterfaces
 
-Section "Modern User Interface" SecInterfacesModernUI
+${MementoSection} "Modern User Interface" SecInterfacesModernUI
 
   SetDetailsPrint textonly
   DetailPrint "Installing User Interfaces | Modern User Interface..."
@@ -319,9 +342,9 @@ Section "Modern User Interface" SecInterfacesModernUI
   SetOutPath $INSTDIR\Include
   File "..\Include\MUI.nsh"
 
-SectionEnd
+${MementoSectionEnd}
 
-Section "Default User Interface" SecInterfacesDefaultUI
+${MementoSection} "Default User Interface" SecInterfacesDefaultUI
 
   SetDetailsPrint textonly
   DetailPrint "Installing User Interfaces | Default User Interface..."
@@ -332,9 +355,9 @@ Section "Default User Interface" SecInterfacesDefaultUI
   SetOutPath "$INSTDIR\Contrib\UIs"
   File "..\Contrib\UIs\default.exe"
 
-SectionEnd
+${MementoSectionEnd}
 
-Section "Tiny User Interface" SecInterfacesTinyUI
+${MementoSection} "Tiny User Interface" SecInterfacesTinyUI
 
   SetDetailsPrint textonly
   DetailPrint "Installing User Interfaces | Tiny User Interface..."
@@ -345,11 +368,11 @@ Section "Tiny User Interface" SecInterfacesTinyUI
   SetOutPath "$INSTDIR\Contrib\UIs"
   File "..\Contrib\UIs\sdbarker_tiny.exe"
 
-SectionEnd
+${MementoSectionEnd}
 
 SectionGroupEnd
 
-Section "Graphics" SecGraphics
+${MementoSection} "Graphics" SecGraphics
 
   SetDetailsPrint textonly
   DetailPrint "Installing Graphics..."
@@ -363,9 +386,9 @@ Section "Graphics" SecGraphics
   SetOutPath $INSTDIR\Contrib\Graphics
   File /r "..\Contrib\Graphics\*.ico"
   File /r "..\Contrib\Graphics\*.bmp"
-SectionEnd
+${MementoSectionEnd}
 
-Section "Language Files" SecLangFiles
+${MementoSection} "Language Files" SecLangFiles
 
   SetDetailsPrint textonly
   DetailPrint "Installing Language Files..."
@@ -385,11 +408,11 @@ Section "Language Files" SecLangFiles
     File "..\Contrib\Modern UI\Language files\*.nsh"
   nomui:
 
-SectionEnd
+${MementoSectionEnd}
 
 SectionGroup "Tools" SecTools
 
-Section "Zip2Exe" SecToolsZ2E
+${MementoSection} "Zip2Exe" SecToolsZ2E
 
   SetDetailsPrint textonly
   DetailPrint "Installing Tools | Zip2Exe..."
@@ -404,13 +427,13 @@ Section "Zip2Exe" SecToolsZ2E
   File ..\Contrib\zip2exe\Modern.nsh
   File ..\Contrib\zip2exe\Classic.nsh
 
-SectionEnd
+${MementoSectionEnd}
 
 SectionGroupEnd
 
 SectionGroup "Plug-ins" SecPluginsPlugins
 
-Section "Banner" SecPluginsBanner
+${MementoSection} "Banner" SecPluginsBanner
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | Banner..."
@@ -424,9 +447,9 @@ Section "Banner" SecPluginsBanner
   File ..\Docs\Banner\Readme.txt
   SetOutPath $INSTDIR\Examples\Banner
   File ..\Examples\Banner\Example.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "Language DLL" SecPluginsLangDLL
+${MementoSection} "Language DLL" SecPluginsLangDLL
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | Language DLL..."
@@ -435,9 +458,9 @@ Section "Language DLL" SecPluginsLangDLL
   SectionIn 1
   SetOutPath $INSTDIR\Plugins
   File ..\Plugins\LangDLL.dll
-SectionEnd
+${MementoSectionEnd}
 
-Section "nsExec" SecPluginsnsExec
+${MementoSection} "nsExec" SecPluginsnsExec
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | nsExec..."
@@ -451,9 +474,9 @@ Section "nsExec" SecPluginsnsExec
   File ..\Docs\nsExec\nsExec.txt
   SetOutPath $INSTDIR\Examples\nsExec
   File ..\Examples\nsExec\test.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "Splash" SecPluginsSplash
+${MementoSection} "Splash" SecPluginsSplash
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | Splash..."
@@ -467,9 +490,9 @@ Section "Splash" SecPluginsSplash
   File ..\Docs\Splash\splash.txt
   SetOutPath $INSTDIR\Examples\Splash
   File ..\Examples\Splash\Example.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "AdvSplash" SecPluginsSplashT
+${MementoSection} "AdvSplash" SecPluginsSplashT
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | AdvSplash..."
@@ -483,9 +506,9 @@ Section "AdvSplash" SecPluginsSplashT
   File ..\Docs\AdvSplash\advsplash.txt
   SetOutPath $INSTDIR\Examples\AdvSplash
   File ..\Examples\AdvSplash\Example.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "BgImage" SecPluginsBgImage
+${MementoSection} "BgImage" SecPluginsBgImage
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | BgImage..."
@@ -499,9 +522,9 @@ Section "BgImage" SecPluginsBgImage
   File ..\Docs\BgImage\BgImage.txt
   SetOutPath $INSTDIR\Examples\BgImage
   File ..\Examples\BgImage\Example.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "InstallOptions" SecPluginsIO
+${MementoSection} "InstallOptions" SecPluginsIO
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | InstallOptions..."
@@ -523,9 +546,9 @@ Section "InstallOptions" SecPluginsIO
   File ..\Examples\InstallOptions\testlink.nsi
   File ..\Examples\InstallOptions\testnotify.ini
   File ..\Examples\InstallOptions\testnotify.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "Math" SecPluginsMath
+${MementoSection} "Math" SecPluginsMath
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | Math..."
@@ -543,9 +566,9 @@ Section "Math" SecPluginsMath
   File ..\Examples\Math\mathtest.nsi
   File ..\Examples\Math\mathtest.ini
 
-SectionEnd
+${MementoSectionEnd}
 
-Section "NSISdl" SecPluginsNSISDL
+${MementoSection} "NSISdl" SecPluginsNSISDL
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | NSISdl..."
@@ -558,9 +581,9 @@ Section "NSISdl" SecPluginsNSISDL
   SetOutPath $INSTDIR\Docs\NSISdl
   File ..\Docs\NSISdl\ReadMe.txt
   File ..\Docs\NSISdl\License.txt
-SectionEnd
+${MementoSectionEnd}
 
-Section "System" SecPluginsSystem
+${MementoSection} "System" SecPluginsSystem
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | System..."
@@ -578,9 +601,9 @@ Section "System" SecPluginsSystem
   File ..\Examples\System\SysFunc.nsh
   File ..\Examples\System\System.nsh
   File ..\Examples\System\System.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "StartMenu" SecPluginsStartMenu
+${MementoSection} "StartMenu" SecPluginsStartMenu
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | StartMenu..."
@@ -594,9 +617,9 @@ Section "StartMenu" SecPluginsStartMenu
   File ..\Docs\StartMenu\Readme.txt
   SetOutPath $INSTDIR\Examples\StartMenu
   File ..\Examples\StartMenu\Example.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "UserInfo" SecPluginsUserInfo
+${MementoSection} "UserInfo" SecPluginsUserInfo
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | UserInfo..."
@@ -608,9 +631,9 @@ Section "UserInfo" SecPluginsUserInfo
   File ..\Plugins\UserInfo.dll
   SetOutPath $INSTDIR\Examples\UserInfo
   File ..\Examples\UserInfo\UserInfo.nsi
-SectionEnd
+${MementoSectionEnd}
 
-Section "Dialer" SecPluginsDialer
+${MementoSection} "Dialer" SecPluginsDialer
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | Dialer..."
@@ -622,9 +645,9 @@ Section "Dialer" SecPluginsDialer
   File ..\Plugins\Dialer.dll
   SetOutPath $INSTDIR\Docs\Dialer
   File ..\Docs\Dialer\Dialer.txt
-SectionEnd
+${MementoSectionEnd}
 
-Section "VPatch" SecPluginsVPatch
+${MementoSection} "VPatch" SecPluginsVPatch
 
   SetDetailsPrint textonly
   DetailPrint "Installing Plug-ins | VPatch..."
@@ -645,7 +668,9 @@ Section "VPatch" SecPluginsVPatch
   File ..\Bin\GenPat.exe
   SetOutPath $INSTDIR\Include
   File ..\Include\VPatchLib.nsh
-SectionEnd
+${MementoSectionEnd}
+
+${MementoSectionDone}
 
 SectionGroupEnd
 
@@ -793,6 +818,8 @@ Section -post
 
   WriteUninstaller $INSTDIR\uninst-nsis.exe
 
+  ${MementoSectionSave}
+
   SetDetailsPrint both
 
 SectionEnd
@@ -832,13 +859,19 @@ SectionEnd
 ;--------------------------------
 ;Installer Functions
 
-!ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
-
 Function .onInit
 
+!ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
+
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "makensis.ini"
+ 
+!endif
+  
+  ${MementoSectionRestore}
 
 FunctionEnd
+
+!ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
 
 Function PageReinstall
 
@@ -1009,6 +1042,7 @@ Section Uninstall
   Delete $INSTDIR\makensisw.exe
   Delete $INSTDIR\NSIS.exe
   Delete $INSTDIR\license.txt
+  Delete $INSTDIR\COPYING
   Delete $INSTDIR\uninst-nsis.exe
   Delete $INSTDIR\nsisconf.nsi
   Delete $INSTDIR\nsisconf.nsh

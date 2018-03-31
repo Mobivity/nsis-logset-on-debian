@@ -1,9 +1,26 @@
+/*
+ * script.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "Platform.h"
 #include <stdio.h>
 #include <ctype.h>
 #include "tokens.h"
 #include "build.h"
 #include "util.h"
+#include "winchar.h"
 #include "ResourceEditor.h"
 #include "DialogTemplate.h"
 #include "lang.h"
@@ -263,30 +280,40 @@ int CEXEBuild::doParse(const char *str)
 
   while (*str == ' ' || *str == '\t') str++;
 
-  if (m_linebuild.getlen()>1) m_linebuild.resize(m_linebuild.getlen()-2);
+  // remove trailing slash and null, if there's a previous line
+  if (m_linebuild.getlen()>1)
+    m_linebuild.resize(m_linebuild.getlen()-2);
 
   m_linebuild.add(str,strlen(str)+1);
 
-  // remove trailing slash and null
-  if (str[0] && CharPrev(str,str+strlen(str))[0] == '\\') {
-    last_line_had_slash = 1;
+  // keep waiting for more lines, if this line ends with a backslash
+  if (str[0] && CharPrev(str,str+strlen(str))[0] == '\\')
+  {
+    line.parse((char*)m_linebuild.get());
+    if (line.inComment())
+    {
+      warning_fl("comment contains line-continuation character, following line will be ignored");
+    }
     return PS_OK;
   }
-  else last_line_had_slash = 0;
 
+  // parse before checking if the line should be ignored, so block comments won't be missed
   res=line.parse((char*)m_linebuild.get(),!strnicmp((char*)m_linebuild.get(),"!define",7));
 
-  inside_comment = line.InCommentBlock();
-
-  m_linebuild.resize(0);
+  inside_comment = line.inCommentBlock();
 
   // if ignoring, ignore all lines that don't begin with an exclamation mark
   {
     bool ignore_line = cur_ifblock && (cur_ifblock->ignore || cur_ifblock->inherited_ignore);
     char first_char = *(char *) m_linebuild.get();
-    if (ignore_line && first_char!='!' && !last_line_had_slash)
+    if (ignore_line && (first_char!='!' || !is_valid_token(line.gettoken_str(0))))
+    {
+      m_linebuild.resize(0);
       return PS_OK;
+    }
   }
+
+  m_linebuild.resize(0);
 
   if (res)
   {
@@ -2079,7 +2106,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         try {
           init_res_editor();
 
-          BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INSTFILES), NSIS_DEFAULT_LANG);
+          BYTE* dlg = res_editor->GetResourceA(RT_DIALOG, MAKEINTRESOURCE(IDD_INSTFILES), NSIS_DEFAULT_LANG);
           if (!dlg) throw runtime_error("IDD_INSTFILES doesn't exist!");
           CDialogTemplate dt(dlg,uDefCodePage);
           free(dlg);
@@ -2095,7 +2122,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
           DWORD dwSize;
           dlg = dt.Save(dwSize);
-          res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INSTFILES), NSIS_DEFAULT_LANG, dlg, dwSize);
+          res_editor->UpdateResourceA(RT_DIALOG, MAKEINTRESOURCE(IDD_INSTFILES), NSIS_DEFAULT_LANG, dlg, dwSize);
           delete [] dlg;
         }
         catch (exception& err) {
@@ -2332,17 +2359,14 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     }
     return PS_OK;
     case TOK_XPSTYLE:
-      try {
+      {
         int k=line.gettoken_enum(1,"on\0off\0");
         if (k == -1) PRINTHELP()
         SCRIPT_MSG("XPStyle: %s\n", line.gettoken_str(1));
-        init_res_editor();
-        const char *szXPManifest = k ? 0 : "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\"><assemblyIdentity version=\"1.0.0.0\" processorArchitecture=\"X86\" name=\"Nullsoft.NSIS.exehead\" type=\"win32\"/><description>Nullsoft Install System " NSIS_VERSION "</description><dependency><dependentAssembly><assemblyIdentity type=\"win32\" name=\"Microsoft.Windows.Common-Controls\" version=\"6.0.0.0\" processorArchitecture=\"X86\" publicKeyToken=\"6595b64144ccf1df\" language=\"*\" /></dependentAssembly></dependency></assembly>";
-        res_editor->UpdateResource(MAKEINTRESOURCE(24), MAKEINTRESOURCE(1), NSIS_DEFAULT_LANG, (unsigned char*)szXPManifest, k ? 0 : strlen(szXPManifest));
-      }
-      catch (exception& err) {
-        ERROR_MSG("Error while adding XP style: %s\n", err.what());
-        return PS_ERROR;
+        if (!k)
+          manifest_comctl = manifest::comctl_xp;
+        else
+          manifest_comctl = manifest::comctl_old;
       }
     return PS_OK;
     case TOK_CHANGEUI:
@@ -2377,9 +2401,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         init_res_editor();
 
         // Search for required items
-        #define GET(x) dlg = uire->GetResource(RT_DIALOG, MAKEINTRESOURCE(x), 0); if (!dlg) return PS_ERROR; CDialogTemplate UIDlg(dlg, uDefCodePage);
+        #define GET(x) dlg = uire->GetResourceA(RT_DIALOG, MAKEINTRESOURCE(x), 0); if (!dlg) return PS_ERROR; CDialogTemplate UIDlg(dlg, uDefCodePage);
         #define SEARCH(x) if (!UIDlg.GetItem(x)) {ERROR_MSG("Error: Can't find %s (%u) in the custom UI!\n", #x, x);delete [] dlg;delete uire;return PS_ERROR;}
-        #define SAVE(x) dwSize = UIDlg.GetSize(); res_editor->UpdateResource(RT_DIALOG, x, NSIS_DEFAULT_LANG, dlg, dwSize); delete [] dlg;
+        #define SAVE(x) dwSize = UIDlg.GetSize(); res_editor->UpdateResourceA(RT_DIALOG, x, NSIS_DEFAULT_LANG, dlg, dwSize); delete [] dlg;
 
         LPBYTE dlg = NULL;
 
@@ -2418,8 +2442,19 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           branding_image_found = false;
           DialogItemTemplate* dlgItem = 0;
           for (int i = 0; (dlgItem = UIDlg.GetItemByIdx(i)); i++) {
-            if ((IS_INTRESOURCE(dlgItem->szClass) && dlgItem->szClass == MAKEINTRESOURCE(0x0082))
-                || (!IS_INTRESOURCE(dlgItem->szClass) && !strcmp(dlgItem->szClass, "Static"))) {
+            bool check = false;
+
+            if (IS_INTRESOURCE(dlgItem->szClass)) {
+              if (dlgItem->szClass == MAKEINTRESOURCEW(0x0082)) {
+                check = true;
+              }
+            } else {
+              char *szClass = winchar_toansi(dlgItem->szClass);
+              check = strcmp(szClass, "Static") == 0;
+              delete [] szClass;
+            }
+
+            if (check) {
               if ((dlgItem->dwStyle & SS_BITMAP) == SS_BITMAP) {
                 branding_image_found = true;
                 branding_image_id = dlgItem->wId;
@@ -2486,7 +2521,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           padding = line.gettoken_int(3);
 
         init_res_editor();
-        BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG);
+        BYTE* dlg = res_editor->GetResourceA(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG);
 
         CDialogTemplate dt(dlg, uDefCodePage);
 
@@ -2497,8 +2532,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         brandingCtl.dwStyle = SS_BITMAP | WS_CHILD | WS_VISIBLE;
         brandingCtl.sX = padding;
         brandingCtl.sY = padding;
-        brandingCtl.szClass = MAKEINTRESOURCE(0x0082);
-        brandingCtl.szTitle = "";
+        brandingCtl.szClass = MAKEINTRESOURCEW(0x0082);
+        brandingCtl.szTitle = NULL;
         brandingCtl.wId = IDC_BRANDIMAGE;
 
         brandingCtl.sHeight = wh;
@@ -2534,7 +2569,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         DWORD dwDlgSize;
         dlg = dt.Save(dwDlgSize);
 
-        res_editor->UpdateResource(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, dlg, dwDlgSize);
+        res_editor->UpdateResourceA(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, dlg, dwDlgSize);
 
         delete [] dlg;
 
@@ -2575,14 +2610,38 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     }
     return PS_OK;
 #else
-  case TOK_INSTCOLORS:
-  case TOK_XPSTYLE:
-  case TOK_CHANGEUI:
-  case TOK_ADDBRANDINGIMAGE:
-  case TOK_SETFONT:
-    ERROR_MSG("Error: %s specified, NSIS_CONFIG_VISIBLE_SUPPORT not defined.\n",line.gettoken_str(0));
-  return PS_ERROR;
+    case TOK_INSTCOLORS:
+    case TOK_XPSTYLE:
+    case TOK_CHANGEUI:
+    case TOK_ADDBRANDINGIMAGE:
+    case TOK_SETFONT:
+      ERROR_MSG("Error: %s specified, NSIS_CONFIG_VISIBLE_SUPPORT not defined.\n",line.gettoken_str(0));
+    return PS_ERROR;
 #endif// NSIS_CONFIG_VISIBLE_SUPPORT
+
+    case TOK_REQEXECLEVEL:
+    {
+      int k=line.gettoken_enum(1,"none\0user\0highest\0admin\0");
+      switch (k)
+      {
+      case 0:
+        manifest_exec_level = manifest::exec_level_none;
+        break;
+      case 1:
+        manifest_exec_level = manifest::exec_level_user;
+        break;
+      case 2:
+        manifest_exec_level = manifest::exec_level_highest;
+        break;
+      case 3:
+        manifest_exec_level = manifest::exec_level_admin;
+        break;
+      default:
+        PRINTHELP();
+      }
+    }
+    return PS_OK;
+
     // Ability to change compression methods from within the script
     case TOK_SETCOMPRESSOR:
 #ifdef NSIS_CONFIG_COMPRESSION_SUPPORT
@@ -2736,6 +2795,12 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           sprintf(value,"%d",value1-value2);
         } else if (!strcmp(mathop,"*")) {
           sprintf(value,"%d",value1*value2);
+        } else if (!strcmp(mathop,"&")) {
+          sprintf(value,"%d",value1&value2);
+        } else if (!strcmp(mathop,"|")) {
+          sprintf(value,"%d",value1|value2);
+        } else if (!strcmp(mathop,"^")) {
+          sprintf(value,"%d",value1^value2);
         } else if (!strcmp(mathop,"/")) {
           if (value2==0) {
             ERROR_MSG("!define /math: division by zero! (\"%i / %i\")\n",value1,value2);
@@ -2845,17 +2910,17 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         bool required = true;
 
         char *f = line.gettoken_str(1);
-
+        
         if(!stricmp(f,"/nonfatal")) {
           if (line.getnumtokens()!=3)
             PRINTHELP();
-
+        
           f = line.gettoken_str(2);
-          required = false;
+            required = false;
         } else if (line.getnumtokens()!=2) {
           PRINTHELP();
         }
-
+        
 #ifdef _WIN32
         char *fc = f;
 #else
@@ -2877,27 +2942,27 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 #endif
 
         // search working directory
-        boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
-        dr->read(dir);
+          boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
+          dr->read(dir);
 
-        for (dir_reader::iterator files_itr = dr->files().begin();
-             files_itr != dr->files().end();
-             files_itr++)
-        {
-          if (!dir_reader::matches(*files_itr, spec))
-            continue;
+          for (dir_reader::iterator files_itr = dr->files().begin();
+               files_itr != dr->files().end();
+               files_itr++)
+          {
+            if (!dir_reader::matches(*files_itr, spec))
+              continue;
 
-          string incfile = basedir + *files_itr;
+            string incfile = basedir + *files_itr;
 
-          if (includeScript((char *) incfile.c_str()) != PS_OK) {
-            return PS_ERROR;
-          }
+            if (includeScript((char *) incfile.c_str()) != PS_OK) {
+              return PS_ERROR;
+            }
 
           included++;
         }
 
         if (included)
-          return PS_OK;
+            return PS_OK;
 
         // search include dirs
         char *incdir = include_dirs.get();
@@ -2934,12 +2999,12 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         if (!included)
         {
           if(required) {
-            ERROR_MSG("!include: could not find: \"%s\"\n",f);
-            return PS_ERROR;
-          } else {
-            warning_fl("!include: could not find: \"%s\"",f);
-          }
+          ERROR_MSG("!include: could not find: \"%s\"\n",f);
+          return PS_ERROR;
+        } else {
+          warning_fl("!include: could not find: \"%s\"",f);
         }
+      }
       }
     return PS_OK;
     case TOK_P_CD:
@@ -3362,7 +3427,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         if (trim) try {
           init_res_editor();
 
-          BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG);
+          BYTE* dlg = res_editor->GetResourceA(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG);
           CDialogTemplate td(dlg,uDefCodePage);
           free(dlg);
 
@@ -3389,7 +3454,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
           DWORD dwSize;
           dlg = td.Save(dwSize);
-          res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG, dlg, dwSize);
+          res_editor->UpdateResourceA(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG, dlg, dwSize);
           res_editor->FreeResource(dlg);
         }
         catch (exception& err) {
@@ -3655,7 +3720,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       DefineInnerLangString(NLF_SYMBOL_NOT_FOUND);
       DefineInnerLangString(NLF_COULD_NOT_LOAD);
       DefineInnerLangString(NLF_NO_OLE);
-      DefineInnerLangString(NLF_ERR_REG_DLL);
+      // not used anywhere - DefineInnerLangString(NLF_ERR_REG_DLL);
     return add_entry(&ent);
 #endif//NSIS_SUPPORT_ACTIVEXREG
     case TOK_RENAME:
@@ -4660,8 +4725,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         try
         {
           CResourceEditor *dllre = new CResourceEditor(dll, len);
-          LPBYTE ver = dllre->GetResource(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
-          int versize = dllre->GetResourceSize(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
+          LPBYTE ver = dllre->GetResourceA(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
+          int versize = dllre->GetResourceSizeA(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
 
           if (ver)
           {
@@ -4744,18 +4809,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         struct stat st;
         if (!stat(line.gettoken_str(1), &st))
         {
-          union
-          {
-            struct
-            {
-              long l;
-              long h;
-            } words;
-            long long ll;
-          };
-          ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
-          high = words.h;
-          low = words.l;
+          unsigned long long ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
+          high = (DWORD) (ll >> 32);
+          low = (DWORD) ll;
         }
         else
         {
@@ -5183,7 +5239,11 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.which=EW_READENVSTR;
       ent.offsets[0]=GetUserVarIndex(line, 1);
       {
-        ent.offsets[1]=add_string(line.gettoken_str(2));
+        char str[NSIS_MAX_STRLEN];
+        strcpy(str, "%");
+        strcat(str, line.gettoken_str(2));
+        strcat(str, "%");
+        ent.offsets[1]=add_string(str);
         if (ent.offsets[0] < 0 || strlen(line.gettoken_str(2))<1) PRINTHELP()
       }
       ent.offsets[2]=1;
@@ -5580,39 +5640,42 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 #ifdef NSIS_SUPPORT_VERSION_INFO
     case TOK_VI_ADDKEY:
     {
-        LANGID LangID=0;
-        int a = 1;
-        if (!strnicmp(line.gettoken_str(a),"/LANG=",6))
-          LangID=atoi(line.gettoken_str(a++)+6);
-        if (line.getnumtokens()!=a+2) PRINTHELP();
-        char *pKey = line.gettoken_str(a);
-        char *pValue = line.gettoken_str(a+1);
-        if ( !(*pKey) )
-        {
-           ERROR_MSG("Error: empty name for version info key!\n");
-           return PS_ERROR;
-        }
-        else
-        {
-           SCRIPT_MSG("%s: \"%s\" \"%s\"\n", line.gettoken_str(0), line.gettoken_str(a), line.gettoken_str(a+1));
-           LANGID lReaded = LangID;
-           LanguageTable *table = GetLangTable(LangID);
-           if ( a > 1 && lReaded == 0 )
-             warning_fl("%s: %s language not loaded, using default \"1033-English\"", line.gettoken_str(0), line.gettoken_str(1));
-           if ( rVersionInfo.SetKeyValue(LangID, table->nlf.m_bLoaded ? table->nlf.m_uCodePage : 1252 /*English US*/, pKey, pValue) )
-           {
-             ERROR_MSG("%s: \"%s\" \"%04d-%s\" already defined!\n",line.gettoken_str(0), line.gettoken_str(2), LangID, table->nlf.m_bLoaded ? table->nlf.m_szName : LangID == 1033 ? "English" : "???");
-             return PS_ERROR;
-           }
+      LANGID LangID=0;
+      int a = 1;
+      if (!strnicmp(line.gettoken_str(a),"/LANG=",6))
+        LangID=atoi(line.gettoken_str(a++)+6);
+      if (line.getnumtokens()!=a+2) PRINTHELP();
+      char *pKey = line.gettoken_str(a);
+      char *pValue = line.gettoken_str(a+1);
+      if ( !(*pKey) )
+      {
+         ERROR_MSG("Error: empty name for version info key!\n");
+         return PS_ERROR;
+      }
+      else
+      {
+        SCRIPT_MSG("%s: \"%s\" \"%s\"\n", line.gettoken_str(0), line.gettoken_str(a), line.gettoken_str(a+1));
+        LANGID lReaded = LangID;
+        if ( a > 1 && lReaded == 0 )
+          warning_fl("%s: %s language not loaded, using default \"1033-English\"", line.gettoken_str(0), line.gettoken_str(1));
 
-           return PS_OK;
+        unsigned int codepage;
+        char *lang_name = GetLangNameAndCP(LangID, &codepage);
+
+        if ( rVersionInfo.SetKeyValue(LangID, codepage, pKey, pValue) )
+        {
+          ERROR_MSG("%s: \"%s\" \"%04d-%s\" already defined!\n",line.gettoken_str(0), line.gettoken_str(2), LangID, lang_name);
+          return PS_ERROR;
         }
+
+        return PS_OK;
+      }
     }
     case TOK_VI_SETPRODUCTVERSION:
       if ( version_product_v[0] )
       {
-           ERROR_MSG("Error: %s already defined!\n", line.gettoken_str(0));
-           return PS_ERROR;
+        ERROR_MSG("Error: %s already defined!\n", line.gettoken_str(0));
+        return PS_ERROR;
       }
       strcpy(version_product_v, line.gettoken_str(1));
       return PS_OK;
@@ -5764,6 +5827,11 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       if (ret != PS_OK) {
         return ret;
       }
+
+      DefineInnerLangString(NLF_SYMBOL_NOT_FOUND);
+      DefineInnerLangString(NLF_COULD_NOT_LOAD);
+      DefineInnerLangString(NLF_NO_OLE);
+      // not used anywhere - DefineInnerLangString(NLF_ERR_REG_DLL);
 
       return PS_OK;
     }
@@ -6071,22 +6139,13 @@ int CEXEBuild::add_file(const string& dir, const string& file, int attrib, const
       struct stat st;
       if (!fstat(fd, &st))
       {
-        union
-        {
-          struct
-          {
-            long l;
-            long h;
-          } words;
-          long long ll;
-        };
-        ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
+        unsigned long long ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
 
         // FAT write time has a resolution of 2 seconds
         ll -= ll % 20000000;
 
-        ent.offsets[3] = words.l;
-        ent.offsets[4] = words.h;
+        ent.offsets[3] = (int) ll;
+        ent.offsets[4] = (int) (ll >> 32);
       }
 #endif
       else

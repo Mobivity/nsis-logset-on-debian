@@ -1,26 +1,21 @@
 /*
-  Copyright (C) 2002 Amir Szekely <kichik@netvision.net.il>
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-  claim that you wrote the original software. If you use this software
-  in a product, an acknowledgment in the product documentation would be
-  appreciated but is not required.
-
-  2. Altered source versions must be plainly marked as such, and must not be
-  misrepresented as being the original software.
-
-  3. This notice may not be removed or altered from any source distribution.
-*/
+ * DialogTemplate.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 2002 Amir Szekely <kichik@netvision.net.il>
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #include "DialogTemplate.h"
+#include "winchar.h"
 #include <cassert> // for assert(3)
 #ifndef _WIN32
 #  include "util.h" // for Unicode conversion functions
@@ -50,8 +45,8 @@ static inline short ConvertEndianness(short s) {
 
 #define ALIGN(dwToAlign, dwAlignOn) dwToAlign = (dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn
 
-// Reads a variany length array from seeker into readInto and advances seeker
-void ReadVarLenArr(LPBYTE &seeker, char* &readInto, unsigned int uCodePage) {
+// Reads a variant length array from seeker into readInto and advances seeker
+void ReadVarLenArr(LPBYTE &seeker, WCHAR* &readInto, unsigned int uCodePage) {
   WORD* arr = (WORD*)seeker;
   switch (ConvertEndianness(arr[0])) {
   case 0x0000:
@@ -59,26 +54,12 @@ void ReadVarLenArr(LPBYTE &seeker, char* &readInto, unsigned int uCodePage) {
     seeker += sizeof(WORD);
     break;
   case 0xFFFF:
-    readInto = MAKEINTRESOURCE(ConvertEndianness(arr[1]));
+    readInto = MAKEINTRESOURCEW(ConvertEndianness(arr[1]));
     seeker += 2*sizeof(WORD);
     break;
   default:
     {
-      int iStrLen = WideCharToMultiByte(uCodePage, 0, (WCHAR*)arr, -1, 0, 0, 0, 0);
-      if (iStrLen)
-      {
-        readInto = new char[iStrLen];
-        if (!WideCharToMultiByte(uCodePage, 0, (WCHAR*)arr, -1, readInto, iStrLen, 0, 0))
-        {
-          delete [] readInto;
-          throw runtime_error("ReadVarLenArr - Unicode conversion failed.");
-        }
-      }
-      else
-      {
-        throw runtime_error("ReadVarLenArr - Unicode conversion failed.");
-      }
-
+      readInto = winchar_strdup((WCHAR *) arr);
       PWCHAR wseeker = PWCHAR(seeker);
       while (*wseeker++);
       seeker = LPBYTE(wseeker);
@@ -97,17 +78,14 @@ void ReadVarLenArr(LPBYTE &seeker, char* &readInto, unsigned int uCodePage) {
       seeker += sizeof(WORD); \
     } \
     else { \
-      int us = MultiByteToWideChar(m_uCodePage, 0, x, -1, (WCHAR*)seeker, dwSize - DWORD(seeker - pbDlg)); \
-      if (!us) { \
-        throw runtime_error("WriteStringOrId - Unicode conversion failed."); \
-      } \
-      seeker += us*sizeof(WCHAR); \
+      winchar_strcpy((WCHAR *) seeker, x); \
+      seeker += winchar_strlen((WCHAR *) seeker) * sizeof(WCHAR) + sizeof(WCHAR); \
     } \
   else \
     seeker += sizeof(WORD);
 
 // A macro that adds the size of x (which can be a string a number, or nothing) to dwSize
-#define AddStringOrIdSize(x) dwSize += x ? (IS_INTRESOURCE(x) ? sizeof(DWORD) : MultiByteToWideChar(m_uCodePage, 0, x, -1, 0, 0) * sizeof(WCHAR)) : sizeof(WORD)
+#define AddStringOrIdSize(x) dwSize += x ? (IS_INTRESOURCE(x) ? sizeof(DWORD) : (winchar_strlen(x) + 1) * sizeof(WCHAR)) : sizeof(WORD)
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -183,7 +161,7 @@ CDialogTemplate::CDialogTemplate(BYTE* pbData, unsigned int uCodePage) {
 
   // Read items
   for (int i = 0; i < wItems; i++) {
-    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundry
+    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundary
     if (DWORD(seeker - pbData) % sizeof(DWORD))
       seeker += sizeof(WORD);
 
@@ -314,8 +292,7 @@ void CDialogTemplate::SetFont(char* szFaceName, WORD wFontSize) {
   m_bCharset = DEFAULT_CHARSET;
   m_dwStyle |= DS_SETFONT;
   if (m_szFont) delete [] m_szFont;
-  m_szFont = new char[strlen(szFaceName)+1];
-  strcpy(m_szFont, szFaceName);
+  m_szFont = winchar_fromansi(szFaceName);
   m_sFontSize = wFontSize;
 }
 
@@ -325,12 +302,10 @@ void CDialogTemplate::AddItem(DialogItemTemplate item) {
   CopyMemory(newItem, &item, sizeof(DialogItemTemplate));
 
   if (item.szClass && !IS_INTRESOURCE(item.szClass)) {
-    newItem->szClass = new char[strlen(item.szClass)+1];
-    strcpy(newItem->szClass, item.szClass);
+    newItem->szClass = winchar_strdup(item.szClass);
   }
   if (item.szTitle && !IS_INTRESOURCE(item.szTitle)) {
-    newItem->szTitle = new char[strlen(item.szTitle)+1];
-    strcpy(newItem->szTitle, item.szTitle);
+    newItem->szTitle = winchar_strdup(item.szTitle);
   }
   if (item.wCreateDataSize) {
     newItem->szCreationData = new char[item.wCreateDataSize];
@@ -460,6 +435,12 @@ void CDialogTemplate::CTrimToString(WORD id, char *str, int margins) {
 void CDialogTemplate::ConvertToRTL() {
   for (unsigned int i = 0; i < m_vItems.size(); i++) {
     bool addExStyle = false;
+    char *szClass;
+    
+    if (IS_INTRESOURCE(m_vItems[i]->szClass))
+      szClass = (char *) m_vItems[i]->szClass;
+    else
+      szClass = winchar_toansi(m_vItems[i]->szClass);
 
     // Button
     if (long(m_vItems[i]->szClass) == 0x80) {
@@ -492,12 +473,12 @@ void CDialogTemplate::ConvertToRTL() {
         m_vItems[i]->dwStyle |= SS_CENTERIMAGE;
       }
     }
-    else if (!IS_INTRESOURCE(m_vItems[i]->szClass) && !stricmp(m_vItems[i]->szClass, "RichEdit20A")) {
+    else if (!IS_INTRESOURCE(m_vItems[i]->szClass) && !stricmp(szClass, "RichEdit20A")) {
       if ((m_vItems[i]->dwStyle & ES_CENTER) == 0) {
         m_vItems[i]->dwStyle ^= ES_RIGHT;
       }
     }
-    else if (!IS_INTRESOURCE(m_vItems[i]->szClass) && !stricmp(m_vItems[i]->szClass, "SysTreeView32")) {
+    else if (!IS_INTRESOURCE(m_vItems[i]->szClass) && !stricmp(szClass, "SysTreeView32")) {
       m_vItems[i]->dwStyle |= TVS_RTLREADING;
       addExStyle = true;
     }
@@ -509,6 +490,9 @@ void CDialogTemplate::ConvertToRTL() {
     m_vItems[i]->dwExtStyle |= WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR;
 
     m_vItems[i]->sX = m_sWidth - m_vItems[i]->sWidth - m_vItems[i]->sX;
+
+    if (!IS_INTRESOURCE(m_vItems[i]->szClass))
+      delete [] szClass;
   }
   m_dwExtStyle |= WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR;
 }
@@ -577,7 +561,7 @@ BYTE* CDialogTemplate::Save(DWORD& dwSize) {
 
   // Write all of the items
   for (unsigned int i = 0; i < m_vItems.size(); i++) {
-    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundry
+    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundary
     if (DWORD(seeker - pbDlg) % sizeof(DWORD))
       seeker += sizeof(WORD);
 
@@ -653,7 +637,7 @@ DWORD CDialogTemplate::GetSize() {
   }
 
   for (unsigned int i = 0; i < m_vItems.size(); i++) {
-    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundry
+    // DLGITEMTEMPLATE[EX]s must be aligned on DWORD boundary
     ALIGN(dwSize, sizeof(DWORD));
 
     dwSize += m_bExtended ? sizeof(DLGITEMTEMPLATEEX) : sizeof(DLGITEMTEMPLATE);

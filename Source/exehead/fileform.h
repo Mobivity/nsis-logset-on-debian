@@ -1,3 +1,19 @@
+/*
+ * fileform.h
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "config.h"
 #include "../Platform.h"
 
@@ -313,6 +329,14 @@ typedef struct
 
   int install_directory_ptr; // default install dir.
   int install_directory_auto_append; // auto append part
+
+#ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
+  int str_uninstchild;
+  int str_uninstcmd;
+#endif//NSIS_CONFIG_UNINSTALL_SUPPORT
+#ifdef NSIS_SUPPORT_MOVEONREBOOT
+  int str_wininit;
+#endif//NSIS_SUPPORT_MOVEONREBOOT
 } header;
 
 #ifdef NSIS_SUPPORT_CODECALLBACKS

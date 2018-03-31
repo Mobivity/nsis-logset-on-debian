@@ -1,10 +1,13 @@
 #include <windows.h>
-#include "mathcrt.h"
 #include "MyMath.h"
 #include "Math.h"
 
 extern "C" int _fltused;
-int _fltused;
+
+#ifdef __MINGW32__
+int _fltused = 1;
+#endif
+
 ExpressionItem *stack;
 
 int UserVarsCount, UserFuncsCount;
@@ -102,28 +105,32 @@ void PlaceVariable(char *&vb, ParseInfo *pi)
     vb = pi->valbuf;
 }
 
+typedef double (*math_d2)(double, double);
+typedef double (*math_ddp)(double, double*);
+typedef double (*math_di)(double, int*);
+
 #define MATHFUNCNUM 29
 const MathFunction MathFunctions[MATHFUNCNUM] = {
-    {{'s','i','n'}, ITF_MATH1 >> 8, _fsin},
-    {{'s','n','h'}, ITF_MATH1 >> 8, _fsinh},
-    {{'a','s','n'}, ITF_MATH1 >> 8, _fasin},
-    {{'c','o','s'}, ITF_MATH1 >> 8, _fcos},
-    {{'c','s','h'}, ITF_MATH1 >> 8, _fcosh},
-    {{'a','c','s'}, ITF_MATH1 >> 8, _facos},
-    {{'t','a','n'}, ITF_MATH1 >> 8, _ftan},
-    {{'t','n','h'}, ITF_MATH1 >> 8, _ftanh},
-    {{'a','t','n'}, ITF_MATH1 >> 8, _fatan},
-    {{'a','b','s'}, ITF_MATH1 >> 8, _fabs},
-    {{'l','n',0}, ITF_MATH1 >> 8, _flog},
-    {{'l','o','g'}, ITF_MATH1 >> 8, _flog10},
-    {{'e','x','p'}, ITF_MATH1 >> 8, _fexp},
-    {{'s','q','t'}, ITF_MATH1 >> 8, _fsqrt},
-    {{'c','e','l'}, ITF_MATH1 >> 8, _fceil},
-    {{'f','l','r'}, ITF_MATH1 >> 8, _floor},
+    {{'s','i','n'}, ITF_MATH1 >> 8, sin},
+    {{'s','n','h'}, ITF_MATH1 >> 8, sinh},
+    {{'a','s','n'}, ITF_MATH1 >> 8, asin},
+    {{'c','o','s'}, ITF_MATH1 >> 8, cos},
+    {{'c','s','h'}, ITF_MATH1 >> 8, cosh},
+    {{'a','c','s'}, ITF_MATH1 >> 8, acos},
+    {{'t','a','n'}, ITF_MATH1 >> 8, tan},
+    {{'t','n','h'}, ITF_MATH1 >> 8, tanh},
+    {{'a','t','n'}, ITF_MATH1 >> 8, atan},
+    {{'a','b','s'}, ITF_MATH1 >> 8, fabs},
+    {{'l','n',0}, ITF_MATH1 >> 8, log},
+    {{'l','o','g'}, ITF_MATH1 >> 8, log10},
+    {{'e','x','p'}, ITF_MATH1 >> 8, exp},
+    {{'s','q','t'}, ITF_MATH1 >> 8, sqrt},
+    {{'c','e','l'}, ITF_MATH1 >> 8, ceil},
+    {{'f','l','r'}, ITF_MATH1 >> 8, floor},
 
-    {{'a','t','2'}, ITF_MATH2 >> 8, (Math1FuncPtr)_fatan2},
-    {{'p','o','w'}, ITF_MATH2 >> 8, (Math1FuncPtr)_fpow},
-    {{'f','m','d'}, ITF_MATH2 >> 8, (Math1FuncPtr)_fmod},
+    {{'a','t','2'}, ITF_MATH2 >> 8, (Math1FuncPtr)(math_d2)atan2},
+    {{'p','o','w'}, ITF_MATH2 >> 8, (Math1FuncPtr)(math_d2)pow},
+    {{'f','m','d'}, ITF_MATH2 >> 8, (Math1FuncPtr)(math_d2)fmod},
 
     // type conversions
     {{'i',0,0}, ITF_TYPE >> 8, (Math1FuncPtr)ITC_INT},
@@ -136,8 +143,8 @@ const MathFunction MathFunctions[MATHFUNCNUM] = {
     {{'l',0,0}, ITF_TYPE >> 8, (Math1FuncPtr)FTT_LEN},
     {{'c',0,0}, ITF_TYPE >> 8, (Math1FuncPtr)FTT_CHAR},
 
-    {{'f','e','x'}, ITF_MATH2 >> 8, (Math1FuncPtr)_frexp},
-    {{'m','d','f'}, ITF_MATH2 >> 8, (Math1FuncPtr)_fmodf},
+    {{'f','e','x'}, ITF_MATH2 >> 8, (Math1FuncPtr)(math_di)frexp},
+    {{'m','d','f'}, ITF_MATH2 >> 8, (Math1FuncPtr)(math_ddp)modf},
 };
 
 void PlaceFunction(char *&vb, char *&sp, ParseInfo *pi, int redefine)
@@ -1501,6 +1508,7 @@ void __declspec(dllexport) Script(HWND hwndParent, int string_size,
 }
 
 double _infinity;
+extern "C" void _fpreset();
 
 void CleanAll(int init)
 {
@@ -1537,3 +1545,4 @@ BOOL WINAPI DllMain(HANDLE hInst, ULONG ul_reason_for_call, LPVOID lpReserved)
     CleanAll(ul_reason_for_call == DLL_PROCESS_ATTACH);
     return TRUE;
 }
+

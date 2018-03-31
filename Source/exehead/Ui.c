@@ -1,24 +1,18 @@
 /*
-*  Copyright (C) 1999-2006 Nullsoft, Inc.
-*  Portions Copyright (C) 2002 Jeff Doozan
-*
-*  This software is provided 'as-is', without any express or implied warranty.
-*  In no event will the authors be held liable for any damages arising from the
-*  use of this software.
-*
-*  Permission is granted to anyone to use this software for any purpose, including
-*  commercial applications, and to alter it and redistribute it freely, subject to
-*  the following restrictions:
-*
-*  1. The origin of this software must not be misrepresented; you must not claim that
-*  you wrote the original software. If you use this software in a product, an
-*  acknowledgment in the product documentation would be appreciated but is not required.
-*
-*  2. Altered source versions must be plainly marked as such, and must not be
-*  misrepresented as being the original software.
-*
-*  3. This notice may not be removed or altered from any source distribution.
-*/
+ * Ui.c
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft, Jeff Doozan and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #include <windowsx.h>
 #include <shlobj.h>
@@ -248,12 +242,14 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
   }
   else
   {
+    static const char reg_9x_locale[]     = "Control Panel\\Desktop\\ResourceLocale";
+    static const char reg_nt_locale_key[] = ".DEFAULT\\Control Panel\\International";
+    const char       *reg_nt_locale_val   = &reg_9x_locale[30]; // = "Locale" with opt
+
     *(DWORD*)state_language = CHAR4_TO_DWORD('0', 'x', 0, 0);
 
     {
       // Windows 9x
-      static const char reg_9x_locale[] = "Control Panel\\Desktop\\ResourceLocale";
-
       myRegGetStr(HKEY_CURRENT_USER, reg_9x_locale, NULL, g_tmp);
     }
 
@@ -261,9 +257,6 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
     {
       // Windows NT
       // This key exists on 9x as well, so it's only read if ResourceLocale wasn't found
-      static const char reg_nt_locale_key[] = ".DEFAULT\\Control Panel\\International";
-      static const char reg_nt_locale_val[] = "Locale";
-
       myRegGetStr(HKEY_USERS, reg_nt_locale_key, reg_nt_locale_val, g_tmp);
     }
 
@@ -654,7 +647,7 @@ skipPage:
   if (uMsg == WM_COMMAND)
   {
     int id = LOWORD(wParam);
-    HWND hCtl = GetDlgItem(hwndDlg, id);
+    HWND hCtl = GetDlgItem(hwndDlg, id); // lParam might be NULL
     if (hCtl)
     {
       SendMessage(hCtl, BM_SETSTATE, FALSE, 0);
@@ -958,11 +951,12 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
       if (idlist)
       {
         // free idlist
-        FreePIDL(idlist);
+        CoTaskMemFree(idlist);
 
         addtrailingslash(dir);
 
-        if (g_header->install_directory_auto_append)
+        if (g_header->install_directory_auto_append &&
+          dir == state_install_directory) // only append to $INSTDIR (bug #1174184)
         {
           const char *post_str = ps_tmpbuf;
           GetNSISStringTT(g_header->install_directory_auto_append);
@@ -1159,17 +1153,14 @@ int NSISCALL TreeGetSelectedSection(HWND tree, BOOL mouse)
 }
 
 static LONG oldTreeWndProc;
+static LPARAM last_selected_tree_item;
 static DWORD WINAPI newTreeWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-  static LPARAM last_item=-1;
   if (uMsg == WM_CHAR && wParam == VK_SPACE) {
     NotifyCurWnd(WM_TREEVIEW_KEYHACK);
     return 0;
   }
 #if defined(NSIS_SUPPORT_CODECALLBACKS) && defined(NSIS_CONFIG_ENHANCEDUI_SUPPORT)
-  if (uMsg == WM_DESTROY) {
-    last_item=-1;
-  }
 #ifndef NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
   if (uMsg == WM_MOUSEMOVE) {
     if (IsWindowVisible(hwnd)) {
@@ -1179,9 +1170,9 @@ static DWORD WINAPI newTreeWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
   }
 #endif
   if (uMsg == WM_NOTIFY_SELCHANGE) {
-    if (last_item != lParam)
+    if (last_selected_tree_item != lParam)
     {
-      last_item = lParam;
+      last_selected_tree_item = lParam;
 
       mystrcpy(g_tmp, g_usrvars[0]);
 
@@ -1218,6 +1209,7 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
     hBMcheck1=LoadBitmap(g_hInstance, MAKEINTRESOURCE(IDB_BITMAP1));
 
+    last_selected_tree_item=-1;
     oldTreeWndProc=SetWindowLong(hwndTree1,GWL_WNDPROC,(long)newTreeWndProc);
 
     hImageList = ImageList_Create(16,16, ILC_COLOR32|ILC_MASK, 6, 0);
@@ -1654,7 +1646,7 @@ static BOOL CALLBACK InstProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         TPM_NONOTIFY|TPM_RETURNCMD,
         pt.x,
         pt.y,
-        0,linsthwnd,0))
+        0,hwndDlg,0))
       {
         int i,total = 1; // 1 for the null char
         LVITEM item;
@@ -1680,8 +1672,7 @@ static BOOL CALLBACK InstProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         i = 0;
         do {
           item.pszText = ptr;
-          SendMessage(linsthwnd,LVM_GETITEMTEXT,i,(LPARAM)&item);
-          ptr += mystrlen(ptr);
+          ptr += SendMessage(linsthwnd,LVM_GETITEMTEXT,i,(LPARAM)&item);
           *(WORD*)ptr = CHAR2_TO_WORD('\r','\n');
           ptr+=2;
         } while (++i < count);

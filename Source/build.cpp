@@ -1,3 +1,19 @@
+/*
+ * build.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "Platform.h"
 #include <stdio.h>
 #include "exehead/config.h"
@@ -9,6 +25,7 @@
 #include "fileform.h"
 #include "writer.h"
 #include "crc32.h"
+#include "manifest.h"
 
 #include <stdexcept>
 
@@ -226,6 +243,9 @@ CEXEBuild::CEXEBuild() :
 
   res_editor=0;
 
+  manifest_comctl = manifest::comctl_old;
+  manifest_exec_level = manifest::exec_level_none;
+
   enable_last_page_cancel=0;
   uenable_last_page_cancel=0;
 
@@ -294,7 +314,7 @@ CEXEBuild::CEXEBuild() :
   m_ShellConstants.add("SMSTARTUP",CSIDL_STARTUP, CSIDL_COMMON_STARTUP);
   m_ShellConstants.add("DESKTOP",CSIDL_DESKTOPDIRECTORY, CSIDL_COMMON_DESKTOPDIRECTORY);
   m_ShellConstants.add("STARTMENU",CSIDL_STARTMENU, CSIDL_COMMON_STARTMENU);
-  m_ShellConstants.add("QUICKLAUNCH", CSIDL_APPDATA, CSIDL_PRINTERS);
+  m_ShellConstants.add("QUICKLAUNCH", CSIDL_APPDATA, CSIDL_APPDATA);
   m_ShellConstants.add("COMMONFILES",CSIDL_PROGRAM_FILES_COMMON, CSIDL_PROGRAM_FILES_COMMON);
   m_ShellConstants.add("DOCUMENTS",CSIDL_PERSONAL, CSIDL_COMMON_DOCUMENTS);
   m_ShellConstants.add("SENDTO",CSIDL_SENDTO, CSIDL_SENDTO);
@@ -318,6 +338,8 @@ CEXEBuild::CEXEBuild() :
   m_ShellConstants.add("RESOURCES", CSIDL_RESOURCES, CSIDL_RESOURCES);
   m_ShellConstants.add("RESOURCES_LOCALIZED", CSIDL_RESOURCES_LOCALIZED, CSIDL_RESOURCES_LOCALIZED);
   m_ShellConstants.add("CDBURN_AREA", CSIDL_CDBURN_AREA, CSIDL_CDBURN_AREA);
+
+  set_code_type_predefines();
 }
 
 void CEXEBuild::initialize(const char *makensis_path)
@@ -594,13 +616,12 @@ int CEXEBuild::datablock_optimize(int start_offset, int first_int)
       while (left > 0)
       {
         int l = min(left, build_filebuflen);
-        int la = l;
         void *newstuff = db->get(start_offset + this_len - left, l);
-        void *oldstuff = db->getmore(pos + this_len - left, &la);
+        void *oldstuff = db->getmore(pos + this_len - left, l);
 
         int res = memcmp(newstuff, oldstuff, l);
 
-        db->release(oldstuff, la);
+        db->release(oldstuff, l);
         db->release();
 
         if (res)
@@ -918,10 +939,10 @@ int CEXEBuild::add_function(const char *funname)
   for (x = 0; x < n; x ++)
   {
     if (tmp[x].name_ptr == addr)
-  {
-    ERROR_MSG("Error: Function named \"%s\" already exists.\n",funname);
-    return PS_ERROR;
-  }
+    {
+      ERROR_MSG("Error: Function named \"%s\" already exists.\n",funname);
+      return PS_ERROR;
+    }
   }
 
   cur_functions->resize((n+1)*sizeof(section));
@@ -934,6 +955,12 @@ int CEXEBuild::add_function(const char *funname)
   build_cursection->flags=0;
   build_cursection->size_kb=0;
   memset(build_cursection->name,0,sizeof(build_cursection->name));
+  
+  if (uninstall_mode)
+    set_code_type_predefines(funname+3);
+  else
+    set_code_type_predefines(funname);
+  
   return PS_OK;
 }
 
@@ -951,6 +978,8 @@ int CEXEBuild::function_end()
   build_cursection=NULL;
 
   set_uninstall_mode(0);
+  
+  set_code_type_predefines();
   return PS_OK;
 }
 
@@ -1004,6 +1033,8 @@ int CEXEBuild::section_end()
   build_cursection=NULL;
   if (!sectiongroup_open_cnt)
     set_uninstall_mode(0);
+  
+  set_code_type_predefines();
   return PS_OK;
 }
 
@@ -1127,7 +1158,9 @@ int CEXEBuild::add_section(const char *secname, const char *defname, int expand/
     else
       sectiongroup_open_cnt++;
   }
-
+  
+  set_code_type_predefines(name);
+    
   return PS_OK;
 }
 
@@ -1511,26 +1544,27 @@ int CEXEBuild::add_page(int type)
   struct {
     int wndproc_id;
     int dlg_id;
+    char *name;
   } ids[] = {
-    {PWP_CUSTOM, 0}, // custom
+    {PWP_CUSTOM, 0, "custom"}, // custom
 #ifdef NSIS_CONFIG_LICENSEPAGE
-    {PWP_LICENSE, IDD_LICENSE}, // license
+    {PWP_LICENSE, IDD_LICENSE, "license"}, // license
 #else
-    {0, IDD_LICENSE}, // license
+    {0, IDD_LICENSE, "license"}, // license
 #endif
 #ifdef NSIS_CONFIG_COMPONENTPAGE
-    {PWP_SELCOM, IDD_SELCOM}, // components
+    {PWP_SELCOM, IDD_SELCOM, "components"}, // components
 #else
-    {0, IDD_SELCOM}, // components
+    {0, IDD_SELCOM, "components"}, // components
 #endif
-    {PWP_DIR, IDD_DIR}, // directory
-    {PWP_INSTFILES, IDD_INSTFILES}, // instfiles
+    {PWP_DIR, IDD_DIR, "directory"}, // directory
+    {PWP_INSTFILES, IDD_INSTFILES, "instfiles"}, // instfiles
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
-    {PWP_UNINST, IDD_UNINST}, // uninstConfirm
+    {PWP_UNINST, IDD_UNINST, "uninstConfirm"}, // uninstConfirm
 #else
-    {0, IDD_UNINST}, // uninstConfirm
+    {0, IDD_UNINST, "uninstConfirm"}, // uninstConfirm
 #endif
-    {PWP_COMPLETED, -1} // completed
+    {PWP_COMPLETED, -1, NULL} // completed
   };
 
   pg.wndproc_id = ids[type].wndproc_id;
@@ -1541,7 +1575,8 @@ int CEXEBuild::add_page(int type)
   cur_page = (page *)cur_pages->get() + cur_header->blocks[NB_PAGES].num++;
 
   cur_page_type = type;
-
+  
+  set_code_type_predefines(ids[type].name);
   return PS_OK;
 }
 
@@ -1549,6 +1584,7 @@ int CEXEBuild::page_end()
 {
   cur_page = 0;
 
+  set_code_type_predefines();
   return PS_OK;
 }
 #endif
@@ -1583,17 +1619,18 @@ int CEXEBuild::AddVersionInfo()
         {
           LANGID lang_id = rVersionInfo.GetLangID(i);
           int code_page = rVersionInfo.GetCodePage(i);
-          LanguageTable *Table = GetLangTable(lang_id);
+
+          char *lang_name = GetLangNameAndCP(lang_id);
 
           if ( !rVersionInfo.FindKey(lang_id, code_page, "FileVersion") )
-            warning("Generating version information for language \"%04d-%s\" without standard key \"FileVersion\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+            warning("Generating version information for language \"%04d-%s\" without standard key \"FileVersion\"", lang_id, lang_name);
           if ( !rVersionInfo.FindKey(lang_id, code_page, "FileDescription") )
-            warning("Generating version information for language \"%04d-%s\" without standard key \"FileDescription\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+            warning("Generating version information for language \"%04d-%s\" without standard key \"FileDescription\"", lang_id, lang_name);
           if ( !rVersionInfo.FindKey(lang_id, code_page, "LegalCopyright") )
-            warning("Generating version information for language \"%04d-%s\" without standard key \"LegalCopyright\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+            warning("Generating version information for language \"%04d-%s\" without standard key \"LegalCopyright\"", lang_id, lang_name);
 
           rVersionInfo.ExportToStream(VerInfoStream, i);
-          res_editor->UpdateResource(RT_VERSION, 1, lang_id, (BYTE*)VerInfoStream.get(), VerInfoStream.getlen());
+          res_editor->UpdateResourceA(RT_VERSION, 1, lang_id, (BYTE*)VerInfoStream.get(), VerInfoStream.getlen());
         }
       }
       catch (exception& err) {
@@ -1932,7 +1969,7 @@ again:
   SCRIPT_MSG("Done!\n");
 
 #define REMOVE_ICON(id) if (disable_window_icon) { \
-    BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG); \
+    BYTE* dlg = res_editor->GetResourceA(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG); \
     if (dlg) { \
       CDialogTemplate dt(dlg,uDefCodePage); \
       res_editor->FreeResource(dlg); \
@@ -1950,7 +1987,7 @@ again:
          \
         DWORD dwSize; \
         dlg = dt.Save(dwSize); \
-        res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG, dlg, dwSize); \
+        res_editor->UpdateResourceA(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG, dlg, dwSize); \
         delete [] dlg; \
       } \
     } \
@@ -1961,43 +1998,43 @@ again:
     init_res_editor();
 #ifdef NSIS_CONFIG_LICENSEPAGE
     if (!license_normal) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_LICENSE, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_LICENSE, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_LICENSE);
     if (!license_fsrb) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_LICENSE_FSRB, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_LICENSE_FSRB, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_LICENSE_FSRB);
     if (!license_fscb) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_LICENSE_FSCB, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_LICENSE_FSCB, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_LICENSE_FSCB);
 #endif // NSIS_CONFIG_LICENSEPAGE
 #ifdef NSIS_CONFIG_COMPONENTPAGE
     if (!selcom) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_SELCOM, NSIS_DEFAULT_LANG, 0, 0);
-      res_editor->UpdateResource(RT_BITMAP, IDB_BITMAP1, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_SELCOM, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_BITMAP, IDB_BITMAP1, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_SELCOM);
 #endif // NSIS_CONFIG_COMPONENTPAGE
     if (!dir) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_DIR, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_DIR, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_DIR);
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
     if (!uninstconfirm) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_UNINST, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_UNINST, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_UNINST);
 #endif // NSIS_CONFIG_UNINSTALL_SUPPORT
     if (!instlog) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_INSTFILES, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_INSTFILES, NSIS_DEFAULT_LANG, 0, 0);
     }
     else REMOVE_ICON(IDD_INSTFILES);
     if (!main) {
-      res_editor->UpdateResource(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, 0, 0);
+      res_editor->UpdateResourceA(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, 0, 0);
       if (!build_compress_whole && !build_crcchk)
-        res_editor->UpdateResource(RT_DIALOG, IDD_VERIFY, NSIS_DEFAULT_LANG, 0, 0);
+        res_editor->UpdateResourceA(RT_DIALOG, IDD_VERIFY, NSIS_DEFAULT_LANG, 0, 0);
     }
 
     SCRIPT_MSG("Done!\n");
@@ -2047,6 +2084,20 @@ void CEXEBuild::PrepareInstTypes()
 }
 #endif
 
+void CEXEBuild::AddStandardStrings()
+{
+#ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
+  if (uninstall_mode)
+  {
+    cur_header->str_uninstchild = add_string("$TEMP\\$1");
+    cur_header->str_uninstcmd = add_string("\"$TEMP\\$1\" $0 _?=$INSTDIR\\");
+  }
+#endif//NSIS_CONFIG_UNINSTALL_SUPPORT
+#ifdef NSIS_SUPPORT_MOVEONREBOOT
+  cur_header->str_wininit = add_string("$WINDIR\\wininit.ini");
+#endif//NSIS_SUPPORT_MOVEONREBOOT
+}
+
 void CEXEBuild::PrepareHeaders(IGrowBuf *hdrbuf)
 {
   GrowBuf blocks_buf;
@@ -2089,6 +2140,48 @@ void CEXEBuild::PrepareHeaders(IGrowBuf *hdrbuf)
   header.write(cur_header);
 
   sink2.write_growbuf(&blocks_buf);
+}
+
+int CEXEBuild::SetVarsSection()
+{
+  try {
+    init_res_editor();
+
+    VerifyDeclaredUserVarRefs(&m_UserVarNames);
+    int MaxUserVars = m_UserVarNames.getnum();
+    // -1 because the default size is 1
+    if (!res_editor->AddExtraVirtualSize2PESection(NSIS_VARS_SECTION, (MaxUserVars - 1) * sizeof(NSIS_STRING)))
+    {
+      ERROR_MSG("Internal compiler error #12346: invalid exehead cannot find section \"%s\"!\n", NSIS_VARS_SECTION);
+      return PS_ERROR;
+    }
+  }
+  catch (exception& err) {
+    ERROR_MSG("\nError: %s\n", err.what());
+    return PS_ERROR;
+  }
+
+  return PS_OK;
+}
+
+int CEXEBuild::SetManifest()
+{
+  try {
+    init_res_editor();
+
+    string manifest = manifest::generate(manifest_comctl, manifest_exec_level);
+
+    if (manifest == "")
+      return PS_OK;
+
+    res_editor->UpdateResourceA(MAKEINTRESOURCE(24), MAKEINTRESOURCE(1), NSIS_DEFAULT_LANG, (LPBYTE) manifest.c_str(), manifest.length());
+  }
+  catch (exception& err) {
+    ERROR_MSG("Error while setting manifest: %s\n", err.what());
+    return PS_ERROR;
+  }
+
+  return PS_OK;
 }
 
 int CEXEBuild::check_write_output_errors() const
@@ -2151,20 +2244,27 @@ int CEXEBuild::prepare_uninstaller() {
   {
     if (!uninstaller_writes_used)
     {
-      warning("Uninstall section found but WriteUninstaller never used - no uninstaller will be created.");
+      warning("Uninstaller script code found but WriteUninstaller never used - no uninstaller will be created.");
       return PS_OK;
     }
 
     build_uninst.flags|=build_header.flags&(CH_FLAGS_PROGRESS_COLORED|CH_FLAGS_NO_ROOT_DIR);
 
     set_uninstall_mode(1);
+
     DefineInnerLangString(NLF_UCAPTION);
+
     if (resolve_coderefs("uninstall"))
       return PS_ERROR;
+
 #ifdef NSIS_CONFIG_COMPONENTPAGE
     // set sections to the first insttype
     PrepareInstTypes();
 #endif
+
+    // Add standard strings to string table
+    AddStandardStrings();
+
     set_uninstall_mode(0);
   }
   else if (uninstaller_writes_used)
@@ -2248,18 +2348,16 @@ int CEXEBuild::write_output(void)
   // Generate language tables
   RET_UNLESS_OK( GenerateLangTables() );
 
+  // Setup user variables PE section
+  RET_UNLESS_OK( SetVarsSection() );
+
+  // Set XML manifest
+  RET_UNLESS_OK( SetManifest() );
+
+  // Add standard strings to string table
+  AddStandardStrings();
+
   try {
-    init_res_editor();
-
-    VerifyDeclaredUserVarRefs(&m_UserVarNames);
-    int MaxUserVars = m_UserVarNames.getnum();
-    // -1 because the default size is 1
-    if (!res_editor->AddExtraVirtualSize2PESection(NSIS_VARS_SECTION, (MaxUserVars - 1) * sizeof(NSIS_STRING)))
-    {
-      ERROR_MSG("Internal compiler error #12346: invalid exehead cannot find section \"%s\"!\n", NSIS_VARS_SECTION);
-      return PS_ERROR;
-    }
-
     // Save all changes to the exe header
     close_res_editor();
   }
@@ -2917,6 +3015,8 @@ void CEXEBuild::set_uninstall_mode(int un)
       cur_strlist=&ubuild_strlist;
       cur_langtables=&ubuild_langtables;
       cur_ctlcolors=&ubuild_ctlcolors;
+
+      definedlist.add("__UNINSTALL__");
     }
     else
     {
@@ -2932,6 +3032,8 @@ void CEXEBuild::set_uninstall_mode(int un)
       cur_strlist=&build_strlist;
       cur_langtables=&build_langtables;
       cur_ctlcolors=&build_ctlcolors;
+
+      definedlist.del("__UNINSTALL__");
     }
 
     SWAP(db_opt_save_u,db_opt_save,int);
@@ -3329,5 +3431,28 @@ void CEXEBuild::update_exehead(const unsigned char *new_exehead, size_t new_size
 
   // zero rest of exehead
   memset(m_exehead + new_size, 0, m_exehead_size - new_size);
+}
+
+void CEXEBuild::set_code_type_predefines(const char *value)
+{
+  definedlist.del("__SECTION__");
+  definedlist.del("__FUNCTION__");
+  definedlist.del("__PAGEEX__");
+  definedlist.del("__GLOBAL__");
+
+  switch (GetCurrentTokenPlace())
+  {
+    case TP_SEC:
+      definedlist.add("__SECTION__", value==NULL?"":value);
+    break;
+    case TP_FUNC:
+      definedlist.add("__FUNCTION__", value==NULL?"":value);
+    break;
+    case TP_PAGEEX:
+      definedlist.add("__PAGEEX__", value==NULL?"":value);
+    break;
+    default:
+      definedlist.add("__GLOBAL__");
+  }
 }
 

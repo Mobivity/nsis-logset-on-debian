@@ -1,35 +1,18 @@
-/* 
-
-  Nullsoft Scriptable Install System (NSIS)
-  main.c - executable header main code
-
-  Copyright (C) 1999-2006 Nullsoft, Inc.
-  
-  This license applies to everything in the NSIS package, except where otherwise noted.
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-
-  This is the zlib/libpng license, which is approved by opensource.org.
-
-  Portions Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler (zlib).
-  Portions Copyright (C) 1996-2002 Julian R Seward (bzip2).
-  Portions Copyright (C) 1999-2003 Igor Pavlov (lzma).
-
-*/
+/*
+ * main.c: executable header main code
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
 
 #include "../Platform.h"
 #include <shlobj.h>
@@ -65,8 +48,8 @@ char *ValidateTempDir()
     return NULL;
   addtrailingslash(state_temp_dir);
   CreateDirectory(state_temp_dir, NULL);
-  // state_command_line is used as a temp var here
-  return my_GetTempFileName(state_command_line, state_temp_dir);
+  // state_language is used as a temp var here
+  return my_GetTempFileName(state_language, state_temp_dir);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, int nCmdShow)
@@ -111,18 +94,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
   }
 
   mystrcpy(g_caption,_LANG_GENERIC_ERROR);
-
-  GetTempPath(NSIS_MAX_STRLEN, state_temp_dir);
-  if (!ValidateTempDir())
-  {
-    GetWindowsDirectory(state_temp_dir, NSIS_MAX_STRLEN - 5); // leave space for \Temp
-    mystrcat(state_temp_dir, "\\Temp");
-    if (!ValidateTempDir())
-    {
-      goto end;
-    }
-  }
-  DeleteFile(state_command_line);
 
   mystrcpy(state_command_line, GetCommandLine());
 
@@ -169,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
 
       if (*(LPDWORD)(cmdline-2) == CHAR4_TO_DWORD(' ', '/', 'D','='))
       {
-        cmdline[-2]=0; // keep this from being passed to uninstaller if necessary
+        *(LPDWORD)(cmdline-2)=0; // keep this from being passed to uninstaller if necessary
         mystrcpy(state_install_directory,cmdline+2);
         break; // /D= must always be last
       }
@@ -181,6 +152,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
     if (*cmdline == '\"')
       cmdline++;
   }
+
+  GetTempPath(NSIS_MAX_STRLEN, state_temp_dir);
+  if (!ValidateTempDir())
+  {
+    GetWindowsDirectory(state_temp_dir, NSIS_MAX_STRLEN - 5); // leave space for \Temp
+    mystrcat(state_temp_dir, "\\Temp");
+    if (!ValidateTempDir())
+    {
+      goto end;
+    }
+  }
+  DeleteFile(state_language);
 
   m_Err = loadHeaders(cl_flags);
   if (m_Err) goto end;
@@ -214,44 +197,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
     else
     {
       int x;
+      char s[] = "Au_.exe";
 
-      mystrcat(state_temp_dir,"~nsu.tmp\\");
+      mystrcat(state_temp_dir,"~nsu.tmp");
       CreateDirectory(state_temp_dir,NULL);
+
+      if (!state_install_directory[0])
+        mystrcpy(state_install_directory,state_exe_directory);
+
+      mystrcpy(g_usrvars[0], realcmds);
+      mystrcpy(g_usrvars[1], s);
 
       for (x = 0; x < 26; x ++)
       {
-        static char s[]="Au_.exe";
-        static char buf2[NSIS_MAX_STRLEN*2];
+        static char buf2[NSIS_MAX_STRLEN];
         static char ibuf[NSIS_MAX_STRLEN];
 
-        *(LPWORD)buf2=CHAR2_TO_WORD('\"',0);
-        mystrcat(buf2,state_temp_dir);
-        mystrcat(buf2,s);
+        GetNSISString(buf2,g_header->str_uninstchild); // $TEMP\$1
 
-        DeleteFile(buf2+1); // clean up after all the other ones if they are there
+        DeleteFile(buf2); // clean up after all the other ones if they are there
 
         if (m_Err) // not done yet
         {
           // get current name
-          int l=GetModuleFileName(g_hInstance,ibuf,sizeof(ibuf));
-          // check if it is ?Au_.exe - if so, fuck it
+          int l=GetModuleFileName(NULL,ibuf,sizeof(ibuf));
+          // check if it is ?u_.exe - if so, fuck it
           if (!lstrcmpi(ibuf+l-(sizeof(s)-2),s+1)) break;
 
           // copy file
-          if (CopyFile(ibuf,buf2+1,FALSE))
+          if (CopyFile(ibuf,buf2,TRUE))
           {
             HANDLE hProc;
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
-            MoveFileOnReboot(buf2+1,NULL);
+            MoveFileOnReboot(buf2,NULL);
+            MoveFileOnReboot(state_temp_dir,NULL);
 #endif
-            if (state_install_directory[0]) mystrcpy(ibuf,state_install_directory);
-            else trimslashtoend(ibuf);
-            mystrcat(buf2,"\" ");
-            mystrcat(buf2,realcmds);
-            mystrcat(buf2," _?=");
-            mystrcat(buf2,ibuf);
-            // add a trailing backslash to make sure is_valid_instpath will not fail when it shouldn't
-            addtrailingslash(buf2);
+            GetNSISString(buf2,g_header->str_uninstcmd); // '"$TEMP\$1" $0 _?=$INSTDIR\'
             hProc=myCreateProcess(buf2,state_temp_dir);
             if (hProc)
             {
@@ -261,7 +242,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
             }
           }
         }
-        s[0]++;
+        g_usrvars[1][0]++;
       }
       goto end;
     }

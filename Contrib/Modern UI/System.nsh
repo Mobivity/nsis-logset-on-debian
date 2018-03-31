@@ -2,13 +2,13 @@
 ;Macro System
 ;Written by Joost Verburg
 
-;Copyright © 2002-2006 Joost Verburg
+;Copyright © 2002-2007 Joost Verburg
 
 ;Documentation: Readme.html
 ;License: License.txt
 ;Examples: Examples\Modern UI
 
-!echo "NSIS Modern User Interface version 1.75 - © 2002-2006 Joost Verburg"
+!echo "NSIS Modern User Interface version 1.75 - © 2002-2007 Joost Verburg"
 
 ;--------------------------------
 
@@ -312,7 +312,11 @@ Var /GLOBAL MUI_TEMP2
     StrCmp $MUI_NOABORTWARNING "1" mui.quit
   !endif
 
-  MessageBox MB_YESNO|MB_ICONEXCLAMATION "${MUI_ABORTWARNING_TEXT}" IDYES mui.quit
+  !ifdef MUI_ABORTWARNING_CANCEL_DEFAULT
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2 "${MUI_ABORTWARNING_TEXT}" IDYES mui.quit
+  !else
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "${MUI_ABORTWARNING_TEXT}" IDYES mui.quit
+  !endif
 
   Abort
   mui.quit:
@@ -321,7 +325,11 @@ Var /GLOBAL MUI_TEMP2
 
 !macro MUI_UNABORTWARNING
 
-  MessageBox MB_YESNO|MB_ICONEXCLAMATION "${MUI_UNABORTWARNING_TEXT}" IDYES mui.quit
+  !ifdef MUI_UNABORTWARNING_CANCEL_DEFAULT
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2 "${MUI_UNABORTWARNING_TEXT}" IDYES mui.quit
+  !else
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "${MUI_UNABORTWARNING_TEXT}" IDYES mui.quit
+  !endif
 
   Abort
   mui.quit:

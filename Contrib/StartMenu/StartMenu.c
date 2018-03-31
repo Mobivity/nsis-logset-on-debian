@@ -112,10 +112,15 @@ void __declspec(dllexport) Show(HWND hwndParent, int string_size, char *variable
 {
   HWND hwStartMenuSelect = g_hwStartMenuSelect;
 
+  if (!hwStartMenuSelect)
+  {
+    return;
+  }
+
   while (!g_done)
   {
     MSG msg;
-    int nResult = GetMessage(&msg, NULL, 0, 0);
+    GetMessage(&msg, NULL, 0, 0);
     if (!IsDialogMessage(hwStartMenuSelect,&msg) && !IsDialogMessage(hwndParent,&msg) && !TranslateMessage(&msg))
       DispatchMessage(&msg);
   }
@@ -355,6 +360,12 @@ BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         EnableWindow(hwDirList, bEnable);
         EnableWindow(hwLocation, bEnable);
       }
+      else if (LOWORD(wParam) == IDC_LOCATION && HIWORD(wParam) == EN_CHANGE)
+      {
+        GetWindowText(hwLocation, buf, MAX_PATH);
+        validate_filename(buf);
+        EnableWindow(GetDlgItem(hwParent, IDOK), *buf != '\0');
+      }
     break;
     case WM_USER+666:
       g_done = 1;
@@ -398,20 +409,13 @@ void AddFolderFromReg(int nFolder)
   //DWORD idx;
   WIN32_FIND_DATA FileData;
   HANDLE hSearch;
+  LPITEMIDLIST ppidl;
 
-  LPMALLOC ppMalloc;
-  if (SHGetMalloc(&ppMalloc) == NOERROR)
+  buf[0] = 0;
+  if (SHGetSpecialFolderLocation(hwParent, nFolder, &ppidl) == S_OK)
   {
-    LPITEMIDLIST ppidl;
-
-    buf[0] = 0;
-    if (SHGetSpecialFolderLocation(hwParent, nFolder, &ppidl) == S_OK)
-    {
-      SHGetPathFromIDList(ppidl, buf);
-      ppMalloc->lpVtbl->Free(ppMalloc, ppidl);
-    }
-
-    ppMalloc->lpVtbl->Release(ppMalloc);
+    SHGetPathFromIDList(ppidl, buf);
+    CoTaskMemFree(ppidl);
   }
 
   if (!buf[0])

@@ -1,3 +1,19 @@
+/*
+ * exec.c
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
 #include "../Platform.h"
 #include <shlobj.h>
 #include <shellapi.h>
@@ -285,7 +301,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
       {
         char *p = skip_root(buf1);
         char c = 'c';
-        if (*buf1 && p)
+        if (p)
         {
           while (c)
           {
@@ -439,8 +455,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         // remove read only flag if overwrite mode is on
         if (!overwriteflag)
         {
-          int attr=GetFileAttributes(buf0);
-          SetFileAttributes(buf0,attr&(~FILE_ATTRIBUTE_READONLY));
+          remove_ro_attr(buf0);
         }
         hOut=myOpenFile(buf0,GENERIC_WRITE,(overwriteflag==1)?CREATE_NEW:CREATE_ALWAYS);
         if (hOut == INVALID_HANDLE_VALUE)
@@ -603,21 +618,11 @@ static int NSISCALL ExecuteEntry(entry *entry_)
       {
         char *p=var0;
         char *buf0=GetStringFromParm(0x01);
-        if (parm2)
+        if (!ExpandEnvironmentStrings(buf0,p,NSIS_MAX_STRLEN)
+            || (parm2 && !lstrcmp(buf0, p)))
         {
-          if (!GetEnvironmentVariable(buf0,p,NSIS_MAX_STRLEN))
-          {
-            exec_error++;
-            *p=0;
-          }
-        }
-        else
-        {
-          if (!ExpandEnvironmentStrings(buf0,p,NSIS_MAX_STRLEN))
-          {
-            exec_error++;
-            *p=0;
-          }
+          exec_error++;
+          *p=0;
         }
         p[NSIS_MAX_STRLEN-1]=0;
       }
@@ -941,7 +946,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
           if (parm4)
             h=GetModuleHandle(buf1);
           if (!h)
-            h=LoadLibrary(buf1);
+            h=LoadLibraryEx(buf1, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
           if (h)
           {
             FARPROC funke = GetProcAddress(h,buf0);
@@ -1205,11 +1210,19 @@ static int NSISCALL ExecuteEntry(entry *entry_)
             LogData2Hex(binbuf, sizeof(binbuf), data, size);
             log_printf5("WriteRegBin: \"%s\\%s\" \"%s\"=\"%s\"",rkn,buf1,buf0,binbuf);
           }
+          
           if (size >= 0 && RegSetValueEx(hKey,buf0,0,rtype,data,size) == ERROR_SUCCESS)
+          {
             exec_error--;
+          }
+          else
+          {
+            log_printf4("WriteReg: error writing into \"%s\\%s\" \"%s\"",rkn,buf1,buf0);
+          }
+
           RegCloseKey(hKey);
         }
-        else { log_printf3("WriteReg: error creating key \"%s\\%s\"",buf3,buf1); }
+        else { log_printf3("WriteReg: error creating key \"%s\\%s\"",rkn,buf1); }
       }
     break;
     case EW_READREGSTR: // read registry string
@@ -1429,6 +1442,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         }
         validate_filename(buf1);
 
+        remove_ro_attr(buf1);
         hFile=myOpenFile(buf1,GENERIC_WRITE,CREATE_ALWAYS);
         if (hFile != INVALID_HANDLE_VALUE)
         {
