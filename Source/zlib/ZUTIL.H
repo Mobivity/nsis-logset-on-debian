@@ -21,7 +21,7 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id: ZUTIL.H,v 1.6 2007/01/25 18:07:40 kichik Exp $ */
+/* @(#) $Id: ZUTIL.H,v 1.5 2007/01/13 17:28:23 kichik Exp $ */
 
 #ifndef _Z_UTIL_H
 #define _Z_UTIL_H

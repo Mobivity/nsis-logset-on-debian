@@ -26,6 +26,7 @@
 #include "lang.h"
 #include "dirreader.h"
 #include "version.h"
+#include "icon.h"
 #include "exehead/resource.h"
 #include <cassert> // for assert(3)
 #include <time.h>
@@ -1601,11 +1602,11 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_ICON:
       SCRIPT_MSG("Icon: \"%s\"\n",line.gettoken_str(1));
       try {
-        init_res_editor();
-        replace_icon(res_editor, IDI_ICON2, line.gettoken_str(1));
+        free_loaded_icon(installer_icon);
+        installer_icon = load_icon_file(line.gettoken_str(1));
       }
       catch (exception& err) {
-        ERROR_MSG("Error while setting icon to \"%s\": %s\n", line.gettoken_str(1), err.what());
+        ERROR_MSG("Error while loading icon from \"%s\": %s\n", line.gettoken_str(1), err.what());
         return PS_ERROR;
       }
     return PS_OK;
@@ -3100,11 +3101,11 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_UNINSTICON:
       SCRIPT_MSG("UninstallIcon: \"%s\"\n",line.gettoken_str(1));
       try {
-        free(m_unicon_data);
-        m_unicon_data = generate_uninstall_icon_data(line.gettoken_str(1), m_unicon_size);
+        free_loaded_icon(uninstaller_icon);
+        uninstaller_icon = load_icon_file(line.gettoken_str(1));
       }
       catch (exception& err) {
-        ERROR_MSG("Error while setting icon to \"%s\": %s\n", line.gettoken_str(1), err.what());
+        ERROR_MSG("Error while loading icon from \"%s\": %s\n", line.gettoken_str(1), err.what());
         return PS_ERROR;
       }
     return PS_OK;
@@ -5544,6 +5545,10 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       if (!strcmpi(line.gettoken_str(1),"/GLOBAL"))
       {
         a++;
+      }
+      else if (line.getnumtokens() == 3)
+      {
+        PRINTHELP();
       }
 
       if (build_cursection)

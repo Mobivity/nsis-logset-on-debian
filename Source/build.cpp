@@ -26,6 +26,7 @@
 #include "writer.h"
 #include "crc32.h"
 #include "manifest.h"
+#include "icon.h"
 
 #include <stdexcept>
 
@@ -68,7 +69,8 @@ void CEXEBuild::define(const char *p, const char *v)
 
 CEXEBuild::~CEXEBuild()
 {
-  free(m_unicon_data);
+  free_loaded_icon(installer_icon);
+  free_loaded_icon(uninstaller_icon);
 
   delete [] m_exehead;
 
@@ -227,7 +229,6 @@ CEXEBuild::CEXEBuild() :
   build_font[0]=0;
   build_font_size=0;
 
-  m_unicon_data=NULL;
   m_unicon_size=0;
 
   branding_image_found=false;
@@ -413,11 +414,7 @@ void CEXEBuild::initialize(const char *makensis_path)
   }
 
   string uninst = stubs_dir + PLATFORM_PATH_SEPARATOR_STR + "uninst";
-  m_unicon_data = generate_uninstall_icon_data(uninst.c_str(), m_unicon_size);
-  if (!m_unicon_data)
-  {
-    throw runtime_error("invalid default uninstall icon");
-  }
+  uninstaller_icon = load_icon_file(uninst.c_str());
 }
 
 
@@ -2379,6 +2376,16 @@ int CEXEBuild::write_output(void)
   AddStandardStrings();
 
   try {
+    // Load icon from exe, if needed
+    if (installer_icon.empty())
+    {
+      init_res_editor();
+      installer_icon = load_icon_res(res_editor, IDI_ICON2);
+    }
+
+    // Set icon
+    set_icon(res_editor, IDI_ICON2, installer_icon, uninstaller_icon);
+
     // Save all changes to the exe header
     close_res_editor();
   }
@@ -2811,12 +2818,20 @@ int CEXEBuild::uninstall_generate()
 
     // Get offsets of icons to replace for uninstall
     // Also makes sure that the icons are there and in the right size.
-    if (generate_unicons_offsets(m_exehead, m_exehead_size, m_unicon_data) == 0)
+    LPBYTE unicon_data = generate_uninstall_icon_data(installer_icon, uninstaller_icon, m_unicon_size);
+    if (generate_unicons_offsets(m_exehead, m_exehead_size, unicon_data, IDI_ICON2) == 0)
+    {
+      delete [] unicon_data;
       return PS_ERROR;
+    }
 
     entry *ent = (entry *) build_entries.get();
     if (!ent)
+    {
+      delete [] unicon_data;
       return PS_ERROR;
+    }
+
     int ents = build_header.blocks[NB_ENTRIES].num;
     int uns = uninstaller_writes_used;
     int uninstdata_offset = build_datablock.getlen();
@@ -2833,8 +2848,11 @@ int CEXEBuild::uninstall_generate()
       ent++;
     }
 
-    if (add_db_data((char *)m_unicon_data,m_unicon_size) < 0)
+    if (add_db_data((char *)unicon_data,m_unicon_size) < 0)
+    {
+      delete [] unicon_data;
       return PS_ERROR;
+    }
 
 #ifdef NSIS_CONFIG_CRC_SUPPORT
     {
@@ -2846,7 +2864,7 @@ int CEXEBuild::uninstall_generate()
       memcpy(uninst_header, m_exehead, m_exehead_size);
 
       // patch the icons
-      LPBYTE seeker = m_unicon_data;
+      LPBYTE seeker = unicon_data;
       while (*seeker) {
         DWORD dwSize = FIX_ENDIAN_INT32(*(LPDWORD) seeker);
         seeker += sizeof(DWORD);
@@ -2855,6 +2873,8 @@ int CEXEBuild::uninstall_generate()
         memcpy(uninst_header + dwOffset, seeker, dwSize);
         seeker += dwSize;
       }
+
+      delete [] unicon_data;
 
 #ifdef NSIS_CONFIG_CRC_ANAL
       crc=CRC32(crc, uninst_header, m_exehead_size);

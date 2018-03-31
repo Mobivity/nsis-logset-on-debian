@@ -120,14 +120,14 @@ Components page
   
     ;Get control hanldes
     FindWindow $mui.ComponentsPage "#32770" "" $HWNDPARENT
-    GetDlgItem $mui.ComponentsPage.Text $mui.ComponentsPage 1006
-    GetDlgItem $mui.ComponentsPage.InstTypesText $mui.ComponentsPage 1021
-    GetDlgItem $mui.ComponentsPage.ComponentsText $mui.ComponentsPage 1022
-    GetDlgItem $mui.ComponentsPage.InstTypes $mui.ComponentsPage 1017
-    GetDlgItem $mui.ComponentsPage.Components $mui.ComponentsPage 1032
+    GetDlgItem $mui.ComponentsPage.Text             $mui.ComponentsPage 1006
+    GetDlgItem $mui.ComponentsPage.InstTypesText    $mui.ComponentsPage 1021
+    GetDlgItem $mui.ComponentsPage.ComponentsText   $mui.ComponentsPage 1022
+    GetDlgItem $mui.ComponentsPage.InstTypes        $mui.ComponentsPage 1017
+    GetDlgItem $mui.ComponentsPage.Components       $mui.ComponentsPage 1032
     GetDlgItem $mui.ComponentsPage.DescriptionTitle $mui.ComponentsPage 1042
-    GetDlgItem $mui.ComponentsPage.DescriptionText $mui.ComponentsPage 1043
-    GetDlgItem $mui.ComponentsPage.SpaceRequired $mui.ComponentsPage 1023    
+    GetDlgItem $mui.ComponentsPage.DescriptionText  $mui.ComponentsPage 1043
+    GetDlgItem $mui.ComponentsPage.SpaceRequired    $mui.ComponentsPage 1023    
 
     ;Default text in description textbox
     SendMessage $mui.ComponentsPage.DescriptionTitle ${WM_SETTEXT} 0 "STR:${MUI_COMPONENTSPAGE_TEXT_DESCRIPTION_TITLE}"
@@ -156,9 +156,9 @@ Components page
 
   ${if} $0 == -1
     ;No mouse hover over component in list
-    SendMessage $mui.ComponentsPage.Description ${WM_SETTEXT} 0 "STR:"
-    EnableWindow $mui.ComponentsPage.Description 0
-    SendMessage $mui.ComponentsPage.Description ${WM_SETTEXT} 0 "STR:$mui.ComponentsPage.DescriptionText.Info"
+    SendMessage $mui.ComponentsPage.DescriptionText ${WM_SETTEXT} 0 "STR:"
+    EnableWindow $mui.ComponentsPage.DescriptionText 0
+    SendMessage $mui.ComponentsPage.DescriptionText ${WM_SETTEXT} 0 "STR:$mui.ComponentsPage.DescriptionText.Info"
 
 !macroend
 
@@ -168,9 +168,9 @@ Components page
   !verbose ${MUI_VERBOSE}
 
   ${elseif} $0 == ${VAR}
-    SendMessage $mui.ComponentsPage.Description ${WM_SETTEXT} 0 "STR:"
-    EnableWindow $mui.ComponentsPage.Description 1
-    SendMessage $mui.ComponentsPage.Description ${WM_SETTEXT} 0 "STR:${TEXT}"
+    SendMessage $mui.ComponentsPage.DescriptionText ${WM_SETTEXT} 0 "STR:"
+    EnableWindow $mui.ComponentsPage.DescriptionText 1
+    SendMessage $mui.ComponentsPage.DescriptionText ${WM_SETTEXT} 0 "STR:${TEXT}"
 
   !verbose pop
 

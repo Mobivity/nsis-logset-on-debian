@@ -16,7 +16,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
-/* @(#) $Id: ZCONF.H,v 1.3 2007/01/13 17:28:23 kichik Exp $ */
+/* @(#) $Id: ZCONF.H,v 1.2 2006/10/28 19:45:02 joostverburg Exp $ */
 
 #ifndef _ZCONF_H
 #define _ZCONF_H

@@ -2,7 +2,7 @@
 // Name:        src/html/m_links.cpp
 // Purpose:     wxHtml module for links & anchors
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: nslinks.cpp,v 1.2 2007/03/08 01:47:14 pabs3 Exp $
+// RCS-ID:      $Id: nslinks.cpp,v 1.1 2007/02/24 18:57:09 kichik Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
