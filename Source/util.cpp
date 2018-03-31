@@ -14,6 +14,13 @@
 #  include <iconv.h>
 #endif
 
+#ifdef __APPLE__
+namespace Apple { // defines struct section
+#  include <mach-o/dyld.h> // for _NSGetExecutablePath
+};
+#  include <sys/param.h> // for MAXPATHLEN
+#endif
+
 #include <cassert> // for assert
 #include <algorithm>
 #include <stdexcept>
@@ -555,16 +562,6 @@ FILE *my_fopen(const char *path, const char *mode)
   my_convert_free(converted_path);
   return result;
 }
-
-int my_glob(const char *pattern, int flags,
-         int errfunc(const char * epath, int eerrno), glob_t *pglob)
-{
-  char *converted_pattern = my_convert(pattern);
-
-  int result = glob(converted_pattern, flags, errfunc, pglob);
-  my_convert_free(converted_pattern);
-  return result;
-}
 #endif//!_WIN32
 
 void *operator new(size_t size) {
@@ -646,8 +643,8 @@ string get_executable_path(const char* argv0) {
   return string(temp_buf);
 #elif __APPLE__
   char temp_buf[MAXPATHLEN+1];
-  unsigned long buf_len = MAXPATHLEN;
-  int rc = _NSGetExecutablePath(temp_buf, &buf_len);
+  unsigned int buf_len = MAXPATHLEN;
+  int rc = Apple::_NSGetExecutablePath(temp_buf, &buf_len);
   assert(rc == 0);
   return string(temp_buf);
 #else /* Linux/BSD/POSIX/etc */
@@ -655,7 +652,7 @@ string get_executable_path(const char* argv0) {
   if( envpath != NULL ) return get_full_path( envpath );
   else {
     char* pathtmp;
-    char* path;
+    char* path = NULL;
     size_t len = 100;
     size_t nchars;
     while(1){

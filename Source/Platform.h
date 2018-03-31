@@ -37,7 +37,7 @@ typedef unsigned short WCHAR, *PWCHAR, *LPWCH, *PWCH, *NWPSTR, *LPWSTR, *PWSTR;
 typedef const unsigned short *LPCWCH, *PCWCH, *LPCWSTR, *PCWSTR;
 typedef unsigned int UINT_PTR;
 // basic stuff
-typedef unsigned long HANDLE;
+typedef void * HANDLE;
 typedef unsigned long HKEY;
 // some gdi
 typedef unsigned long COLORREF;
@@ -668,6 +668,7 @@ typedef struct _IMAGE_DOS_HEADER {
   WORD e_res2[10];
   LONG e_lfanew;
 } IMAGE_DOS_HEADER,*PIMAGE_DOS_HEADER;
+#  pragma pack()
 #  pragma pack(4)
 typedef struct _IMAGE_FILE_HEADER {
   WORD Machine;
