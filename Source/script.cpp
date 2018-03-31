@@ -262,9 +262,6 @@ int CEXEBuild::doParse(const char *str)
 
   while (*str == ' ' || *str == '\t') str++;
 
-  // if ignoring, ignore all lines that don't begin with !.
-  if (cur_ifblock && (cur_ifblock->ignore || cur_ifblock->inherited_ignore) && *str!='!' && !last_line_had_slash) return PS_OK;
-
   if (m_linebuild.getlen()>1) m_linebuild.resize(m_linebuild.getlen()-2);
 
   m_linebuild.add(str,strlen(str)+1);
@@ -281,6 +278,14 @@ int CEXEBuild::doParse(const char *str)
   inside_comment = line.InCommentBlock();
 
   m_linebuild.resize(0);
+
+  // if ignoring, ignore all lines that don't begin with an exclamation mark
+  {
+    bool ignore_line = cur_ifblock && (cur_ifblock->ignore || cur_ifblock->inherited_ignore);
+    char first_char = *(char *) m_linebuild.get();
+    if (ignore_line && first_char!='!' && !last_line_had_slash)
+      return PS_OK;
+  }
 
   if (res)
   {
@@ -2740,7 +2745,20 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     return PS_OK;
     case TOK_P_INCLUDE:
       {
+        bool required = true;
+
         char *f = line.gettoken_str(1);
+
+        if(!stricmp(f,"/nonfatal")) {
+          if (line.getnumtokens()!=3)
+            PRINTHELP();
+
+          f = line.gettoken_str(2);
+          required = false;
+        } else if (line.getnumtokens()!=2) {
+          PRINTHELP();
+        }
+
 #ifdef _WIN32
         char *fc = f;
 #else
@@ -2815,8 +2833,12 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         // nothing found
         if (!included)
         {
-          ERROR_MSG("!include: could not find: \"%s\"\n",f);
-          return PS_ERROR;
+          if(required) {
+            ERROR_MSG("!include: could not find: \"%s\"\n",f);
+            return PS_ERROR;
+          } else {
+            warning_fl("!include: could not find: \"%s\"",f);
+          }
         }
       }
     return PS_OK;

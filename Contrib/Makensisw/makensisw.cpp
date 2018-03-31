@@ -194,9 +194,9 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     {
       if (!g_sdata.thread) {
         DragAcceptFiles(g_sdata.hwnd,FALSE);
-		ImageList_Destroy(g_toolbar.imagelist);
-		ImageList_Destroy(g_toolbar.imagelistd);
-		ImageList_Destroy(g_toolbar.imagelisth);
+        ImageList_Destroy(g_toolbar.imagelist);
+        ImageList_Destroy(g_toolbar.imagelistd);
+        ImageList_Destroy(g_toolbar.imagelisth);
         DestroyWindow(hwndDlg);
         FreeLibrary(hRichEditDLL);
       }
@@ -216,7 +216,10 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
           ResetObjects();
           CompileNSISScript();
         }
+      } else {
+        MessageBox(hwndDlg,MULTIDROPERROR,"Error",MB_OK|MB_ICONSTOP);
       }
+      DragFinish((HDROP)wParam);
       break;
     }
     case WM_GETMINMAXINFO:
@@ -1097,7 +1100,7 @@ BOOL CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPara
         case IDCANCEL:
         {
           EndDialog(hwndDlg, 1);
-		  LogMessage(g_sdata.hwnd,USAGE);
+          LogMessage(g_sdata.hwnd,USAGE);
           break;
         }
       }

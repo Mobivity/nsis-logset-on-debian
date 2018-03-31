@@ -222,7 +222,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_SYSTEMEXEC,"!system",1,2,"command [<|>|<>|=) retval]",TP_ALL},
 {TOK_P_EXECUTE,"!execute",1,0,"command",TP_ALL},
 {TOK_P_ADDINCLUDEDIR,"!AddIncludeDir",1,0,"dir",TP_ALL},
-{TOK_P_INCLUDE,"!include",1,0,"filename.nsi",TP_ALL},
+{TOK_P_INCLUDE,"!include",1,1,"[/NONFATAL] filename.nsh",TP_ALL},
 {TOK_P_CD,"!cd",1,0,"absolute_or_relative_new_directory",TP_ALL},
 {TOK_P_IFDEF,"!ifdef",1,-1,"symbol [| symbol2 [& symbol3 [...]]]",TP_ALL},
 {TOK_P_IFNDEF,"!ifndef",1,-1,"symbol [| symbol2 [& symbol3 [...]]]",TP_ALL},
@@ -251,7 +251,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_UNINSTBUTTONTEXT,"UninstallButtonText",0,1,"[uninstall button text]",TP_GLOBAL},
 {TOK_INSTBUTTONTEXT,"InstallButtonText",0,1,"[install button text]",TP_GLOBAL},
 {TOK_SPACETEXTS,"SpaceTexts",0,2,"none | ([space required text] [space available text])",TP_GLOBAL},
-{TOK_COMPLETEDTEXT,"CompletedText",0,2,"[completed text]",TP_PG},
+{TOK_COMPLETEDTEXT,"CompletedText",0,1,"[completed text]",TP_PG},
 
 {TOK_GETFUNCTIONADDR,"GetFunctionAddress",2,0,"output function",TP_CODE},
 {TOK_GETLABELADDR,"GetLabelAddress",2,0,"output label",TP_CODE},

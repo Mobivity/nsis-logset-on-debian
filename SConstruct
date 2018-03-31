@@ -160,12 +160,16 @@ def Sign(targets):
 			a = defenv.Action('$CODESIGNER "%s"' % t.path)
 			defenv.AddPostAction(t, a)
 
+def TestScript(scripts):
+	defenv.Install('$TESTDISTDIR/Tests', scripts)
+
 defenv.Distribute = Distribute
 defenv.DistributeAs = DistributeAs
 defenv.DistributeExamples = DistributeExamples
 defenv.DistributeDocs = DistributeDocs
 defenv.DistributeContribs = DistributeContribs
 defenv.Sign = Sign
+defenv.TestScript = TestScript
 
 ######################################################################
 #######  Environments                                              ###
@@ -232,7 +236,7 @@ if defenv.has_key('VER_MAJOR') and defenv.has_key('VER_MINOR') \
 	defenv['INSTVER'] += ' /DVER_REVISION=$VER_REVISION'
 	defenv['INSTVER'] += ' /DVER_BUILD=$VER_BUILD'
 
-installer_target = defenv.Command('nsis-${VERSION}${DISTSUFFIX}.exe',
+installer_target = defenv.Command('nsis-${VERSION}-setup${DISTSUFFIX}.exe',
                                   '$INSTDISTDIR' + os.sep + 'Examples' + os.sep + 'makensis.nsi',
                                   '$INSTDISTDIR' + os.sep + 'makensis$PROGSUFFIX ' +
                                   '/DOUTFILE=$TARGET.abspath $INSTVER $SOURCE')
