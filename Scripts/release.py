@@ -40,10 +40,9 @@ TODO
  * Create release on SourceForge automatically
  * Edit update.php
  * Edit cl.sh
- * Submit news on nsis.sf.net
- * Update download page on nsis.sf.net
- * Update special builds page on nsis.sf.net
  * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISVersion&action=edit
+ * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISReleaseDate&action=edit
+ * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISReleaseID&action=edit
  * http://en.wikipedia.org/w/index.php?title=Nullsoft_Scriptable_Install_System&action=edit
  * Update Freshmeat
  * Update BetaNews
@@ -90,26 +89,31 @@ newverdir = 'nsis-%s-src' % VERSION
 ### some useful functions
 
 def log(msg, log_dir = '.'):
-	open('%s\\release.log' % log_dir, 'a').write(msg + '\n')
+	open('%s\\release-%s.log' % (log_dir, VERSION), 'a').write(msg + '\n')
 
 def exit(log_dir = '.'):
 	log('\nerror occurred, exiting', log_dir)
 	sys.exit(3)
 
 def run(command, log_name, err, wanted_ret = 0, log_dir = '.'):
-	log('running %s' % command, log_dir)
+	log('\nrunning %s\n' % command, log_dir)
 
 	if log_name:
-		cmd = '%s >> %s\\release.log 2>&1' % (command, log_dir)
+		cmd = '%s >> %s\\release-%s.log 2>&1' % (command, log_dir, VERSION)
 	else:
 		cmd = command
 
-	if os.system(cmd) != wanted_ret:
+	ret = os.system(cmd)
+
+	# sleep because for some weird reason, running cvs.exe hugs
+	# the release log for some time after os.system returns
+	import time
+	time.sleep(5)
+
+	if ret != wanted_ret:
 		print '*** ' + err
 		log('*** ' + err, log_dir)
 		exit(log_dir)
-
-	log('', log_dir)
 
 def confirm(question):
 	print question
@@ -123,7 +127,7 @@ confirm('did you update history.but?')
 
 ### start log
 
-open('release.log', 'w').write('releasing version %s at %s\n\n' % (VERSION, time.ctime()))
+open('release-%s.log' % VERSION, 'w').write('releasing version %s at %s\n\n' % (VERSION, time.ctime()))
 
 ### test
 
@@ -139,42 +143,25 @@ run(
 
 print 'creating images...'
 
-## create get.gif for website
-
-im = Image.new('L', (140, 50), '#ffffff')
-draw = ImageDraw.Draw(im)
-font = ImageFont.truetype('verdanab.ttf', 22)
-draw.text((9, 10), 'NSIS %s' % VERSION, font = font, fill = '#bebebe')
-im.save(r'get.gif')
-
 ## create new header.gif for menu
 
 im = Image.new('RGB', (598, 45), '#000000')
 
-# copy old header.gif
+# copy background from header-notext.gif
 
-im_orig = Image.open(r'..\Menu\images\header.gif')
-im.paste(im_orig)
-
-# remove old version number
-
-bg = im.crop((1, 0, 11, 45))
-for x in range(60, 250, 10):
-	im.paste(bg, (x, 0))
+bim = Image.open(r'..\Menu\images\header-notext.gif')
+im.paste(bim)
 
 # draw new version number
 
 draw = ImageDraw.Draw(im)
-font = ImageFont.truetype('tahomabd.ttf', 24)
-
-#x = 140
-x = 66
-for t in 'NSIS %s' % VERSION:
-	draw.text((x, 5), t, font = font, fill = 'white')
-	x += draw.textsize(t, font = font)[0] + 1
+font = ImageFont.truetype('trebuc.ttf', 24)
+text = 'nullsoft scriptable install system %s' % VERSION
+draw.text((85, 7), text, font = font, fill = 'white')
 
 # save
 
+im = im.convert('P', palette = Image.ADAPTIVE)
 im.save(r'..\Menu\images\header.gif')
 
 # commit header.gif
@@ -297,16 +284,6 @@ upload(ftp, 'nsis-%s-strlen_8192.zip' % VERSION)
 
 ftp.quit()
 
-# upload get.gif
-
-print '  uploading get.gif...'
-
-run(
-	'%s get.gif %s@nsis.sf.net:/home/groups/n/ns/nsis/htdocs/uploads/pics/get.gif' % (SCP, USER),
-	'upload',
-	'uploading get.gif failed'
-)
-
 ### update some websites...
 
 print 'automatic phase done\n'
@@ -314,10 +291,9 @@ print """
  * Add SourceForge release
  * Edit update.php
  * Edit cl.sh
- * Submit news on nsis.sf.net
- * Update download page on nsis.sf.net
- * Update special builds page on nsis.sf.net
  * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISVersion&action=edit
+ * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISReleaseDate&action=edit
+ * http://nsis.sourceforge.net/mediawiki/index.php?title=Template:NSISReleaseID&action=edit
  * http://en.wikipedia.org/w/index.php?title=Nullsoft_Scriptable_Install_System&action=edit
  * Update Freshmeat
  * Update BetaNews

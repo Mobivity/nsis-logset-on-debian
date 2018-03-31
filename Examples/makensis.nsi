@@ -143,7 +143,12 @@ Section "NSIS Core Files (required)" SecCore
   SetOutPath $INSTDIR\Menu
   File ..\Menu\*.html
   SetOutPath $INSTDIR\Menu\images
-  File ..\Menu\images\*.gif
+  File ..\Menu\images\clear.gif
+  File ..\Menu\images\header.gif
+  File ..\Menu\images\line.gif
+  File ..\Menu\images\menu.gif
+  File ..\Menu\images\menud.gif
+  File ..\Menu\images\site.gif
 
   Delete $INSTDIR\makensis.htm
   Delete $INSTDIR\Docs\*.html
@@ -708,6 +713,7 @@ Section -post
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "VersionMinor" "${VER_MINOR}.${VER_REVISION}"
 !endif
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "URLInfoAbout" "http://nsis.sourceforge.net/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "HelpLink" "http://nsis.sourceforge.net/Support"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "NoModify" "1"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "NoRepair" "1"
 

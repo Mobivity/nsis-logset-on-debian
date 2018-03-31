@@ -86,11 +86,12 @@
   ;Setup RegTool
 
   ReadRegStr $R3 HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "NSIS.Library.RegTool.v2"
+  StrCpy $R3 $R3 -4 1
   IfFileExists $R3 +3
 
-    File /oname=$R2\NSIS.Library.RegTool.v2.exe "${NSISDIR}\Bin\RegTool.bin"
+    File /oname=$R2\NSIS.Library.RegTool.v2.$__INSTALLLLIB_SESSIONGUID.exe "${NSISDIR}\Bin\RegTool.bin"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" \
-      "NSIS.Library.RegTool.v2" '"$R2\NSIS.Library.RegTool.v2.exe" /S'
+      "NSIS.Library.RegTool.v2" '"$R2\NSIS.Library.RegTool.v2.$__INSTALLLLIB_SESSIONGUID.exe" /S'
 
   ;------------------------
   ;Add RegTool entry
@@ -102,6 +103,17 @@
   Pop $R2
   Pop $R1
   Pop $R0
+
+!macroend
+
+### Get library version
+!macro __InstallLib_Helper_GetVersion TYPE FILE
+
+  !tempfile LIBRARY_TEMP_NSH
+  !execute '"${NSISDIR}\Bin\LibraryLocal.exe" "${TYPE}" "${FILE}" "${LIBRARY_TEMP_NSH}"'
+  !include "${LIBRARY_TEMP_NSH}"
+  !delfile "${LIBRARY_TEMP_NSH}"
+  !undef LIBRARY_TEMP_NSH
 
 !macroend
 
@@ -192,8 +204,7 @@
   ;------------------------
   ;Get version information
 
-  !execute '"${NSISDIR}\Bin\LibraryLocal.exe" D "${LOCALFILE}"'
-  !include "${NSISDIR}\Bin\LibraryLocal.nsh"
+  !insertmacro __InstallLib_Helper_GetVersion D "${LOCALFILE}"
 
   !ifdef LIBRARY_VERSION_FILENOTFOUND
     !error "InstallLib: The library ${LOCALFILE} could not be found."
@@ -220,8 +231,7 @@
 
     !else
 
-      !execute '"${NSISDIR}\Bin\LibraryLocal.exe" T "${LOCALFILE}"'
-      !include "${NSISDIR}\Bin\LibraryLocal.nsh"
+      !insertmacro __InstallLib_Helper_GetVersion T "${LOCALFILE}"
 
       !ifdef LIBRARY_VERSION_FILENOTFOUND
         !error "InstallLib: The library ${LOCALFILE} could not be found."
@@ -249,8 +259,7 @@
 
     !ifdef INSTALLLIB_LIBTYPE_TLB | INSTALLLIB_LIBTYPE_REGDLLTLB
 
-      !execute '"${NSISDIR}\Bin\LibraryLocal.exe" T "${LOCALFILE}"'
-      !include "${NSISDIR}\Bin\LibraryLocal.nsh"
+      !insertmacro __InstallLib_Helper_GetVersion T "${LOCALFILE}"
 
     !endif
 

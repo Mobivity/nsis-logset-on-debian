@@ -177,6 +177,7 @@ static void NSISCALL set_language()
   LANGID lang=state_language[0]?myatoi(state_language):GetUserDefaultLangID();
   char *language_table=0;
   int lang_num;
+  int *selected_langtable=0;
 
 lang_again:
   lang_num=g_blocks[NB_LANGTABLES].num;
@@ -185,17 +186,19 @@ lang_again:
     if (!((lang ^ *(LANGID*)language_table) & lang_mask)) {
       dlg_offset=*(int*)(language_table+sizeof(LANGID));
       g_exec_flags.rtl=*(int*)(language_table+sizeof(LANGID)+sizeof(int));
-      cur_langtable=(int*)(language_table+sizeof(LANGID)+2*sizeof(int));
+      selected_langtable=(int*)(language_table+sizeof(LANGID)+2*sizeof(int));
       break;
     }
   }
-  if (!cur_langtable) {
+  if (!selected_langtable) {
     if (lang_mask == (LANGID)~0)
       lang_mask=0x3ff; // primary lang
     else // we already tried once and we still don't have a language table
       lang_mask=0; // first lang
     goto lang_again;
   }
+
+  cur_langtable = selected_langtable;
 
   myitoa(state_language, *(LANGID*)language_table);
   {
@@ -1147,8 +1150,8 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
     TreeView_SetImageList(hwndTree1, hImageList, TVSIL_STATE);
 
-    if (SendMessage(hwndTree1, TVM_GETITEMHEIGHT, 0, 0) < 16)
-      SendMessage(hwndTree1, TVM_SETITEMHEIGHT, 16, 0);
+    if (TreeView_GetItemHeight(hwndTree1) < 16)
+      TreeView_SetItemHeight(hwndTree1, 16);
 
     DeleteObject(hBMcheck1);
 
@@ -1600,7 +1603,6 @@ static BOOL CALLBACK InstProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         i = 0;
         do {
           item.pszText = ptr;
-          item.cchTextMax = total;
           SendMessage(linsthwnd,LVM_GETITEMTEXT,i,(LPARAM)&item);
           ptr += mystrlen(ptr);
           *(WORD*)ptr = CHAR2_TO_WORD('\r','\n');

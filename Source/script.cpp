@@ -13,15 +13,18 @@
 #include <time.h>
 #include <string>
 #include <algorithm>
+#include "boost/scoped_ptr.hpp"
 
 using namespace std;
 
 #ifdef _WIN32
 #  include <direct.h> // for chdir
 #else
-#  include <sys/stat.h>
+#  include <sys/stat.h> // for stat and umask
+#  include <sys/types.h> // for mode_t
 #  include <fcntl.h> // for O_RDONLY
 #  include <unistd.h>
+#  include <stdlib.h> // for mkstemp
 #endif
 
 #define MAX_INCLUDEDEPTH 10
@@ -1011,8 +1014,97 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         }
         SCRIPT_MSG("!insertmacro: end of %s\n",line.gettoken_str(1));
       }
-
     return PS_OK;
+
+    // preprocessor files fun
+    ///////////////////////////////////////////////////////////////////////////////
+
+    case TOK_P_TEMPFILE:
+      {
+        char *symbol = line.gettoken_str(1);
+        char *fpath;
+
+#ifdef _WIN32
+        char buf[MAX_PATH], buf2[MAX_PATH];
+
+        GetTempPath(MAX_PATH, buf);
+        if (!GetTempFileName(buf, "nst", 0, buf2))
+        {
+          ERROR_MSG("!tempfile: unable to create temporary file.\n");
+          return PS_ERROR;
+        }
+
+        fpath = buf2;
+#else
+        char t[] = "/tmp/makensisXXXXXX";
+
+        mode_t old_umask = umask(0077);
+
+        int fd = mkstemp(t);
+        if (fd == -1) {
+          ERROR_MSG("!tempfile: unable to create temporary file.\n");
+          return PS_ERROR;
+        }
+        close(fd);
+
+        umask(old_umask);
+
+        fpath = t;
+#endif
+
+        if (definedlist.add(symbol, fpath))
+        {
+          ERROR_MSG("!tempfile: \"%s\" already defined!\n", symbol);
+          return PS_ERROR;
+        }
+
+        SCRIPT_MSG("!tempfile: \"%s\"=\"%s\"\n", symbol, fpath);
+      }
+    return PS_OK;
+
+    case TOK_P_DELFILE:
+      {
+        char *file = line.gettoken_str(1);
+#ifndef _WIN32
+        file = my_convert(file);
+#endif
+        int result = unlink(file);
+#ifndef _WIN32
+        my_convert_free(file);
+#endif
+        if (result == -1) {
+          ERROR_MSG("!delfile: \"%s\" couldn't be deleted.\n", line.gettoken_str(1));
+          return PS_ERROR;
+        }
+
+        SCRIPT_MSG("!delfile: \"%s\"\n", line.gettoken_str(1));
+      }
+    return PS_OK;
+
+    case TOK_P_APPENDFILE:
+      {
+        char *file = line.gettoken_str(1);
+        char *text = line.gettoken_str(2);
+
+        FILE *fp = FOPEN(file, "a");
+        if (!fp)
+        {
+          ERROR_MSG("!appendfile: \"%s\" couldn't be opened.\n", file);
+          return PS_ERROR;
+        }
+
+        if (fputs(text, fp) < 0)
+        {
+          ERROR_MSG("!appendfile: error writing to \"%s\".\n", file);
+          return PS_ERROR;
+        }
+
+        fclose(fp);
+
+        SCRIPT_MSG("!appendfile: \"%s\" \"%s\"\n", file, text);
+      }
+    return PS_OK;
+
     // page ordering shit
     ///////////////////////////////////////////////////////////////////////////////
 #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
@@ -2670,27 +2762,24 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 #endif
 
         // search working directory
-        dir_reader *dr = new_dir_reader();
+        boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
         dr->read(dir);
 
-        dir_reader::iterator files_itr = dr->files().begin();
-        dir_reader::iterator files_end = dr->files().end();
-
-        for (; files_itr != files_end; files_itr++) {
+        for (dir_reader::iterator files_itr = dr->files().begin();
+             files_itr != dr->files().end();
+             files_itr++)
+        {
           if (!dir_reader::matches(*files_itr, spec))
             continue;
 
           string incfile = basedir + *files_itr;
 
           if (includeScript((char *) incfile.c_str()) != PS_OK) {
-            delete dr;
             return PS_ERROR;
           }
 
           included++;
         }
-
-        delete dr;
 
         if (included)
           return PS_OK;
@@ -2702,27 +2791,25 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         for (int i = 0; i < incdirs; i++, incdir += strlen(incdir) + 1) {
           string curincdir = string(incdir) + PLATFORM_PATH_SEPARATOR_STR + dir;
 
-          dir_reader *dr = new_dir_reader();
+          boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
           dr->read(curincdir);
 
-          files_itr = dr->files().begin();
-          files_end = dr->files().end();
-
-          for (; files_itr != files_end; files_itr++) {
-            if (!dir_reader::matches(*files_itr, spec))
+          for (dir_reader::iterator incdir_itr = dr->files().begin();
+               incdir_itr != dr->files().end();
+               incdir_itr++)
+          {
+            if (!dir_reader::matches(*incdir_itr, spec))
               continue;
 
-            string incfile = string(incdir) + PLATFORM_PATH_SEPARATOR_STR + basedir + *files_itr;
+            string incfile = string(incdir) + PLATFORM_PATH_SEPARATOR_STR + basedir + *incdir_itr;
 
             if (includeScript((char *) incfile.c_str()) != PS_OK) {
-              delete dr;
               return PS_ERROR;
             }
 
             included++;
           }
 
-          delete dr;
         }
 
         // nothing found
@@ -2935,7 +3022,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         for (wt = 1; wt < line.getnumtokens(); wt ++)
         {
           char *p=line.gettoken_str(wt);
-          if (p[0]=='R' && p[1]=='O')
+          if (!stricmp(p, "RO"))
           {
             if (section_add_flags(SF_RO) != PS_OK) return PS_ERROR;
             SCRIPT_MSG("[RO] ");
@@ -5617,27 +5704,26 @@ int CEXEBuild::do_add_file(const char *lgss, int attrib, int recurse, int *total
     spec = "*";
   }
 
-  dir_reader *dr = new_dir_reader();
-  dr->exclude(excluded);
-  dr->read(dir);
-
-  dir_reader::iterator files_itr = dr->files().begin();
-  dir_reader::iterator files_end = dr->files().end();
-
   if (basedir == "") {
     dir_created = true;
 
     if (recurse) {
       // save $OUTDIR into $_OUTDIR [StrCpy $_OUTDIR $OUTDIR]
       if (add_entry_direct(EW_ASSIGNVAR, m_UserVarNames.get("_OUTDIR"), add_string("$OUTDIR")) != PS_OK) {
-        delete dr;
         return PS_ERROR;
       }
     }
   }
 
+  boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
+  dr->exclude(excluded);
+  dr->read(dir);
+
   // add files in the current directory
-  for (; files_itr != files_end; files_itr++) {
+  for (dir_reader::iterator files_itr = dr->files().begin();
+       files_itr != dr->files().end();
+       files_itr++)
+  {
     if (!dir_reader::matches(*files_itr, spec))
       continue;
 
@@ -5645,7 +5731,6 @@ int CEXEBuild::do_add_file(const char *lgss, int attrib, int recurse, int *total
       SCRIPT_MSG("%sFile: Descending to: \"%s\"\n", generatecode ? "" : "Reserve", dir.c_str());
 
       if (do_add_file_create_dir(dir, basedir, attrib) != PS_OK) {
-        delete dr;
         return PS_ERROR;
       }
 
@@ -5653,66 +5738,62 @@ int CEXEBuild::do_add_file(const char *lgss, int attrib, int recurse, int *total
     }
 
     if (add_file(dir, *files_itr, attrib, name_override, generatecode, data_handle) != PS_OK) {
-      delete dr;
       return PS_ERROR;
     }
 
     (*total_files)++;
   }
 
+  if (!recurse) {
+    return PS_OK;
+  }
+
   // recurse into directories
-  if (recurse) {
-    dir_reader::iterator dirs_itr = dr->dirs().begin();
-    dir_reader::iterator dirs_end = dr->dirs().end();
-
-    for (; dirs_itr != dirs_end; dirs_itr++) {
-      string new_dir;
-      bool created = false;
-
-      if (basedir == "") {
-        new_dir = *dirs_itr;
-      } else {
-        new_dir = basedir + '\\' + *dirs_itr;
-      }
-
-      string new_spec = dir + PLATFORM_PATH_SEPARATOR_STR + *dirs_itr + PLATFORM_PATH_SEPARATOR_STR;
-
-      if (!dir_reader::matches(*dirs_itr, spec)) {
-        new_spec += spec;
-      } else if (generatecode) {
-        // always create directories that match
-
-        SCRIPT_MSG("%sFile: Descending to: \"%s\"\n", generatecode ? "" : "Reserve", new_spec.c_str());
-
-        if (do_add_file_create_dir(*dirs_itr, new_dir, attrib) != PS_OK) {
-          delete dr;
-          return PS_ERROR;
-        }
-
-        created = true;
-      }
-
-      const char *new_spec_c = new_spec.c_str();
-
-      int res = do_add_file(new_spec_c, attrib, 1, total_files, NULL, generatecode, NULL, excluded, new_dir, created);
-      if (res != PS_OK) {
-        delete dr;
-        return PS_ERROR;
-      }
-    }
+  for (dir_reader::iterator dirs_itr = dr->dirs().begin();
+       dirs_itr != dr->dirs().end();
+       dirs_itr++)
+  {
+    string new_dir;
+    bool created = false;
 
     if (basedir == "") {
-      SCRIPT_MSG("%sFile: Returning to: \"%s\"\n", generatecode ? "" : "Reserve", dir.c_str());
+      new_dir = *dirs_itr;
+    } else {
+      new_dir = basedir + '\\' + *dirs_itr;
+    }
 
-      // restore $OUTDIR from $_OUTDIR [SetOutPath $_OUTDIR]
-      if (add_entry_direct(EW_CREATEDIR, add_string("$_OUTDIR"), 1) != PS_OK) {
-        delete dr;
+    string new_spec = dir + PLATFORM_PATH_SEPARATOR_STR + *dirs_itr + PLATFORM_PATH_SEPARATOR_STR;
+
+    if (!dir_reader::matches(*dirs_itr, spec)) {
+      new_spec += spec;
+    } else if (generatecode) {
+      // always create directories that match
+
+      SCRIPT_MSG("%sFile: Descending to: \"%s\"\n", generatecode ? "" : "Reserve", new_spec.c_str());
+
+      if (do_add_file_create_dir(*dirs_itr, new_dir, attrib) != PS_OK) {
         return PS_ERROR;
       }
+
+      created = true;
+    }
+
+    const char *new_spec_c = new_spec.c_str();
+
+    int res = do_add_file(new_spec_c, attrib, 1, total_files, NULL, generatecode, NULL, excluded, new_dir, created);
+    if (res != PS_OK) {
+      return PS_ERROR;
     }
   }
 
-  delete dr;
+  if (basedir == "") {
+    SCRIPT_MSG("%sFile: Returning to: \"%s\"\n", generatecode ? "" : "Reserve", dir.c_str());
+
+    // restore $OUTDIR from $_OUTDIR [SetOutPath $_OUTDIR]
+    if (add_entry_direct(EW_CREATEDIR, add_string("$_OUTDIR"), 1) != PS_OK) {
+      return PS_ERROR;
+    }
+  }
 
   return PS_OK;
 }
@@ -5844,6 +5925,10 @@ int CEXEBuild::add_file(const string& dir, const string& file, int attrib, const
       FILETIME ft;
       if (GetFileTime(hFile,NULL,NULL,&ft))
       {
+        // FAT write time has a resolution of 2 seconds
+        PULONGLONG fti = (PULONGLONG) &ft;
+        *fti -= *fti % 20000000;
+
         ent.offsets[3]=ft.dwLowDateTime;
         ent.offsets[4]=ft.dwHighDateTime;
       }
@@ -5861,6 +5946,10 @@ int CEXEBuild::add_file(const string& dir, const string& file, int attrib, const
           long long ll;
         };
         ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
+
+        // FAT write time has a resolution of 2 seconds
+        ll -= ll % 20000000;
+
         ent.offsets[3] = words.l;
         ent.offsets[4] = words.h;
       }

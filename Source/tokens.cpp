@@ -38,7 +38,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_CALL,"Call",1,0,"function_name | [:label_name]",TP_CODE},
 {TOK_CALLINSTDLL,"CallInstDLL",2,1,"dll_path_on_target.dll [/NOUNLOAD] function",TP_CODE},
 {TOK_CAPTION,"Caption",1,0,"installer_caption",TP_GLOBAL|TP_PAGEEX},
-{TOK_CHANGEUI,"ChangeUI",1,1,"[/RTL] (all|dlg_id) ui_file.exe",TP_GLOBAL},
+{TOK_CHANGEUI,"ChangeUI",2,0,"(all|dlg_id) ui_file.exe",TP_GLOBAL},
 {TOK_CLEARERRORS,"ClearErrors",0,0,"",TP_CODE},
 {TOK_COMPTEXT,"ComponentText",0,3,"[component_page_description] [component_subtext1] [component_subtext2]",TP_PG},
 {TOK_GETDLLVERSION,"GetDLLVersion",3,0,"filename $(user_var: high output) $(user_var: low output)",TP_CODE},
@@ -71,7 +71,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_EXCH,"Exch",0,1,"[$(user_var)] | [stack_item_index]",TP_CODE},
 {TOK_EXEC,"Exec",1,0,"command_line",TP_CODE},
 {TOK_EXECWAIT,"ExecWait",1,1,"command_line [$(user_var: return value)]",TP_CODE},
-{TOK_EXECSHELL,"ExecShell",2,2,"(open|print|etc) command_line [parameters [showmode]]\n   showmode=(SW_SHOWNORMAL|SW_SHOWMAXIMIZED|SW_SHOWMINIMIZED)",TP_CODE},
+{TOK_EXECSHELL,"ExecShell",2,2,"(open|print|etc) command_line [parameters [showmode]]\n   showmode=(SW_SHOWNORMAL|SW_SHOWMAXIMIZED|SW_SHOWMINIMIZED|SW_HIDE)",TP_CODE},
 {TOK_EXPANDENVSTRS,"ExpandEnvStrings",2,0,"$(user_var: output) string",TP_CODE},
 {TOK_FINDWINDOW,"FindWindow",2,3,"$(user_var: handle output) WindowClass [WindowTitle] [Window_Parent] [Child_After]",TP_CODE},
 {TOK_FINDCLOSE,"FindClose",1,0,"$(user_var: handle input)",TP_CODE},
@@ -241,6 +241,10 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_INSERTMACRO,"!insertmacro",1,-1,"macroname [parms ...]",TP_ALL},
 {TOK_P_IFMACRODEF,"!ifmacrodef",1,-1,"macro [| macro2 [& macro3 [...]]]",TP_ALL},
 {TOK_P_IFMACRONDEF,"!ifmacrondef",1,-1,"macro [| macro2 [& macro3 [...]]]",TP_ALL},
+
+{TOK_P_TEMPFILE,"!tempfile",1,0,"symbol",TP_ALL},
+{TOK_P_DELFILE,"!delfile",1,0,"file",TP_ALL},
+{TOK_P_APPENDFILE,"!appendfile",2,0,"file appended_line",TP_ALL},
 
 {TOK_MISCBUTTONTEXT,"MiscButtonText",0,4,"[back button text] [next button text] [cancel button text] [close button text]",TP_GLOBAL},
 {TOK_DETAILSBUTTONTEXT,"DetailsButtonText",0,1,"[details button text]",TP_PG},
