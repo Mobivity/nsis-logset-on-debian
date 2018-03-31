@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * Copyright (C) 1999-2008 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -285,16 +285,26 @@ int CEXEBuild::doParse(const char *str)
   if (m_linebuild.getlen()>1)
     m_linebuild.resize(m_linebuild.getlen()-2);
 
+  // warn of comment with line-continuation
+  if (m_linebuild.getlen())
+  {
+    LineParser prevline(inside_comment);
+    prevline.parse((char*)m_linebuild.get());
+    LineParser thisline(inside_comment);
+    thisline.parse((char*)str);
+
+    if (prevline.inComment() && !thisline.inComment())
+    {
+      warning_fl("comment contains line-continuation character, following line will be ignored");
+    }
+  }
+
+  // add new line to line buffer
   m_linebuild.add(str,strlen(str)+1);
 
   // keep waiting for more lines, if this line ends with a backslash
   if (str[0] && CharPrev(str,str+strlen(str))[0] == '\\')
   {
-    line.parse((char*)m_linebuild.get());
-    if (line.inComment())
-    {
-      warning_fl("comment contains line-continuation character, following line will be ignored");
-    }
     return PS_OK;
   }
 
@@ -4862,7 +4872,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         ent.offsets[0]=add_string(line.gettoken_str(2+a));
         ent.offsets[1]=GetUserVarIndex(line, 1+a);
         ent.offsets[2]=!a;
-        if (ent.offsets[0]<0) PRINTHELP()
+        if (ent.offsets[1]<0) PRINTHELP()
         SCRIPT_MSG("GetFullPathName: %s->%s (%d)\n",
           line.gettoken_str(2+a),line.gettoken_str(1+a),a?"sfn":"lfn");
       }
@@ -5482,7 +5492,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.offsets[1]=GetUserVarIndex(line,1);
       ent.offsets[2]=0;
       ent.offsets[3]=1;
-      if (line.gettoken_str(1)[0] && ent.offsets[0]<0) PRINTHELP()
+      if (line.gettoken_str(1)[0] && ent.offsets[1]<0) PRINTHELP()
       SCRIPT_MSG("GetCurInstType: %s\n",line.gettoken_str(1));
     return add_entry(&ent);
 #else//!NSIS_CONFIG_COMPONENTPAGE

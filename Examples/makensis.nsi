@@ -28,10 +28,20 @@ RequestExecutionLevel admin
 ;--------------------------------
 ;Header Files
 
-!include "MUI.nsh"
+!include "MUI2.nsh"
 !include "Sections.nsh"
 !include "LogicLib.nsh"
 !include "Memento.nsh"
+!include "WordFunc.nsh"
+
+;--------------------------------
+;Functions
+
+!ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
+
+  !insertmacro VersionCompare
+
+!endif
 
 ;--------------------------------
 ;Definitions
@@ -60,7 +70,7 @@ Caption "NSIS ${VERSION} Setup"
 
 ;Pages
 !define MUI_WELCOMEPAGE_TITLE "Welcome to the NSIS ${VERSION} Setup Wizard"
-!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of NSIS (Nullsoft Scriptable Install System) ${VERSION}, the next generation of the Windows installer and uninstaller system that doesn't suck and isn't huge.\r\n\r\nNSIS 2 includes a new Modern User Interface, LZMA compression, support for multiple languages and an easy plug-in system.\r\n\r\n$_CLICK"
+!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of NSIS (Nullsoft Scriptable Install System) ${VERSION}, the next generation of the Windows installer and uninstaller system that doesn't suck and isn't huge.$\r$\n$\r$\nNSIS 2 includes a new Modern User Interface, LZMA compression, support for multiple languages and an easy plug-in system.$\r$\n$\r$\n$_CLICK"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\COPYING"
@@ -90,14 +100,6 @@ Page custom PageReinstall PageLeaveReinstall
 ;Languages
 
 !insertmacro MUI_LANGUAGE "English"
-
-;--------------------------------
-;Reserve Files
-
-  ;These files should be inserted before other files in the data block
-
-  ReserveFile "makensis.ini"
-  !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 ;--------------------------------
 ;Installer Sections
@@ -151,9 +153,14 @@ ${MementoSection} "NSIS Core Files (required)" SecCore
   File ..\Include\Memento.nsh
   File ..\Include\LangFile.nsh
   File ..\Include\InstallOptions.nsh
+  File ..\Include\MultiUser.nsh
+  File ..\Include\VB6RunTime.nsh
 
   SetOutPath $INSTDIR\Docs\StrFunc
   File ..\Docs\StrFunc\StrFunc.txt
+
+  SetOutPath $INSTDIR\Docs\MultiUser
+  File ..\Docs\MultiUser\Readme.html
 
   SetOutPath $INSTDIR\Docs\makensisw
   File ..\Docs\makensisw\*.txt
@@ -161,11 +168,8 @@ ${MementoSection} "NSIS Core Files (required)" SecCore
   SetOutPath $INSTDIR\Menu
   File ..\Menu\*.html
   SetOutPath $INSTDIR\Menu\images
-  File ..\Menu\images\clear.gif
   File ..\Menu\images\header.gif
   File ..\Menu\images\line.gif
-  File ..\Menu\images\menu.gif
-  File ..\Menu\images\menud.gif
   File ..\Menu\images\site.gif
 
   Delete $INSTDIR\makensis.htm
@@ -223,7 +227,6 @@ ${MementoSection} "Script Examples" SecExample
   SectionIn 1 2
   SetOutPath $INSTDIR\Examples
   File ..\Examples\makensis.nsi
-  File ..\Examples\makensis.ini
   File ..\Examples\example1.nsi
   File ..\Examples\example2.nsi
   File ..\Examples\viewhtml.nsi
@@ -281,19 +284,10 @@ ${MementoSection} "Desktop Shortcut" SecShortcuts
   SectionIn 1 2
   SetOutPath $INSTDIR
 !ifndef NO_STARTMENUSHORTCUTS
-  CreateDirectory $SMPROGRAMS\NSIS
-
-  CreateShortCut "$SMPROGRAMS\NSIS\NSIS Menu.lnk" "$INSTDIR\NSIS.exe" ""
-
-  CreateShortCut "$SMPROGRAMS\NSIS\MakeNSISW (Compiler GUI).lnk" "$INSTDIR\makensisw.exe"
-
-  CreateShortCut "$SMPROGRAMS\NSIS\NSIS Documentation.lnk" "$INSTDIR\NSIS.chm"
-  WriteINIStr "$SMPROGRAMS\NSIS\NSIS Site.url" "InternetShortcut" "URL" "http://nsis.sourceforge.net/"
-  CreateShortCut "$SMPROGRAMS\NSIS\Uninstall NSIS.lnk" "$INSTDIR\uninst-nsis.exe"
-
+  CreateShortCut "$SMPROGRAMS\NSIS.lnk" "$INSTDIR\NSIS.exe"
 !endif
 
-  CreateShortCut "$DESKTOP\Nullsoft Install System.lnk" "$INSTDIR\NSIS.exe"
+  CreateShortCut "$DESKTOP\NSIS.lnk" "$INSTDIR\NSIS.exe"
 
 ${MementoSectionEnd}
 
@@ -311,10 +305,6 @@ ${MementoSection} "Modern User Interface" SecInterfacesModernUI
   File "..\Examples\Modern UI\Basic.nsi"
   File "..\Examples\Modern UI\HeaderBitmap.nsi"
   File "..\Examples\Modern UI\MultiLanguage.nsi"
-  File "..\Examples\Modern UI\InstallOptions.nsi"
-  File "..\Examples\Modern UI\ioA.ini"
-  File "..\Examples\Modern UI\ioB.ini"
-  File "..\Examples\Modern UI\ioC.ini"
   File "..\Examples\Modern UI\StartMenu.nsi"
   File "..\Examples\Modern UI\WelcomeFinish.nsi"
 
@@ -345,6 +335,7 @@ ${MementoSection} "Modern User Interface" SecInterfacesModernUI
   File "..\Include\MUI.nsh"
 
   SetOutPath "$INSTDIR\Contrib\Modern UI 2"
+  File "..\Contrib\Modern UI 2\Deprecated.nsh"
   File "..\Contrib\Modern UI 2\Interface.nsh"
   File "..\Contrib\Modern UI 2\Localization.nsh"
   File "..\Contrib\Modern UI 2\MUI2.nsh"
@@ -798,75 +789,6 @@ Section -post
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "NoModify" "1"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NSIS" "NoRepair" "1"
 
-!ifndef NO_STARTMENUSHORTCUTS
-  IfFileExists $SMPROGRAMS\NSIS "" no_startshortcuts
-
-  SetDetailsPrint textonly
-  DetailPrint "Creating Shortcuts..."
-  SetDetailsPrint listonly
-
-  IfFileExists $INSTDIR\Examples 0 +2
-    CreateShortCut "$SMPROGRAMS\NSIS\NSIS Examples Directory.lnk" "$INSTDIR\Examples"
-
-  ; MakeNSISW
-  CreateDirectory $SMPROGRAMS\NSIS\Contrib
-    CreateShortCut "$SMPROGRAMS\NSIS\Contrib\MakeNSISw Readme.lnk" "$INSTDIR\Docs\makensisw\readme.txt"
-
-  ; ZIP2EXE
-  IfFileExists "$INSTDIR\Bin\zip2exe.exe" 0 +2
-    CreateShortCut "$SMPROGRAMS\NSIS\Contrib\zip2exe (Create SFX).lnk" "$INSTDIR\Bin\zip2exe.exe"
-
-  ; Modern UI
-  Push "Modern UI"
-  Call AddReadmeToStartMenu
-
-  ; Splash
-  Push Splash
-  Call AddReadmeToStartMenu
-
-  ; Advanced splash
-  Push AdvSplash
-  Call AddReadmeToStartMenu
-
-  ; Math
-  Push Math
-  Call AddReadmeToStartMenu
-
-  ; NSISdl
-  Push NSISdl
-  Call AddReadmeToStartMenu
-
-  ; nsExec
-  Push nsExec
-  Call AddReadmeToStartMenu
-
-  ; StartMenu
-  Push StartMenu
-  Call AddReadmeToStartMenu
-
-  ; BgImage
-  Push BgImage
-  Call AddReadmeToStartMenu
-
-  ; Banner
-  Push Banner
-  Call AddReadmeToStartMenu
-
-  ; System
-  Push System
-  Call AddReadmeToStartMenu
-
-  ; VPatch
-  Push VPatch
-  Call AddReadmeToStartMenu
-
-  ; InstallOptions
-  Push InstallOptions
-  Call AddReadmeToStartMenu
-
-  no_startshortcuts:
-!endif
-
   WriteUninstaller $INSTDIR\uninst-nsis.exe
 
   ${MementoSectionSave}
@@ -913,73 +835,91 @@ SectionEnd
 
 Function .onInit
 
-!ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
-
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "makensis.ini"
- 
-!endif
-  
   ${MementoSectionRestore}
 
 FunctionEnd
 
 !ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
 
+Var ReinstallPageCheck
+
 Function PageReinstall
 
   ReadRegStr $R0 HKLM "Software\NSIS" ""
 
-  StrCmp $R0 "" 0 +2
+  ${If} $R0 == ""
     Abort
+  ${EndIf}
 
-  ;Detect version
-    ReadRegDWORD $R0 HKLM "Software\NSIS" "VersionMajor"
-    IntCmp $R0 ${VER_MAJOR} minor_check new_version older_version
-  minor_check:
-    ReadRegDWORD $R0 HKLM "Software\NSIS" "VersionMinor"
-    IntCmp $R0 ${VER_MINOR} revision_check new_version older_version
-  revision_check:
-    ReadRegDWORD $R0 HKLM "Software\NSIS" "VersionRevision"
-    IntCmp $R0 ${VER_REVISION} build_check new_version older_version
-  build_check:
-    ReadRegDWORD $R0 HKLM "Software\NSIS" "VersionBuild"
-    IntCmp $R0 ${VER_BUILD} same_version new_version older_version
+  ReadRegDWORD $R0 HKLM "Software\NSIS" "VersionMajor"
+  ReadRegDWORD $R1 HKLM "Software\NSIS" "VersionMinor"
+  ReadRegDWORD $R2 HKLM "Software\NSIS" "VersionRevision"
+  ReadRegDWORD $R3 HKLM "Software\NSIS" "VersionBuild"
+  StrCpy $R0 $R0.$R1.$R2.$R3
 
-  new_version:
+  ${VersionCompare} ${VER_MAJOR}.${VER_MINOR}.${VER_REVISION}.${VER_BUILD} $R0 $R0
+  ${If} $R0 == 0
+    StrCpy $R1 "NSIS ${VERSION} is already installed. Select the operation you want to perform and click Next to continue."
+    StrCpy $R2 "Add/Reinstall components"
+    StrCpy $R3 "Uninstall NSIS"
+    !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose the maintenance option to perform."
+    StrCpy $R0 "2"
+  ${ElseIf} $R0 == 1
+    StrCpy $R1 "An older version of NSIS is installed on your system. It's recommended that you uninstall the current version before installing. Select the operation you want to perform and click Next to continue."
+    StrCpy $R2 "Uninstall before installing"
+    StrCpy $R3 "Do not uninstall"
+    !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install NSIS."
+    StrCpy $R0 "1"
+  ${ElseIf} $R0 == 2
+    StrCpy $R1 "A newer version of NSIS is already installed! It is not recommended that you install an older version. If you really want to install this older version, it's better to uninstall the current version first. Select the operation you want to perform and click Next to continue."
+    StrCpy $R2 "Uninstall before installing"
+    StrCpy $R3 "Do not uninstall"
+    !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install NSIS."
+    StrCpy $R0 "1"
+  ${Else}
+    Abort
+  ${EndIf}
 
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 1" "Text" "An older version of NSIS is installed on your system. It's recommended that you uninstall the current version before installing. Select the operation you want to perform and click Next to continue."
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 2" "Text" "Uninstall before installing"
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 3" "Text" "Do not uninstall"
-   !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install NSIS."
-   StrCpy $R0 "1"
-   Goto reinst_start
+  nsDialogs::Create /NOUNLOAD 1018
 
-  older_version:
+  ${NSD_CreateLabel} 0 0 100% 24u $R1
+  Pop $R1
 
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 1" "Text" "A newer version of NSIS is already installed! It is not recommended that you install an older version. If you really want to install this older version, it's better to uninstall the current version first. Select the operation you want to perform and click Next to continue."
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 2" "Text" "Uninstall before installing"
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 3" "Text" "Do not uninstall"
-   !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install NSIS."
-   StrCpy $R0 "1"
-   Goto reinst_start
+  ${NSD_CreateRadioButton} 30u 50u -30u 8u $R2
+  Pop $R2
+  ${NSD_OnClick} $R2 PageReinstallUpdateSelection
 
-  same_version:
+  ${NSD_CreateRadioButton} 30u 70u -30u 8u $R3
+  Pop $R3
+  ${NSD_OnClick} $R3 PageReinstallUpdateSelection
 
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 1" "Text" "NSIS ${VERSION} is already installed. Select the operation you want to perform and click Next to continue."
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 2" "Text" "Add/Reinstall components"
-   !insertmacro MUI_INSTALLOPTIONS_WRITE "makensis.ini" "Field 3" "Text" "Uninstall NSIS"
-   !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose the maintenance option to perform."
-   StrCpy $R0 "2"
+  ${If} $ReinstallPageCheck != 2
+    SendMessage $R2 ${BM_SETCHECK} ${BST_CHECKED} 0
+  ${Else}
+    SendMessage $R3 ${BM_SETCHECK} ${BST_CHECKED} 0
+  ${EndIf}
 
-  reinst_start:
+  nsDialogs::Show
 
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "makensis.ini"
+FunctionEnd
+
+Function PageReinstallUpdateSelection
+
+  Pop $R1
+
+  ${NSD_GetState} $R2 $R1
+
+  ${If} $R1 == ${BST_CHECKED}
+    StrCpy $ReinstallPageCheck 1
+  ${Else}
+    StrCpy $ReinstallPageCheck 2
+  ${EndIf}
 
 FunctionEnd
 
 Function PageLeaveReinstall
 
-  !insertmacro MUI_INSTALLOPTIONS_READ $R1 "makensis.ini" "Field 2" "State"
+  ${NSD_GetState} $R2 $R1
 
   StrCmp $R0 "1" 0 +2
     StrCmp $R1 "1" reinst_uninstall reinst_done
@@ -1014,27 +954,6 @@ Function PageLeaveReinstall
 FunctionEnd
 
 !endif # VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
-
-!ifndef NO_STARTMENUSHORTCUTS
-Function AddReadmeToStartMenu
-  Pop $0
-  StrCpy $1 "$0 Readme"
-  IfFileExists $INSTDIR\Docs\$0\$0.txt 0 +3
-    StrCpy $0 Docs\$0\$0.txt
-    Goto create
-  IfFileExists $INSTDIR\Docs\$0\$0.html 0 +3
-    StrCpy $0 Docs\$0\$0.html
-    Goto create
-  IfFileExists $INSTDIR\Docs\$0\Readme.txt 0 +3
-    StrCpy $0 Docs\$0\Readme.txt
-    Goto create
-  IfFileExists $INSTDIR\Docs\$0\Readme.html 0 done
-    StrCpy $0 Docs\$0\Readme.html
-  create:
-    CreateShortCut $SMPROGRAMS\NSIS\Contrib\$1.lnk $INSTDIR\$0
-  done:
-FunctionEnd
-!endif
 
 Function ShowReleaseNotes
   ${If} ${FileExists} $WINDIR\hh.exe
@@ -1088,8 +1007,8 @@ Section Uninstall
   DetailPrint "Deleting Files..."
   SetDetailsPrint listonly
 
-  RMDir /r $SMPROGRAMS\NSIS
-  Delete "$DESKTOP\Nullsoft Install System.lnk"
+  Delete $SMPROGRAMS\NSIS.lnk
+  Delete $DESKTOP\NSIS.lnk
   Delete $INSTDIR\makensis.exe
   Delete $INSTDIR\makensisw.exe
   Delete $INSTDIR\NSIS.exe

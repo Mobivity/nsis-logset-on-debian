@@ -115,6 +115,8 @@ IconGroup load_icon_file(const char* filename)
       throw runtime_error("unable to read offset from file");
     }
 
+    FIX_ENDIAN_INT32_INPLACE(iconOffset);
+
     fpos_t pos;
     fgetpos(file, &pos);
 
@@ -257,6 +259,7 @@ void set_icon(CResourceEditor* re, WORD wIconId, IconGroup icon1, IconGroup icon
   for (order_index = 0; order_index < order.size(); order_index++)
   {
     LPBYTE data = new BYTE[order[order_index].size];
+    memset(data, 0, order[order_index].size);
 
     if (order_index < icon1.size())
     {

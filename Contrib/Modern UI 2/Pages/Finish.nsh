@@ -17,6 +17,12 @@ Finish page (implemented using nsDialogs)
     Var mui.FinishPage.Image
     Var mui.FinishPage.Image.Bitmap
     
+    !ifndef MUI_${MUI_PAGE_UNINSTALLER_PREFIX}WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
+      Var mui.FinishPage.Image.Rect
+      Var mui.FinishPage.Image.Width
+      Var mui.FinishPage.Image.Height
+    !endif
+    
     Var mui.FinishPage.Title
     Var mui.FinishPage.Title.Font
     
@@ -266,7 +272,20 @@ Finish page (implemented using nsDialogs)
     ;Image control
     ${NSD_CreateBitmap} 0u 0u 109u 193u ""
     Pop $mui.FinishPage.Image
-    System::Call 'user32::LoadImage(i 0, t "$PLUGINSDIR\modern-wizard.bmp", i ${IMAGE_BITMAP}, i 0, i 0, i ${LR_LOADFROMFILE}) i.s'
+    !ifndef MUI_${MUI_PAGE_UNINSTALLER_PREFIX}WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
+      System::Call '*(i, i, i, i) i.s'
+      Pop $mui.FinishPage.Image.Rect
+      ${If} $mui.FinishPage.Image.Rect <> 0
+        System::Call 'user32::GetClientRect(i $mui.FinishPage.Image, i $mui.FinishPage.Image.Rect)'
+        System::Call '*$mui.FinishPage.Image.Rect(i, i, i .s, i .s)'
+        System::Free $mui.FinishPage.Image.Rect
+        Pop $mui.FinishPage.Image.Width
+        Pop $mui.FinishPage.Image.Height
+      ${EndIf}
+      System::Call 'user32::LoadImage(i 0, t s, i ${IMAGE_BITMAP}, i $mui.FinishPage.Image.Width, i $mui.FinishPage.Image.Height, i ${LR_LOADFROMFILE}) i.s' "$PLUGINSDIR\modern-wizard.bmp"
+    !else
+      System::Call 'user32::LoadImage(i 0, t s, i ${IMAGE_BITMAP}, i 0, i 0, i ${LR_LOADFROMFILE}) i.s' "$PLUGINSDIR\modern-wizard.bmp"
+    !endif
     Pop $mui.FinishPage.Image.Bitmap
     SendMessage $mui.FinishPage.Image ${STM_SETIMAGE} ${IMAGE_BITMAP} $mui.FinishPage.Image.Bitmap
     
@@ -344,6 +363,11 @@ Finish page (implemented using nsDialogs)
         ${NSD_CreateRadioButton} 120u ${MUI_FINISHPAGE_REBOOTLATER_TOP}u 195u 10u "${MUI_FINISHPAGE_TEXT_REBOOTLATER}"
         Pop $mui.FinishPage.RebootLater
         SetCtlColors $mui.FinishPage.RebootLater "" "${MUI_BGCOLOR}"
+        !ifndef MUI_FINISHPAGE_REBOOTLATER_DEFAULT
+          SendMessage $mui.FinishPage.RebootNow ${BM_SETCHECK} ${BST_CHECKED} 0
+        !else
+          SendMessage $mui.FinishPage.RebootLater ${BM_SETCHECK} ${BST_CHECKED} 0
+        !endif
 
       ${else}
 

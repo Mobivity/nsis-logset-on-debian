@@ -88,7 +88,7 @@
 
 !ifdef MUI_UNFINISHPAGE
   ${LangFileString} MUI_UNTEXT_FINISH_INFO_TITLE "Die Deinstallation von $(^NameDA) wird abgeschlossen"
-  ${LangFileString} MUI_UNTEXT_FINISH_INFO_TEXT "$(^NameDA) ist von ihrem Computer entfernt worden.$\r$\n$\r$\nKlicken Sie auf Fertig stellen, um den Assistenten zu schließen."
+  ${LangFileString} MUI_UNTEXT_FINISH_INFO_TEXT "$(^NameDA) ist von Ihrem Computer entfernt worden.$\r$\n$\r$\nKlicken Sie auf Fertig stellen, um den Assistenten zu schließen."
   ${LangFileString} MUI_UNTEXT_FINISH_INFO_REBOOT "Windows muss neu gestartet werden, um die Deinstallation von $(^NameDA) zu vervollständigen. Möchten Sie Windows jetzt neu starten?"
 !endif
 
@@ -118,4 +118,12 @@
 
 !ifdef MUI_UNABORTWARNING
   ${LangFileString} MUI_UNTEXT_ABORTWARNING "Sind Sie sicher, dass Sie die Deinstallation von $(^Name) abbrechen möchten?"
+!endif
+
+!ifdef MULTIUSER_INSTALLMODEPAGE
+  ${LangFileString} MULTIUSER_TEXT_INSTALLMODE_TITLE "Benutzer auswählen"
+  ${LangFileString} MULTIUSER_TEXT_INSTALLMODE_SUBTITLE "Wählen Sie die Benutzer aus, für die Sie $(^NameDA) installieren wollen."
+  ${LangFileString} MULTIUSER_INNERTEXT_INSTALLMODE_TOP "Wählen Sie aus, ob Sie $(^NameDA) nur für den eigenen Gebrauch oder für die Nutzung durch alle Benutzer dieses Systems installieren möchten. $(^ClickNext)"
+  ${LangFileString} MULTIUSER_INNERTEXT_INSTALLMODE_ALLUSERS "Installation für alle Benutzer dieses Computers"
+  ${LangFileString} MULTIUSER_INNERTEXT_INSTALLMODE_CURRENTUSER "Installation nur für mich"
 !endif

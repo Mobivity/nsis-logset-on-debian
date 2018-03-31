@@ -1,3 +1,1080 @@
+2008-02-08 21:16  kichik
+
+	* /NSIS/tags/v235: Tagging for release 2.35
+
+2008-02-08 21:15  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.35
+
+2008-02-08 21:14  kichik
+
+	* /NSIS/trunk/Include/VB6RunTime.nsh: fixed eol-style
+
+2008-02-08 21:10  kichik
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed eol-style
+
+2008-02-08 21:06  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: removed old files
+
+2008-02-08 20:56  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.35
+
+2008-02-08 20:40  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: use integer
+	  comparison for comparing pointers to zero to support "error"
+	  return value
+
+2008-02-08 20:37  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Hebrew.nsh: added MultiUser
+	  strings for Hebrew
+
+2008-02-08 20:12  kichik
+
+	* /NSIS/trunk/Docs/src/library.but: fixed link
+
+2008-02-08 16:48  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/input.c: fixed bug #1889720 -
+	  nsDialogs can crash on Windows 98
+
+2008-02-04 01:35  joostverburg
+
+	* /NSIS/trunk/Examples/Modern UI/Basic.nsi,
+	  /NSIS/trunk/Examples/Modern UI/HeaderBitmap.nsi,
+	  /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi,
+	  /NSIS/trunk/Examples/Modern UI/StartMenu.nsi,
+	  /NSIS/trunk/Examples/Modern UI/WelcomeFinish.nsi: default
+	  directory that does not require administrator privileges
+
+2008-02-04 01:09  joostverburg
+
+	* /NSIS/trunk/Examples/UserVars.nsi: administrator privileges
+	  required for installation in Program Files
+
+2008-02-04 00:49  joostverburg
+
+	* /NSIS/trunk/Examples/example1.nsi: default directory that does
+	  not require administrator privileges
+
+2008-02-02 18:43  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: extracted
+	  add_nobj_entry_internal()
+
+2008-02-02 18:34  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: renamed add_nobj_entries()
+	  to add_nobj_code_deps() and changed parameter to nobj_code
+
+2008-02-02 18:33  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/code.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/code.h,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.h,
+	  /NSIS/branches/nobjs/Source/SConscript: move common code from
+	  nobj_function and nobj_section into nobj_code (better name
+	  pending)
+
+2008-02-02 18:29  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: validate return value of
+	  add_nobj_entries
+
+2008-02-02 18:28  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h,
+	  /NSIS/branches/nobjs/Source/nobj/label.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/label.h,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.h,
+	  /NSIS/branches/nobjs/Source/SConscript: added label support
+
+2008-02-02 13:22  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: same for
+	  welcome page (mainly fixes memory allocation)
+
+2008-02-02 13:20  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh: a few fix-ups
+	  for image size query:
+	  - verify allocation
+	  - free allocated memory
+	  - push bitmap path to avoid quoting issues
+
+2008-02-01 23:06  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: revert that... labels are
+	  later looked-up by name without colons
+
+2008-02-01 23:02  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: no real need to support
+	  labels without colon suffix
+
+2008-02-01 22:50  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: entries can now be added
+	  to data block only through add_nobj_entries
+
+2008-02-01 22:40  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.h: move some section
+	  functionality to nobj_section
+
+2008-02-01 22:16  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: extracted add_nobj_entries()
+	  from section_end() and function_end()
+
+2008-02-01 22:12  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj/section.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/section.h,
+	  /NSIS/branches/nobjs/Source/SConscript: nobjify sections and add
+	  section's code only after SectionEnd
+
+2008-02-01 21:52  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/function.cpp: no need for
+	  <stdexcept>
+
+2008-02-01 16:44  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh: fixed bug
+	  #1861944 - mui.StartMenuPage.Create not referenced
+
+2008-02-01 16:38  kichik
+
+	* /NSIS/trunk/Docs/src/basic.but: fixed bug #1883917 - File command
+	  reference not clear
+
+2008-01-29 22:43  kichik
+
+	* /NSIS/trunk/Source/tokens.h: another typo
+
+2008-01-29 22:42  kichik
+
+	* /NSIS/trunk/Source/tokens.h: typo
+
+2008-01-29 15:36  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh: set default language
+	  file for MUI without changing the user setting
+
+2008-01-29 15:33  joostverburg
+
+	* /NSIS/trunk/Include/LangFile.nsh: new macro for installer
+	  language files, which does not require the name of the language
+	  to be set (this is already done by the standard NSIS language
+	  files)
+
+2008-01-28 22:05  joostverburg
+
+	* /NSIS/trunk/Contrib/Language files/Dutch.nsh,
+	  /NSIS/trunk/Contrib/Language files/French.nsh,
+	  /NSIS/trunk/Contrib/Language files/German.nsh,
+	  /NSIS/trunk/Contrib/Language files/Italian.nsh: some more
+	  translations for installation mode selection page of Multi-User
+	  header file
+
+2008-01-28 21:46  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/Readme.html: * added some comments
+	  * added settings for registry key that enables the installation
+	  mode to be set to the mode from a previous installation
+	  * fixed a few typos
+
+2008-01-28 20:10  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/Readme.html: typo
+
+2008-01-27 17:45  joostverburg
+
+	* /NSIS/trunk/Examples/SConscript: use Modern UI 2
+
+2008-01-27 17:44  joostverburg
+
+	* /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Examples/example1.nsi,
+	  /NSIS/trunk/Examples/example2.nsi,
+	  /NSIS/trunk/Examples/FileFunc.nsi,
+	  /NSIS/trunk/Examples/FileFuncTest.nsi,
+	  /NSIS/trunk/Examples/gfx.nsi, /NSIS/trunk/Examples/languages.nsi,
+	  /NSIS/trunk/Examples/Library.nsi,
+	  /NSIS/trunk/Examples/LogicLib.nsi,
+	  /NSIS/trunk/Examples/Memento.nsi,
+	  /NSIS/trunk/Examples/one-section.nsi,
+	  /NSIS/trunk/Examples/primes.nsi, /NSIS/trunk/Examples/rtest.nsi,
+	  /NSIS/trunk/Examples/silent.nsi,
+	  /NSIS/trunk/Examples/StrFunc.nsi,
+	  /NSIS/trunk/Examples/TextFunc.nsi,
+	  /NSIS/trunk/Examples/TextFuncTest.nsi,
+	  /NSIS/trunk/Examples/UserVars.nsi,
+	  /NSIS/trunk/Examples/viewhtml.nsi,
+	  /NSIS/trunk/Examples/waplugin.nsi,
+	  /NSIS/trunk/Examples/WordFunc.nsi,
+	  /NSIS/trunk/Examples/WordFuncTest.nsi: Windows Vista UAC setting
+
+2008-01-27 17:24  joostverburg
+
+	* /NSIS/trunk/Examples/Modern UI/Basic.nsi,
+	  /NSIS/trunk/Examples/Modern UI/HeaderBitmap.nsi,
+	  /NSIS/trunk/Examples/Modern UI/InstallOptions.nsi,
+	  /NSIS/trunk/Examples/Modern UI/ioA.ini,
+	  /NSIS/trunk/Examples/Modern UI/ioB.ini,
+	  /NSIS/trunk/Examples/Modern UI/ioC.ini,
+	  /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi,
+	  /NSIS/trunk/Examples/Modern UI/StartMenu.nsi,
+	  /NSIS/trunk/Examples/Modern UI/WelcomeFinish.nsi: * use Modern UI
+	  2
+	  * Windows Vista UAC setting
+
+2008-01-26 15:13  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: document DropList
+
+2008-01-26 11:47  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: zero icon memory to prevent
+	  uninitialized memory from getting into the resources
+
+2008-01-25 12:47  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: check whether
+	  variables for image resizing need to be included
+
+2008-01-24 21:54  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: get image
+	  control size directly
+
+2008-01-24 21:45  joostverburg
+
+	* /NSIS/trunk/Docs/src/library.but,
+	  /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Include/SConscript,
+	  /NSIS/trunk/Include/VB6RunTime.nsh: new header file for the setup
+	  of Visual Basic 6.0 run-time files
+
+2008-01-24 21:26  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh: fixed compile error
+	  when check for administrator or power user privileges is included
+
+2008-01-24 20:52  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/Readme.html: corrected info about
+	  power users
+
+2008-01-24 19:17  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/Readme.html: fix FunctionEnd
+	  command in example code
+
+2008-01-24 18:50  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh: fixed bug
+	  #1875945 - Image doesn't fit the window in MUI2 with chinese
+	  language. Added support for MUI1
+	  MUI_(UN)WELCOMEFINISHPAGE_BITMAP_NOSTRETCH setting.
+
+2008-01-18 14:03  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: fix comment
+
+2008-01-18 13:49  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: bring back comment
+
+2008-01-18 13:45  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: applied patch #1871856
+	  - nsDialogs: support for keyboard cues for link control
+
+2008-01-12 15:37  kichik
+
+	* /NSIS/trunk/Docs/src/headers.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/silent.but, /NSIS/trunk/Docs/src/var.but:
+	  fixed links
+
+2008-01-06 09:27  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh: fixed bug -
+	  Dangerous example of MUI_STARTMENU_GETFOLDER macro
+
+2008-01-05 22:54  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh: set default
+	  state of reboot now / reboot later radio buttons
+
+2008-01-04 13:53  joostverburg
+
+	* /NSIS/trunk/Contrib/MultiUser/Readme.html: fix typo
+
+2008-01-03 20:48  kichik
+
+	* /NSIS/trunk/Contrib/NSIS Menu/SConscript: fixed dependency list
+
+2008-01-03 20:45  kichik
+
+	* /NSIS/trunk/Contrib/MultiUser/SConscript: fixed wrong function
+	  name
+
+2008-01-03 13:45  joostverburg
+
+	* /NSIS/trunk/Examples/makensis.nsi: move documentation links to
+	  NSIS Menu
+
+2008-01-03 13:26  joostverburg
+
+	* /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Menu/compiler.html, /NSIS/trunk/Menu/docs.html,
+	  /NSIS/trunk/Menu/images/clear.gif,
+	  /NSIS/trunk/Menu/images/menu.gif,
+	  /NSIS/trunk/Menu/images/menud.gif, /NSIS/trunk/Menu/index.html,
+	  /NSIS/trunk/Menu/intro.html, /NSIS/trunk/Menu/notinstalled.html,
+	  /NSIS/trunk/Menu/update.html, /NSIS/trunk/Menu/websites.html:
+	  simplified menu providing easier access to all documentation
+
+2008-01-03 01:26  joostverburg
+
+	* /NSIS/trunk/Examples/makensis.nsi, /NSIS/trunk/SConstruct:
+	  install Multi-User Header File
+
+2008-01-02 16:19  joostverburg
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html: fix variable name for
+	  Start Menu folder
+
+2008-01-02 01:48  joostverburg
+
+	* /NSIS/trunk/Contrib/Language files/English.nsh,
+	  /NSIS/trunk/Contrib/MultiUser,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/Readme.html,
+	  /NSIS/trunk/Contrib/MultiUser/SConscript: Multi-User Header File:
+	  Installer configuration for multi-user Windows environments
+
+2007-12-30 13:05  joostverburg
+
+	* /NSIS/trunk/Docs/src/usefulfunc.but: remove functions which are
+	  already included in a header file
+
+2007-12-29 23:43  joostverburg
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: * include header
+	  file content only once
+	  * set verbose level
+
+2007-12-29 21:40  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/nobj.cpp: deletion is for
+	  dummies...
+	  we need reference counting
+
+2007-12-29 21:38  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: delay add function pwnage!
+
+2007-12-29 21:21  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/entry.cpp: pass all set_parm()
+	  calls through one set_parm()
+
+2007-12-29 21:10  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/function.cpp: stack stuff is
+	  evil
+
+2007-12-29 20:57  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h: const fixes
+
+2007-12-29 20:47  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/function.cpp: missing memset
+
+2007-12-29 20:44  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: some nobj TODO
+
+2007-12-29 20:44  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/entry.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/entry.h,
+	  /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h,
+	  /NSIS/branches/nobjs/Source/nobj/int.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/int.h,
+	  /NSIS/branches/nobjs/Source/nobj/jump.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/jump.h,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.h,
+	  /NSIS/branches/nobjs/Source/nobj/str.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/str.h,
+	  /NSIS/branches/nobjs/Source/nobj/var.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/var.h: move to 2008 for easier
+	  trunk merge
+
+2007-12-29 20:43  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/function.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/function.h,
+	  /NSIS/branches/nobjs/Source/SConscript: added nobj_function
+
+2007-12-29 18:05  kichik
+
+	* /NSIS/trunk/Source/exehead/lang.h: RFE #1795426 - User friendly
+	  message for corrupt or incomplete installer
+
+2007-12-29 14:09  kichik
+
+	* /NSIS/trunk/Include/LogicLib.nsh: more comments for IfNot from
+	  patch #1846785
+
+2007-12-24 22:47  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: fixed more variable
+	  parsing exceptions
+
+2007-12-24 21:28  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: handle NULL parameters
+	  (for example, when setting parm 1 but not 0)
+
+2007-12-24 21:26  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: fixed SendMessage
+
+2007-12-24 20:57  kichik
+
+	* /NSIS/tags/v234: Tagging for release 2.34
+
+2007-12-24 20:56  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.34
+
+2007-12-24 20:32  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: better wording
+
+2007-12-23 22:36  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: add missing includes for new
+	  nobj directory structure
+
+2007-12-23 22:35  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj/entry.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/entry.h,
+	  /NSIS/branches/nobjs/Source/nobj/int.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/int.h,
+	  /NSIS/branches/nobjs/Source/nobj/jump.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/jump.h,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.h,
+	  /NSIS/branches/nobjs/Source/nobj/str.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/str.h,
+	  /NSIS/branches/nobjs/Source/nobj/var.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/var.h,
+	  /NSIS/branches/nobjs/Source/SConscript: split each nobj into its
+	  own file
+
+2007-12-23 22:23  kichik
+
+	* /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj,
+	  /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj/nobj.h,
+	  /NSIS/branches/nobjs/Source/SConscript: move nobj.cpp and nobj.h
+	  to nobj folder
+
+2007-12-23 22:14  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: pass everything through
+	  add_nobj_entry
+
+2007-12-22 20:10  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/script.cpp: use nobj_var instead of
+	  GetUserVarIndex
+
+2007-12-22 19:27  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: nobj_var
+
+2007-12-22 19:24  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h,
+	  /NSIS/branches/nobjs/Source/script.cpp: nobj_entry::set_parm_jump
+	  - simpler than new nobj_jump for every call
+
+2007-12-22 19:19  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/script.cpp: use nobj_jump
+
+2007-12-22 19:03  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: added nobj_jump
+
+2007-12-22 16:44  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: VersionCompare is only
+	  referenced when the version page is used
+
+2007-12-22 16:35  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: install Deprecated.nsh
+
+2007-12-22 16:20  kichik
+
+	* /NSIS/trunk/Source/exehead/util.c: a empty string can be caused
+	  by a path like "\boot.ini", so support that as well
+
+2007-12-22 16:10  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: better phrasing than "usage"
+
+2007-12-22 16:09  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.34
+
+2007-12-22 15:27  kichik
+
+	* /NSIS/trunk/Include/WordFunc.nsh: fixed bug #1852141 - WordFind
+	  do not support Chinese
+
+2007-12-22 10:34  kichik
+
+	* /NSIS/trunk/Docs/src/modernui.but,
+	  /NSIS/trunk/Docs/src/tutorial.but: link to mui2
+
+2007-12-22 10:26  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html: mui2 out of beta
+
+2007-12-22 10:13  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Deprecated.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/SConscript: fixed bug #1784470 -
+	  MUI_RESERVEFILE_INSTALLOPTIONS fails install build
+	  nicer error messages when moving from MUI to MUI2
+
+2007-12-22 09:54  kichik
+
+	* /NSIS/trunk/Include/LangFile.nsh: fixed bug #1848952 -
+	  Overwriting LANGFILE_abc_NAME not possible anymore
+
+2007-12-22 09:47  kichik
+
+	* /NSIS/trunk/Docs/src/pages.but: mention nsDialogs as well as
+	  InstallOptions
+
+2007-12-22 09:41  kichik
+
+	* /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Docs/src/chm_config.but,
+	  /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Docs/src/license.but,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Source/7zip/LZMADecode.c,
+	  /NSIS/trunk/Source/7zip/LZMADecode.h,
+	  /NSIS/trunk/Source/afxres.h, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/bzip2/blocksort.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.h,
+	  /NSIS/trunk/Source/bzip2/compress.c,
+	  /NSIS/trunk/Source/bzip2/decompress.c,
+	  /NSIS/trunk/Source/bzip2/huffman.c, /NSIS/trunk/Source/cbzip2.h,
+	  /NSIS/trunk/Source/clzma.cpp, /NSIS/trunk/Source/clzma.h,
+	  /NSIS/trunk/Source/compressor.h, /NSIS/trunk/Source/crc32.c,
+	  /NSIS/trunk/Source/crc32.h, /NSIS/trunk/Source/czlib.h,
+	  /NSIS/trunk/Source/dirreader.cpp, /NSIS/trunk/Source/dirreader.h,
+	  /NSIS/trunk/Source/exehead/afxres.h,
+	  /NSIS/trunk/Source/exehead/bgbg.c,
+	  /NSIS/trunk/Source/exehead/components.c,
+	  /NSIS/trunk/Source/exehead/components.h,
+	  /NSIS/trunk/Source/exehead/config.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/lang.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/state.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/fileform.cpp, /NSIS/trunk/Source/fileform.h,
+	  /NSIS/trunk/Source/growbuf.cpp, /NSIS/trunk/Source/growbuf.h,
+	  /NSIS/trunk/Source/icon.h, /NSIS/trunk/Source/lang.cpp,
+	  /NSIS/trunk/Source/lang.h, /NSIS/trunk/Source/lineparse.cpp,
+	  /NSIS/trunk/Source/lineparse.h, /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/manifest.cpp, /NSIS/trunk/Source/manifest.h,
+	  /NSIS/trunk/Source/mmap.cpp, /NSIS/trunk/Source/mmap.h,
+	  /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/Plugins.cpp,
+	  /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/ShConstants.cpp,
+	  /NSIS/trunk/Source/strlist.cpp, /NSIS/trunk/Source/strlist.h,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h,
+	  /NSIS/trunk/Source/winchar.cpp, /NSIS/trunk/Source/winchar.h,
+	  /NSIS/trunk/Source/writer.cpp, /NSIS/trunk/Source/writer.h,
+	  /NSIS/trunk/Source/zlib/deflate.c,
+	  /NSIS/trunk/Source/zlib/DEFLATE.H,
+	  /NSIS/trunk/Source/zlib/INFBLOCK.C,
+	  /NSIS/trunk/Source/zlib/trees.c, /NSIS/trunk/Source/zlib/ZCONF.H,
+	  /NSIS/trunk/Source/zlib/ZLIB.H, /NSIS/trunk/Source/zlib/ZUTIL.H:
+	  happy new year!
+	  bug #1855805
+
+2007-12-21 22:46  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: simply zero real entry
+	  structure and don't pass empty parameters to
+	  add_nobj_entry_parm()
+
+2007-12-21 22:46  kichik
+
+	* /NSIS/branches/nobjs/Source/build.h: also declare
+	  process_jump_nobj
+
+2007-12-21 22:45  kichik
+
+	* /NSIS/branches/nobjs/Source/script.cpp: nobj it up
+
+2007-12-21 22:28  kichik
+
+	* /NSIS/trunk/Source/script.cpp: verify correct offset in
+	  TOK_GETFULLPATHNAME
+
+2007-12-21 22:25  kichik
+
+	* /NSIS/trunk/Source/script.cpp: verify correct offset in
+	  TOK_GETCURINSTTYPE
+
+2007-12-21 20:54  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: just resize() instead of
+	  pushing back NULLs
+
+2007-12-21 20:53  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: added nobj_entry::set_parm()
+	  for std::string
+
+2007-12-21 20:51  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: push NULLs instead of
+	  wasting memory
+	  set_parm does that anyway...
+
+2007-12-21 20:51  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: TODO
+
+2007-12-21 20:21  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp: pad with right number of
+	  parameters
+
+2007-12-21 20:20  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h,
+	  /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: was thinking in Java...
+	  pointers needed here for proper polymorphism.
+
+2007-12-21 16:50  kichik
+
+	* /NSIS/branches/nobjs/SCons/Config/ms: some magic for RTTI
+
+2007-12-21 16:47  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: nicer interface for
+	  nobj_entry
+
+2007-12-21 16:36  kichik
+
+	* /NSIS/branches/nobjs/Source/build.cpp,
+	  /NSIS/branches/nobjs/Source/build.h: added
+	  CEXEBuild::add_nobj_entry() using new nobjs
+
+2007-12-21 16:35  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: more consts
+
+2007-12-21 16:22  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: missing nobj_entry::which()
+
+2007-12-21 16:18  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: nobj::dependencies() is const
+
+2007-12-21 16:12  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: added nobj_entry
+
+2007-12-21 16:01  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h: basic nobjs
+
+2007-12-21 15:52  kichik
+
+	* /NSIS/branches/nobjs/Source/nobj.cpp,
+	  /NSIS/branches/nobjs/Source/nobj.h,
+	  /NSIS/branches/nobjs/Source/SConscript: basic nobj implementation
+
+2007-12-21 15:30  kichik
+
+	* /NSIS/branches/nobjs: made a copy
+
+2007-12-20 21:39  kichik
+
+	* /NSIS/trunk/Source/util.cpp: more for bug #1851365
+
+2007-12-19 21:17  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: simpler comparison using
+	  VersionCompare, less labels and more LogicLib
+
+2007-12-19 21:02  kichik
+
+	* /NSIS/trunk/Examples/SConscript: use nsDialogs instead of
+	  InstallOptions - no more makensis.ini
+
+2007-12-19 20:59  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: properly handle initial value
+	  of $ReinstallPageCheck
+
+2007-12-19 20:58  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: proper radio buttons location
+
+2007-12-19 20:57  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: and now for something that
+	  actually builds...
+
+2007-12-19 20:52  kichik
+
+	* /NSIS/trunk/Examples/makensis.ini,
+	  /NSIS/trunk/Examples/makensis.nsi: use nsDialogs instead of
+	  InstallOptions
+
+2007-12-19 20:52  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: use BM_GETCHECK
+	  see following thread for more information
+	  http://forums.winamp.com/showthread.php?s=&threadid=282186
+
+2007-12-19 20:33  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: use MUI2
+
+2007-12-15 15:28  kichik
+
+	* /NSIS/trunk/Source/icon.cpp, /NSIS/trunk/Source/Platform.h: fixed
+	  bug #1851365 - mac os x leopard build and run fails - endian
+	  issues
+
+2007-12-15 15:14  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: fixed bug #1851136 -
+	  nsDialogs: ComboBox not like IO, DropList missing
+
+2007-12-15 14:56  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: applied patch #1848940
+	  - nsDialogs - Additions
+
+2007-12-15 12:24  kichik
+
+	* /NSIS/trunk/Source/exehead/util.c: fixed bug #1851273 - relative
+	  path Delete doesn't work
+
+2007-12-12 18:45  joostverburg
+
+	* /NSIS/trunk/Contrib/Language files/German.nsh: spelling
+
+2007-12-08 13:13  kichik
+
+	* /NSIS/trunk/Include/LogicLib.nsh: applied patch #1846785 - IfNot
+	  support for LogicLib
+
+2007-12-01 14:29  kichik
+
+	* /NSIS/trunk/Docs/src/usage.but: fixed bug #1842326 - installer /D
+	  command line reference incomplete
+
+2007-12-01 12:20  kichik
+
+	* /NSIS/trunk/Scripts/release.py: ensure bug #1835866 and #1831677
+	  won't repeat
+
+2007-12-01 11:43  kichik
+
+	* /NSIS/trunk/Contrib/AdvSplash/advsplash.txt,
+	  /NSIS/trunk/Contrib/AdvSplash/Example.nsi,
+	  /NSIS/trunk/Contrib/Banner/Example.nsi,
+	  /NSIS/trunk/Contrib/Banner/Readme.txt,
+	  /NSIS/trunk/Contrib/BgImage/BgImage.txt,
+	  /NSIS/trunk/Contrib/BgImage/Example.nsi,
+	  /NSIS/trunk/Contrib/Dialer/Dialer.txt,
+	  /NSIS/trunk/Contrib/InstallOptions/Changelog.txt,
+	  /NSIS/trunk/Contrib/InstallOptions/InstallOptions.nsh,
+	  /NSIS/trunk/Contrib/InstallOptions/test.nsi,
+	  /NSIS/trunk/Contrib/InstallOptions/testimgs.nsi,
+	  /NSIS/trunk/Contrib/InstallOptions/testlink.nsi,
+	  /NSIS/trunk/Contrib/InstallOptions/testnotify.nsi,
+	  /NSIS/trunk/Contrib/Language files/Afrikaans.nsh,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Basque.nsh,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bosnian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Breton.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bulgarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nsh,
+	  /NSIS/trunk/Contrib/Language files/Croatian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Czech.nsh,
+	  /NSIS/trunk/Contrib/Language files/Danish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Dutch.nsh,
+	  /NSIS/trunk/Contrib/Language files/English.nsh,
+	  /NSIS/trunk/Contrib/Language files/Estonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Farsi.nsh,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nsh,
+	  /NSIS/trunk/Contrib/Language files/French.nsh,
+	  /NSIS/trunk/Contrib/Language files/Galician.nsh,
+	  /NSIS/trunk/Contrib/Language files/German.nsh,
+	  /NSIS/trunk/Contrib/Language files/Greek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hebrew.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Icelandic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Irish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Italian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Japanese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Korean.nsh,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Latvian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Luxembourgish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Macedonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Malay.nsh,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Norwegian.nsh,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nsh,
+	  /NSIS/trunk/Contrib/Language files/Polish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nsh,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Russian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Serbian.nsh,
+	  /NSIS/trunk/Contrib/Language files/SerbianLatin.nsh,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh,
+	  /NSIS/trunk/Contrib/Language files/Swedish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Thai.nsh,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Uzbek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Welsh.nsh,
+	  /NSIS/trunk/Contrib/Makensisw/Readme.txt,
+	  /NSIS/trunk/Contrib/Math/math.nsi,
+	  /NSIS/trunk/Contrib/Math/Math.txt,
+	  /NSIS/trunk/Contrib/Math/mathtest.nsi,
+	  /NSIS/trunk/Contrib/Math/mathtest.txt, /NSIS/trunk/Contrib/Modern
+	  UI 2/Interface.nsh, /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Components.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Directory.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/InstallFiles.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/License.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/UninstallConfirm.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/Changelog.txt,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/InstallOptions.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/welcome.nsi,
+	  /NSIS/trunk/Contrib/nsExec/nsExec.txt,
+	  /NSIS/trunk/Contrib/nsExec/test.nsi, /NSIS/trunk/Contrib/NSIS
+	  Menu/wx/build.txt, /NSIS/trunk/Contrib/NSISdl/License.txt,
+	  /NSIS/trunk/Contrib/NSISdl/ReadMe.txt,
+	  /NSIS/trunk/Contrib/Splash/Example.nsi,
+	  /NSIS/trunk/Contrib/Splash/splash.txt,
+	  /NSIS/trunk/Contrib/StartMenu/Example.nsi,
+	  /NSIS/trunk/Contrib/StartMenu/Readme.txt,
+	  /NSIS/trunk/Contrib/System/SysFunc.nsh,
+	  /NSIS/trunk/Contrib/System/System.nsh,
+	  /NSIS/trunk/Contrib/System/System.nsi,
+	  /NSIS/trunk/Contrib/System/WhatsNew.txt,
+	  /NSIS/trunk/Contrib/UserInfo/UserInfo.nsi,
+	  /NSIS/trunk/Contrib/VPatch/example.nsi,
+	  /NSIS/trunk/Contrib/VPatch/VPatchLib.nsh,
+	  /NSIS/trunk/Contrib/zip2exe/Base.nsh,
+	  /NSIS/trunk/Contrib/zip2exe/Classic.nsh,
+	  /NSIS/trunk/Contrib/zip2exe/Modern.nsh, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Examples/example1.nsi,
+	  /NSIS/trunk/Examples/example2.nsi,
+	  /NSIS/trunk/Examples/FileFunc.nsi,
+	  /NSIS/trunk/Examples/FileFuncTest.nsi,
+	  /NSIS/trunk/Examples/gfx.nsi, /NSIS/trunk/Examples/languages.nsi,
+	  /NSIS/trunk/Examples/Library.nsi,
+	  /NSIS/trunk/Examples/LogicLib.nsi,
+	  /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Examples/Memento.nsi, /NSIS/trunk/Examples/Modern
+	  UI/Basic.nsi, /NSIS/trunk/Examples/Modern UI/HeaderBitmap.nsi,
+	  /NSIS/trunk/Examples/Modern UI/InstallOptions.nsi,
+	  /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi,
+	  /NSIS/trunk/Examples/Modern UI/StartMenu.nsi,
+	  /NSIS/trunk/Examples/Modern UI/WelcomeFinish.nsi,
+	  /NSIS/trunk/Examples/one-section.nsi,
+	  /NSIS/trunk/Examples/primes.nsi, /NSIS/trunk/Examples/rtest.nsi,
+	  /NSIS/trunk/Examples/silent.nsi,
+	  /NSIS/trunk/Examples/StrFunc.nsi,
+	  /NSIS/trunk/Examples/TextFunc.nsi,
+	  /NSIS/trunk/Examples/TextFuncTest.nsi,
+	  /NSIS/trunk/Examples/UserVars.nsi,
+	  /NSIS/trunk/Examples/VersionInfo.nsi,
+	  /NSIS/trunk/Examples/viewhtml.nsi,
+	  /NSIS/trunk/Examples/waplugin.nsi,
+	  /NSIS/trunk/Examples/WordFunc.nsi,
+	  /NSIS/trunk/Examples/WordFuncTest.nsi,
+	  /NSIS/trunk/Include/Colors.nsh, /NSIS/trunk/Include/FileFunc.nsh,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/Library.nsh,
+	  /NSIS/trunk/Include/LogicLib.nsh,
+	  /NSIS/trunk/Include/Memento.nsh, /NSIS/trunk/Include/MUI.nsh,
+	  /NSIS/trunk/Include/MUI2.nsh, /NSIS/trunk/Include/Sections.nsh,
+	  /NSIS/trunk/Include/StrFunc.nsh, /NSIS/trunk/Include/StrFunc.txt,
+	  /NSIS/trunk/Include/TextFunc.nsh,
+	  /NSIS/trunk/Include/UpgradeDLL.nsh,
+	  /NSIS/trunk/Include/WinMessages.nsh,
+	  /NSIS/trunk/Include/WinVer.nsh, /NSIS/trunk/Include/WordFunc.nsh,
+	  /NSIS/trunk/Include/x64.nsh, /NSIS/trunk/INSTALL,
+	  /NSIS/trunk/nsisconf.nsh, /NSIS/trunk/Scripts/RegRestore.nsi,
+	  /NSIS/trunk/Source/Tests/preprocessor.nsi,
+	  /NSIS/trunk/Source/Tests/root.txt: fixed bug #1835866 - CR LF
+	  combinations
+
+2007-12-01 10:59  kichik
+
+	* /NSIS/trunk/Contrib/Makensisw/License.txt: test
+	  svn:eol-style=native
+
+2007-12-01 10:58  kichik
+
+	* /NSIS/trunk: some ignores
+
+2007-11-30 09:54  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/rtl.c,
+	  /NSIS/trunk/Source/DialogTemplate.cpp: fixed bug #1841573 - RTL
+	  components & instfiles page
+	  WS_EX_LAYOUTRTL can be used for individual controls
+
+2007-11-29 17:37  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: fixed bug #1841120 -
+	  Incorrectly documented returncode SelectFolderDialog
+
+2007-11-27 20:57  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/welcome.nsi: added missing Pop
+
+2007-11-27 20:56  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi: added missing Pops
+
+2007-11-19 19:29  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Bulgarian.nsh: updates by
+	  Dumperbg
+
+2007-11-18 19:19  kichik
+
+	* /NSIS/trunk/Source/script.cpp: implemented RFE #1686589 and fixed
+	  bug #1701051 - improve warning for backslash line end in comment
+
 2007-11-17 14:29  kichik
 
 	* /NSIS/tags/v233: Tagging for release 2.33

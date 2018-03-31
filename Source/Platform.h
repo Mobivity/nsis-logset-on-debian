@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * Copyright (C) 1999-2008 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -521,6 +521,7 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define WS_EX_RIGHTSCROLLBAR 0
 #  define WS_EX_RTLREADING 0x2000
 #  define WS_EX_LEFTSCROLLBAR 0x4000
+#  define WS_EX_LAYOUTRTL 0x00400000
 
 #  define TVS_RTLREADING 64
 

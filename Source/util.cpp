@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * Copyright (C) 1999-2008 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 
 #ifdef __APPLE__
 namespace Apple { // defines struct section
+#  define ENUM_DYLD_BOOL // for TRUE/FALSE, bug #1851365
 #  include <mach-o/dyld.h> // for _NSGetExecutablePath
 };
 #  include <sys/param.h> // for MAXPATHLEN

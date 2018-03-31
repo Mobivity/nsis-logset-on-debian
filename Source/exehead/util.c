@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2007 Nullsoft and Contributors
+ * Copyright (C) 1999-2008 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,7 +139,9 @@ void NSISCALL myDelete(char *buf, int flags)
 #endif//NSIS_SUPPORT_RMDIR
       trimslashtoend(buf);
 
-    mystrcat(buf,"\\");
+    // only append backslash if the path isn't relative to the working directory [bug #1851273]
+    if (*buf || *lbuf == '\\')
+      mystrcat(buf,"\\");
 
     fn=buf+mystrlen(buf);
 
