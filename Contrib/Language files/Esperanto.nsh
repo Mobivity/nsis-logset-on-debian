@@ -36,7 +36,6 @@
 !ifdef MUI_COMPONENTSPAGE
   ${LangFileString} MUI_TEXT_COMPONENTS_TITLE "Elekto de Konsisteroj"
   ${LangFileString} MUI_TEXT_COMPONENTS_SUBTITLE "Elektu kiujn funkciojn de $(^NameDA) vi deziras instali."
-  ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Priskribo"
 !endif
 
 !ifdef MUI_UNCOMPONENTSPAGE
@@ -45,6 +44,7 @@
 !endif
 
 !ifdef MUI_COMPONENTSPAGE | MUI_UNCOMPONENTSPAGE
+  ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Priskribo"
   !ifndef NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
     ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_INFO "Poziciu la muson sur konsistero por rigardi ties priskribon."
   !else
@@ -57,7 +57,7 @@
   ${LangFileString} MUI_TEXT_DIRECTORY_SUBTITLE "Elektu la dosierujon en kiun vi deziras instali la programon $(^NameDA)."
 !endif
 
-!ifdef MUI_UNDIRECTORYSPAGE
+!ifdef MUI_UNDIRECTORYPAGE
   ${LangFileString} MUI_UNTEXT_DIRECTORY_TITLE "Elekto de la Malinstalada Loko"
   ${LangFileString} MUI_UNTEXT_DIRECTORY_SUBTITLE "Elektu la dosierujon el kiu vi deziras malinstali la programon $(^NameDA)."
 !endif

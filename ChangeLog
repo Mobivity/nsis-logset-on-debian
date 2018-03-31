@@ -1,3 +1,320 @@
+2009-06-06 21:37  kichik
+
+	* /NSIS/tags/v245: Tagging for release 2.45
+
+2009-06-06 21:34  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.45
+
+2009-06-06 19:59  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: typo
+
+2009-06-06 19:40  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.45
+
+2009-06-06 19:35  kichik
+
+	* /NSIS/trunk/Source/script.cpp: cosmetics
+
+2009-06-06 19:25  kichik
+
+	* /NSIS/trunk/Docs/src/SConscript: don't ask me why, but this make
+	  hhc.exe not crash
+
+2009-06-06 19:15  kichik
+
+	* /NSIS/trunk/Docs/src/attributes.but: vista AND 7... yes, tis
+	  true!
+
+2009-06-06 18:32  kichik
+
+	* /NSIS/trunk/Source/script.cpp: cosmetics
+
+2009-06-06 18:31  kichik
+
+	* /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  implemented RFE #1505425 - !delfile wildcards and /nonfatal
+
+2009-06-06 16:22  kichik
+
+	* /NSIS/trunk/Source/Platform.h: buildy buildy
+
+2009-06-06 16:21  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Indonesian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nsh: applied patch
+	  #2790571
+
+2009-06-06 16:17  kichik
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh: applied
+	  patch #2642542
+
+2009-06-06 16:15  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/Platform.h:
+	  terminal services awareness day
+	  donate now!
+
+2009-06-06 16:14  kichik
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.xml,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.xml,
+	  /NSIS/trunk/Contrib/zip2exe/zip2exe.xml,
+	  /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/manifest.cpp:
+	  fixed bug #2725883 - NSIS installers always show warning on
+	  Windows 7
+
+2009-06-06 15:07  kichik
+
+	* /NSIS/trunk/Contrib/UIs/modern.rc,
+	  /NSIS/trunk/Contrib/UIs/modern_nodesc.rc,
+	  /NSIS/trunk/Contrib/UIs/modern_smalldesc.rc: applied patch
+	  #2801317 - Install type description position fix
+
+2009-06-06 14:46  kichik
+
+	* /NSIS/trunk/Docs/src/compiler.but: fixed bug #2606525 - Symbol
+	  NSIS_VERSION not documented
+
+2009-06-06 14:26  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh: fixed bug
+	  #2720968 - MUI2 finish page show custom function
+
+2009-06-06 13:59  kichik
+
+	* /NSIS/trunk/Docs/src/basic.but, /NSIS/trunk/Source/script.cpp:
+	  fixed bug #2796189 - ExecShell doesn't always respect maximized
+	  window setting
+
+2009-06-06 13:47  kichik
+
+	* /NSIS/trunk/Source/script.cpp: fixed bug #2801024 - CreateFont
+	  doesn't make sure the first parameter is a valid variable
+
+2009-06-05 18:02  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: win7
+
+2009-05-17 21:56  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: some 7 loving
+
+2009-05-14 23:31  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Afrikaans.nsh,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Basque.nsh,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bosnian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Breton.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bulgarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nsh,
+	  /NSIS/trunk/Contrib/Language files/Croatian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Czech.nsh,
+	  /NSIS/trunk/Contrib/Language files/Danish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Dutch.nsh,
+	  /NSIS/trunk/Contrib/Language files/English.nsh,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nsh,
+	  /NSIS/trunk/Contrib/Language files/Estonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Farsi.nsh,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nsh,
+	  /NSIS/trunk/Contrib/Language files/French.nsh,
+	  /NSIS/trunk/Contrib/Language files/Galician.nsh,
+	  /NSIS/trunk/Contrib/Language files/German.nsh,
+	  /NSIS/trunk/Contrib/Language files/Greek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hebrew.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Icelandic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Irish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Italian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Japanese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Korean.nsh,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Latvian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Luxembourgish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Macedonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Malay.nsh,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Norwegian.nsh,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nsh,
+	  /NSIS/trunk/Contrib/Language files/Polish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nsh,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Russian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Serbian.nsh,
+	  /NSIS/trunk/Contrib/Language files/SerbianLatin.nsh,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh,
+	  /NSIS/trunk/Contrib/Language files/Swedish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Thai.nsh,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Uzbek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Welsh.nsh: fixed bug #2788620
+	  - MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE missing
+
+2009-05-13 18:38  kichik
+
+	* /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nsismenu.cpp: fixed bug
+	  #2781948 - NSIS.exe shows nothing
+
+2009-05-13 18:19  kichik
+
+	* /NSIS/trunk/Docs/src/attributes.but: bug #2790298 - whatever...
+
+2009-05-13 18:11  kichik
+
+	* /NSIS/trunk/Source/Tests/winver.nsi: comparison tests for
+	  win7/2008r2
+
+2009-05-13 18:10  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: 2008R2 is a server, so add the
+	  special bit
+
+2009-05-13 18:01  kichik
+
+	* /NSIS/trunk/Include/WinVer.nsh: tabs to spaces
+
+2009-05-11 16:45  anders_k
+
+	* /NSIS/trunk/Include/WinVer.nsh: Support for Win7 and 2008R2
+
+2009-03-28 10:20  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/lang.cpp, /NSIS/trunk/Source/lang.h,
+	  /NSIS/trunk/Source/lineparse.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/uservars.h: got
+	  rid of a zillion warnings on gcc
+
+2009-03-28 09:56  kichik
+
+	* /NSIS/trunk/Source/util.cpp: bad results on gcc with const char*
+	  -> char* conversion
+
+2009-03-28 09:52  kichik
+
+	* /NSIS/trunk/Source/tokens.cpp: less warnings from gcc
+
+2009-03-28 09:47  kichik
+
+	* /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: a few less #ifdef's
+
+2009-03-23 18:50  kichik
+
+	* /NSIS/trunk/Docs/src/file.but: fixed bug #2705878 - Wrong Example
+	  in Documentation at FindFirst
+
+2009-03-20 12:23  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h: fixed
+	  bug #2697027 - error from add/remove when uninstaller is canceled
+	  and uac is disabled
+
+2009-03-20 12:11  kichik
+
+	* /NSIS/trunk/Source/exehead/util.c: english
+
+2009-03-20 11:18  kichik
+
+	* /NSIS/trunk/Source/exehead/util.c: fixed bug #2138075 -
+	  $DOCUMENTS return null value for root
+	  vista fails with CSIDL_FLAG_CREATE on root directories and caches
+	  the result
+	  thanks inno devs for researching this
+
+2009-03-17 23:00  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Afrikaans.nsh,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Basque.nsh,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bosnian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Breton.nsh,
+	  /NSIS/trunk/Contrib/Language files/Bulgarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nsh,
+	  /NSIS/trunk/Contrib/Language files/Croatian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Czech.nsh,
+	  /NSIS/trunk/Contrib/Language files/Danish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Dutch.nsh,
+	  /NSIS/trunk/Contrib/Language files/English.nsh,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nsh,
+	  /NSIS/trunk/Contrib/Language files/Estonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Farsi.nsh,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nsh,
+	  /NSIS/trunk/Contrib/Language files/French.nsh,
+	  /NSIS/trunk/Contrib/Language files/Galician.nsh,
+	  /NSIS/trunk/Contrib/Language files/German.nsh,
+	  /NSIS/trunk/Contrib/Language files/Greek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hebrew.nsh,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Icelandic.nsh,
+	  /NSIS/trunk/Contrib/Language files/Indonesian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Irish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Italian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Japanese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Korean.nsh,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Latvian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Luxembourgish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Macedonian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Malay.nsh,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Norwegian.nsh,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nsh,
+	  /NSIS/trunk/Contrib/Language files/Polish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nsh,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Contrib/Language files/Romanian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Russian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Serbian.nsh,
+	  /NSIS/trunk/Contrib/Language files/SerbianLatin.nsh,
+	  /NSIS/trunk/Contrib/Language files/SimpChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovak.nsh,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh,
+	  /NSIS/trunk/Contrib/Language files/Swedish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Thai.nsh,
+	  /NSIS/trunk/Contrib/Language files/TradChinese.nsh,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nsh,
+	  /NSIS/trunk/Contrib/Language files/Uzbek.nsh,
+	  /NSIS/trunk/Contrib/Language files/Welsh.nsh: fixed bug #2690112
+	  - MUI_UNDIRECTORYSPAGE in the Language Files is wrong
+
+2009-03-10 22:24  justin1014
+
+	* /NSIS/trunk/Source/script.cpp: Fixed bug #2680110 (embarrassing
+	  for me)
+
+2009-03-10 20:14  kichik
+
+	* /NSIS/trunk/Source/script.cpp: proper line endings
+
+2009-02-23 11:35  joostverburg
+
+	* /NSIS/trunk/Menu/index.html: typo
+
 2009-02-21 19:31  kichik
 
 	* /NSIS/tags/v244: Tagging for release 2.44
