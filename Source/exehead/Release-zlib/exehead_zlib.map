@@ -1,0 +1,348 @@
+ exehead_zlib
+
+ Timestamp is 423c5119 (Sat Mar 19 18:19:37 2005)
+
+ Preferred load address is 00400000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00005b32H .text                   CODE
+ 0002:00000000 0000028cH .idata$5                DATA
+ 0002:0000028c 0000013cH .rdata                  DATA
+ 0002:000003c8 000000a0H .idata$2                DATA
+ 0002:00000468 00000014H .idata$3                DATA
+ 0002:0000047c 0000028cH .idata$4                DATA
+ 0002:00000708 00000ab8H .idata$6                DATA
+ 0002:000011c0 00000000H .edata                  DATA
+ 0003:00000000 000003f5H .data                   DATA
+ 0003:000003f8 00025cdcH .bss                    DATA
+ 0004:00000000 00000400H .ndata                  DATA
+ 0005:00000000 000002b0H .rsrc$01                DATA
+ 0005:000002b0 00000e80H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000000       _inflate@4                 00401000 f   INFBLOCK.OBJ
+ 0001:00000e32       _BG_WndProc@16             00401e32 f   bgbg.obj
+ 0001:00000faf       _SectionFlagsChanged@4     00401faf f   components.obj
+ 0001:00001021       _RefreshSectionGroups@0    00402021 f   components.obj
+ 0001:000010d6       _SetInstType@4             004020d6 f   components.obj
+ 0001:0000111f       _GetInstType@4             0040211f f   components.obj
+ 0001:000011aa       _CRC32@12                  004021aa f   crc32.obj
+ 0001:00001218       _ExecuteCodeSegment@8      00402218 f   exec.obj
+ 0001:000012bb       _ExecuteCallbackFunction@4 004022bb f   exec.obj
+ 0001:000012d3       _update_status_text_buf1@4 004022d3 f   exec.obj
+ 0001:00002a5a       _verProc@16                00403a5a f   fileform.obj
+ 0001:00002ae6       _loadHeaders@4             00403ae6 f   fileform.obj
+ 0001:00002d84       __dodecomp@16              00403d84 f   fileform.obj
+ 0001:00002fb0       _ReadSelfFile@8            00403fb0 f   fileform.obj
+ 0001:00002fe2       _SetSelfFilePointer@4      00403fe2 f   fileform.obj
+ 0001:00002ff9       _ValidateTempDir           00403ff9 f   Main.obj
+ 0001:0000302d       _WinMain@16                0040402d f   Main.obj
+ 0001:000033cd       _CleanUp@0                 004043cd f   Main.obj
+ 0001:000033f2       _ui_doinstall@0            004043f2 f i Ui.obj
+ 0001:00003736       _DialogProc@16             00404736 f   Ui.obj
+ 0001:00003d32       _StreamLicense@16          00404d32 f   Ui.obj
+ 0001:00004476       _TreeHitTest@4             00405476 f   Ui.obj
+ 0001:00004bc1       _update_status_text@8      00405bc1 f   Ui.obj
+ 0001:00005077       _FreePIDL@4                00406077 f   util.obj
+ 0001:000050a2       _myCreateProcess@8         004060a2 f   util.obj
+ 0001:000050f8       _my_SetDialogItemText@12   004060f8 f   util.obj
+ 0001:000050fe       _my_GetDialogItemText@8    004060fe f   util.obj
+ 0001:0000511a       _my_MessageBox@8           0040611a f   util.obj
+ 0001:0000515c       _my_GlobalAlloc@4          0040615c f   util.obj
+ 0001:0000516b       _myDelete@8                0040616b f   util.obj
+ 0001:00005305       _addtrailingslash@4        00406305 f   util.obj
+ 0001:00005331       _findchar@8                00406331 f   util.obj
+ 0001:0000534d       _trimslashtoend@4          0040634d f   util.obj
+ 0001:00005372       _validpathspec@4           00406372 f   util.obj
+ 0001:00005399       _skip_root@4               00406399 f   util.obj
+ 0001:000053e6       _is_valid_instpath@4       004063e6 f   util.obj
+ 0001:00005459       _mystrstri@8               00406459 f   util.obj
+ 0001:000054a5       _mini_memcpy@12            004064a5 f   util.obj
+ 0001:000054c5       _myOpenFile@12             004064c5 f   util.obj
+ 0001:000054f4       _my_GetTempFileName@8      004064f4 f   util.obj
+ 0001:0000553c       _MoveFileOnReboot@8        0040653c f   util.obj
+ 0001:000056f3       _myRegGetStr@16            004066f3 f   util.obj
+ 0001:0000575d       _myitoa@8                  0040675d f   util.obj
+ 0001:00005776       _myatoi@4                  00406776 f   util.obj
+ 0001:000057ff       _mystrcpy@8                004067ff f   util.obj
+ 0001:00005805       _mystrlen@4                00406805 f   util.obj
+ 0001:0000580b       _GetNSISString@8           0040680b f   util.obj
+ 0001:00005a3f       _validate_filename@4       00406a3f f   util.obj
+ 0001:00005ae1       _file_exists@4             00406ae1 f   util.obj
+ 0001:00005b20       _VerQueryValueA@16         00406b20 f   version:VERSION.dll
+ 0001:00005b26       _GetFileVersionInfoA@16    00406b26 f   version:VERSION.dll
+ 0001:00005b2c       _GetFileVersionInfoSizeA@8 00406b2c f   version:VERSION.dll
+ 0002:00000000       __imp__RegEnumValueA@32    00407000     advapi32:ADVAPI32.dll
+ 0002:00000004       __imp__RegQueryValueExA@24 00407004     advapi32:ADVAPI32.dll
+ 0002:00000008       __imp__RegSetValueExA@24   00407008     advapi32:ADVAPI32.dll
+ 0002:0000000c       __imp__RegCreateKeyExA@36  0040700c     advapi32:ADVAPI32.dll
+ 0002:00000010       __imp__RegOpenKeyExA@20    00407010     advapi32:ADVAPI32.dll
+ 0002:00000014       __imp__RegDeleteKeyA@8     00407014     advapi32:ADVAPI32.dll
+ 0002:00000018       __imp__RegDeleteValueA@8   00407018     advapi32:ADVAPI32.dll
+ 0002:0000001c       __imp__RegCloseKey@4       0040701c     advapi32:ADVAPI32.dll
+ 0002:00000020       __imp__RegEnumKeyA@16      00407020     advapi32:ADVAPI32.dll
+ 0002:00000024       \177ADVAPI32_NULL_THUNK_DATA 00407024     advapi32:ADVAPI32.dll
+ 0002:00000028       __imp__InitCommonControls@0 00407028     comctl32:COMCTL32.dll
+ 0002:0000002c       __imp__ImageList_AddMasked@12 0040702c     comctl32:COMCTL32.dll
+ 0002:00000030       __imp__ImageList_Destroy@4 00407030     comctl32:COMCTL32.dll
+ 0002:00000034       __imp__ImageList_Create@20 00407034     comctl32:COMCTL32.dll
+ 0002:00000038       \177COMCTL32_NULL_THUNK_DATA 00407038     comctl32:COMCTL32.dll
+ 0002:0000003c       __imp__GetDeviceCaps@8     0040703c     gdi32:GDI32.dll
+ 0002:00000040       __imp__DeleteObject@4      00407040     gdi32:GDI32.dll
+ 0002:00000044       __imp__CreateBrushIndirect@4 00407044     gdi32:GDI32.dll
+ 0002:00000048       __imp__CreateFontIndirectA@4 00407048     gdi32:GDI32.dll
+ 0002:0000004c       __imp__SetBkMode@8         0040704c     gdi32:GDI32.dll
+ 0002:00000050       __imp__SetTextColor@8      00407050     gdi32:GDI32.dll
+ 0002:00000054       __imp__SetBkColor@8        00407054     gdi32:GDI32.dll
+ 0002:00000058       __imp__SelectObject@8      00407058     gdi32:GDI32.dll
+ 0002:0000005c       \177GDI32_NULL_THUNK_DATA  0040705c     gdi32:GDI32.dll
+ 0002:00000060       __imp__ExpandEnvironmentStringsA@12 00407060     kernel32:KERNEL32.dll
+ 0002:00000064       __imp__GetEnvironmentVariableA@12 00407064     kernel32:KERNEL32.dll
+ 0002:00000068       __imp__lstrcmpiA@8         00407068     kernel32:KERNEL32.dll
+ 0002:0000006c       __imp__CloseHandle@4       0040706c     kernel32:KERNEL32.dll
+ 0002:00000070       __imp__SetFileTime@16      00407070     kernel32:KERNEL32.dll
+ 0002:00000074       __imp__GetFileAttributesA@4 00407074     kernel32:KERNEL32.dll
+ 0002:00000078       __imp__CompareFileTime@8   00407078     kernel32:KERNEL32.dll
+ 0002:0000007c       __imp__SearchPathA@24      0040707c     kernel32:KERNEL32.dll
+ 0002:00000080       __imp__GetShortPathNameA@12 00407080     kernel32:KERNEL32.dll
+ 0002:00000084       __imp__GetFullPathNameA@16 00407084     kernel32:KERNEL32.dll
+ 0002:00000088       __imp__MoveFileA@8         00407088     kernel32:KERNEL32.dll
+ 0002:0000008c       __imp__lstrcatA@8          0040708c     kernel32:KERNEL32.dll
+ 0002:00000090       __imp__SetCurrentDirectoryA@4 00407090     kernel32:KERNEL32.dll
+ 0002:00000094       __imp__CreateDirectoryA@8  00407094     kernel32:KERNEL32.dll
+ 0002:00000098       __imp__SetFileAttributesA@8 00407098     kernel32:KERNEL32.dll
+ 0002:0000009c       __imp__Sleep@4             0040709c     kernel32:KERNEL32.dll
+ 0002:000000a0       __imp__GetFileSize@8       004070a0     kernel32:KERNEL32.dll
+ 0002:000000a4       __imp__GetModuleFileNameA@12 004070a4     kernel32:KERNEL32.dll
+ 0002:000000a8       __imp__GetTickCount@0      004070a8     kernel32:KERNEL32.dll
+ 0002:000000ac       __imp__GetCurrentProcess@0 004070ac     kernel32:KERNEL32.dll
+ 0002:000000b0       __imp__CopyFileA@12        004070b0     kernel32:KERNEL32.dll
+ 0002:000000b4       __imp__ExitProcess@4       004070b4     kernel32:KERNEL32.dll
+ 0002:000000b8       __imp__lstrcpynA@12        004070b8     kernel32:KERNEL32.dll
+ 0002:000000bc       __imp__GlobalFree@4        004070bc     kernel32:KERNEL32.dll
+ 0002:000000c0       __imp__GetWindowsDirectoryA@8 004070c0     kernel32:KERNEL32.dll
+ 0002:000000c4       __imp__GetTempPathA@8      004070c4     kernel32:KERNEL32.dll
+ 0002:000000c8       __imp__GetUserDefaultLangID@0 004070c8     kernel32:KERNEL32.dll
+ 0002:000000cc       __imp__GetDiskFreeSpaceA@20 004070cc     kernel32:KERNEL32.dll
+ 0002:000000d0       __imp__GlobalUnlock@4      004070d0     kernel32:KERNEL32.dll
+ 0002:000000d4       __imp__GlobalLock@4        004070d4     kernel32:KERNEL32.dll
+ 0002:000000d8       __imp__GlobalAlloc@8       004070d8     kernel32:KERNEL32.dll
+ 0002:000000dc       __imp__CreateThread@24     004070dc     kernel32:KERNEL32.dll
+ 0002:000000e0       __imp__CreateProcessA@40   004070e0     kernel32:KERNEL32.dll
+ 0002:000000e4       __imp__RemoveDirectoryA@4  004070e4     kernel32:KERNEL32.dll
+ 0002:000000e8       __imp__CreateFileA@28      004070e8     kernel32:KERNEL32.dll
+ 0002:000000ec       __imp__GetTempFileNameA@16 004070ec     kernel32:KERNEL32.dll
+ 0002:000000f0       __imp__SetEndOfFile@4      004070f0     kernel32:KERNEL32.dll
+ 0002:000000f4       __imp__UnmapViewOfFile@4   004070f4     kernel32:KERNEL32.dll
+ 0002:000000f8       __imp__MapViewOfFile@20    004070f8     kernel32:KERNEL32.dll
+ 0002:000000fc       __imp__CreateFileMappingA@24 004070fc     kernel32:KERNEL32.dll
+ 0002:00000100       __imp__lstrcpyA@8          00407100     kernel32:KERNEL32.dll
+ 0002:00000104       __imp__lstrlenA@4          00407104     kernel32:KERNEL32.dll
+ 0002:00000108       __imp__GetSystemDirectoryA@8 00407108     kernel32:KERNEL32.dll
+ 0002:0000010c       __imp__MulDiv@12           0040710c     kernel32:KERNEL32.dll
+ 0002:00000110       __imp__DeleteFileA@4       00407110     kernel32:KERNEL32.dll
+ 0002:00000114       __imp__FindFirstFileA@8    00407114     kernel32:KERNEL32.dll
+ 0002:00000118       __imp__FindNextFileA@8     00407118     kernel32:KERNEL32.dll
+ 0002:0000011c       __imp__FindClose@4         0040711c     kernel32:KERNEL32.dll
+ 0002:00000120       __imp__SetFilePointer@16   00407120     kernel32:KERNEL32.dll
+ 0002:00000124       __imp__WaitForSingleObject@8 00407124     kernel32:KERNEL32.dll
+ 0002:00000128       __imp__GetExitCodeProcess@8 00407128     kernel32:KERNEL32.dll
+ 0002:0000012c       __imp__SetErrorMode@4      0040712c     kernel32:KERNEL32.dll
+ 0002:00000130       __imp__ReadFile@20         00407130     kernel32:KERNEL32.dll
+ 0002:00000134       __imp__GetModuleHandleA@4  00407134     kernel32:KERNEL32.dll
+ 0002:00000138       __imp__LoadLibraryA@4      00407138     kernel32:KERNEL32.dll
+ 0002:0000013c       __imp__GetProcAddress@8    0040713c     kernel32:KERNEL32.dll
+ 0002:00000140       __imp__FreeLibrary@4       00407140     kernel32:KERNEL32.dll
+ 0002:00000144       __imp__MultiByteToWideChar@24 00407144     kernel32:KERNEL32.dll
+ 0002:00000148       __imp__WritePrivateProfileStringA@16 00407148     kernel32:KERNEL32.dll
+ 0002:0000014c       __imp__GetPrivateProfileStringA@24 0040714c     kernel32:KERNEL32.dll
+ 0002:00000150       __imp__WriteFile@20        00407150     kernel32:KERNEL32.dll
+ 0002:00000154       __imp__GetCommandLineA@0   00407154     kernel32:KERNEL32.dll
+ 0002:00000158       \177KERNEL32_NULL_THUNK_DATA 00407158     kernel32:KERNEL32.dll
+ 0002:0000015c       __imp__ShellExecuteA@24    0040715c     shell32:SHELL32.dll
+ 0002:00000160       __imp__SHBrowseForFolderA@4 00407160     shell32:SHELL32.dll
+ 0002:00000164       __imp__SHGetPathFromIDListA@8 00407164     shell32:SHELL32.dll
+ 0002:00000168       __imp__SHGetMalloc@4       00407168     shell32:SHELL32.dll
+ 0002:0000016c       __imp__SHGetSpecialFolderLocation@12 0040716c     shell32:SHELL32.dll
+ 0002:00000170       __imp__SHFileOperationA@4  00407170     shell32:SHELL32.dll
+ 0002:00000174       \177SHELL32_NULL_THUNK_DATA 00407174     shell32:SHELL32.dll
+ 0002:00000178       __imp__ExitWindowsEx@8     00407178     user32:USER32.dll
+ 0002:0000017c       __imp__CharNextA@4         0040717c     user32:USER32.dll
+ 0002:00000180       __imp__DialogBoxParamA@20  00407180     user32:USER32.dll
+ 0002:00000184       __imp__GetClassInfoA@12    00407184     user32:USER32.dll
+ 0002:00000188       __imp__CreateWindowExA@48  00407188     user32:USER32.dll
+ 0002:0000018c       __imp__SystemParametersInfoA@16 0040718c     user32:USER32.dll
+ 0002:00000190       __imp__RegisterClassA@4    00407190     user32:USER32.dll
+ 0002:00000194       __imp__EndDialog@8         00407194     user32:USER32.dll
+ 0002:00000198       __imp__ScreenToClient@8    00407198     user32:USER32.dll
+ 0002:0000019c       __imp__GetWindowRect@8     0040719c     user32:USER32.dll
+ 0002:000001a0       __imp__SetClassLongA@12    004071a0     user32:USER32.dll
+ 0002:000001a4       __imp__IsWindowEnabled@4   004071a4     user32:USER32.dll
+ 0002:000001a8       __imp__SetWindowPos@28     004071a8     user32:USER32.dll
+ 0002:000001ac       __imp__GetSysColor@4       004071ac     user32:USER32.dll
+ 0002:000001b0       __imp__GetWindowLongA@8    004071b0     user32:USER32.dll
+ 0002:000001b4       __imp__LoadCursorA@8       004071b4     user32:USER32.dll
+ 0002:000001b8       __imp__SetCursor@4         004071b8     user32:USER32.dll
+ 0002:000001bc       __imp__CheckDlgButton@12   004071bc     user32:USER32.dll
+ 0002:000001c0       __imp__GetMessagePos@0     004071c0     user32:USER32.dll
+ 0002:000001c4       __imp__LoadBitmapA@8       004071c4     user32:USER32.dll
+ 0002:000001c8       __imp__CallWindowProcA@20  004071c8     user32:USER32.dll
+ 0002:000001cc       __imp__IsWindowVisible@4   004071cc     user32:USER32.dll
+ 0002:000001d0       __imp__CloseClipboard@0    004071d0     user32:USER32.dll
+ 0002:000001d4       __imp__SetClipboardData@8  004071d4     user32:USER32.dll
+ 0002:000001d8       __imp__EmptyClipboard@0    004071d8     user32:USER32.dll
+ 0002:000001dc       __imp__OpenClipboard@4     004071dc     user32:USER32.dll
+ 0002:000001e0       __imp__TrackPopupMenu@28   004071e0     user32:USER32.dll
+ 0002:000001e4       __imp__AppendMenuA@16      004071e4     user32:USER32.dll
+ 0002:000001e8       __imp__CreatePopupMenu@0   004071e8     user32:USER32.dll
+ 0002:000001ec       __imp__GetSystemMetrics@4  004071ec     user32:USER32.dll
+ 0002:000001f0       __imp__SetDlgItemTextA@12  004071f0     user32:USER32.dll
+ 0002:000001f4       __imp__GetDlgItemTextA@16  004071f4     user32:USER32.dll
+ 0002:000001f8       __imp__MessageBoxA@16      004071f8     user32:USER32.dll
+ 0002:000001fc       __imp__CharPrevA@8         004071fc     user32:USER32.dll
+ 0002:00000200       __imp__CreateDialogParamA@20 00407200     user32:USER32.dll
+ 0002:00000204       __imp__DestroyWindow@4     00407204     user32:USER32.dll
+ 0002:00000208       __imp__SetTimer@16         00407208     user32:USER32.dll
+ 0002:0000020c       __imp__SetWindowTextA@8    0040720c     user32:USER32.dll
+ 0002:00000210       __imp__PostQuitMessage@4   00407210     user32:USER32.dll
+ 0002:00000214       __imp__SetForegroundWindow@4 00407214     user32:USER32.dll
+ 0002:00000218       __imp__ShowWindow@8        00407218     user32:USER32.dll
+ 0002:0000021c       __imp__wsprintfA           0040721c     user32:USER32.dll
+ 0002:00000220       __imp__SendMessageTimeoutA@28 00407220     user32:USER32.dll
+ 0002:00000224       __imp__FindWindowExA@16    00407224     user32:USER32.dll
+ 0002:00000228       __imp__IsWindow@4          00407228     user32:USER32.dll
+ 0002:0000022c       __imp__GetDlgItem@8        0040722c     user32:USER32.dll
+ 0002:00000230       __imp__SetWindowLongA@12   00407230     user32:USER32.dll
+ 0002:00000234       __imp__LoadImageA@24       00407234     user32:USER32.dll
+ 0002:00000238       __imp__GetDC@4             00407238     user32:USER32.dll
+ 0002:0000023c       __imp__EnableWindow@8      0040723c     user32:USER32.dll
+ 0002:00000240       __imp__DispatchMessageA@4  00407240     user32:USER32.dll
+ 0002:00000244       __imp__InvalidateRect@12   00407244     user32:USER32.dll
+ 0002:00000248       __imp__SendMessageA@16     00407248     user32:USER32.dll
+ 0002:0000024c       __imp__DefWindowProcA@16   0040724c     user32:USER32.dll
+ 0002:00000250       __imp__BeginPaint@8        00407250     user32:USER32.dll
+ 0002:00000254       __imp__GetClientRect@8     00407254     user32:USER32.dll
+ 0002:00000258       __imp__FillRect@12         00407258     user32:USER32.dll
+ 0002:0000025c       __imp__DrawTextA@20        0040725c     user32:USER32.dll
+ 0002:00000260       __imp__EndPaint@8          00407260     user32:USER32.dll
+ 0002:00000264       __imp__PeekMessageA@20     00407264     user32:USER32.dll
+ 0002:00000268       \177USER32_NULL_THUNK_DATA 00407268     user32:USER32.dll
+ 0002:0000026c       __imp__GetFileVersionInfoSizeA@8 0040726c     version:VERSION.dll
+ 0002:00000270       __imp__GetFileVersionInfoA@16 00407270     version:VERSION.dll
+ 0002:00000274       __imp__VerQueryValueA@16   00407274     version:VERSION.dll
+ 0002:00000278       \177VERSION_NULL_THUNK_DATA 00407278     version:VERSION.dll
+ 0002:0000027c       __imp__OleInitialize@4     0040727c     ole32:ole32.dll
+ 0002:00000280       __imp__OleUninitialize@0   00407280     ole32:ole32.dll
+ 0002:00000284       __imp__CoCreateInstance@20 00407284     ole32:ole32.dll
+ 0002:00000288       \177ole32_NULL_THUNK_DATA  00407288     ole32:ole32.dll
+ 0002:00000398       _IID_IShellLinkA           00407398     shell32:shguid.obj
+ 0002:000003a8       _CLSID_ShellLink           004073a8     shell32:shguid.obj
+ 0002:000003b8       _IID_IPersistFile          004073b8     uuid:objidl_i.obj
+ 0002:000003c8       __IMPORT_DESCRIPTOR_COMCTL32 004073c8     comctl32:COMCTL32.dll
+ 0002:000003dc       __IMPORT_DESCRIPTOR_KERNEL32 004073dc     kernel32:KERNEL32.dll
+ 0002:000003f0       __IMPORT_DESCRIPTOR_USER32 004073f0     user32:USER32.dll
+ 0002:00000404       __IMPORT_DESCRIPTOR_GDI32  00407404     gdi32:GDI32.dll
+ 0002:00000418       __IMPORT_DESCRIPTOR_ADVAPI32 00407418     advapi32:ADVAPI32.dll
+ 0002:0000042c       __IMPORT_DESCRIPTOR_SHELL32 0040742c     shell32:SHELL32.dll
+ 0002:00000440       __IMPORT_DESCRIPTOR_ole32  00407440     ole32:ole32.dll
+ 0002:00000454       __IMPORT_DESCRIPTOR_VERSION 00407454     version:VERSION.dll
+ 0002:00000468       __NULL_IMPORT_DESCRIPTOR   00407468     comctl32:COMCTL32.dll
+ 0003:0000002c       _plugin_extra_parameters   0040902c     exec.obj
+ 0003:00000038       ??_C@_01PCFE@?2?$AA@       00409038     exec.obj
+ 0003:0000003c       ??_C@_05JKGE@?$CFs?5?$CFs?$AA@ 0040903c     exec.obj
+ 0003:00000044       ??_C@_02HMFM@?9?$DO?$AA@   00409044     exec.obj
+ 0003:00000048       _g_db_hFile                00409048     fileform.obj
+ 0003:00000050       ??_C@_0BDE@LIDP@The?5installer?5you?5are?5trying?5to?5@ 00409050     fileform.obj
+ 0003:00000184       ??_C@_0BK@JMOG@verifying?5installer?3?5?$CFd?$CF?$CF?$AA@ 00409184     fileform.obj
+ 0003:000001a0       ??_C@_0BK@NPMC@Error?5launching?5installer?$AA@ 004091a0     fileform.obj
+ 0003:000001bc       ??_C@_08ILEO@?4?4?4?5?$CFd?$CF?$CF?$AA@ 004091bc     fileform.obj
+ 0003:000001d8       ??_C@_0BE@NFOF@SeShutdownPrivilege?$AA@ 004091d8     Main.obj
+ 0003:000001ec       ??_C@_0BG@GACJ@AdjustTokenPrivileges?$AA@ 004091ec     Main.obj
+ 0003:00000204       ??_C@_0BG@EFIJ@LookupPrivilegeValueA?$AA@ 00409204     Main.obj
+ 0003:0000021c       ??_C@_0BB@NPFI@OpenProcessToken?$AA@ 0040921c     Main.obj
+ 0003:00000230       ??_C@_0N@ELGH@ADVAPI32?4dll?$AA@ 00409230     Main.obj
+ 0003:00000240       ??_C@_04OEEP@?5_?$DP?$DN?$AA@ 00409240     Main.obj
+ 0003:00000248       ??_C@_02KKOH@?$CC?5?$AA@   00409248     Main.obj
+ 0003:0000024c       ??_C@_05BLJC@?2Temp?$AA@   0040924c     Main.obj
+ 0003:00000254       ??_C@_0L@PNDN@NSIS?5Error?$AA@ 00409254     Main.obj
+ 0003:00000260       ??_C@_0ED@NJDP@Error?5writing?5temporary?5file?4?5Ma@ 00409260     Main.obj
+ 0003:000002c0       _ui_st_updateflag          004092c0     Ui.obj
+ 0003:000002c4       ?str2@?N@??ui_doinstall@@9@9 004092c4     Ui.obj
+ 0003:000002d0       ?str1@?N@??ui_doinstall@@9@9 004092d0     Ui.obj
+ 0003:000002e0       ??_C@_04NFOM@?4exe?$AA@    004092e0     Ui.obj
+ 0003:000002e8       ??_C@_04KHOB@open?$AA@     004092e8     Ui.obj
+ 0003:000002f0       ??_C@_0BE@ONFO@GetDiskFreeSpaceExA?$AA@ 004092f0     Ui.obj
+ 0003:00000304       ??_C@_0N@JGH@KERNEL32?4dll?$AA@ 00409304     Ui.obj
+ 0003:00000314       ??_C@_09ENPB@?$CFu?4?$CFu?$CFs?$CFs?$AA@ 00409314     Ui.obj
+ 0003:00000320       ??_C@_04IMLO@?2?$CK?4?$CK?$AA@ 00409320     util.obj
+ 0003:00000328       ??_C@_02DPLA@?6?$FL?$AA@   00409328     util.obj
+ 0003:0000032c       ??_C@_0L@KPPL@?$FLRename?$FN?$AN?6?$AA@ 0040932c     util.obj
+ 0003:00000338       ??_C@_0N@GIFI@?2wininit?4ini?$AA@ 00409338     util.obj
+ 0003:00000348       ??_C@_07KLEJ@?$CFs?$DN?$CFs?$AN?6?$AA@ 00409348     util.obj
+ 0003:00000350       ??_C@_0M@COPJ@MoveFileExA?$AA@ 00409350     util.obj
+ 0003:0000035c       ??_C@_02MECO@?$CFd?$AA@    0040935c     util.obj
+ 0003:00000360       ??_C@_0BB@NOLE@C?3?2Program?5Files?$AA@ 00409360     util.obj
+ 0003:00000374       ??_C@_0BA@BMDL@ProgramFilesDir?$AA@ 00409374     util.obj
+ 0003:00000384       ??_C@_0CK@NMAM@Software?2Microsoft?2Windows?2Curre@ 00409384     util.obj
+ 0003:000003b0       ??_C@_0P@PEKL@CommonFilesDir?$AA@ 004093b0     util.obj
+ 0003:000003c0       ??_C@_0CK@ENGG@?2Microsoft?2Internet?5Explorer?2Qui@ 004093c0     util.obj
+ 0003:000003ec       ??_C@_08MMIB@?$CK?$DP?$HM?$DM?$DO?1?$CC?3?$AA@ 004093ec     util.obj
+ 0003:00023a18       _ui_dlg_visible            0042ca18     Ui.obj
+ 0003:00023a1c       ??_C@_00A@?$AA@            0042ca1c     Ui.obj
+ 0003:00024fc0       _ps_tmpbuf                 0042dfc0     <common>
+ 0003:000257c0       ?wc@?1??ui_doinstall@@9@9  0042e7c0     <common>
+ 0003:000257e8       _insthwnd2                 0042e7e8     <common>
+ 0003:000257ec       _g_quit_flag               0042e7ec     <common>
+ 0003:000257f0       _insthwndbutton            0042e7f0     <common>
+ 0003:000257f4       _progress_bar_len          0042e7f4     <common>
+ 0003:000257f8       _m_curwnd                  0042e7f8     <common>
+ 0003:000257fc       _cur_langtable             0042e7fc     <common>
+ 0003:00025800       _dlg_offset                0042e800     <common>
+ 0003:00025804       _insthwnd                  0042e804     <common>
+ 0003:00025808       _g_hIcon                   0042e808     <common>
+ 0003:0002580c       _progress_bar_pos          0042e80c     <common>
+ 0003:00025820       _g_caption                 0042e820     <common>
+ 0003:00026020       _g_hInstance               0042f020     <common>
+ 0003:00026024       _g_hwnd                    0042f024     <common>
+ 0003:00026028       _g_header                  0042f028     <common>
+ 0003:0002602c       _g_filehdrsize             0042f02c     <common>
+ 0003:00026030       _g_flags                   0042f030     <common>
+ 0003:00026034       _g_is_uninstaller          0042f034     <common>
+ 0003:00026040       _g_blocks                  0042f040     <common>
+ 0003:00026080       _g_SectionHack             0042f080     <common>
+ 0003:000260a0       _g_exec_flags              0042f0a0     <common>
+ 0003:000260d0       _g_hres                    0042f0d0     <common>
+ 0004:00000000       _g_usrvars                 00430000     util.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+
+ 0001:00003651       _set_language@0            00404651 f   Ui.obj
+ 0001:00003bf7       _outernotify@4             00404bf7 f   Ui.obj
+ 0001:00003c1e       _SetDlgItemTextFromLang_@12 00404c1e f   Ui.obj
+ 0001:00003c40       _EnableNext@4              00404c40 f   Ui.obj
+ 0001:00003c53       _SetActiveCtl@4            00404c53 f   Ui.obj
+ 0001:00003c6a       _NotifyCurWnd@4            00404c6a f   Ui.obj
+ 0001:00003c85       __HandleStaticBkColor@12   00404c85 f   Ui.obj
+ 0001:00003d66       _LicenseProc@16            00404d66 f   Ui.obj
+ 0001:0000400e       _SetNextDef@0              0040500e f   Ui.obj
+ 0001:00004032       _UninstProc@16             00405032 f   Ui.obj
+ 0001:00004079       _DirProc@16                00405079 f   Ui.obj
+ 0001:0000434b       _BrowseCallbackProc@16     0040534b f   Ui.obj
+ 0001:000043b1       _SetSizeText@12            004053b1 f   Ui.obj
+ 0001:00004449       __sumsecsfield@4           00405449 f   Ui.obj
+ 0001:000044c2       _SelProc@16                004054c2 f   Ui.obj
+ 0001:00004ada       _newTreeWndProc@16         00405ada f   Ui.obj
+ 0001:00004c98       _install_thread@4          00405c98 f   Ui.obj
+ 0001:00004cfd       _InstProc@16               00405cfd f   Ui.obj
+ 0001:000012e4       _ExecuteEntry@4            004022e4 f   exec.obj
+ 0001:0000292c       _GetIntFromParm@4          0040392c f   exec.obj
+ 0001:00002949       _GetStringFromParm@4       00403949 f   exec.obj
+ 0001:00002989       _myRegDeleteKeyEx@12       00403989 f   exec.obj
+ 0001:00002a10       _GetRegRootKey@4           00403a10 f   exec.obj
+ 0001:00002a25       _myRegOpenKey@4            00403a25 f   exec.obj
+ 0001:0000102b       __RefreshSectionGroups@8   0040202b f   components.obj
+ 0001:00000a8f       _inflate_flush@4           00401a8f f   INFBLOCK.OBJ
+ 0001:00000af7       _huft_build@36             00401af7 f   INFBLOCK.OBJ
