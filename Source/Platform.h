@@ -867,4 +867,8 @@ typedef struct tagVS_FIXEDFILEINFO {
 #  pragma pack()
 #endif
 
+#ifndef SHGFP_TYPE_CURRENT
+  #define SHGFP_TYPE_CURRENT 0
+#endif
+
 #endif

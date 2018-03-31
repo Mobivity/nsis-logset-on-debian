@@ -371,12 +371,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
       {
         char *buf3=GetStringFromParm(-0x30);
         char *buf2=GetStringFromParm(-0x21);
-        mystrcpy(buf1,buf3);
-        if (mystrlen(buf3)+mystrlen(buf2) < NSIS_MAX_STRLEN-3)
-        {
-          mystrcat(buf1,"->");
-          mystrcat(buf1,buf2);
-        }
+        char *buf1=GetStringFromParm(0x13);
         log_printf2("Rename: %s",buf1);
         if (MoveFile(buf3,buf2))
         {
@@ -747,10 +742,10 @@ static int NSISCALL ExecuteEntry(entry *entry_)
     case EW_SENDMESSAGE:
       {
         int v;
-        int b3=(int)GetStringFromParm(0x33);
-        int b4=(int)GetStringFromParm(0x44);
-        if (!(parm5&1)) b3=myatoi((char*)b3);
-        if (!(parm5&2)) b4=myatoi((char*)b4);
+        int b3=GetIntFromParm(3);
+        int b4=GetIntFromParm(4);
+        if (parm5&1) b3=(int)GetStringFromParm(0x33);
+        if (parm5&2) b4=(int)GetStringFromParm(0x44);
 
         if (which == EW_SENDMESSAGE)
         {
@@ -847,7 +842,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         char *buf0=GetStringFromParm(0x00);
         char *buf3=GetStringFromParm(0x31);
         char *buf2=GetStringFromParm(0x22);
-        wsprintf(buf1,"%s %s",buf0,buf3);
+        char *buf1=GetStringFromParm(0x15);
         update_status_text_buf1(LANG_EXECSHELL);
         x=(int)ShellExecute(g_hwnd,buf0[0]?buf0:NULL,buf3,buf2[0]?buf2:NULL,state_output_directory,parm3);
         if (x < 33)
@@ -958,7 +953,6 @@ static int NSISCALL ExecuteEntry(entry *entry_)
     case EW_REGISTERDLL:
       {
         exec_error++;
-        SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
         if (SUCCEEDED(g_hres))
         {
           HANDLE h=NULL;
@@ -1015,7 +1009,6 @@ static int NSISCALL ExecuteEntry(entry *entry_)
           update_status_text_buf1(LANG_NOOLE);
           log_printf("Error registering DLL: Could not initialize OLE");
         }
-        SetErrorMode(0);
       }
     break;
 #endif
@@ -1057,9 +1050,9 @@ static int NSISCALL ExecuteEntry(entry *entry_)
           if (SUCCEEDED(hres))
           {
              static WCHAR wsz[1024];
-             wsz[0]=0;
-             MultiByteToWideChar(CP_ACP, 0, buf1, -1, wsz, 1024);
-             hres=ppf->lpVtbl->Save(ppf,(const WCHAR*)wsz,TRUE);
+             hres=E_FAIL;
+             if (MultiByteToWideChar(CP_ACP, 0, buf1, -1, wsz, 1024))
+               hres=ppf->lpVtbl->Save(ppf,(const WCHAR*)wsz,TRUE);
           }
           ppf->lpVtbl->Release(ppf);
         }
@@ -1085,6 +1078,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         SHFILEOPSTRUCT op;
         char *buf0=GetStringFromParm(0x00);
         char *buf1=GetStringFromParm(0x11);
+        char *buf2=GetStringFromParm(0x23); // LANG_COPYTO + buf1
         log_printf3("CopyFiles \"%s\"->\"%s\"",buf0,buf1);
 
         if (!file_exists(buf0))
@@ -1103,9 +1097,6 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         op.wFunc=FO_COPY;
         buf0[mystrlen(buf0)+1]=0;
         buf1[mystrlen(buf1)+1]=0;
-
-        GetNSISString(buf2,LANG_COPYTO);
-        mystrcat(buf2,buf1);
 
         op.pFrom=buf0;
         op.pTo=buf1;
@@ -1465,17 +1456,10 @@ static int NSISCALL ExecuteEntry(entry *entry_)
       {
         int ret=-666;
         HANDLE hFile;
-        char *buf0=GetStringFromParm(0x00);
+        char *buf1=GetStringFromParm(-0x10);
 
-        if (validpathspec(buf0))
-        {
-          mystrcpy(buf1,buf0);
-        }
-        else
-        {
-          mystrcat(addtrailingslash(mystrcpy(buf1,state_install_directory)),buf0);
-        }
-        validate_filename(buf1);
+        if (!validpathspec(buf1))
+          GetStringFromParm(-0x13);
 
         remove_ro_attr(buf1);
         hFile=myOpenFile(buf1,GENERIC_WRITE,CREATE_ALWAYS);

@@ -596,6 +596,9 @@ char ps_tmpbuf[NSIS_MAX_STRLEN*2];
 const char SYSREGKEY[]   = "Software\\Microsoft\\Windows\\CurrentVersion";
 const char QUICKLAUNCH[] = "\\Microsoft\\Internet Explorer\\Quick Launch";
 
+typedef HRESULT (__stdcall * PFNSHGETFOLDERPATHA)(HWND, int, HANDLE, DWORD, LPSTR);
+extern void *g_SHGetFolderPath;
+
 // Based on Dave Laundon's simplified process_string
 char * NSISCALL GetNSISString(char *outbuf, int strtab)
 {
@@ -651,15 +654,22 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
 
         while (x--)
         {
-          if (!SHGetSpecialFolderLocation(g_hwnd, fldrs[x], &idl))
+          if (g_SHGetFolderPath)
           {
-            BOOL res = SHGetPathFromIDList(idl, out);
-            CoTaskMemFree(idl);
-            if (res)
+            PFNSHGETFOLDERPATHA SHGetFolderPathFunc = (PFNSHGETFOLDERPATHA) g_SHGetFolderPath;
+            if (!SHGetFolderPathFunc(g_hwnd, fldrs[x], NULL, SHGFP_TYPE_CURRENT, out))
             {
               break;
             }
           }
+            
+          if (!SHGetSpecialFolderLocation(g_hwnd, fldrs[x], &idl))
+          {
+            BOOL res = SHGetPathFromIDList(idl, out);
+            CoTaskMemFree(idl);
+            if (res) break;
+          }
+
           *out=0;
         }
 
@@ -672,7 +682,6 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
             mystrcat(out, QUICKLAUNCH);
           }
         }
-
         validate_filename(out);
       }
       else if (nVarIdx == NS_VAR_CODE)
@@ -873,10 +882,7 @@ WIN32_FIND_DATA * NSISCALL file_exists(char *buf)
 {
   HANDLE h;
   static WIN32_FIND_DATA fd;
-  // Avoid a "There is no disk in the drive" error box on empty removable drives
-  SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
   h = FindFirstFile(buf,&fd);
-  SetErrorMode(0);
   if (h != INVALID_HANDLE_VALUE)
   {
     FindClose(h);
@@ -899,7 +905,8 @@ struct MGA_FUNC MGA_FUNCS[] = {
   {"ADVAPI32", "LookupPrivilegeValueA"},
   {"ADVAPI32", "AdjustTokenPrivileges"},
   {"KERNEL32", "GetUserDefaultUILanguage"},
-  {"SHLWAPI",  "SHAutoComplete"}
+  {"SHLWAPI",  "SHAutoComplete"},
+  {"SHFOLDER", "SHGetFolderPathA"}
 };
 
 void * NSISCALL myGetProcAddress(const enum myGetProcAddressFunctions func)

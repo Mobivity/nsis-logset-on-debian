@@ -26,6 +26,52 @@ int my_atoi(char *s)
   return (int)v;
 }
 
+__int64 myatoi64(char *s)
+{
+  __int64 v=0;
+  int sign=0;
+
+  if (*s == '-')
+    sign++;
+  else
+    s--;
+
+  for (;;)
+  {
+    int c=*(++s) - '0';
+    if (c < 0 || c > 9) break;
+    v*=10;
+    v+=c;
+  }
+
+  if (sign)
+    v = -v;
+
+  return v;
+}
+
+void myitoa64(__int64 i, char *buffer)
+{
+    char buf[128], *b = buf;
+
+    if (i < 0)
+    {
+        *(buffer++) = '-';
+        i = -i;
+    }
+    if (i == 0) *(buffer++) = '0';
+    else 
+    {
+        while (i > 0) 
+        {
+            *(b++) = '0' + ((char) (i%10));
+            i /= 10;
+        }
+        while (b > buf) *(buffer++) = *(--b);
+    }
+    *buffer = 0;
+}
+
 void mini_memset(void *o,char i,int l)
 {
   char *oo=(char*)o;

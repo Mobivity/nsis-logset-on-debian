@@ -1,3 +1,197 @@
+2007-07-14  kichik
+
+	* Menu/images/header.gif: 2.29
+
+2007-07-14  kichik
+
+	* Docs/src/history.but: 2.29
+
+2007-07-14  kichik
+
+	* Source/exehead/exec.c: let GetStringFromParm call
+	validate_filename
+
+2007-07-14  kichik
+
+	* Contrib/NSISdl/util.cpp: simplified myatoi64()
+
+2007-07-14  kichik
+
+	* Examples/makensis.nsi, SConstruct,
+	Contrib/nsDialogs/InstallOptions.nsi, Contrib/nsDialogs/SConscript,
+	Contrib/nsDialogs/browse.c, Contrib/nsDialogs/defs.h,
+	Contrib/nsDialogs/dialog.rc, Contrib/nsDialogs/example.nsi,
+	Contrib/nsDialogs/input.c, Contrib/nsDialogs/input.h,
+	Contrib/nsDialogs/nsDialogs.c, Contrib/nsDialogs/nsDialogs.nsh,
+	Contrib/nsDialogs/nsis.c, Contrib/nsDialogs/nsis.h,
+	Contrib/nsDialogs/welcome.nsi: nsDialogs: the next InstallOptions
+
+2007-07-12  kichik
+
+	* Source/exehead/Main.c, Source/exehead/util.c: load shfolder.dll
+	before the script is executed to avoid any usage effects
+
+2007-07-12  kichik
+
+	* Source/Platform.h, Source/exehead/util.c: fixed bug #1752328 -
+	PFNSHGETFOLDERPATHA is stub only and very Windows, move from
+	Platform.h to util.c
+
+2007-07-11  joostverburg
+
+	* Source/Platform.h, Source/exehead/util.c: moved definition to
+	Platform.h and removed useless function calls
+
+2007-07-11  joostverburg
+
+	* Source/exehead/util.c, Source/exehead/util.h: When available, use
+	shfolder.dll to get special folder locations. This allows folders
+	like the application data folder for all users to be used on
+	Windows 95/98 when Internet Explorer 5 is installed.
+
+2007-07-07  kichik
+
+	* Source/Tests/mmap.cpp: test content as well
+
+2007-07-06  kichik
+
+	* Source/exehead/exec.c: and if IPeristFile::Save isn't called,
+	fail
+
+2007-07-06  kichik
+
+	* Source/exehead/exec.c: don't call IPeristFile::Save if
+	MultiByteToWideChar fails
+
+2007-07-06  kichik
+
+	* Source/script.cpp, Source/exehead/exec.c: size optimization - use
+	GetStringFromParm instead of wsprintf
+
+2007-07-06  kichik
+
+	* Source/exehead/exec.c: the more common case for SendMessage is
+	ints, so get that first
+
+2007-07-06  kichik
+
+	* Docs/src/usefulinfos.but: way simpler REG_MULTI_SZ reader with
+	pointers
+
+2007-07-05  kichik
+
+	* Source/script.cpp, Source/exehead/exec.c: size optimization - use
+	GetNSISString and GetStringFromParm instead of mystrcat
+
+2007-07-05  kichik
+
+	* Contrib/Language files/SConscript, Contrib/Language
+	files/Spanish.nlf, Contrib/Language files/SpanishInternational.nlf,
+	Contrib/Modern UI/SConscript, Contrib/Modern UI/Language
+	files/Spanish.nsh, Contrib/Modern UI/Language
+	files/SpanishInternational.nsh, Docs/src/credits.but,
+	Examples/Modern UI/MultiLanguage.nsi: International Spanish and a
+	few Spanish fixes by niwrad
+
+2007-07-04  kichik
+
+	* Docs/src/compilerflags.but: better explain what compiler flags
+	mean and how flow control instructions should be used around them
+
+2007-06-28  kichik
+
+	* Examples/Modern UI/MultiLanguage.nsi: Catalan isn't distributed
+	with the installer anymore
+
+2007-06-27  kichik
+
+	* Source/exehead/Ui.c: some more information on the EN_MSGFILTER
+	hack
+
+2007-06-27  joostverburg
+
+	* Docs/src/tutorial.but: corrected LogicLib example
+
+2007-06-27  kichik
+
+	* SCons/Config/gnu, SCons/Config/hpc++, Source/makenssi.cpp:
+	changed __ALLOW_UNALIGNED_DATA_ACCESS__ to
+	NSIS_HPUX_ALLOW_UNALIGNED_DATA_ACCESS
+
+2007-06-27  kichik
+
+	* SCons/Config/gnu, SConstruct, SCons/Config/hpc++,
+	Source/Plugins.cpp, Source/ResourceEditor.cpp, Source/makenssi.cpp:
+	applied patch #1714416 - patch to build on hpux
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/httpget.cpp: cl still complained about about not
+	all control paths returning a value
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/httpget.cpp: mingw doesn't like __int64 left alone
+	(probably #define'd instead typedef'ed)
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/httpget.cpp: nothing was returned for cl=0
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/nsisdl.cpp: missing division to show kb
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/httpget.cpp, Contrib/NSISdl/httpget.h: fixed bug
+	#1744091 - NSISdl shows negative values with buggy apache
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/ReadMe.txt, Contrib/NSISdl/SConscript,
+	Contrib/NSISdl/httpget.h, Contrib/NSISdl/nsisdl.cpp,
+	Contrib/NSISdl/util.cpp, Contrib/NSISdl/util.h: applied patch
+	#1723131 - NSISdl doesn't handle files over 2GB and patch #1656076
+	- make NSISdl more "translator-friendly"
+
+2007-06-27  kichik
+
+	* Contrib/NSISdl/ReadMe.txt: there should be a space in the
+	remaining translation string
+
+2007-06-26  kichik
+
+	* Contrib/Banner/Banner.c: fixed bug #1743801 - Banner can hang
+	when called form custom page
+
+2007-06-26  kichik
+
+	* Source/exehead/Main.c, Source/exehead/exec.c,
+	Source/exehead/util.c: fixed bug #1741061 - use SetErrorMode to
+	disable error messages for the entire installer and not for
+	specific points as it always knows best what messages to display
+
+2007-06-26  kichik
+
+	* Include/FileFunc.nsh: applied patch #1742562 to fix bug #1742255
+	- GetFileVersion shows incorrect version for .NET Framework 2
+
+2007-06-26  kichik
+
+	* Include/Sections.nsh: fixed bug #1742793 - ReverseSection macro
+	in Sections.nsh doesn't work
+
+2007-06-13  kichik
+
+	* Contrib/ExDLL/exdll.h: use A functions intead of T
+
+2007-06-10  pabs3
+
+	* Contrib/System/Source/Buffers.c, Contrib/System/Source/Plugin.c,
+	Contrib/System/Source/stdafx.h: Stop some compiler warnings due to
+	lack of trailing newlines.
+
 2007-06-08  kichik
 
 	* Menu/images/header.gif: 2.28
