@@ -1,10 +1,12 @@
+#ifndef ___SYSTEM__H___
+#define ___SYSTEM__H___
+
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the SYSTEM_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project
 // that uses this DLL. This way any other project whose source files include this file see 
 // SYSTEM_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#pragma once
 
 #ifdef SYSTEM_EXPORTS
 #define SYSTEM_API __declspec(dllexport)
@@ -71,7 +73,7 @@ typedef struct
 // Our single proc (Since the user will free proc with GlobalFree, 
 // I've declared all variables as statics)
 typedef struct tag_SystemProc SystemProc;
-typedef struct tag_SystemProc
+struct tag_SystemProc
 {
 	int ProcType;
     int ProcResult;
@@ -89,7 +91,7 @@ typedef struct tag_SystemProc
     int ArgsSize;
     // Clone of current element (used for multi-level callbacks)
     SystemProc *Clone;
-} SystemProc;
+};
 
 extern const int ParamSizeByType[];   // Size of every parameter type (*4 bytes)
 
@@ -103,3 +105,5 @@ extern SystemProc *CallProc(SystemProc *proc);
 extern SystemProc *CallBack(SystemProc *proc);
 extern SystemProc *RealCallBack();
 extern void CallStruct(SystemProc *proc);
+
+#endif

@@ -64,7 +64,7 @@ The windows desktop directory (usually C:\\windows\\desktop but detected at runt
 
 \e{$EXEDIR}
 
-The location of the installer executable. (technically you can modify this variable, but it is probably not a good idea)
+The location of the installer executable (technically you can modify this variable, but it is probably not a good idea).
 
 \e{$\{NSISDIR\}}
 
@@ -72,15 +72,15 @@ A symbol that contains the path where NSIS is installed. Detected at compile tim
 
 \e{$WINDIR}
 
-The windows directory (usually C:\\windows or C:\\winnt but detected at runtime)
+The windows directory (usually C:\\windows or C:\\winnt but detected at runtime).
 
 \e{$SYSDIR}
 
-The windows system directory (usually C:\\windows\\system or C:\\winnt\\system32 but detected at runtime)
+The windows system directory (usually C:\\windows\\system or C:\\winnt\\system32 but detected at runtime).
 
 \e{$TEMP}
 
-The system temporary directory (usually C:\\windows\\temp but detected at runtime)
+The system temporary directory (usually C:\\windows\\temp but detected at runtime).
 
 \e{$STARTMENU}
 
@@ -156,6 +156,12 @@ The application data directory. Detection of the current user path requires Inte
 
 This constant is not available on Windows 95 with Internet Explorer 4 and Active Desktop not installed.
 
+\e{$LOCALAPPDATA}
+
+The local (nonroaming) application data directory.
+
+This constant is available on Windows 2000 and above.
+
 \e{$PRINTHOOD}
 
 The directory that contains link objects that may exist in the Printers folder.
@@ -216,7 +222,7 @@ The decimal HWND of the parent window.
 
 \e{$PLUGINSDIR}
 
-The path to a temporary folder created upon the first usage of a plugin or a call to \R{initpluginsdir}{InitPluginsDir}. This folder is automatically deleted when the installer exits. This makes this folder the ideal folder to hold INI files for \L{../Contrib/InstallOptions/Readme.html}{InstallOptions}, bitmaps for the splash plugin, or any other file that a plugin needs to work.
+The path to a temporary folder created upon the first usage of a plugin or a call to \R{initpluginsdir}{InitPluginsDir}. This folder is automatically deleted when the installer exits. This makes this folder the ideal folder to hold INI files for \L{../Docs/InstallOptions/Readme.html}{InstallOptions}, bitmaps for the splash plugin, or any other file that a plugin needs to work.
 
 \S1{varstrings} Constants Used in Strings
 

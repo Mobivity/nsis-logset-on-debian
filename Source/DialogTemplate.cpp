@@ -22,6 +22,7 @@
 
 #include "DialogTemplate.h"
 #include "util.h"
+#include <cassert> // for assert(3)
 #ifndef _WIN32
 #  include <stdio.h>
 #  include <stdlib.h>
@@ -36,7 +37,7 @@
 #define ALIGN(dwToAlign, dwAlignOn) dwToAlign = (dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn
 
 // Reads a variany length array from seeker into readInto and advances seeker
-void ReadVarLenArr(BYTE* &seeker, char* &readInto, unsigned int uCodePage) {
+void ReadVarLenArr(LPBYTE &seeker, char* &readInto, unsigned int uCodePage) {
   WORD* arr = (WORD*)seeker;
   switch (arr[0]) {
   case 0x0000:
@@ -63,7 +64,10 @@ void ReadVarLenArr(BYTE* &seeker, char* &readInto, unsigned int uCodePage) {
       {
         throw runtime_error("ReadVarLenArr - Unicode conversion failed.");
       }
-      seeker += iStrLen * sizeof(WCHAR);
+
+      PWCHAR wseeker = PWCHAR(seeker);
+      while (*wseeker++);
+      seeker = LPBYTE(wseeker);
     }
     break;
   }
@@ -89,7 +93,7 @@ void ReadVarLenArr(BYTE* &seeker, char* &readInto, unsigned int uCodePage) {
     seeker += sizeof(WORD);
 
 // A macro that adds the size of x (which can be a string a number, or nothing) to dwSize
-#define AddStringOrIdSize(x) dwSize += x ? (IS_INTRESOURCE(x) ? sizeof(DWORD) : (strlen(x)+1)*sizeof(WCHAR)) : sizeof(WORD)
+#define AddStringOrIdSize(x) dwSize += x ? (IS_INTRESOURCE(x) ? sizeof(DWORD) : MultiByteToWideChar(m_uCodePage, 0, x, -1, 0, 0) * sizeof(WCHAR)) : sizeof(WORD)
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -98,8 +102,13 @@ void ReadVarLenArr(BYTE* &seeker, char* &readInto, unsigned int uCodePage) {
 CDialogTemplate::CDialogTemplate(BYTE* pbData, unsigned int uCodePage) {
   m_uCodePage = uCodePage;
 
+  m_dwHelpId = 0;
   m_szClass = 0;
   m_szFont = 0;
+  m_sFontSize = 0;
+  m_sFontWeight = 0;
+  m_bItalic = 0;
+  m_bCharset = 0;
   m_szMenu = 0;
   m_szTitle = 0;
 
@@ -184,6 +193,7 @@ CDialogTemplate::CDialogTemplate(BYTE* pbData, unsigned int uCodePage) {
     else {
       DLGITEMTEMPLATE* rawItem = (DLGITEMTEMPLATE*)seeker;
 
+      item->dwHelpId = 0;
       item->dwStyle = rawItem->style;
       item->dwExtStyle = rawItem->dwExtendedStyle;
       item->sX = rawItem->x;
@@ -287,6 +297,7 @@ void CDialogTemplate::SetFont(char* szFaceName, WORD wFontSize) {
     // MS Shell Dlg
     m_dwStyle |= DS_SHELLFONT;
   }
+  m_bCharset = DEFAULT_CHARSET;
   m_dwStyle |= DS_SETFONT;
   if (m_szFont) delete [] m_szFont;
   m_szFont = new char[strlen(szFaceName)+1];
@@ -437,7 +448,7 @@ void CDialogTemplate::ConvertToRTL() {
     bool addExStyle = false;
 
     // Button
-    if (int(m_vItems[i]->szClass) == 0x80) {
+    if (long(m_vItems[i]->szClass) == 0x80) {
       m_vItems[i]->dwStyle ^= BS_LEFTTEXT;
       m_vItems[i]->dwStyle ^= BS_RIGHT;
       m_vItems[i]->dwStyle ^= BS_LEFT;
@@ -451,13 +462,13 @@ void CDialogTemplate::ConvertToRTL() {
       }
     }
     // Edit
-    else if (int(m_vItems[i]->szClass) == 0x81) {
+    else if (long(m_vItems[i]->szClass) == 0x81) {
       if ((m_vItems[i]->dwStyle & ES_CENTER) == 0) {
         m_vItems[i]->dwStyle ^= ES_RIGHT;
       }
     }
     // Static
-    else if (int(m_vItems[i]->szClass) == 0x82) {
+    else if (long(m_vItems[i]->szClass) == 0x82) {
       if ((m_vItems[i]->dwStyle & SS_TYPEMASK) == SS_LEFT || (m_vItems[i]->dwStyle & SS_TYPEMASK) == SS_LEFTNOWORDWRAP)
       {
         m_vItems[i]->dwStyle &= ~SS_TYPEMASK;
@@ -603,6 +614,8 @@ BYTE* CDialogTemplate::Save(DWORD& dwSize) {
       seeker += m_vItems[i]->wCreateDataSize;
     }
   }
+
+  assert(seeker - pbDlg == dwSize);
 
   // DONE!
   return pbDlg;

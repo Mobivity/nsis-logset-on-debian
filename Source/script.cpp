@@ -4,7 +4,6 @@
 #include "tokens.h"
 #include "build.h"
 #include "util.h"
-#include "exedata.h"
 #include "ResourceEditor.h"
 #include "DialogTemplate.h"
 #include "lang.h"
@@ -12,6 +11,8 @@
 #include "exehead/resource.h"
 #include <cassert> // for assert(3)
 #include <time.h>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -1421,7 +1422,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       SCRIPT_MSG("Icon: \"%s\"\n",line.gettoken_str(1));
       try {
         init_res_editor();
-        if (replace_icon(res_editor, IDI_ICON2, line.gettoken_str(1))) {
+        if (replace_icon(res_editor, IDI_ICON2, line.gettoken_str(1)) < 0) {
           ERROR_MSG("Error: File doesn't exist or is an invalid icon file\n");
           return PS_ERROR;
         }
@@ -1949,7 +1950,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           DWORD dwSize;
           dlg = dt.Save(dwSize);
           res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INSTFILES), NSIS_DEFAULT_LANG, dlg, dwSize);
-          res_editor->FreeResource(dlg);
+          delete [] dlg;
         }
         catch (exception& err) {
           ERROR_MSG("Error setting smooth progress bar: %s\n", err.what());
@@ -2190,7 +2191,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         if (k == -1) PRINTHELP()
         SCRIPT_MSG("XPStyle: %s\n", line.gettoken_str(1));
         init_res_editor();
-        const char *szXPManifest = k ? 0 : "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\"><assemblyIdentity version=\"1.0.0.0\" processorArchitecture=\"X86\" name=\"Nullsoft.NSIS.exehead\" type=\"win32\"/><description>Nullsoft Install System v2.06</description><dependency><dependentAssembly><assemblyIdentity type=\"win32\" name=\"Microsoft.Windows.Common-Controls\" version=\"6.0.0.0\" processorArchitecture=\"X86\" publicKeyToken=\"6595b64144ccf1df\" language=\"*\" /></dependentAssembly></dependency></assembly>";
+        const char *szXPManifest = k ? 0 : "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\"><assemblyIdentity version=\"1.0.0.0\" processorArchitecture=\"X86\" name=\"Nullsoft.NSIS.exehead\" type=\"win32\"/><description>Nullsoft Install System " CONST_STR(NSIS_VERSION) "</description><dependency><dependentAssembly><assemblyIdentity type=\"win32\" name=\"Microsoft.Windows.Common-Controls\" version=\"6.0.0.0\" processorArchitecture=\"X86\" publicKeyToken=\"6595b64144ccf1df\" language=\"*\" /></dependentAssembly></dependency></assembly>";
         res_editor->UpdateResource(MAKEINTRESOURCE(24), MAKEINTRESOURCE(1), NSIS_DEFAULT_LANG, (unsigned char*)szXPManifest, k ? 0 : strlen(szXPManifest));
       }
       catch (exception& err) {
@@ -2342,8 +2343,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         init_res_editor();
         BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(IDD_INST), NSIS_DEFAULT_LANG);
 
-        CDialogTemplate dt(dlg,uDefCodePage);
-        delete [] dlg;
+        CDialogTemplate dt(dlg, uDefCodePage);
+
+        res_editor->FreeResource(dlg);
 
         DialogItemTemplate brandingCtl = {0,};
 
@@ -2389,7 +2391,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
         res_editor->UpdateResource(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, dlg, dwDlgSize);
 
-        res_editor->FreeResource(dlg);
+        delete [] dlg;
 
         dt.DlgUnitsToPixels(brandingCtl.sWidth, brandingCtl.sHeight);
         SCRIPT_MSG("AddBrandingImage: %s %ux%u\n", line.gettoken_str(1), brandingCtl.sWidth, brandingCtl.sHeight);
@@ -2444,60 +2446,66 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         ERROR_MSG("Error: can't change compressor after data already got compressed or header already changed!\n");
         return PS_ERROR;
       }
-      if (!build_compressor_final)
+
+      if (build_compressor_final)
       {
-        int a = 1;
-        if (!strcmpi(line.gettoken_str(1),"/FINAL"))
+        warning_fl("SetCompressor ignored due to previous call with the /FINAL switch");
+        return PS_OK;
+      }
+
+      int a = 1;
+
+      build_compress_whole = false;
+
+      while (line.gettoken_str(a)[0] == '/')
+      {
+        if (!strcmpi(line.gettoken_str(a),"/FINAL"))
         {
           build_compressor_final = true;
           a++;
         }
-        else if (line.getnumtokens() == 3)
+        else if (!strcmpi(line.gettoken_str(a),"/SOLID"))
         {
-          ERROR_MSG("%s expects 2 parameters, got 3.\n",line.gettoken_str(0));
-          PRINTHELP();
+          build_compress_whole = true;
+          a++;
         }
-        int k=line.gettoken_enum(a,"zlib\0bzip2\0lzma\0");
-        switch (k) {
-          case 0: // JF> should handle the state of going from bzip2 back to zlib:
-            compressor = &zlib_compressor;
-            update_exehead(zlib_exehead, zlib_exehead_size);
-#ifdef NSIS_ZLIB_COMPRESS_WHOLE
-            build_compress_whole=true;
-#else
-            build_compress_whole=false;
-#endif
-          break;
-
-          case 1:
-            compressor=&bzip2_compressor;
-            update_exehead(bzip2_exehead, bzip2_exehead_size);
-#ifdef NSIS_BZIP2_COMPRESS_WHOLE
-            build_compress_whole=true;
-#else
-            build_compress_whole=false;
-#endif
-            break;
-
-          case 2:
-            compressor = &lzma_compressor;
-            update_exehead(lzma_exehead, lzma_exehead_size);
-#ifdef NSIS_LZMA_COMPRESS_WHOLE
-            build_compress_whole=true;
-#else
-            build_compress_whole=false;
-#endif
-          break;
-
-          default:
-            PRINTHELP();
-        }
-        SCRIPT_MSG("SetCompressor: %s%s\n", build_compressor_final? "/FINAL " : "", line.gettoken_str(a));
+        else PRINTHELP();
       }
-      else
+
+      if (a != line.getnumtokens() - 1)
       {
-        warning_fl("SetCompressor ignored due to previous call with the /FINAL switch");
+        ERROR_MSG("%s expects %d parameters, got %d.\n", line.gettoken_str(0), a + 1, line.getnumtokens());
+        PRINTHELP();
       }
+
+      int k=line.gettoken_enum(a, "zlib\0bzip2\0lzma\0");
+      switch (k) {
+        case 0:
+          compressor = &zlib_compressor;
+        break;
+
+        case 1:
+          compressor = &bzip2_compressor;
+          break;
+
+        case 2:
+          compressor = &lzma_compressor;
+        break;
+
+        default:
+          PRINTHELP();
+      }
+
+      string compressor_name = line.gettoken_str(a);
+      transform(compressor_name.begin(), compressor_name.end(), compressor_name.begin(), tolower);
+
+      if (set_compressor(compressor_name, build_compress_whole) != PS_OK)
+      {
+        SCRIPT_MSG("SetCompressor: error loading stub for \"%s\" compressor.\n", compressor_name.c_str());
+        return PS_ERROR;
+      }
+
+      SCRIPT_MSG("SetCompressor: %s%s%s\n", build_compressor_final ? "/FINAL " : "", build_compress_whole ? "/SOLID " : "", line.gettoken_str(a));
     }
     return PS_OK;
 #else//NSIS_CONFIG_COMPRESSION_SUPPORT
@@ -2836,7 +2844,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       SCRIPT_MSG("UninstallIcon: \"%s\"\n",line.gettoken_str(1));
       try {
         free(m_unicon_data);
-        m_unicon_data = generate_uninstall_icon_data(line.gettoken_str(1));
+        m_unicon_data = generate_uninstall_icon_data(line.gettoken_str(1), m_unicon_size);
         if (!m_unicon_data) {
           ERROR_MSG("Error: File doesn't exist or is an invalid icon file\n");
           return PS_ERROR;
@@ -3180,11 +3188,10 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
           if (trim) {
             char str[512];
-            extern const char *NSIS_VERSION;
             if (line.getnumtokens()==a+1 && line.gettoken_str(a)[0])
               strcpy(str, line.gettoken_str(a));
             else
-              wsprintf(str, "Nullsoft Install System %s", NSIS_VERSION);
+              wsprintf(str, "Nullsoft Install System %s", CONST_STR(NSIS_VERSION));
 
             switch (trim) {
               case 1: td.LTrimToString(IDC_VERSTR, str, 4); break;
@@ -3313,7 +3320,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_CALL:
       if (!line.gettoken_str(1)[0] || (line.gettoken_str(1)[0]==':' && !line.gettoken_str(1)[1] )) PRINTHELP()
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
-      if (uninstall_mode && strnicmp(line.gettoken_str(1),"un.",3) && (GetUserVarIndex(line,1) < 0))
+      if (uninstall_mode && strnicmp(line.gettoken_str(1),"un.",3)
+          && (GetUserVarIndex(line,1) < 0) && line.gettoken_str(1)[0]!=':')
       {
         ERROR_MSG("Call must be used with function names starting with \"un.\" in the uninstall section.\n");
         PRINTHELP()
@@ -4039,6 +4047,12 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           char *on=line.gettoken_str(a)+7;
           a++;
           if (!*on||line.getnumtokens()!=a+1||strstr(on,"*") || strstr(on,"?")) PRINTHELP()
+
+          if (on[0]=='"')
+          {
+            ERROR_MSG("%sFile: output name must not begin with a quote, use \"/oname=name with spaces\".\n",(which_token == TOK_FILE)?"":"Reserve",line.gettoken_str(a));
+            PRINTHELP();
+          }
 
           int tf=0;
 #ifdef _WIN32

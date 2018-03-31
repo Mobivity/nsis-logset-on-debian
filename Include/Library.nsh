@@ -212,6 +212,7 @@ Example:
     StrCmp ${shared} "" 0 installlib.noshareddllincrease_${INSTALLLIB_UNIQUE}
 
       ReadRegDword $R0 HKLM Software\Microsoft\Windows\CurrentVersion\SharedDLLs $R4
+      ClearErrors
       IntOp $R0 $R0 + 1
       WriteRegDWORD HKLM Software\Microsoft\Windows\CurrentVersion\SharedDLLs $R4 $R0
 
@@ -245,8 +246,8 @@ Example:
   ;------------------------
   ;Get version information
 
-  !execute '"${NSISDIR}\Contrib\Library\LibraryLocal\LibraryLocal.exe" D ${LOCALFILE}'
-  !include "${NSISDIR}\Contrib\Library\LibraryLocal\LibraryLocal.nsh"
+  !execute '"${NSISDIR}\Bin\LibraryLocal.exe" D ${LOCALFILE}'
+  !include "${NSISDIR}\Bin\LibraryLocal.nsh"
 
   !ifdef LIBRARY_VERSION_FILENOTFOUND
     !error "InstallLib: The library ${LOCALFILE} could not be found."
@@ -273,8 +274,8 @@ Example:
 
     !else
 
-      !execute '"${NSISDIR}\Contrib\LIBRARY\LIBRARYLocal\LibraryLocal.exe" T ${LOCALFILE}'
-      !include "${NSISDIR}\Contrib\LIBRARY\LIBRARYLocal\LibraryLocal.nsh"
+      !execute '"${NSISDIR}\Bin\LibraryLocal.exe" T ${LOCALFILE}'
+      !include "${NSISDIR}\Bin\LibraryLocal.nsh"
 
       !ifdef LIBRARY_VERSION_FILENOTFOUND
         !error "InstallLib: The library ${LOCALFILE} could not be found."
@@ -302,8 +303,8 @@ Example:
 
     !ifdef INSTALLLIB_LIBTYPE_TLB | INSTALLLIB_LIBTYPE_REGDLLTLB
 
-      !execute '"${NSISDIR}\Contrib\LIBRARY\LIBRARYLocal\LibraryLocal.exe" T ${LOCALFILE}'
-      !include "${NSISDIR}\Contrib\LIBRARY\LIBRARYLocal\LibraryLocal.nsh"
+      !execute '"${NSISDIR}\Bin\LibraryLocal.exe" T ${LOCALFILE}'
+      !include "${NSISDIR}\Bin\LibraryLocal.nsh"
 
     !endif
 
@@ -406,7 +407,7 @@ Example:
       ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "NSIS.Library.RegTool"
       IfFileExists $R0 installlib.rebootreg_${INSTALLLIB_UNIQUE}
 
-        File /oname=$R5\NSIS.Library.RegTool.exe "${NSISDIR}\Contrib\Library\RegTool\RegTool.bin"
+        File /oname=$R5\NSIS.Library.RegTool.exe "${NSISDIR}\Bin\RegTool.bin"
         WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" \
           "NSIS.Library.RegTool" '"$R5\NSIS.Library.RegTool.exe"'
 

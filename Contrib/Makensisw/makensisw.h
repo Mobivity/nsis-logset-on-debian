@@ -22,6 +22,8 @@
 #ifndef MAKENSIS_H
 #define MAKENSIS_H
 
+#define _WIN32_IE 0x0400
+#include <windows.h>
 #include <commctrl.h>
 #include "utils.h"
 #define _RICHEDIT_VER 0x0200
@@ -31,7 +33,8 @@
 // Defines
 #define NSIS_URL     "http://nsis.sourceforge.net/"
 #define NSIS_FOR     "http://forums.winamp.com/forumdisplay.php?forumid=65"
-#define NSIS_UPDATE  "\\Bin\\NSISUpdate.exe"
+#define NSIS_UPDATE  "http://nsis.sourceforge.net/update.php?version="
+#define NSIS_DL_URL  "http://nsis.sourceforge.net/download/"
 #define USAGE        "Usage:\r\n\r\n - File | Load Script...\r\n - Drag the .nsi file into this window\r\n - Right click the .nsi file and choose \"Compile NSIS Script\""
 #define COPYRIGHT    "Copyright © 2002 Robert Rainwater"
 #define CONTRIB      "Fritz Elfert, Justin Frankel, Amir Szekely, Sunil Kamath, Joost Verburg"
@@ -83,39 +86,57 @@ enum {
 typedef enum {
   COMPRESSOR_SCRIPT,
   COMPRESSOR_ZLIB,
+  COMPRESSOR_ZLIB_SOLID,
   COMPRESSOR_BZIP2,
+  COMPRESSOR_BZIP2_SOLID,
   COMPRESSOR_LZMA,
+  COMPRESSOR_LZMA_SOLID,
   COMPRESSOR_BEST,
 } NCOMPRESSOR;
 
 #ifdef MAKENSISW_CPP
 char *compressor_names[] = {"",
                             "zlib",
+                            "/SOLID zlib",
                             "bzip2",
+                            "/SOLID bzip2",
                             "lzma",
+                            "/SOLID lzma",
                             "Best"};
 char *compressor_display_names[] = {"Defined in Script/Compiler Default",
                             "ZLIB",
+                            "ZLIB (solid)",
                             "BZIP2",
+                            "BZIP2 (solid)",
                             "LZMA",
+                            "LZMA (solid)",
                             "Best Compressor"};
 WORD compressor_commands[] = {IDM_SCRIPT,
                               IDM_ZLIB,
+                              IDM_ZLIB_SOLID,
                               IDM_BZIP2,
+                              IDM_BZIP2_SOLID,
                               IDM_LZMA,
+                              IDM_LZMA_SOLID,
                               IDM_BEST};
 #endif
 
 #ifdef TOOLBAR_CPP
-int compressor_bitmaps[] = {IDB_COMPRESSOR_SCRIPT, 
-                            IDB_COMPRESSOR_ZLIB, 
-                            IDB_COMPRESSOR_BZIP2, 
-                            IDB_COMPRESSOR_LZMA, 
+int compressor_bitmaps[] = {IDB_COMPRESSOR_SCRIPT,
+                            IDB_COMPRESSOR_ZLIB,
+                            IDB_COMPRESSOR_ZLIB,
+                            IDB_COMPRESSOR_BZIP2,
+                            IDB_COMPRESSOR_BZIP2,
+                            IDB_COMPRESSOR_LZMA,
+                            IDB_COMPRESSOR_LZMA,
                             IDB_COMPRESSOR_BEST};
-int compressor_strings[] = {IDS_SCRIPT, 
-                            IDS_ZLIB, 
-                            IDS_BZIP2, 
-                            IDS_LZMA, 
+int compressor_strings[] = {IDS_SCRIPT,
+                            IDS_ZLIB,
+                            IDS_ZLIB_SOLID,
+                            IDS_BZIP2,
+                            IDS_BZIP2_SOLID,
+                            IDS_LZMA,
+                            IDS_LZMA_SOLID,
                             IDS_BEST};
 #endif
 
@@ -172,6 +193,8 @@ typedef struct NSISScriptData {
   // Added by Darren Owen (DrO) on 1/10/2003
   int recompile_test;
 } NSCRIPTDATA;
+
+extern NSCRIPTDATA g_sdata;
 
 typedef struct ResizeData {
   RECT resizeRect;

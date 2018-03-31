@@ -1,5 +1,3 @@
-const char *NSIS_VERSION="v2.06";
-
 /* 
 
   Nullsoft Scriptable Install System (NSIS)
@@ -45,7 +43,6 @@ const char *NSIS_VERSION="v2.06";
 
 #include "build.h"
 #include "util.h"
-#include "exedata.h"
 
 using namespace std;
 
@@ -96,11 +93,20 @@ int main(int argc, char **argv)
   int in_files=0;
 #endif
 
-  build.setdirs(argv[0]);
+  try
+  {
+  	build.initialize(argv[0]);
+  }
+  catch (exception& err)
+  {
+    fprintf(g_output, "Error initalizing CEXEBuild: %s\n", err.what());
+    fflush(g_output);
+    return 1;
+  }
 
   if (argc > 1 && !stricmp(argv[1], OPT_STR "VERSION"))
   {
-    fprintf(g_output,NSIS_VERSION);
+    fprintf(g_output,CONST_STR(NSIS_VERSION));
     fflush(g_output);
     return 0;
   }
@@ -131,7 +137,7 @@ int main(int argc, char **argv)
            "Portions Copyright (C) 1996-2002 Julian R Seward (bzip2).\n"
            "Portions Copyright (C) 1999-2003 Igor Pavlov (lzma).\n"
            "\n"
-           "Contributors: nnop@newmail.ru, Ryan Geiss, Andras Varga, Drew Davidson, Peter Windridge, Dave Laundon, Robert Rainwater, Yaroslav Faybishenko, Jeff Doozan, Amir Szekely, Ximon Eighteen, et al.\n\n",NSIS_VERSION);
+           "Contributors: nnop@newmail.ru, Ryan Geiss, Andras Varga, Drew Davidson, Peter Windridge, Dave Laundon, Robert Rainwater, Yaroslav Faybishenko, Jeff Doozan, Amir Szekely, Ximon Eighteen, et al.\n\n",CONST_STR(NSIS_VERSION));
     fflush(g_output);
   }
 
@@ -243,9 +249,6 @@ int main(int argc, char **argv)
       {
         if (build.display_info)
         {
-          fprintf(g_output,"Size of zlib EXE header is %d bytes.\n",zlib_exehead_size);
-          fprintf(g_output,"Size of bzip2 EXE header is %d bytes.\n",bzip2_exehead_size);
-          fprintf(g_output,"Size of lzma EXE header is %d bytes.\n",lzma_exehead_size);
           fprintf(g_output,"Size of first header is %d bytes.\n",sizeof(firstheader));
           fprintf(g_output,"Size of main header is %d bytes.\n",sizeof(header));
           fprintf(g_output,"Size of each section is %d bytes.\n",sizeof(section));

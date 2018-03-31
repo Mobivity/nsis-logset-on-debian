@@ -966,30 +966,31 @@ static void xhtml_do_file(xhtmlfile * file)
 static void xhtml_do_top_file(xhtmlfile * file, paragraph * sourceform)
 {
   paragraph *p;
-  char fname[_MAX_PATH];
+  char fname[4096];
   int done = FALSE;
+
   FILE *fp = fopen(file->filename, "w");
-  ustrtoa(conf.chm_toc_file, fname, _MAX_PATH);
+  if (fp == NULL)
+    fatal(err_cantopenw, file->filename);
+
+  ustrtoa(conf.chm_toc_file, fname, 4096);
   if(*fname)
   {
     chm_toc = fopen(fname, "w");
     if (chm_toc == NULL)
-    fatal(err_cantopenw, fname);
+      fatal(err_cantopenw, fname);
   }
   else
     chm_toc = NULL;
 
-  ustrtoa(conf.chm_ind_file, fname, _MAX_PATH);
+  ustrtoa(conf.chm_ind_file, fname, 4096);
   if(*fname){
     chm_ind = fopen(fname, "w");
     if (chm_ind == NULL)
-    fatal(err_cantopenw, fname);
+      fatal(err_cantopenw, fname);
   }
   else
     chm_ind = NULL;
-  if (fp == NULL)
-    fatal(err_cantopenw, file->filename);
-
 
   /* Do the title -- only one allowed */
   for (p = sourceform; p && !done; p = p->next)
@@ -1054,8 +1055,16 @@ static void xhtml_do_top_file(xhtmlfile * file, paragraph * sourceform)
   if(chm_toc)chm_dofooter(chm_toc);
   if(chm_ind)chm_dofooter(chm_ind);
   fclose(fp);
-  if(chm_toc)fclose(chm_toc);
-  if(chm_ind)fclose(chm_ind);
+  if(chm_toc)
+  {
+    fclose(chm_toc);
+    chm_toc = NULL;
+  }
+  if(chm_ind)
+  {
+    fclose(chm_ind);
+    chm_ind = NULL;
+  }
 }
 
 /* Convert a Unicode string to an ASCII one. '?' is

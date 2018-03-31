@@ -287,16 +287,20 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         {
           while (c)
           {
-            WIN32_FIND_DATA *fd;
             p = findchar(p, '\\');
-            c=*p;
-            *p=0;
-            fd = file_exists(buf1);
-            if (!fd) {
-              if (!CreateDirectory(buf1,NULL))
+            c = *p;
+            *p = 0;
+            if (!CreateDirectory(buf1, NULL))
+            {
+              if (GetLastError() != ERROR_ALREADY_EXISTS)
+              {
                 exec_error++;
+              }
+              else if ((GetFileAttributes(buf1) & FILE_ATTRIBUTE_DIRECTORY) == 0)
+              {
+                exec_error++;
+              }
             }
-            else if ((fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) exec_error++;
             *p++ = c;
           }
         }
@@ -599,7 +603,11 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         }
         else
         {
-          ExpandEnvironmentStrings(buf0,p,NSIS_MAX_STRLEN);
+          if (!ExpandEnvironmentStrings(buf0,p,NSIS_MAX_STRLEN))
+          {
+            exec_error++;
+            *p=0;
+          }
         }
         p[NSIS_MAX_STRLEN-1]=0;
       }
@@ -1223,7 +1231,11 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         {
           DWORD d=NSIS_MAX_STRLEN-1;
           if (parm4) RegEnumKey(key,b,p,d);
-          else RegEnumValue(key,b,p,&d,NULL,NULL,NULL,NULL);
+          else if (RegEnumValue(key,b,p,&d,NULL,NULL,NULL,NULL)!=ERROR_SUCCESS)
+          {
+            exec_error++;
+            break;
+          }
           p[NSIS_MAX_STRLEN-1]=0;
           RegCloseKey(key);
         }

@@ -6,8 +6,6 @@
 #include "DialogTemplate.h"
 #include "exehead/resource.h"
 
-extern const char *NSIS_VERSION;
-
 // Default English strings. Should match NSIS_DEFAULT_LANG
 // Do not change the first string in every item, it's the LangString
 // name for usage in scripts.
@@ -476,12 +474,12 @@ int CEXEBuild::GenerateLangTables() {
         BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG); \
         if (dlg) { \
           CDialogTemplate td(dlg); \
-          free(dlg); \
+          res_editor->FreeResource(dlg); \
           td.SetFont(build_font, build_font_size); \
           DWORD dwSize; \
           dlg = td.Save(dwSize); \
           res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG, dlg, dwSize); \
-          res_editor->FreeResource(dlg); \
+          delete [] dlg; \
         } \
       }
 
@@ -531,13 +529,13 @@ int CEXEBuild::GenerateLangTables() {
           BYTE* dlg = res_editor->GetResource(RT_DIALOG, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG); \
           if (dlg) { \
             CDialogTemplate td(dlg,lt[i].nlf.m_uCodePage); \
-            free(dlg); \
+            res_editor->FreeResource(dlg); \
             if (font) td.SetFont(font, lt[i].nlf.m_iFontSize); \
             if (lt[i].nlf.m_bRTL) td.ConvertToRTL(); \
             DWORD dwSize; \
             dlg = td.Save(dwSize); \
             res_editor->UpdateResource(RT_DIALOG, MAKEINTRESOURCE(id+cur_offset), NSIS_DEFAULT_LANG, dlg, dwSize); \
-            res_editor->FreeResource(dlg); \
+            delete [] dlg; \
           } \
         }
 
@@ -830,8 +828,8 @@ void CEXEBuild::FillLanguageTable(LanguageTable *table) {
           if (!dstr)
             continue;
           if (i == NLF_BRANDING) {
-            char temp[NSIS_MAX_STRLEN + sizeof(NSIS_VERSION)];
-            sprintf(temp, dstr, NSIS_VERSION);
+            char temp[NSIS_MAX_STRLEN + sizeof(CONST_STR(NSIS_VERSION))];
+            sprintf(temp, dstr, CONST_STR(NSIS_VERSION));
             table->lang_strings->set(sn, temp);
             continue;
           }

@@ -180,7 +180,7 @@ void NSISCALL myDelete(char *buf, int flags)
   }
 
 #ifdef NSIS_SUPPORT_RMDIR
-  if (valid_dir && (flags & DEL_DIR))
+  if (valid_dir && (flags & DEL_DIR) && file_exists(buf))
   {
     addtrailingslash(buf);
     log_printf2("RMDir: RemoveDirectory(\"%s\")",buf);
@@ -333,20 +333,6 @@ void NSISCALL mini_memcpy(void *out, const void *in, int len)
     *c_out++=*c_in++;
   }
 }
-
-#ifdef __GNUC__
-void *memcpy(void *out, const void *in, size_t len)
-{
-  char *c_out=(char*)out;
-  char *c_in=(char *)in;
-  while (len-- > 0)
-  {
-    *c_out++=*c_in++;
-  }
-  return out;
-}
-#endif
-
 
 HANDLE NSISCALL myOpenFile(const char *fn, DWORD da, DWORD cd)
 {

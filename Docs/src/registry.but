@@ -60,12 +60,13 @@ Set user variable $x with the name of the 'index'th registry key in root_key\\Su
 
 \c user_var(output) root_key subkey index
 
-Set user variable $x with the name of the 'index'th registry value in root_key\\Subkey. Valid values for root_key are listed under WriteRegStr. Returns an empty string if there are no more values, and returns an empty string and sets the error flag if there is an error.
+Set user variable $x with the name of the 'index'th registry value in root_key\\Subkey. Valid values for root_key are listed under WriteRegStr. Returns an empty string and sets the error flag if there are no more values or if there is an error.
 
 \c StrCpy $0 0
 \c loop:
+\c   ClearErrors
 \c   EnumRegValue $1 HKLM Software\Microsoft\Windows\CurrentVersion $0
-\c   StrCmp $1 "" done
+\c   IfErrors done
 \c   IntOp $0 $0 + 1
 \c   ReadRegStr $2 HKLM Software\Microsoft\Windows\CurrentVersion $1
 \c   MessageBox MB_YESNO|MB_ICONQUESTION "$1 = $2$\n$\nMore?" IDYES loop
@@ -75,7 +76,7 @@ Set user variable $x with the name of the 'index'th registry value in root_key\\
 
 \c user_var(output) string
 
-Expands environment variables in "string" into the user variable $x. If error, the variable is set to empty, and the error flag is set.
+Expands environment variables in \e{string} into the user variable \e{$x}. If an environment variable doesn't exist, it will not be replaced. For example, if you use "%var%" and var doesn't exists, the result will be "%var". If there is an error, the variable is set to empty, and the error flag is set.
 
 \c ExpandEnvStrings $0 "WINDIR=%WINDIR%$\nTEMP=%TEMP%"
 
