@@ -464,7 +464,8 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
                 // So the line below must be commented !??
                 //m_UserVarNames.inc_reference(idxUserVar);
                 *out++ = (unsigned int) NS_VAR_CODE; // Named user variable;
-                *(WORD*)out = FIX_ENDIAN_INT16(CODE_SHORT(idxUserVar));
+                WORD w = FIX_ENDIAN_INT16(CODE_SHORT(idxUserVar));
+                memcpy(out, &w, sizeof(WORD));
                 out += sizeof(WORD);
                 p += pUserVarName-p;
                 bProceced = true;
@@ -508,7 +509,8 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
               if (idx < 0)
               {
                 *out++ = (unsigned int)NS_LANG_CODE; // Next word is lang-string Identifier
-                *(WORD*)out = FIX_ENDIAN_INT16(CODE_SHORT(-idx-1));
+                WORD w = FIX_ENDIAN_INT16(CODE_SHORT(-idx-1));
+                memcpy(out, &w, sizeof(WORD));
                 out += sizeof(WORD);
                 p += strlen(cp) + 2;
                 bProceced = true;
@@ -2191,7 +2193,7 @@ int CEXEBuild::pack_exe_header()
   }
   fwrite(m_exehead,1,m_exehead_size,tmpfile);
   fclose(tmpfile);
-  if (system(build_packcmd) == -1)
+  if (sane_system(build_packcmd) == -1)
   {
     remove(build_packname);
     ERROR_MSG("Error: calling packer on \"%s\"\n",build_packname);
@@ -2470,7 +2472,7 @@ int CEXEBuild::write_output(void)
   INFO_MSG("\nUsing %s%s compression.\n\n", compressor->GetName(), build_compress_whole?" (compress whole)":"");
 #endif
 
-  int total_usize=m_exehead_original_size;
+  unsigned int total_usize=m_exehead_original_size;
 
   INFO_MSG("EXE header size:          %10d / %d bytes\n",m_exehead_size,m_exehead_original_size);
 
@@ -2619,12 +2621,8 @@ int CEXEBuild::write_output(void)
   }
   INFO_MSG("\n");
   {
-#ifdef _WIN32
-    int pc=MulDiv(ftell(fp),1000,total_usize);
-#else
-    int pc=(int)(((long long)ftell(fp)*1000)/(total_usize));
-#endif
-    INFO_MSG("Total size:               %10d / %d bytes (%d.%d%%)\n",
+    UINT pc=(UINT)(((UINT64)ftell(fp)*1000)/(total_usize));
+    INFO_MSG("Total size:               %10u / %u bytes (%u.%u%%)\n",
       ftell(fp),total_usize,pc/10,pc%10);
   }
   fclose(fp);

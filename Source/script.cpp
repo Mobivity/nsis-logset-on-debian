@@ -424,9 +424,9 @@ parse_again:
         switch(mod) {
           case 0:
           case 1:
-            istrue = strcmp(line.gettoken_str(1),line.gettoken_str(3)) == 0; break;
+            istrue = stricmp(line.gettoken_str(1),line.gettoken_str(3)) == 0; break;
           case 2:
-            istrue = strcmp(line.gettoken_str(1),line.gettoken_str(3)) != 0; break;
+            istrue = stricmp(line.gettoken_str(1),line.gettoken_str(3)) != 0; break;
           case 3:
             istrue = line.gettoken_float(1) <= line.gettoken_float(3); break;
           case 4:
@@ -2790,7 +2790,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         if (!success && comp != 4) PRINTHELP()
         SCRIPT_MSG("!system: \"%s\"\n",exec);
 #ifdef _WIN32
-        int ret=system(exec);
+        int ret=sane_system(exec);
 #else
         char *execfixed = my_convert(exec);
         int ret=system(execfixed);
