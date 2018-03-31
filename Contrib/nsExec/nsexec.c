@@ -439,15 +439,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   if (Ret)
   {
-    do
-    {
-      GetExitCodeProcess(pi.hProcess, &Ret);
-      Sleep(LOOPTIMEOUT);
-    } while ( Ret == STILL_ACTIVE );
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    GetExitCodeProcess(pi.hProcess, &Ret);
     CloseHandle (pi.hProcess);
     CloseHandle (pi.hThread);
-    return Ret;
+    ExitProcess(Ret);
   }
   else
-    return STATUS_ILLEGAL_INSTRUCTION;
+  {
+    ExitProcess(STATUS_ILLEGAL_INSTRUCTION);
+  }
+
+  return 0; // dummy
 }

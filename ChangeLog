@@ -1,3 +1,113 @@
+2007-11-17 14:29  kichik
+
+	* /NSIS/tags/v233: Tagging for release 2.33
+
+2007-11-17 14:28  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.33
+
+2007-11-17 14:23  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.33
+
+2007-11-17 14:15  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh: fixed definition of
+	  MUI_LANGDLL_LANGUAGES_CP
+
+2007-11-17 14:04  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh: allow
+	  MUI_LANGDLL_ALLLANGUAGES to be defined after MUI_LANGUAGE
+
+2007-11-17 13:53  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/VPatchLib.nsh: fixed extraction
+
+2007-11-14 20:12  kichik
+
+	* /NSIS/trunk/Contrib/InstallOptions/test.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testimgs.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testlink.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testnotify.ini,
+	  /NSIS/trunk/Contrib/Math/mathtest.ini, /NSIS/trunk/Contrib/Modern
+	  UI/ioSpecial.ini, /NSIS/trunk/Examples/FileFunc.ini,
+	  /NSIS/trunk/Examples/makensis.ini, /NSIS/trunk/Examples/Modern
+	  UI/ioA.ini, /NSIS/trunk/Examples/Modern UI/ioB.ini,
+	  /NSIS/trunk/Examples/Modern UI/ioC.ini,
+	  /NSIS/trunk/Examples/TextFunc.ini,
+	  /NSIS/trunk/Examples/WordFunc.ini: use svn:eol-style
+
+2007-11-14 20:10  kichik
+
+	* /NSIS/trunk/Contrib/InstallOptions/test.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testimgs.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testlink.ini,
+	  /NSIS/trunk/Contrib/InstallOptions/testnotify.ini,
+	  /NSIS/trunk/Contrib/Math/mathtest.ini,
+	  /NSIS/trunk/Examples/FileFunc.ini,
+	  /NSIS/trunk/Examples/makensis.ini, /NSIS/trunk/Examples/Modern
+	  UI/ioA.ini, /NSIS/trunk/Examples/Modern UI/ioB.ini,
+	  /NSIS/trunk/Examples/Modern UI/ioC.ini,
+	  /NSIS/trunk/Examples/TextFunc.ini,
+	  /NSIS/trunk/Examples/WordFunc.ini: LF -> CRLF
+
+2007-11-14 20:06  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI/ioSpecial.ini: LF -> CRLF
+
+2007-11-14 19:20  kichik
+
+	* /NSIS/trunk/Contrib/Modern UI/System.nsh: allow
+	  MUI_LANGDLL_ALLLANGUAGES to be defined after MUI_LANGUAGE
+
+2007-11-14 06:20  pabs3
+
+	* /NSIS/trunk/SCons/Config/gnu, /NSIS/trunk/SConstruct: Add Debian
+	  patch for separate stripping options for Win32 & cross-platform
+	  options
+
+2007-11-12 20:06  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Spanish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh:
+	  updates by nirwad777
+
+2007-11-10 16:51  kichik
+
+	* /NSIS/trunk/Contrib/VPatch/VPatchLib.nsh: fixed bug #1829540 -
+	  VPatchFile macro does not handle spaces or absolute paths
+
+2007-11-09 19:47  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c: add OnClick for static
+	  controls
+
+2007-11-09 18:42  kichik
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c: WaitForSingleObject is
+	  simpler than looping on GetExitCodeProcess and allows the process
+	  to return STILL_ACTIVE
+
+2007-11-09 18:29  kichik
+
+	* /NSIS/trunk/Contrib/nsExec/nsexec.c: probably exit nsExec's
+	  internal process with ExitProcess
+	  without this, if running nsExec immediately after booting, it'd
+	  always return 0 even if CreateProcess failed to execute
+	  more @ http://forums.winamp.com/showthread.php?threadid=279683
+
+2007-11-09 16:44  kichik
+
+	* /NSIS/trunk/Scripts/release.py: use new svn script for changelog
+	  update
+
+2007-11-09 16:24  kichik
+
+	* /NSIS/trunk/Scripts/release.py: fixed CreateChangeLog()
+
 2007-11-09 16:04  kichik
 
 	* /NSIS/tags/v232: Tagging for release 2.32

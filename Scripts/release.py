@@ -241,7 +241,7 @@ def CreateChangeLog():
 
 		print 'downloading svn2cl.xsl stylesheet...'
 
-		SVN2CL_XSL = urllib.urlretrieve('http://svn.collab.net/repos/svn/trunk/contrib/client-side/svn2cl/svn2cl.xsl','svn2cl.xsl')[0]
+		urllib.urlretrieve('http://svn.collab.net/repos/svn/trunk/contrib/client-side/svn2cl/svn2cl.xsl', SVN2CL_XSL)
 
 	print 'generating ChangeLog...'
 
@@ -368,9 +368,9 @@ def UpdateWiki(release_id):
 
 def UpdateChangeLog():
 	run(
-		'%s touch /home/groups/n/ns/nsis/bin/cl.timestamp' % RSH,
+		'%s /home/groups/n/ns/nsis/bin/touch_cl_tag.sh' % RSH,
 		LOG_ALL,
-		'change log start time modification failed'
+		'change log tag modification failed'
 	)
 
 def ToDo():
