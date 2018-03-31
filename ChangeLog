@@ -1,3 +1,434 @@
+2007-08-25  kichik
+
+	* Menu/images/header.gif: 2.30
+
+2007-08-25  kichik
+
+	* Docs/src/history.but: 2.30
+
+2007-08-25  kichik
+
+	* Examples/makensis.nsi: - install MUI2 - install nsDialogs readme
+
+2007-08-25  kichik
+
+	* Contrib/Modern UI 2/SConscript: distribute missing images
+
+2007-08-25  kichik
+
+	* Contrib/nsDialogs/Readme.html, Contrib/nsDialogs/SConscript:
+	added initial documentation
+
+2007-08-25  kichik
+
+	* Contrib/nsDialogs/nsDialogs.c: push "error" if
+	nsDialogs::CreateControl fails
+
+2007-08-25  kichik
+
+	* Contrib/nsDialogs/nsDialogs.nsh: added ${NSD_GetText}
+
+2007-08-25  kichik
+
+	* Contrib/nsDialogs/nsDialogs.c: push "error" if nsDialogs::Create
+	fails
+
+2007-08-25  kichik
+
+	* Contrib/System/System.html: add a link to search all System
+	examples
+
+2007-08-25  kichik
+
+	* Include/WinMessages.nsh: fixed bug #1771644 - LB_ERR missing in
+	WinMessages added CB_ERR too
+
+2007-08-24  kichik
+
+	* Contrib/nsDialogs/nsDialogs.nsh: added LBS_NOTIFY for list boxes
+	to enable notification
+
+2007-08-23  joostverburg
+
+	* Include/SConscript, Include/MUI2.nsh, SConstruct, Contrib/Modern
+	UI 2/Readme.html, Contrib/Modern UI 2/SConscript: * Distribute MUI2
+	beta * Preliminary MUI2 documentation
+
+2007-08-21  joostverburg
+
+	* Contrib/Language files/Dutch.nlf, Contrib/Language
+	files/Dutch.nsh: style improvements and corrections by Ton
+
+2007-08-18  kichik
+
+	* Source/exehead/util.c: tabs to spaces and some other minor
+	clean-ups
+
+2007-08-18  joostverburg
+
+	* Contrib/Modern UI/System.nsh: move check whether the
+	MUI_INTERFACE macro is already included to the macro itself
+
+2007-08-18  joostverburg
+
+	* Source/exehead/util.c: * Use shfolder.dll for
+	CSIDL_COMMON_DOCUMENTS on 95/98 if possible * Information about API
+	calls for special folders
+
+2007-08-18  joostverburg
+
+	* Contrib/Modern UI 2/Pages/Finish.nsh: use a label and a link on
+	the same location to be able to display a text and get click events
+
+2007-08-17  kichik
+
+	* Contrib/Modern UI/Changelog.txt: mention
+	MUI_CUSTOMFUNCTION_MOUSEOVERSECTION in 1.8's log
+
+2007-08-17  kichik
+
+	* Contrib/Language files/Valencian.nlf, Contrib/Language
+	files/Valencian.nsh: no more headache
+
+2007-08-17  kichik
+
+	* Contrib/Language files/SConscript, Examples/Modern
+	UI/MultiLanguage.nsi: Catalan returns
+
+2007-08-17  kichik
+
+	* Contrib/nsDialogs/InstallOptions.nsi: use NSD_FUNCTION_INIFILE
+
+2007-08-17  kichik
+
+	* Contrib/nsDialogs/nsDialogs.c, Contrib/nsDialogs/nsDialogs.nsh,
+	Contrib/nsDialogs/welcome.nsi: CreateItem -> CreateControl
+
+2007-08-17  kichik
+
+	* Source/exehead/util.c: better solution - don't old functions and
+	not shfolder but still try to get all user's version from the os
+	(though tests show it will return current user's version anyway)
+
+2007-08-17  kichik
+
+	* Source/exehead/util.c: fixed bug #1766268 - $SMPROGRAMS incorrect
+	on Windows 98 use shfolder.dll only on ME and for all users's
+	$APPDATA for which it was introduced
+
+2007-08-14  pabs3
+
+	* SConstruct: Ignore some failing tests by default on platforms
+	without msvc/mstoolkit
+
+2007-08-12  joostverburg
+
+	* Contrib/Modern UI 2/Interface.nsh, Contrib/Modern UI
+	2/License.txt, Contrib/Modern UI 2/Localization.nsh, Contrib/Modern
+	UI 2/MUI2.nsh, Contrib/Modern UI 2/Pages.nsh, Contrib/Modern UI
+	2/Pages/Components.nsh, Contrib/Modern UI 2/Pages/Directory.nsh,
+	Contrib/Modern UI 2/Pages/Finish.nsh, Contrib/Modern UI
+	2/Pages/InstallFiles.nsh, Contrib/Modern UI 2/Pages/License.nsh,
+	Contrib/Modern UI 2/Pages/StartMenu.nsh, Contrib/Modern UI
+	2/Pages/UninstallConfirm.nsh, Contrib/Modern UI
+	2/Pages/Welcome.nsh: Modern UI 2.0 beta
+
+2007-08-11  kichik
+
+	* Source/exehead/exec.c: buf1, not buf (patch #1768584)
+
+2007-08-10  joostverburg
+
+	* Contrib/Language files/Afrikaans.nsh, Contrib/Language
+	files/Albanian.nsh, Contrib/Language files/Arabic.nsh,
+	Contrib/Language files/Basque.nsh, Contrib/Language
+	files/Belarusian.nsh, Contrib/Language files/Bosnian.nsh,
+	Contrib/Language files/Breton.nsh, Contrib/Language
+	files/Bulgarian.nsh, Contrib/Language files/Catalan.nsh,
+	Contrib/Language files/Croatian.nsh, Contrib/Language
+	files/Czech.nsh, Contrib/Language files/Danish.nsh,
+	Contrib/Language files/Dutch.nsh, Contrib/Language
+	files/English.nsh, Contrib/Language files/Estonian.nsh,
+	Contrib/Language files/Farsi.nsh, Contrib/Language
+	files/Finnish.nsh, Contrib/Language files/French.nsh,
+	Contrib/Language files/Galician.nsh, Contrib/Language
+	files/German.nsh, Contrib/Language files/Greek.nsh,
+	Contrib/Language files/Hebrew.nsh, Contrib/Language
+	files/Hungarian.nsh, Contrib/Language files/Icelandic.nsh,
+	Contrib/Language files/Indonesian.nsh, Contrib/Language
+	files/Irish.nsh, Contrib/Language files/Italian.nsh,
+	Contrib/Language files/Japanese.nsh, Contrib/Language
+	files/Korean.nsh, Contrib/Language files/Kurdish.nsh,
+	Contrib/Language files/Latvian.nsh, Contrib/Language
+	files/Luxembourgish.nsh, Contrib/Language files/Macedonian.nsh,
+	Contrib/Language files/Malay.nsh, Contrib/Language
+	files/Mongolian.nsh, Contrib/Language files/Norwegian.nsh,
+	Contrib/Language files/NorwegianNynorsk.nsh, Contrib/Language
+	files/Polish.nsh, Contrib/Language files/Portuguese.nsh,
+	Contrib/Language files/PortugueseBR.nsh, Contrib/Language
+	files/Romanian.nsh, Contrib/Language files/Russian.nsh,
+	Contrib/Language files/Serbian.nsh, Contrib/Language
+	files/SerbianLatin.nsh, Contrib/Language files/SimpChinese.nsh,
+	Contrib/Language files/Slovak.nsh, Contrib/Language
+	files/Slovenian.nsh, Contrib/Language files/Spanish.nsh,
+	Contrib/Language files/SpanishInternational.nsh, Contrib/Language
+	files/Swedish.nsh, Contrib/Language files/Thai.nsh,
+	Contrib/Language files/TradChinese.nsh, Contrib/Language
+	files/Turkish.nsh, Contrib/Language files/Ukrainian.nsh,
+	Contrib/Language files/Uzbek.nsh, Contrib/Language files/Welsh.nsh:
+	added missing $_CLICK for texts like "Click Next to continue."
+
+2007-08-10  joostverburg
+
+	* Contrib/Language files/Valencian.nsh: New language files for
+	localization of user interfaces and plug-ins.  These files
+	currently contain translations of the MUI and will be shared
+	between different MUI versions.
+
+2007-08-09  joostverburg
+
+	* Contrib/nsDialogs/nsDialogs.nsh: fixed macro for INI files
+
+2007-08-09  joostverburg
+
+	* Contrib/nsDialogs/nsDialogs.nsh: * Put functions for
+	InstallOptions INI files in macros. The functions can be included
+	in the installer or uninstaller by includng a macro.  * Added
+	button state flags
+
+2007-08-09  joostverburg
+
+	* Contrib/Modern UI/Changelog.txt, Contrib/Modern UI/Readme.html,
+	Contrib/Modern UI/SConscript, Contrib/Modern UI/System.nsh,
+	Contrib/Modern UI/Language files/Afrikaans.nsh, Contrib/Modern
+	UI/Language files/Albanian.nsh, Contrib/Modern UI/Language
+	files/Arabic.nsh, Contrib/Modern UI/Language files/Basque.nsh,
+	Contrib/Modern UI/Language files/Belarusian.nsh, Contrib/Modern
+	UI/Language files/Bosnian.nsh, Contrib/Modern UI/Language
+	files/Breton.nsh, Contrib/Modern UI/Language files/Bulgarian.nsh,
+	Contrib/Modern UI/Language files/Catalan.nsh, Contrib/Modern
+	UI/Language files/Croatian.nsh, Contrib/Modern UI/Language
+	files/Czech.nsh, Contrib/Modern UI/Language files/Danish.nsh,
+	Contrib/Modern UI/Language files/Default.nsh, Contrib/Modern
+	UI/Language files/Dutch.nsh, Contrib/Modern UI/Language
+	files/English.nsh, Contrib/Modern UI/Language files/Estonian.nsh,
+	Contrib/Modern UI/Language files/Farsi.nsh, Contrib/Modern
+	UI/Language files/Finnish.nsh, Contrib/Modern UI/Language
+	files/French.nsh, Contrib/Modern UI/Language files/Galician.nsh,
+	Contrib/Modern UI/Language files/German.nsh, Contrib/Modern
+	UI/Language files/Greek.nsh, Contrib/Modern UI/Language
+	files/Hebrew.nsh, Contrib/Modern UI/Language files/Hungarian.nsh,
+	Contrib/Modern UI/Language files/Icelandic.nsh, Contrib/Modern
+	UI/Language files/Indonesian.nsh, Contrib/Modern UI/Language
+	files/Irish.nsh, Contrib/Modern UI/Language files/Italian.nsh,
+	Contrib/Modern UI/Language files/Japanese.nsh, Contrib/Modern
+	UI/Language files/Korean.nsh, Contrib/Modern UI/Language
+	files/Kurdish.nsh, Contrib/Modern UI/Language files/Latvian.nsh,
+	Contrib/Modern UI/Language files/Lithuanian.nsh, Contrib/Modern
+	UI/Language files/Luxembourgish.nsh, Contrib/Modern UI/Language
+	files/Macedonian.nsh, Contrib/Modern UI/Language files/Malay.nsh,
+	Contrib/Modern UI/Language files/Mongolian.nsh, Contrib/Modern
+	UI/Language files/Norwegian.nsh, Contrib/Modern UI/Language
+	files/NorwegianNynorsk.nsh, Contrib/Modern UI/Language
+	files/Polish.nsh, Contrib/Modern UI/Language files/Portuguese.nsh,
+	Contrib/Modern UI/Language files/PortugueseBR.nsh, Contrib/Modern
+	UI/Language files/Romanian.nsh, Contrib/Modern UI/Language
+	files/Russian.nsh, Contrib/Modern UI/Language files/Serbian.nsh,
+	Contrib/Modern UI/Language files/SerbianLatin.nsh, Contrib/Modern
+	UI/Language files/SimpChinese.nsh, Contrib/Modern UI/Language
+	files/Slovak.nsh, Contrib/Modern UI/Language files/Slovenian.nsh,
+	Contrib/Modern UI/Language files/Spanish.nsh, Contrib/Modern
+	UI/Language files/SpanishInternational.nsh, Contrib/Modern
+	UI/Language files/Swedish.nsh, Contrib/Modern UI/Language
+	files/Thai.nsh, Contrib/Modern UI/Language files/TradChinese.nsh,
+	Contrib/Modern UI/Language files/Turkish.nsh, Contrib/Modern
+	UI/Language files/Ukrainian.nsh, Contrib/Modern UI/Language
+	files/Uzbek.nsh, Contrib/Modern UI/Language files/Valencian.nsh,
+	Contrib/Modern UI/Language files/Welsh.nsh: Modern UI 1.8 * Uses
+	the new language files * Updated documentation * Although
+	MUI_DIRECTORYPAGE_BGCOLOR and MUI_STARTMENUPAGE_BGCOLOR are
+	documented as interface   setttings that apply to every directory
+	page or Start Menu folder page, they were actually   implemented as
+	page specific settings. They have been changed to interface
+	settings.  * MUI_LANGDLL_DISPLAY now also reads a previously saved
+	language from the registry if the   installation is silent.  *
+	InstallOptions macros have been moved to a separate header file
+	(InstallOptions.nsh).	 The MUI_INSTALLOPTIONS_* macros are still
+	provided for backwards compatibility and insert the    equalivent
+	INSTALLOPTIONS_* macros.
+
+2007-08-09  joostverburg
+
+	* Contrib/Language files/Afrikaans.nsh, Contrib/Language
+	files/Albanian.nsh, Contrib/Language files/Arabic.nsh,
+	Contrib/Language files/Basque.nsh, Contrib/Language
+	files/Belarusian.nsh, Contrib/Language files/Bosnian.nsh,
+	Contrib/Language files/Breton.nsh, Contrib/Language
+	files/Bulgarian.nsh, Contrib/Language files/SConscript,
+	Contrib/Language files/Catalan.nsh, Contrib/Language
+	files/Croatian.nsh, Contrib/Language files/Czech.nsh,
+	Contrib/Language files/Danish.nsh, Contrib/Language
+	files/Dutch.nsh, Contrib/Language files/English.nsh,
+	Contrib/Language files/Estonian.nsh, Contrib/Language
+	files/Farsi.nsh, Contrib/Language files/Finnish.nsh,
+	Contrib/Language files/French.nsh, Contrib/Language
+	files/Galician.nsh, Contrib/Language files/German.nsh,
+	Contrib/Language files/Greek.nsh, Contrib/Language
+	files/Hebrew.nsh, Contrib/Language files/Hungarian.nsh,
+	Contrib/Language files/Icelandic.nsh, Contrib/Language
+	files/Indonesian.nsh, Contrib/Language files/Irish.nsh,
+	Contrib/Language files/Italian.nsh, Contrib/Language
+	files/Japanese.nsh, Contrib/Language files/Korean.nsh,
+	Contrib/Language files/Kurdish.nsh, Contrib/Language
+	files/Latvian.nsh, Contrib/Language files/Lithuanian.nsh,
+	Contrib/Language files/Luxembourgish.nsh, Contrib/Language
+	files/Macedonian.nsh, Contrib/Language files/Malay.nsh,
+	Contrib/Language files/Mongolian.nsh, Contrib/Language
+	files/Norwegian.nsh, Contrib/Language files/NorwegianNynorsk.nsh,
+	Contrib/Language files/Polish.nsh, Contrib/Language
+	files/Portuguese.nsh, Contrib/Language files/PortugueseBR.nsh,
+	Contrib/Language files/Romanian.nsh, Contrib/Language
+	files/Russian.nsh, Contrib/Language files/Serbian.nsh,
+	Contrib/Language files/SerbianLatin.nsh, Contrib/Language
+	files/SimpChinese.nsh, Contrib/Language files/Slovak.nsh,
+	Contrib/Language files/Slovenian.nsh, Contrib/Language
+	files/Spanish.nsh, Contrib/Language files/SpanishInternational.nsh,
+	Contrib/Language files/Swedish.nsh, Contrib/Language
+	files/Thai.nsh, Contrib/Language files/TradChinese.nsh,
+	Contrib/Language files/Turkish.nsh, Contrib/Language
+	files/Ukrainian.nsh, Contrib/Language files/Uzbek.nsh,
+	Contrib/Language files/Valencian.nsh, Contrib/Language
+	files/Welsh.nsh: New language files for localization of user
+	interfaces and plug-ins.  These files currently contain
+	translations of the MUI and will be shared between different MUI
+	versions.
+
+2007-08-09  joostverburg
+
+	* Include/LangFile.nsh, Include/SConscript: Header file to create
+	langauge file that can be included with a single command.  When
+	LANGFILE_DEFAULT is set, missing strings will automatically be
+	loaded from a default file.
+
+2007-08-09  joostverburg
+
+	* Contrib/InstallOptions/InstallOptions.nsh,
+	Contrib/InstallOptions/Readme.html,
+	Contrib/InstallOptions/SConscript: * New header file with macros
+	and conversion functions for use with InstallOptions * Updated
+	InstallOptions documentation
+
+2007-08-09  joostverburg
+
+	* Source/script.cpp: fixed escaped quotes in macro parameters
+
+2007-07-31  kichik
+
+	* Contrib/Language files/Danish.nlf, Contrib/Modern UI/Language
+	files/Danish.nsh: updates by birk
+
+2007-07-31  kichik
+
+	* Docs/src/credits.but: credits for Slovak
+
+2007-07-28  kichik
+
+	* Contrib/Language files/Slovak.nlf, Contrib/Modern UI/Language
+	files/Slovak.nsh: applied patch #1762627 - Updated version of
+	Slovak language files for NSIS
+
+2007-07-27  kichik
+
+	* Contrib/Modern UI/Readme.html, Contrib/Modern UI/System.nsh:
+	applied patch #1762003 - Modern UI
+	MUI_CUSTOMFUNCTION_MOUSEOVERSECTION
+
+2007-07-27  pabs3
+
+	* Source/exehead/exec.c: Prevent FTBFS due to using log_printf3
+	instead of log_printf2
+
+2007-07-24  kichik
+
+	* Source/exehead/exec.c: a bit more logging
+
+2007-07-23  kichik
+
+	* Source/SConscript: fixed bug #1758873 - do not link to stdc++
+	when using aCC
+
+2007-07-23  kichik
+
+	* SCons/Config/gnu, SCons/Config/hpc++, Source/ResourceEditor.cpp,
+	Source/ResourceEditor.h, Source/build.cpp, Source/makenssi.cpp,
+	Source/script.cpp, Source/strlist.cpp, Source/strlist.h,
+	Source/util.cpp: applied patch #1758863 - Patch for building on GCC
+	and aCC
+
+2007-07-23  kichik
+
+	* Contrib/nsDialogs/rtl.c: fixed bug #1758653 - CVS build failure
+	on Linux i386 - TVS_RTLREADING undeclared
+
+2007-07-21  kichik
+
+	* Contrib/nsDialogs/nsDialogs.nsh: added ${NSD_OnBack}
+
+2007-07-19  kichik
+
+	* Contrib/nsDialogs/rtl.c, Contrib/nsDialogs/rtl.h: added rtl
+	support
+
+2007-07-19  kichik
+
+	* Contrib/nsDialogs/InstallOptions.nsi,
+	Contrib/nsDialogs/nsDialogs.nsh: update state field
+
+2007-07-18  kichik
+
+	* Contrib/nsDialogs/InstallOptions.nsi,
+	Contrib/nsDialogs/SConscript, Contrib/nsDialogs/defs.h,
+	Contrib/nsDialogs/input.c, Contrib/nsDialogs/nsDialogs.c,
+	Contrib/nsDialogs/nsDialogs.nsh: added rtl support
+
+2007-07-18  kichik
+
+	* Source/lang.cpp, Source/util.cpp, Source/util.h: real
+	implementation for IsValidCodePage
+
+2007-07-18  kichik
+
+	* Source/build.cpp, Source/build.h: get rid of some #ifdef _WIN32
+
+2007-07-18  kichik
+
+	* Source/Platform.h: added HWND
+
+2007-07-18  kichik
+
+	* Source/build.cpp, Source/util.cpp, Source/util.h: moved non-win32
+	CharNextExA implementation to util.cpp
+
+2007-07-18  kichik
+
+	* Contrib/nsDialogs/nsDialogs.nsh: added ${NSD_OnClick},
+	${NSD_OnChange} and ${NSD_OnNotify}
+
+2007-07-17  kichik
+
+	* Source/makenssi.cpp: fixed bug #1755148 - hpux build linkage
+	specification in main
+
+2007-07-16  kichik
+
+	* Source/Tests/winchar.cpp: fixed bug #1753063 - CVS test failure
+	on hppa
+
+2007-07-14  kichik
+
+	* Scripts/release.py: added Download page to TODO list, maybe
+	that'd solve the cache problems
+
 2007-07-14  kichik
 
 	* Menu/images/header.gif: 2.29

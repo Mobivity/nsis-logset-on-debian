@@ -3,6 +3,7 @@
 #include "defs.h"
 #include "nsis.h"
 #include "input.h"
+#include "rtl.h"
 
 HINSTANCE g_hInstance;
 struct nsDialog g_dialog;
@@ -131,6 +132,12 @@ void __declspec(dllexport) Create(HWND hwndParent, int string_size, char *variab
 
   g_dialog.hwDialog = CreateDialog(g_hInstance, MAKEINTRESOURCE(1), hwndParent, DialogProc);
 
+  if (g_dialog.hwDialog == NULL)
+  {
+    pushstring("error");
+    return;
+  }
+
   SetWindowPos(
     g_dialog.hwDialog,
     0,
@@ -143,13 +150,15 @@ void __declspec(dllexport) Create(HWND hwndParent, int string_size, char *variab
 
   g_dialog.parentOriginalWndproc = (WNDPROC) SetWindowLong(hwndParent, DWL_DLGPROC, (long) ParentProc);
 
+  g_dialog.rtl = FALSE;
+
   g_dialog.controlCount = 0;
   g_dialog.controls = (struct nsControl*) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 0);
 
   pushint((int) g_dialog.hwDialog);
 }
 
-void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
+void __declspec(dllexport) CreateControl(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
 {
   char *className;
   char *text;
@@ -165,10 +174,14 @@ void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *va
   text = &className[g_stringsize];
 
   if (!className)
+  {
+    pushstring("error");
     return;
+  }
 
   if (popstring(className, 0))
   {
+    pushstring("error");
     HeapFree(GetProcessHeap(), 0, className);
     return;
   }
@@ -180,6 +193,7 @@ void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *va
 
   if (popstring(text, 0))
   {
+    pushstring("error");
     HeapFree(GetProcessHeap(), 0, className);
     return;
   }
@@ -211,6 +225,10 @@ void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *va
   else
     g_dialog.controls[id].type = NSCTL_UNKNOWN;
 
+  // apply rtl to style
+
+  ConvertStyleToRTL(g_dialog.controls[id].type, &style, &exStyle);
+
   // create item's window
 
   hwItem = CreateWindowEx(
@@ -241,6 +259,12 @@ void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *va
   // done
 
   HeapFree(GetProcessHeap(), 0, className);
+}
+
+// for backward compatibility (2.29 had CreateItem)
+void __declspec(dllexport) CreateItem(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
+{
+  CreateControl(hwndParent, string_size, variables, stacktop, extra);
 }
 
 void __declspec(dllexport) SetUserData(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)

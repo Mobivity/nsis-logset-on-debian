@@ -65,12 +65,14 @@ int sane_system(const char *command);
 #ifndef _WIN32
 char *CharPrev(const char *s, const char *p);
 char *CharNext(const char *s);
+char *CharNextExA(WORD codepage, const char *s, int flags);
 int wsprintf(char *s, const char *format, ...);
 int WideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr,
     int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte, LPCSTR lpDefaultChar,
     LPBOOL lpUsedDefaultChar);
 int MultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr,
     int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar);
+BOOL IsValidCodePage(UINT CodePage);
 
 char *my_convert(const char *path);
 void my_convert_free(char *converted_path);

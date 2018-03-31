@@ -298,7 +298,11 @@ int CEXEBuild::doParse(const char *str)
   }
 
   // parse before checking if the line should be ignored, so block comments won't be missed
-  res=line.parse((char*)m_linebuild.get(),!strnicmp((char*)m_linebuild.get(),"!define",7));
+  
+  // escaped quotes should be ignored for compile time commands that set defines
+  // because defines can be inserted in commands at a later stage
+  bool ignore_escaping = (!strnicmp((char*)m_linebuild.get(),"!define",7) || !strnicmp((char*)m_linebuild.get(),"!insertmacro",12));
+  res=line.parse((char*)m_linebuild.get(), ignore_escaping);
 
   inside_comment = line.inCommentBlock();
 
@@ -2772,7 +2776,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         datebuf[0]=0;
         size_t s=strftime(datebuf,sizeof(datebuf),value,localtime(&rawtime));
 
-        if (s < 0)
+        if (s == 0)
           datebuf[0]=0;
         else
           datebuf[max(s,sizeof(datebuf)-1)]=0;
@@ -5757,7 +5761,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
       return PS_OK;
     }
-    return PS_ERROR;
     case TOK_INITPLUGINSDIR:
     {
       int ret;

@@ -253,9 +253,7 @@ CEXEBuild::CEXEBuild() :
 
   disable_window_icon=0;
 
-#ifdef _WIN32
   notify_hwnd=0;
-#endif
 
 #ifdef NSIS_SUPPORT_BGBG
   bg_default_font.lfHeight=40;
@@ -451,12 +449,8 @@ int CEXEBuild::add_string(const char *string, int process/*=1*/, WORD codepage/*
 
 int CEXEBuild::add_intstring(const int i) // returns offset in stringblock
 {
-  char i_str[128];
-#ifdef _WIN32
+  char i_str[1024];
   wsprintf(i_str, "%d", i);
-#else
-  snprintf(i_str, 128, "%d", i);
-#endif
   return add_string(i_str);
 }
 
@@ -466,22 +460,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
   const char *p=in;
   while (*p)
   {
-    const char *np;
-#ifdef _WIN32
-    np = CharNextExA(codepage, p, 0);
-#else
-    {
-      char buf[1024];
-      snprintf(buf, 1024, "CP%d", codepage);
-      setlocale(LC_CTYPE, buf);
-      int len = mblen(p, strlen(p));
-      if (len > 0)
-        np = p + len;
-      else
-        np = p + 1;
-      setlocale(LC_CTYPE, "");
-    }
-#endif
+    const char *np = CharNextExA(codepage, p, 0);
     if (np - p > 1) // multibyte char
     {
       int l = np - p;
@@ -531,7 +510,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
                 // which is also memory wasting
                 // So the line below must be commented !??
                 //m_UserVarNames.inc_reference(idxUserVar);
-                *out++ = (unsigned int) NS_VAR_CODE; // Named user variable;
+                *out++ = (char) NS_VAR_CODE; // Named user variable;
                 WORD w = FIX_ENDIAN_INT16(CODE_SHORT(idxUserVar));
                 memcpy(out, &w, sizeof(WORD));
                 out += sizeof(WORD);
@@ -555,7 +534,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
               {
                 int CSIDL_Value_current = m_ShellConstants.get_value1(idxConst);
                 int CSIDL_Value_all = m_ShellConstants.get_value2(idxConst);
-                *out++=(unsigned int)NS_SHELL_CODE; // Constant code identifier
+                *out++=(char)NS_SHELL_CODE; // Constant code identifier
                 *out++=(char)CSIDL_Value_current;
                 *out++=(char)CSIDL_Value_all;
                 p = pShellConstName;
@@ -576,7 +555,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
               idx = DefineLangString(cp);
               if (idx < 0)
               {
-                *out++ = (unsigned int)NS_LANG_CODE; // Next word is lang-string Identifier
+                *out++ = (char)NS_LANG_CODE; // Next word is lang-string Identifier
                 WORD w = FIX_ENDIAN_INT16(CODE_SHORT(-idx-1));
                 memcpy(out, &w, sizeof(WORD));
                 out += sizeof(WORD);
@@ -1166,12 +1145,8 @@ int CEXEBuild::add_section(const char *secname, const char *defname, int expand/
 
   if (defname[0])
   {
-    char buf[128];
-#ifdef _WIN32
+    char buf[1024];
     wsprintf(buf, "%d", cur_header->blocks[NB_SECTIONS].num);
-#else
-    snprintf(buf, 128, "%d", cur_header->blocks[NB_SECTIONS].num);
-#endif
     if (definedlist.add(defname, buf))
     {
       ERROR_MSG("Error: \"%s\" already defined, can't assign section index!\n", defname);
@@ -2603,11 +2578,7 @@ int CEXEBuild::write_output(void)
   {
     int total_out_size_estimate=
       m_exehead_size+sizeof(fh)+build_datablock.getlen()+(build_crcchk?sizeof(crc32_t):0);
-#ifdef _WIN32
-    int pc=MulDiv(db_opt_save,1000,db_opt_save+total_out_size_estimate);
-#else
-    int pc=(int)(((long long)db_opt_save*1000)/(db_opt_save+total_out_size_estimate));
-#endif
+    int pc=(int)(((INT64)db_opt_save*1000)/(db_opt_save+total_out_size_estimate));
     INFO_MSG("Datablock optimizer saved %d bytes (~%d.%d%%).\n",db_opt_save,
       pc/10,pc%10);
   }
@@ -3133,11 +3104,7 @@ void CEXEBuild::warning_fl(const char *s, ...)
 
 void CEXEBuild::ERROR_MSG(const char *s, ...) const
 {
-#ifdef _WIN32
   if (display_errors || notify_hwnd)
-#else
-  if (display_errors)
-#endif
   {
     char buf[NSIS_MAX_STRLEN*10];
     va_list val;
@@ -3196,16 +3163,16 @@ void CEXEBuild::print_warnings()
   fflush(g_output);
 }
 
-#ifdef _WIN32
 void CEXEBuild::notify(notify_e code, const char *data) const
 {
+#ifdef _WIN32
   if (notify_hwnd)
   {
     COPYDATASTRUCT cds = {(DWORD)code, strlen(data)+1, (void *) data};
     SendMessage(notify_hwnd, WM_COPYDATA, 0, (LPARAM)&cds);
   }
-}
 #endif
+}
 
 // Added by Ximon Eighteen 5th August 2002
 #ifdef NSIS_CONFIG_PLUGIN_SUPPORT

@@ -1,3 +1,10 @@
+/*
+
+nsDialogs.nsh
+Header file for creating custom installer pages with nsDialogs
+
+*/
+
 !include LogicLib.nsh
 !include WinMessages.nsh
 
@@ -108,6 +115,12 @@
 !define BS_NOTIFY            0x00004000
 !define BS_FLAT              0x00008000
 !define BS_RIGHTBUTTON       ${BS_LEFTTEXT}
+
+!define BST_CHECKED       1
+!define BST_FOCUS         8
+!define BST_INDETERMINATE 2
+!define BST_PUSHED        4
+!define BST_UNCHECKED     0
 
 !define CBS_SIMPLE            0x0001
 !define CBS_DROPDOWN          0x0002
@@ -222,12 +235,12 @@
 !define __NSD_ComboBox_EXSTYLE ${WS_EX_WINDOWEDGE}|${WS_EX_CLIENTEDGE}
 
 !define __NSD_ListBox_CLASS LISTBOX
-!define __NSD_ListBox_STYLE ${DEFAULT_STYLES}|${WS_TABSTOP}|${WS_VSCROLL}|${LBS_DISABLENOSCROLL}|${LBS_HASSTRINGS}|${LBS_NOINTEGRALHEIGHT}
+!define __NSD_ListBox_STYLE ${DEFAULT_STYLES}|${WS_TABSTOP}|${WS_VSCROLL}|${LBS_DISABLENOSCROLL}|${LBS_HASSTRINGS}|${LBS_NOINTEGRALHEIGHT}|${LBS_NOTIFY}
 !define __NSD_ListBox_EXSTYLE ${WS_EX_WINDOWEDGE}|${WS_EX_CLIENTEDGE}
 
 !macro __NSD_DefineControl NAME
 
-	!define NSD_Create${NAME} "nsDialogs::CreateItem /NOUNLOAD ${__NSD_${Name}_CLASS} ${__NSD_${Name}_STYLE} ${__NSD_${Name}_EXSTYLE}"
+	!define NSD_Create${NAME} "nsDialogs::CreateControl /NOUNLOAD ${__NSD_${Name}_CLASS} ${__NSD_${Name}_STYLE} ${__NSD_${Name}_EXSTYLE}"
 
 !macroend
 
@@ -248,6 +261,41 @@
 !insertmacro __NSD_DefineControl ComboBox
 !insertmacro __NSD_DefineControl ListBox
 
+!macro __NSD_OnEvent EVENT HWND FUNCTION
+
+	Push $0
+	Push $1
+
+	StrCpy $1 "${HWND}"
+
+	GetFunctionAddress $0 "${FUNCTION}"
+	nsDialogs::On${EVENT} /NOUNLOAD $1 $0
+
+	Pop $1
+	Pop $0
+
+!macroend
+
+!macro __NSD_DefineCallback EVENT
+
+	!define NSD_On${EVENT} `!insertmacro __NSD_OnEvent ${EVENT}`
+
+!macroend
+
+!insertmacro __NSD_DefineCallback Click
+!insertmacro __NSD_DefineCallback Change
+!insertmacro __NSD_DefineCallback Notify
+!insertmacro __NSD_DefineCallback Back
+
+!macro __NSD_GetText CONTROL VAR
+
+	System::Call user32::GetWindowText(i${CONTROL},t.s,i${NSIS_MAX_STRLEN})
+	Pop ${VAR}
+
+!macroend
+
+!define NSD_GetText `!insertmacro __NSD_GetText`
+
 !define DEBUG `System::Call kernel32::OutputDebugString(ts)`
 
 !macro __NSD_ControlCase TYPE
@@ -267,7 +315,19 @@
 
 !macroend
 
-Function CreateDialogFromINI
+!macro NSD_FUNCTION_INIFILE
+  !insertmacro NSD_INIFILE ""
+!macroend
+
+!macro NSD_UNFUNCTION_INIFILE
+  !insertmacro NSD_INIFILE un.
+!macroend
+
+!macro NSD_INIFILE UNINSTALLER_FUNCPREFIX
+
+  ;Functions to create dialogs based on old InstallOptions INI files
+
+  Function ${UNINSTALLER_FUNCPREFIX}CreateDialogFromINI
 
 	# $0 = ini
 
@@ -278,6 +338,9 @@ Function CreateDialogFromINI
 
 	nsDialogs::Create /NOUNLOAD $R0
 	Pop $R9
+
+	ReadINIStr $R0 $0 Settings RTL
+	nsDialogs::SetRTL /NOUNLOAD $R0
 
 	ReadINIStr $R0 $0 Settings NumFields
 
@@ -324,31 +387,27 @@ Function CreateDialogFromINI
 
 	nsDialogs::Show
 
-FunctionEnd
+  FunctionEnd
 
-Function FileRequest
+  Function ${UNINSTALLER_FUNCPREFIX}UpdateINIState
 
-	IntOp $R5 $R5 - 15
-	IntOp $R8 $R3 + $R5
+	${DEBUG} "Updating INI state"
 
-	${NSD_CreateBrowseButton} $R8u $R4u 15u $R6u ...
-	Pop $R8
+	ReadINIStr $R0 $0 Settings NumFields
 
-	nsDialogs::SetUserData /NOUNLOAD $R8 $R1 # remember field id
+	${DEBUG} "NumField = $R0"
 
-	WriteINIStr $0 "Field $R1" HWND2 $R8
+	${For} $R1 1 $R0
+		ReadINIStr $R2 $0 "Field $R1" HWND
+		${DEBUG} "  HWND = $R2"
+		System::Call user32::GetWindowText(iR2,t.R2,i${NSIS_MAX_STRLEN})
+		${DEBUG} "  Window text = $R2"
+		WriteINIStr $0 "Field $R1" STATE $R2
+	${Next}
 
-	GetFunctionAddress $R9 OnFileBrowseButton
-	nsDialogs::OnClick /NOUNLOAD $R8 $R9
+  FunctionEnd
 
-	ReadINIStr $R9 $0 "Field $R1" State
-
-	${NSD_CreateFileRequest} $R3u $R4u $R5u $R6u $R9
-	Pop $R9
-
-FunctionEnd
-
-Function DirRequest
+  Function ${UNINSTALLER_FUNCPREFIX}FileRequest
 
 	IntOp $R5 $R5 - 15
 	IntOp $R8 $R3 + $R5
@@ -360,17 +419,37 @@ Function DirRequest
 
 	WriteINIStr $0 "Field $R1" HWND2 $R8
 
-	GetFunctionAddress $R9 OnDirBrowseButton
-	nsDialogs::OnClick /NOUNLOAD $R8 $R9
+	${NSD_OnClick} $R8 OnFileBrowseButton
 
 	ReadINIStr $R9 $0 "Field $R1" State
 
 	${NSD_CreateFileRequest} $R3u $R4u $R5u $R6u $R9
 	Pop $R9
 
-FunctionEnd
+  FunctionEnd
 
-Function OnFileBrowseButton
+  Function ${UNINSTALLER_FUNCPREFIX}DirRequest
+
+	IntOp $R5 $R5 - 15
+	IntOp $R8 $R3 + $R5
+
+	${NSD_CreateBrowseButton} $R8u $R4u 15u $R6u ...
+	Pop $R8
+
+	nsDialogs::SetUserData /NOUNLOAD $R8 $R1 # remember field id
+
+	WriteINIStr $0 "Field $R1" HWND2 $R8
+
+	${NSD_OnClick} $R8 OnDirBrowseButton
+
+	ReadINIStr $R9 $0 "Field $R1" State
+
+	${NSD_CreateFileRequest} $R3u $R4u $R5u $R6u $R9
+	Pop $R9
+
+  FunctionEnd
+
+  Function ${UNINSTALLER_FUNCPREFIX}OnFileBrowseButton
 
 	Pop $R0
 
@@ -389,9 +468,9 @@ Function OnFileBrowseButton
 		SendMessage $R2 ${WM_SETTEXT} 0 STR:$R3
 	${EndIf}
 
-FunctionEnd
+  FunctionEnd
 
-Function OnDirBrowseButton
+  Function ${UNINSTALLER_FUNCPREFIX}OnDirBrowseButton
 
 	Pop $R0
 
@@ -410,4 +489,6 @@ Function OnDirBrowseButton
 		SendMessage $R2 ${WM_SETTEXT} 0 STR:$R3
 	${EndIf}
 
-FunctionEnd
+  FunctionEnd
+  
+!macroend
