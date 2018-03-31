@@ -49,6 +49,25 @@ typedef unsigned long HBRUSH;
 typedef WORD LANGID;
 #endif
 
+#ifndef __BIG_ENDIAN__
+# define FIX_ENDIAN_INT32_INPLACE(x) (x)
+# define FIX_ENDIAN_INT32(x) (x)
+# define FIX_ENDIAN_INT16_INPLACE(x) (x)
+# define FIX_ENDIAN_INT16(x) (x)
+#else
+# define FIX_ENDIAN_INT32_INPLACE(x) ((x) = SWAP_ENDIAN_INT32(x))
+# define FIX_ENDIAN_INT32(x) SWAP_ENDIAN_INT32(x)
+# define FIX_ENDIAN_INT16_INPLACE(x) ((x) = SWAP_ENDIAN_INT16(x))
+# define FIX_ENDIAN_INT16(x) SWAP_ENDIAN_INT16(x)
+#endif
+#define SWAP_ENDIAN_INT32(x) ( \
+  (((x)&0xFF000000) >> 24) | \
+  (((x)&0x00FF0000) >>  8) | \
+  (((x)&0x0000FF00) <<  8) | \
+  (((x)&0x000000FF) << 24) )
+#define SWAP_ENDIAN_INT16(x) ( \
+  (((x)&0xFF00) >> 8) | \
+  (((x)&0x00FF) << 8) )
 
 // script path separator
 
@@ -116,7 +135,9 @@ typedef WORD LANGID;
 #    define MAKEINTRESOURCE(i) (LPSTR)((DWORD)((WORD)(i)))
 #  endif
 #  ifndef IMAGE_FIRST_SECTION
-#    define IMAGE_FIRST_SECTION(h) ((PIMAGE_SECTION_HEADER) ((DWORD)h+FIELD_OFFSET(IMAGE_NT_HEADERS,OptionalHeader)+((PIMAGE_NT_HEADERS)(h))->FileHeader.SizeOfOptionalHeader))
+#    define IMAGE_FIRST_SECTION(h) ( PIMAGE_SECTION_HEADER( (DWORD) h + \
+                                     FIELD_OFFSET(IMAGE_NT_HEADERS, OptionalHeader) + \
+                                     FIX_ENDIAN_INT16(PIMAGE_NT_HEADERS(h)->FileHeader.SizeOfOptionalHeader) ) )
 #  endif
 #  ifndef RGB
 #    define RGB(r,g,b) ((DWORD)(((BYTE)(r)|((WORD)(g)<<8))|(((DWORD)(BYTE)(b))<<16)))
@@ -594,8 +615,13 @@ typedef WORD LANGID;
 
 #ifndef _WIN32
 #  define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
-#  define IMAGE_DOS_SIGNATURE 0x5A4D
-#  define IMAGE_NT_SIGNATURE 0x00004550
+#  ifndef __BIG_ENDIAN__
+#    define IMAGE_DOS_SIGNATURE 0x5A4D
+#    define IMAGE_NT_SIGNATURE 0x00004550
+#  else
+#    define IMAGE_DOS_SIGNATURE 0x4D5A
+#    define IMAGE_NT_SIGNATURE 0x50450000
+#  endif
 #  define IMAGE_FILE_DLL 8192
 #  define IMAGE_DIRECTORY_ENTRY_EXPORT 0
 #  define IMAGE_SIZEOF_SHORT_NAME 8

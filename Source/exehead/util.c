@@ -500,7 +500,8 @@ void NSISCALL myRegGetStr(HKEY root, const char *sub, const char *name, char *ou
 
 void NSISCALL myitoa(char *s, int d)
 {
-  wsprintf(s,"%d",d);
+  static const char c[] = "%d";
+  wsprintf(s,c,d);
 }
 
 int NSISCALL myatoi(char *s)
@@ -729,7 +730,7 @@ void NSISCALL validate_filename(char *in) {
 
 #ifdef NSIS_CONFIG_LOG
 int log_dolog;
-char log_text[NSIS_MAX_STRLEN*4];
+char log_text[2048]; // 1024 for each wsprintf
 
 #if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
 void NSISCALL log_write(int close)
@@ -809,11 +810,26 @@ void _LogData2Hex(char *buf, size_t buflen, unsigned char *data, size_t datalen)
     mystrcat(buf, "...");
 }
 
+#ifdef NSIS_CONFIG_LOG_TIMESTAMP
+void log_timestamp(char *buf)
+{
+  SYSTEMTIME st;
+  GetLocalTime(&st);
+  wsprintf(buf,"[%04hu/%02hu/%02hu %02hu:%02hu:%02hu] ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+}
+#else
+#  define log_timestamp(x)
+#endif//NSIS_CONFIG_LOG_TIMESTAMP
+
 void log_printf(char *format, ...)
 {
   va_list val;
   va_start(val,format);
-  wvsprintf(log_text,format,val);
+
+  log_text[0] = '\0';
+  log_timestamp(log_text);
+  wvsprintf(log_text+mystrlen(log_text),format,val);
+
   va_end(val);
 #ifdef NSIS_CONFIG_LOG_ODS
   if (log_dolog)

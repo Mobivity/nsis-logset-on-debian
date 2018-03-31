@@ -1,12 +1,13 @@
 #include "Platform.h"
 #include <stdio.h>
 #include "exehead/config.h"
-#include "exehead/fileform.h"
 
 #include "version.h"
 
 #include "build.h"
 #include "util.h"
+#include "fileform.h"
+#include "writer.h"
 
 #include <stdexcept>
 
@@ -88,171 +89,16 @@ CEXEBuild::CEXEBuild() :
 
   definedlist.add("NSIS_VERSION", NSIS_VERSION);
 
-#define intdef2str_(x) #x
-#define intdef2str(x) intdef2str_(x)
-  definedlist.add("NSIS_MAX_INST_TYPES", intdef2str(NSIS_MAX_INST_TYPES));
-  definedlist.add("NSIS_MAX_STRLEN", intdef2str(NSIS_MAX_STRLEN));
-  definedlist.add("NSIS_DEFAULT_LANG", intdef2str(NSIS_DEFAULT_LANG));
-  definedlist.add("NSIS_COMPRESS_BZIP2_LEVEL", intdef2str(NSIS_COMPRESS_BZIP2_LEVEL));
-#undef intdef2str
-#undef intdef2str_
-#ifdef NSIS_BZIP2_COMPRESS_WHOLE
-  definedlist.add("NSIS_BZIP2_COMPRESS_WHOLE");
-#endif
-#ifdef NSIS_COMPRESS_BZIP2_SMALLMODE
-  definedlist.add("NSIS_COMPRESS_BZIP2_SMALLMODE");
-#endif
-#ifdef NSIS_LZMA_COMPRESS_WHOLE
-  definedlist.add("NSIS_LZMA_COMPRESS_WHOLE");
-#endif
-#ifdef NSIS_CONFIG_COMPONENTPAGE
-  definedlist.add("NSIS_CONFIG_COMPONENTPAGE");
-#endif
-#ifdef NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE
-  definedlist.add("NSIS_CONFIG_COMPONENTPAGE_ALTERNATIVE");
-#endif
-#ifdef NSIS_CONFIG_COMPRESSION_SUPPORT
-  definedlist.add("NSIS_CONFIG_COMPRESSION_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_CRC_ANAL
-  definedlist.add("NSIS_CONFIG_CRC_ANAL");
-#endif
-#ifdef NSIS_CONFIG_CRC_SUPPORT
-  definedlist.add("NSIS_CONFIG_CRC_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_ENHANCEDUI_SUPPORT
-  definedlist.add("NSIS_CONFIG_ENHANCEDUI_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_LICENSEPAGE
-  definedlist.add("NSIS_CONFIG_LICENSEPAGE");
-#endif
-#ifdef NSIS_CONFIG_LOG
-  definedlist.add("NSIS_CONFIG_LOG");
-#endif
-#ifdef NSIS_CONFIG_LOG_ODS
-  definedlist.add("NSIS_CONFIG_LOG_ODS");
-#endif
-#ifdef NSIS_CONFIG_LOG_STDOUT
-  definedlist.add("NSIS_CONFIG_LOG_STDOUT");
-#endif
-#ifdef NSIS_CONFIG_PLUGIN_SUPPORT
-  definedlist.add("NSIS_CONFIG_PLUGIN_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_SILENT_SUPPORT
-  definedlist.add("NSIS_CONFIG_SILENT_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
-  definedlist.add("NSIS_CONFIG_UNINSTALL_SUPPORT");
-#endif
-#ifdef NSIS_CONFIG_VISIBLE_SUPPORT
-  definedlist.add("NSIS_CONFIG_VISIBLE_SUPPORT");
-#endif
-#ifdef NSIS_SUPPORT_ACTIVEXREG
-  definedlist.add("NSIS_SUPPORT_ACTIVEXREG");
-#endif
-#ifdef NSIS_SUPPORT_BGBG
-  definedlist.add("NSIS_SUPPORT_BGBG");
-#endif
-#ifdef NSIS_SUPPORT_CODECALLBACKS
-  definedlist.add("NSIS_SUPPORT_CODECALLBACKS");
-#endif
-#ifdef NSIS_SUPPORT_COPYFILES
-  definedlist.add("NSIS_SUPPORT_COPYFILES");
-#endif
-#ifdef NSIS_SUPPORT_CREATESHORTCUT
-  definedlist.add("NSIS_SUPPORT_CREATESHORTCUT");
-#endif
-#ifdef NSIS_SUPPORT_DELETE
-  definedlist.add("NSIS_SUPPORT_DELETE");
-#endif
-#ifdef NSIS_SUPPORT_ENVIRONMENT
-  definedlist.add("NSIS_SUPPORT_ENVIRONMENT");
-#endif
-#ifdef NSIS_SUPPORT_EXECUTE
-  definedlist.add("NSIS_SUPPORT_EXECUTE");
-#endif
-#ifdef NSIS_SUPPORT_FILE
-  definedlist.add("NSIS_SUPPORT_FILE");
-#endif
-#ifdef NSIS_SUPPORT_FILEFUNCTIONS
-  definedlist.add("NSIS_SUPPORT_FILEFUNCTIONS");
-#endif
-#ifdef NSIS_SUPPORT_FINDFIRST
-  definedlist.add("NSIS_SUPPORT_FINDFIRST");
-#endif
-#ifdef NSIS_SUPPORT_FNUTIL
-  definedlist.add("NSIS_SUPPORT_FNUTIL");
-#endif
-#ifdef NSIS_SUPPORT_GETDLLVERSION
-  definedlist.add("NSIS_SUPPORT_GETDLLVERSION");
-#endif
-#ifdef NSIS_SUPPORT_GETFILETIME
-  definedlist.add("NSIS_SUPPORT_GETFILETIME");
-#endif
-#ifdef NSIS_SUPPORT_HWNDS
-  definedlist.add("NSIS_SUPPORT_HWNDS");
-#endif
-#ifdef NSIS_SUPPORT_INIFILES
-  definedlist.add("NSIS_SUPPORT_INIFILES");
-#endif
-#ifdef NSIS_SUPPORT_INTOPTS
-  definedlist.add("NSIS_SUPPORT_INTOPTS");
-#endif
-#ifdef NSIS_SUPPORT_MESSAGEBOX
-  definedlist.add("NSIS_SUPPORT_MESSAGEBOX");
-#endif
-#ifdef NSIS_SUPPORT_MOVEONREBOOT
-  definedlist.add("NSIS_SUPPORT_MOVEONREBOOT");
-#endif
-#ifdef NSIS_SUPPORT_REBOOT
-  definedlist.add("NSIS_SUPPORT_REBOOT");
-#endif
-#ifdef NSIS_SUPPORT_REGISTRYFUNCTIONS
-  definedlist.add("NSIS_SUPPORT_REGISTRYFUNCTIONS");
-#endif
-#ifdef NSIS_SUPPORT_RENAME
-  definedlist.add("NSIS_SUPPORT_RENAME");
-#endif
-#ifdef NSIS_SUPPORT_RMDIR
-  definedlist.add("NSIS_SUPPORT_RMDIR");
-#endif
-#ifdef NSIS_SUPPORT_SHELLEXECUTE
-  definedlist.add("NSIS_SUPPORT_SHELLEXECUTE");
-#endif
-#ifdef NSIS_SUPPORT_STACK
-  definedlist.add("NSIS_SUPPORT_STACK");
-#endif
-#ifdef NSIS_SUPPORT_STROPTS
-  definedlist.add("NSIS_SUPPORT_STROPTS");
-#endif
-#ifdef NSIS_ZLIB_COMPRESS_WHOLE
-  definedlist.add("NSIS_ZLIB_COMPRESS_WHOLE");
-#endif
-#ifdef NSIS_SUPPORT_STANDARD_PREDEFINES
-  // Added by Sunil Kamath 11 June 2003
+  // automatically generated header file containing all defines
+#include "defines.h"
+
+  // no longer optional
   definedlist.add("NSIS_SUPPORT_STANDARD_PREDEFINES");
-#endif
-#ifdef NSIS_FIX_COMMENT_HANDLING
-  // Added by Sunil Kamath 15 October 2005
-  definedlist.add("NSIS_FIX_COMMENT_HANDLING");
-#endif
+  definedlist.add("NSIS_SUPPORT_NAMED_USERVARS");
+  definedlist.add("NSIS_SUPPORT_LANG_IN_STRINGS");
 
-// no more optional
-definedlist.add("NSIS_SUPPORT_NAMED_USERVARS");
-
-#ifdef NSIS_SUPPORT_VERSION_INFO
-  definedlist.add("NSIS_SUPPORT_VERSION_INFO");
-#endif
-
-// no more optional
-definedlist.add("NSIS_SUPPORT_LANG_IN_STRINGS");
-
-#ifdef NSIS_FIX_DEFINES_IN_STRINGS
-  definedlist.add("NSIS_FIX_DEFINES_IN_STRINGS");
-#endif
-
-#ifdef NSIS_CONFIG_CONST_DATA_PATH
-  definedlist.add("NSIS_CONFIG_CONST_DATA_PATH");
+#ifdef _WIN32
+  definedlist.add("NSIS_WIN32_MAKENSIS");
 #endif
 
   db_opt_save=db_comp_save=db_full_size=db_opt_save_u=db_comp_save_u=db_full_size_u=0;
@@ -617,7 +463,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
                 // So the line below must be commented !??
                 //m_UserVarNames.inc_reference(idxUserVar);
                 *out++ = (unsigned int) NS_VAR_CODE; // Named user variable;
-                *(WORD*)out = CODE_SHORT(idxUserVar);
+                *(WORD*)out = FIX_ENDIAN_INT16(CODE_SHORT(idxUserVar));
                 out += sizeof(WORD);
                 p += pUserVarName-p;
                 bProceced = true;
@@ -661,7 +507,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
               if (idx < 0)
               {
                 *out++ = (unsigned int)NS_LANG_CODE; // Next word is lang-string Identifier
-                *(WORD*)out= CODE_SHORT(-idx-1);
+                *(WORD*)out = FIX_ENDIAN_INT16(CODE_SHORT(-idx-1));
                 out += sizeof(WORD);
                 p += strlen(cp) + 2;
                 bProceced = true;
@@ -880,7 +726,7 @@ int CEXEBuild::add_db_data(IMMap *mmap) // returns offset
         done=1;
         db->resize(st + used + sizeof(int));
 
-        *(int*)db->get(st, sizeof(int)) = used | 0x80000000;
+        *(int*)db->get(st, sizeof(int)) = FIX_ENDIAN_INT32(used | 0x80000000);
         db->release();
 
         int nst = datablock_optimize(st, used | 0x80000000);
@@ -897,7 +743,7 @@ int CEXEBuild::add_db_data(IMMap *mmap) // returns offset
   {
     db->resize(st + length + sizeof(int));
     int *plen = (int *) db->get(st, sizeof(int));
-    *plen = length;
+    *plen = FIX_ENDIAN_INT32(length);
     db->release();
 
     int left = length;
@@ -968,7 +814,7 @@ int CEXEBuild::add_data(const char *data, int length, IGrowBuf *dblock) // retur
       done=1;
       dblock->resize(st+used+sizeof(int));
 
-      *((int*)((char *)dblock->get()+st)) = used|0x80000000;
+      *((int*)((char *)dblock->get()+st)) = FIX_ENDIAN_INT32(used|0x80000000);
     }
     compressor->End();
   }
@@ -977,7 +823,8 @@ int CEXEBuild::add_data(const char *data, int length, IGrowBuf *dblock) // retur
   if (!done)
   {
     dblock->resize(st);
-    dblock->add(&length,sizeof(int));
+    int rl = FIX_ENDIAN_INT32(length);
+    dblock->add(&rl,sizeof(int));
     dblock->add(data,length);
   }
 
@@ -1726,22 +1573,29 @@ int CEXEBuild::AddVersionInfo()
       rVersionInfo.SetFileVersion(MAKELONG(iml, imm),MAKELONG(ill, ilm));
       rVersionInfo.SetProductVersion(MAKELONG(iml, imm),MAKELONG(ill, ilm));
 
-      init_res_editor();
-      for ( int i = 0; i < rVersionInfo.GetStringTablesCount(); i++ )
+      try
       {
-        LANGID lang_id = rVersionInfo.GetLangID(i);
-        int code_page = rVersionInfo.GetCodePage(i);
-        LanguageTable *Table = GetLangTable(lang_id);
+        init_res_editor();
+        for ( int i = 0; i < rVersionInfo.GetStringTablesCount(); i++ )
+        {
+          LANGID lang_id = rVersionInfo.GetLangID(i);
+          int code_page = rVersionInfo.GetCodePage(i);
+          LanguageTable *Table = GetLangTable(lang_id);
 
-        if ( !rVersionInfo.FindKey(lang_id, code_page, "FileVersion") )
-          warning("Generating version information for language \"%04d-%s\" without standard key \"FileVersion\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
-        if ( !rVersionInfo.FindKey(lang_id, code_page, "FileDescription") )
-          warning("Generating version information for language \"%04d-%s\" without standard key \"FileDescription\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
-        if ( !rVersionInfo.FindKey(lang_id, code_page, "LegalCopyright") )
-          warning("Generating version information for language \"%04d-%s\" without standard key \"LegalCopyright\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+          if ( !rVersionInfo.FindKey(lang_id, code_page, "FileVersion") )
+            warning("Generating version information for language \"%04d-%s\" without standard key \"FileVersion\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+          if ( !rVersionInfo.FindKey(lang_id, code_page, "FileDescription") )
+            warning("Generating version information for language \"%04d-%s\" without standard key \"FileDescription\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
+          if ( !rVersionInfo.FindKey(lang_id, code_page, "LegalCopyright") )
+            warning("Generating version information for language \"%04d-%s\" without standard key \"LegalCopyright\"", lang_id, Table->nlf.m_bLoaded ? Table->nlf.m_szName : lang_id == 1033 ? "English" : "???");
 
-        rVersionInfo.ExportToStream(VerInfoStream, i);
-        res_editor->UpdateResource(RT_VERSION, 1, lang_id, (BYTE*)VerInfoStream.get(), VerInfoStream.getlen());
+          rVersionInfo.ExportToStream(VerInfoStream, i);
+          res_editor->UpdateResource(RT_VERSION, 1, lang_id, (BYTE*)VerInfoStream.get(), VerInfoStream.getlen());
+        }
+      }
+      catch (exception& err) {
+        ERROR_MSG("Error adding version information: %s\n", err.what());
+        return PS_ERROR;
       }
     }
   }
@@ -2192,31 +2046,46 @@ void CEXEBuild::PrepareInstTypes()
 
 void CEXEBuild::PrepareHeaders(IGrowBuf *hdrbuf)
 {
-  hdrbuf->add(cur_header,sizeof(header));
+  GrowBuf blocks_buf;
+  growbuf_writer_sink sink(&blocks_buf);
+
 #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
-  cur_header->blocks[NB_PAGES].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_pages->get(),cur_pages->getlen());
+  cur_header->blocks[NB_PAGES].offset = sizeof(header) + blocks_buf.getlen();
+  page_writer::write_block(cur_pages, &sink);
 #endif
-  cur_header->blocks[NB_SECTIONS].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_sections->get(),cur_sections->getlen());
-  cur_header->blocks[NB_ENTRIES].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_entries->get(),cur_entries->getlen());
-  cur_header->blocks[NB_STRINGS].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_strlist->get(),cur_strlist->getlen());
-  cur_header->blocks[NB_LANGTABLES].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_langtables->get(),cur_langtables->getlen());
-  cur_header->blocks[NB_CTLCOLORS].offset = hdrbuf->getlen();
-  hdrbuf->add(cur_ctlcolors->get(),cur_ctlcolors->getlen());
+
+  cur_header->blocks[NB_SECTIONS].offset = sizeof(header) + blocks_buf.getlen();
+  section_writer::write_block(cur_sections, &sink);
+
+  cur_header->blocks[NB_ENTRIES].offset = sizeof(header) + blocks_buf.getlen();
+  entry_writer::write_block(cur_entries, &sink);
+
+  cur_header->blocks[NB_STRINGS].offset = sizeof(header) + blocks_buf.getlen();
+  blocks_buf.add(cur_strlist->get(), cur_strlist->getlen());
+
+  cur_header->blocks[NB_LANGTABLES].offset = sizeof(header) + blocks_buf.getlen();
+  lang_table_writer::write_block(cur_langtables, &sink, cur_header->langtable_size);
+
+  cur_header->blocks[NB_CTLCOLORS].offset = sizeof(header) + blocks_buf.getlen();
+  ctlcolors_writer::write_block(cur_ctlcolors, &sink);
+
 #ifdef NSIS_SUPPORT_BGBG
   if (cur_header->bg_color1 != -1)
   {
-    bg_font.lfFaceName[LF_FACESIZE-1]=0;
-    cur_header->blocks[NB_BGFONT].offset = hdrbuf->getlen();
-    hdrbuf->add(&bg_font,sizeof(LOGFONT));
+    bg_font.lfFaceName[LF_FACESIZE-1] = 0;
+
+    cur_header->blocks[NB_BGFONT].offset = sizeof(header) + blocks_buf.getlen();
+
+    LOGFONT_writer w(&sink);
+    w.write(&bg_font);
   }
 #endif
 
-  memcpy(hdrbuf->get(),cur_header,sizeof(header));
+  growbuf_writer_sink sink2(hdrbuf);
+  header_writer header(&sink2);
+  header.write(cur_header);
+
+  sink2.write_growbuf(&blocks_buf);
 }
 
 int CEXEBuild::check_write_output_errors() const
@@ -2376,18 +2245,19 @@ int CEXEBuild::write_output(void)
   // Generate language tables
   RET_UNLESS_OK( GenerateLangTables() );
 
-  init_res_editor();
-  VerifyDeclaredUserVarRefs(&m_UserVarNames);
-  int MaxUserVars = m_UserVarNames.getnum();
-  // -1 because the default size is 1
-  if (!res_editor->AddExtraVirtualSize2PESection(NSIS_VARS_SECTION, (MaxUserVars - 1) * sizeof(NSIS_STRING)))
-  {
-    ERROR_MSG("Internal compiler error #12346: invalid exehead cannot find section \"%s\"!\n", NSIS_VARS_SECTION);
-    return PS_ERROR;
-  }
-
-  // Save all changes to the exe header
   try {
+    init_res_editor();
+
+    VerifyDeclaredUserVarRefs(&m_UserVarNames);
+    int MaxUserVars = m_UserVarNames.getnum();
+    // -1 because the default size is 1
+    if (!res_editor->AddExtraVirtualSize2PESection(NSIS_VARS_SECTION, (MaxUserVars - 1) * sizeof(NSIS_STRING)))
+    {
+      ERROR_MSG("Internal compiler error #12346: invalid exehead cannot find section \"%s\"!\n", NSIS_VARS_SECTION);
+      return PS_ERROR;
+    }
+
+    // Save all changes to the exe header
     close_res_editor();
   }
   catch (exception& err) {
@@ -2483,7 +2353,13 @@ int CEXEBuild::write_output(void)
     else
       fd_start=ftell(fp);
 
-    if (fwrite(&fh,1,sizeof(fh),fp) != sizeof(fh))
+    try
+    {
+      file_writer_sink sink(fp);
+      firstheader_writer w(&sink);
+      w.write(&fh);
+    }
+    catch (...)
     {
       ERROR_MSG("Error: can't write %d bytes to output\n",sizeof(fh));
       fclose(fp);
@@ -2508,7 +2384,10 @@ int CEXEBuild::write_output(void)
         return PS_ERROR;
       }
 #ifdef NSIS_CONFIG_CRC_SUPPORT
-      crc=CRC32(crc,(unsigned char*)&fh,sizeof(fh));
+      crc_writer_sink crc_sink((unsigned long *) &crc);
+      firstheader_writer w(&crc_sink);
+      w.write(&fh);
+
       crc=CRC32(crc,(unsigned char*)ihd.get(),ihd.getlen());
 #endif
     }
@@ -2693,7 +2572,19 @@ int CEXEBuild::write_output(void)
     );
 
     fseek(fp,fd_start,SEEK_SET);
-    fwrite(&fh,sizeof(fh),1,fp);
+
+    try
+    {
+      file_writer_sink sink(fp);
+      firstheader_writer w(&sink);
+      w.write(&fh);
+    }
+    catch (...)
+    {
+      ERROR_MSG("Error: can't write %d bytes to output\n",sizeof(fh));
+      fclose(fp);
+      return PS_ERROR;
+    }
 
 #ifdef NSIS_CONFIG_CRC_SUPPORT
     if (build_crcchk)
@@ -2716,7 +2607,8 @@ int CEXEBuild::write_output(void)
   if (build_crcchk)
   {
     total_usize+=sizeof(int);
-    if (fwrite(&crc,1,sizeof(int),fp) != sizeof(int))
+    int rcrc = FIX_ENDIAN_INT32(crc);
+    if (fwrite(&rcrc,1,sizeof(int),fp) != sizeof(int))
     {
       ERROR_MSG("Error: can't write %d bytes to output\n",sizeof(int));
       fclose(fp);
@@ -2805,8 +2697,7 @@ int CEXEBuild::uninstall_generate()
 
     // Get offsets of icons to replace for uninstall
     // Also makes sure that the icons are there and in the right size.
-    // TODO: fix generate_unicons_offsets to check ranges (!)
-    if (generate_unicons_offsets(m_exehead, m_unicon_data) == 0)
+    if (generate_unicons_offsets(m_exehead, m_exehead_size, m_unicon_data) == 0)
       return PS_ERROR;
 
     entry *ent = (entry *) build_entries.get();
@@ -2843,9 +2734,9 @@ int CEXEBuild::uninstall_generate()
       // patch the icons
       LPBYTE seeker = m_unicon_data;
       while (*seeker) {
-        DWORD dwSize = *(LPDWORD) seeker;
+        DWORD dwSize = FIX_ENDIAN_INT32(*(LPDWORD) seeker);
         seeker += sizeof(DWORD);
-        DWORD dwOffset = *(LPDWORD) seeker;
+        DWORD dwOffset = FIX_ENDIAN_INT32(*(LPDWORD) seeker);
         seeker += sizeof(DWORD);
         memcpy(uninst_header + dwOffset, seeker, dwSize);
         seeker += dwSize;
@@ -2876,7 +2767,11 @@ int CEXEBuild::uninstall_generate()
 
     MMapBuf udata;
 
-    udata.add(&fh, sizeof(fh));
+    {
+      growbuf_writer_sink sink(&udata);
+      firstheader_writer w(&sink);
+      w.write(&fh);
+    }
 
     ubuild_datablock.setro(TRUE);
 
@@ -2937,7 +2832,7 @@ int CEXEBuild::uninstall_generate()
       }
 
       firstheader *_fh=(firstheader *)udata.get(0, sizeof(firstheader));
-      _fh->length_of_all_following_data=udata.getlen()+(build_crcchk?sizeof(int):0);
+      _fh->length_of_all_following_data=FIX_ENDIAN_INT32(udata.getlen()+(build_crcchk?sizeof(int):0));
       udata.release();
     }
     else
@@ -2979,6 +2874,7 @@ int CEXEBuild::uninstall_generate()
         left -= l;
       }
       udata.setro(FALSE);
+      FIX_ENDIAN_INT32_INPLACE(crc);
       udata.add(&crc, sizeof(crc));
       udata.setro(TRUE);
     }

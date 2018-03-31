@@ -1,16 +1,21 @@
 target = 'test'
 
 tests = Split("""
+	DialogTemplate.cpp
 	endian.cpp
 	mmap.cpp
+	ResourceEditor.cpp
 	specmatch.cpp
 	textrunner.cpp
 """)
 
 required = Split("""
+	DialogTemplate.cpp
 	dirreader.cpp
 	growbuf.cpp
 	mmap.cpp
+	ResourceEditor.cpp
+	util.cpp
 """)
 
 cppunitlibs = Split("""
@@ -19,6 +24,9 @@ cppunitlibs = Split("""
 
 extralibs = Split("""
 	dl
+	gdi32
+	iconv
+	user32
 """)
 
 scripts = Split("""

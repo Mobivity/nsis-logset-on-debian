@@ -184,15 +184,33 @@ Var /GLOBAL MUI_TEMP2
 
 !macroend
 
+!macro MUI_HEADER_TEXT_INTERNAL ID TEXT
+
+  GetDlgItem $MUI_TEMP1 $HWNDPARENT "${ID}"
+
+  !ifdef MUI_HEADER_TRANSPARENT_TEXT
+
+    ShowWindow $MUI_TEMP1 ${SW_HIDE}
+
+  !endif
+
+  SendMessage $MUI_TEMP1 ${WM_SETTEXT} 0 "STR:${TEXT}"
+
+  !ifdef MUI_HEADER_TRANSPARENT_TEXT
+
+    ShowWindow $MUI_TEMP1 ${SW_SHOWNA}
+
+  !endif
+
+!macroend
+
 !macro MUI_HEADER_TEXT TEXT SUBTEXT
 
   !verbose push
   !verbose ${MUI_VERBOSE}
 
-  GetDlgItem $MUI_TEMP1 $HWNDPARENT 1037
-  SendMessage $MUI_TEMP1 ${WM_SETTEXT} 0 "STR:${TEXT}"
-  GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
-  SendMessage $MUI_TEMP1 ${WM_SETTEXT} 0 "STR:${SUBTEXT}"
+  !insertmacro MUI_HEADER_TEXT_INTERNAL 1037 "${TEXT}"
+  !insertmacro MUI_HEADER_TEXT_INTERNAL 1038 "${SUBTEXT}"
 
   !verbose pop
 
@@ -339,10 +357,22 @@ Var /GLOBAL MUI_TEMP2
   GetDlgItem $MUI_TEMP1 $HWNDPARENT 1037
   CreateFont $MUI_TEMP2 "$(^Font)" "$(^FontSize)" "700"
   SendMessage $MUI_TEMP1 ${WM_SETFONT} $MUI_TEMP2 0
-  SetCtlColors $MUI_TEMP1 "" "${MUI_BGCOLOR}"
 
-  GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
-  SetCtlColors $MUI_TEMP1 "" "${MUI_BGCOLOR}"
+  !ifndef MUI_HEADER_TRANSPARENT_TEXT
+
+    SetCtlColors $MUI_TEMP1 "" "${MUI_BGCOLOR}"
+
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
+    SetCtlColors $MUI_TEMP1 "" "${MUI_BGCOLOR}"
+
+  !else
+
+    SetCtlColors $MUI_TEMP1 "" "transparent"
+
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
+    SetCtlColors $MUI_TEMP1 "" "transparent"
+
+  !endif
 
   GetDlgItem $MUI_TEMP1 $HWNDPARENT 1034
   SetCtlColors $MUI_TEMP1 "" "${MUI_BGCOLOR}"
@@ -849,6 +879,11 @@ Var /GLOBAL MUI_TEMP2
     !define "MUI_STARTMENUPAGE_${ID}_REGISTRY_VALUENAME" "${MUI_STARTMENUPAGE_REGISTRY_VALUENAME}"
   !endif
 
+  !ifndef MUI_VAR_HWND
+    Var /GLOBAL MUI_HWND
+    !define MUI_VAR_HWND
+  !endif
+
   PageEx ${MUI_PAGE_UNINSTALLER_FUNCPREFIX}custom
 
     PageCallbacks ${MUI_PAGE_UNINSTALLER_FUNCPREFIX}mui.StartmenuPre_${MUI_UNIQUEID} ${MUI_PAGE_UNINSTALLER_FUNCPREFIX}mui.StartmenuLeave_${MUI_UNIQUEID}
@@ -1165,7 +1200,7 @@ Var /GLOBAL MUI_TEMP2
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
     ShowWindow $MUI_TEMP1 ${SW_HIDE}
 
-	GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
     ShowWindow $MUI_TEMP1 ${SW_HIDE}
 
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1045
@@ -1205,7 +1240,7 @@ Var /GLOBAL MUI_TEMP2
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
     ShowWindow $MUI_TEMP1 ${SW_NORMAL}
 
-	GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
     ShowWindow $MUI_TEMP1 ${SW_NORMAL}
 
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1045
@@ -1313,18 +1348,24 @@ Var /GLOBAL MUI_TEMP2
 
     StrCmp $(^RTL) 0 mui.startmenu_nortl
       !ifndef MUI_STARTMENUPAGE_NODISABLE
-        StartMenu::Select /rtl /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" /checknoshortcuts "${MUI_STARTMENUPAGE_TEXT_CHECKBOX}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
+        StartMenu::Init /NOUNLOAD /rtl /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" /checknoshortcuts "${MUI_STARTMENUPAGE_TEXT_CHECKBOX}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
       !else
-        StartMenu::Select /rtl /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
+        StartMenu::Init /NOUNLOAD /rtl /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
       !endif
-      Goto mui.startmenu_calldone
+      Goto mui.startmenu_initdone
     mui.startmenu_nortl:
       !ifndef MUI_STARTMENUPAGE_NODISABLE
-        StartMenu::Select /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" /checknoshortcuts "${MUI_STARTMENUPAGE_TEXT_CHECKBOX}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
+        StartMenu::Init /NOUNLOAD /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" /checknoshortcuts "${MUI_STARTMENUPAGE_TEXT_CHECKBOX}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
       !else
-        StartMenu::Select /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
+        StartMenu::Init /NOUNLOAD /noicon /autoadd /text "${MUI_STARTMENUPAGE_TEXT_TOP}" /lastused "${MUI_STARTMENUPAGE_VARIABLE}" "${MUI_STARTMENUPAGE_DEFAULTFOLDER}"
       !endif
-    mui.startmenu_calldone:
+    mui.startmenu_initdone:
+
+  Pop $MUI_HWND
+
+  !insertmacro MUI_PAGE_FUNCTION_CUSTOM SHOW
+
+  StartMenu::Show
 
     Pop $MUI_TEMP1
     StrCmp $MUI_TEMP1 "success" 0 +2
@@ -1619,7 +1660,7 @@ Var /GLOBAL MUI_TEMP2
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
     ShowWindow $MUI_TEMP1 ${SW_HIDE}
 
-	GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
     ShowWindow $MUI_TEMP1 ${SW_HIDE}
 
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1045
@@ -1712,7 +1753,7 @@ Var /GLOBAL MUI_TEMP2
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1038
     ShowWindow $MUI_TEMP1 ${SW_NORMAL}
 
-	GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
+    GetDlgItem $MUI_TEMP1 $HWNDPARENT 1039
     ShowWindow $MUI_TEMP1 ${SW_NORMAL}
 
     GetDlgItem $MUI_TEMP1 $HWNDPARENT 1045

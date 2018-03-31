@@ -109,11 +109,31 @@
 ### Get library version
 !macro __InstallLib_Helper_GetVersion TYPE FILE
 
-  !tempfile LIBRARY_TEMP_NSH
-  !execute '"${NSISDIR}\Bin\LibraryLocal.exe" "${TYPE}" "${FILE}" "${LIBRARY_TEMP_NSH}"'
-  !include "${LIBRARY_TEMP_NSH}"
-  !delfile "${LIBRARY_TEMP_NSH}"
-  !undef LIBRARY_TEMP_NSH
+  !ifdef NSIS_WIN32_MAKENSIS
+
+    !tempfile LIBRARY_TEMP_NSH
+    !execute '"${NSISDIR}\Bin\LibraryLocal.exe" "${TYPE}" "${FILE}" "${LIBRARY_TEMP_NSH}"'
+    !include "${LIBRARY_TEMP_NSH}"
+    !delfile "${LIBRARY_TEMP_NSH}"
+    !undef LIBRARY_TEMP_NSH
+
+  !else
+
+    !ifndef INSTALLLIB_GETVERSION_VARS_DEFINED
+
+      !define INSTALLLIB_GETVERSION_VARS_DEFINED
+
+      Var /GLOBAL $INSTALLLIB_VER_LOW
+      Var /GLOBAL $INSTALLLIB_VER_HIGH
+
+    !endif
+
+    !define LIBRARY_VERSION_LOW $INSTALLLIB_VER_LOW
+    !define LIBRARY_VERSION_HIGH $INSTALLLIB_VER_HIGH
+
+    GetDLLVersionLocal "${FILE}" $INSTALLLIB_VER_HIGH $INSTALLLIB_VER_LOW
+
+  !endif
 
 !macroend
 
@@ -461,6 +481,8 @@
   !endif
 
   "installlib.file_${INSTALLLIB_UNIQUE}:"
+    SetFileAttributes $R0 FILE_ATTRIBUTE_NORMAL
+    ClearErrors
     File /oname=$R0 "${LOCALFILE}"
     Return
 

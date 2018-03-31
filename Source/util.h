@@ -28,24 +28,13 @@ void replace_icon(CResourceEditor* re, WORD wIconId, const char* filename);
 // returns the data of the uninstaller icon (inside filename) that should replace the installer icon data
 unsigned char* generate_uninstall_icon_data(const char* filename, size_t &size);
 // Fill the array of icons for uninstall with their offsets
-int generate_unicons_offsets(unsigned char* exeHeader, unsigned char* uninstIconData);
+int generate_unicons_offsets(unsigned char* exeHeader, size_t exeHeaderSize, unsigned char* uninstIconData);
 #endif//NSIS_CONFIG_UNINSTALL_SUPPORT
 
 // returns the number of WCHARs in str including null charcter
 size_t WCStrLen(const WCHAR* szwStr);
 
 size_t my_strftime(char *s, size_t max, const char  *fmt, const struct tm *tm);
-
-#ifndef __BIG_ENDIAN__
-# define FIX_ENDIAN_INT32_INPLACE(x) (x)
-#else
-# define FIX_ENDIAN_INT32_INPLACE(x) ((x) = SWAP_ENDIAN_INT32(x))
-#endif
-#define SWAP_ENDIAN_INT32(x) ( \
-  (((x)&0xFF000000) >> 24) | \
-  (((x)&0x00FF0000) >>  8) | \
-  (((x)&0x0000FF00) <<  8) | \
-  (((x)&0x000000FF) << 24) )
 
 std::string get_full_path(const std::string& path);
 std::string get_dir_name(const std::string& path);

@@ -2691,16 +2691,20 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       char *value;
       char datebuf[256];
       char mathbuf[256];
-      bool date=false;
 
-      if (!stricmp(define,"/date")) {
+      if (!stricmp(define,"/date") || !stricmp(define,"/utcdate")) {
         if (line.getnumtokens()!=4) PRINTHELP()
+
+        char *date_type = define;
 
         define=line.gettoken_str(2);
         value=line.gettoken_str(3);
 
         time_t rawtime;
         time(&rawtime);
+
+        if (!stricmp(date_type,"/utcdate"))
+          rawtime = mktime(gmtime(&rawtime));
 
         datebuf[0]=0;
         size_t s=strftime(datebuf,sizeof(datebuf),value,localtime(&rawtime));
@@ -2711,8 +2715,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           datebuf[max(s,sizeof(datebuf)-1)]=0;
 
         value=datebuf;
-
-        date=true;
 
       } else if (!stricmp(define,"/math")) {
       
@@ -2759,7 +2761,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         ERROR_MSG("!define: \"%s\" already defined!\n",define);
         return PS_ERROR;
       }
-      SCRIPT_MSG("!define: %s\"%s\"=\"%s\"\n",date?"/date ":"",define,date?line.gettoken_str(3):value);
+      SCRIPT_MSG("!define: \"%s\"=\"%s\"\n",define,value);
     }
     return PS_OK;
     case TOK_P_UNDEF:
@@ -5256,7 +5258,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           ent.offsets[2]=OPEN_ALWAYS;
         }
 
-        if (ent.offsets[3] < 0 || !ent.offsets[1]) PRINTHELP()
+        if (ent.offsets[0] < 0 || !ent.offsets[1]) PRINTHELP()
       }
       SCRIPT_MSG("FileOpen: %s as %s -> %s\n",line.gettoken_str(2),line.gettoken_str(3),line.gettoken_str(1));
     return add_entry(&ent);
