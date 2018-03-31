@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Ta èarovnik vas bo vodil skozi odstranitev $(^NameDA).$\r$\n$\r$\nPreden priènete z odstranitvijo, se preprièajte, da aplikacija $(^NameDA) ni zagnana.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "Do&konèaj"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Licenèna pogodba"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Prosimo, da si ogledate pogoje licenène pogodbe pred namestitvijo $(^NameDA)."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Opis"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Izbor komponent"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Izberite komponente $(^NameDA), ki jih želite odstraniti."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Raèunalnik želim ponovno zagnati kasneje"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Zaženi $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Pokaži BeriMe"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "Do&konèaj"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "This wizard will guide you through the uninstallation of $(^NameDA).$\r$\n$\r$\nBefore starting the uninstallation, make sure $(^NameDA) is not running.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Finish"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "License Agreement"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Please review the license terms before installing $(^NameDA)."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Description"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Choose Components"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Choose which features of $(^NameDA) you want to uninstall."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "I want to manually reboot later"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Run $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Show Readme"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Finish"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

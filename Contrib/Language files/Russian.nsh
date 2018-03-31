@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Эта программа удалит $(^NameDA) из вашего компьютера.$\r$\n$\r$\nПеред началом удаления убедитесь, что программа $(^NameDA) не запущена.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Готово"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Лицензионное соглашение"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Перед установкой $(^NameDA) ознакомьтесь с лицензионным соглашением."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Описание"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Компоненты программы"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Выберите компоненты $(^NameDA), которые вы хотите удалить."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Нет, я перезагружу ПК позже"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Запустить $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Показать файл ReadMe"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Готово"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

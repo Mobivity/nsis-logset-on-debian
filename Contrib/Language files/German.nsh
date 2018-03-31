@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Dieser Assistent wird Sie durch die Deinstallation von $(^NameDA) begleiten.$\r$\n$\r$\nBitte beenden Sie $(^NameDA), bevor Sie mit der Deinstallation fortfahren.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Fertig stellen"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Lizenzabkommen"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Bitte lesen Sie die Lizenzbedingungen durch, bevor Sie mit der Installation fortfahren."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Beschreibung"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Komponenten auswählen"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Wählen Sie die Komponenten aus, die Sie entfernen möchten."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Windows später selbst neu starten"
   ${LangFileString} MUI_TEXT_FINISH_RUN "$(^NameDA) ausführen"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "Liesmich anzeigen"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Fertig stellen"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

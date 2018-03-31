@@ -1450,15 +1450,13 @@ static BOOL CALLBACK SelProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 #endif//NSIS_CONFIG_VISIBLE_SUPPORT
 
-int ui_st_updateflag=0x6;
-
 void NSISCALL update_status_text(int strtab, const char *text) {
   static char tmp[NSIS_MAX_STRLEN*2];
   LVITEM new_item;
   HWND linsthwnd = insthwnd;
   if (linsthwnd)
   {
-    int updateflag = ui_st_updateflag;
+    int updateflag = g_exec_flags.status_update;
     int tmplen;
 
     if (!(updateflag & 1))
@@ -1472,8 +1470,8 @@ void NSISCALL update_status_text(int strtab, const char *text) {
       mystrcat(tmp, text);
     }
 
-    if ((updateflag & 4)) my_SetWindowText(insthwnd2, tmp);
-    if ((updateflag & 2))
+    if ((updateflag & 4) == 0) my_SetWindowText(insthwnd2, tmp);
+    if ((updateflag & 2) == 0)
     {
       new_item.mask = LVIF_TEXT;
       new_item.pszText = tmp;

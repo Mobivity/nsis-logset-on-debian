@@ -14,10 +14,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Kreator poprowadzi Ciê przez proces deinstalacji $(^NameDA).$\r$\n$\r$\nPrzed rozpoczêciem deinstalacji programu, upewnij siê, czy $(^NameDA) NIE jest w³aœnie uruchomiony.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Zakoñcz"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Umowa licencyjna"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Przed instalacj¹ programu $(^NameDA) zapoznaj siê z warunkami licencji."
@@ -44,7 +40,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Opis"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Wybierz komponenty"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Wybierz, które elementy $(^NameDA) chcesz odinstalowaæ."
 !endif
@@ -102,6 +98,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Sam uruchomiê ponownie komputer póŸniej"
   ${LangFileString} MUI_TEXT_FINISH_RUN "Uruchom program $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "Poka¿ plik ReadMe"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Zakoñcz"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

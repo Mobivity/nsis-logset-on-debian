@@ -14,10 +14,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Tento prùvodce Vás provede odinstalací $(^NameDA).$\r$\n$\r$\nPøed zaèátkem odinstalace, se pøesvìdète, že $(^NameDA) není spuštìn.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Dokonèit"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Licenèní ujednání"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Pøed instalací programu $(^NameDA) si prosím prostudujte licenèní podmínky."
@@ -44,7 +40,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Popis"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Volba souèástí"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Zvolte souèásti programu $(^NameDA), které chcete odinstalovat."
 !endif
@@ -102,6 +98,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Restartovat ruènì pozdìji"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Spustit program $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Zobrazit Èti-mne"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Dokonèit"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

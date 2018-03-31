@@ -325,6 +325,18 @@ Finish page (implemented using nsDialogs)
     !ifndef MUI_FINISHPAGE_NOREBOOTSUPPORT
 
       ${if} ${RebootFlag}
+
+        ;Title text
+        ${NSD_CreateLabel} 120u 10u 195u ${MUI_FINISHPAGE_TITLE_HEIGHT}u "${MUI_FINISHPAGE_TITLE}"
+        Pop $mui.FinishPage.Title
+        SetCtlColors $mui.FinishPage.Title "" "${MUI_BGCOLOR}"
+        CreateFont $mui.FinishPage.Title.Font "$(^Font)" "12" "700"
+        SendMessage $mui.FinishPage.Title ${WM_SETFONT} $mui.FinishPage.Title.Font 0
+
+        ;Finish text
+        ${NSD_CreateLabel} 120u 45u 195u ${MUI_FINISHPAGE_TEXT_HEIGHT_BUTTONS}u "${MUI_FINISHPAGE_TEXT_REBOOT}"
+        Pop $mui.FinishPage.Text
+        SetCtlColors $mui.FinishPage.Text "" "${MUI_BGCOLOR}"
       
         ;Radio buttons for reboot page
         ${NSD_CreateRadioButton} 120u ${MUI_FINISHPAGE_REBOOTNOW_TOP}u 195u 10u "${MUI_FINISHPAGE_TEXT_REBOOTNOW}"
@@ -333,7 +345,7 @@ Finish page (implemented using nsDialogs)
         ${NSD_CreateRadioButton} 120u ${MUI_FINISHPAGE_REBOOTLATER_TOP}u 195u 10u "${MUI_FINISHPAGE_TEXT_REBOOTLATER}"
         Pop $mui.FinishPage.RebootLater
         SetCtlColors $mui.FinishPage.RebootLater "" "${MUI_BGCOLOR}"
-        
+
       ${else}
 
     !endif
@@ -395,7 +407,7 @@ Finish page (implemented using nsDialogs)
     ;Show page
     Call ${MUI_PAGE_UNINSTALLER_FUNCPREFIX}muiPageLoadFullWindow
     !insertmacro MUI_PAGE_FUNCTION_CUSTOM SHOW
-    nsDialogs::Show /NOUNLOAD
+    nsDialogs::Show
     Call ${MUI_PAGE_UNINSTALLER_FUNCPREFIX}muiPageUnloadFullWindow 
     
     !ifdef MUI_FINISHPAGE_CANCEL_ENABLED
@@ -425,8 +437,8 @@ Finish page (implemented using nsDialogs)
 
       ;Check whether the user has chosen to reboot the computer
       ${if} ${RebootFlag}
-        SendMessage $mui.FinishPage.RebootNow ${BM_SETCHECK} 0 0 $mui.FinishPage.ReturnValue
-        ${if} $mui.FinishPage.ReturnValue == ${BST_CHECKED}
+        SendMessage $mui.FinishPage.RebootNow ${BM_GETCHECK} 0 0 $mui.FinishPage.ReturnValue
+        ${if} $mui.FinishPage.ReturnValue = ${BST_CHECKED}
           Reboot
         ${else}
           Return
@@ -441,7 +453,7 @@ Finish page (implemented using nsDialogs)
     
       SendMessage $mui.FinishPage.Run ${BM_GETCHECK} 0 0 $mui.FinishPage.ReturnValue
 
-      ${if} $mui.FinishPage.ReturnValue == ${BST_CHECKED}
+      ${if} $mui.FinishPage.ReturnValue = ${BST_CHECKED}
         !ifndef MUI_FINISHPAGE_RUN_FUNCTION
           !ifndef MUI_FINISHPAGE_RUN_PARAMETERS
             Exec "$\"${MUI_FINISHPAGE_RUN}$\""
@@ -459,7 +471,7 @@ Finish page (implemented using nsDialogs)
 
       SendMessage $mui.FinishPage.ShowReadme ${BM_GETCHECK} 0 0 $mui.FinishPage.ReturnValue
 
-      ${if} $mui.FinishPage.ReturnValue == ${BST_CHECKED}
+      ${if} $mui.FinishPage.ReturnValue = ${BST_CHECKED}
         !ifndef MUI_FINISHPAGE_SHOWREADME_FUNCTION
           ExecShell open "${MUI_FINISHPAGE_SHOWREADME}"
         !else

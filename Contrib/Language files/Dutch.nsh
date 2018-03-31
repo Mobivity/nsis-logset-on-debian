@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Deze wizard zal $(^NameDA) van uw syteem verwijderen.$\r$\n$\r$\nControleer voordat u begint met verwijderen of $(^NameDA) is afgesloten.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Voltooien"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Licentieovereenkomst"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Lees de licentieovereenkomst voordat u $(^NameDA) installeert."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Beschrijving"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Onderdelen kiezen"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Kies de onderdelen die u wilt verwijderen."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Ik wil later handmatig herstarten"
   ${LangFileString} MUI_TEXT_FINISH_RUN "$(^NameDA) &starten"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Leesmij weergeven"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Voltooien"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

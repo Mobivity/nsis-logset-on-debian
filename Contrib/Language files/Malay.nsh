@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Uninstall Wizard akan membantu anda pada proses membuang $(^NameDA).$\r$\n$\r$\nSebelum membuang, pastikan dulu $(^NameDA) dimatikan.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Selesai"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Perlesenan"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Sila baca teks lesen berikut sebelum memasukkan $(^NameDA)."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Penerangan"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Pilih Komponen"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Pilih fungsi-fungsi $(^NameDA) yang ingin dibuang."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Reboot nanti"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Jalankan $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Buka fail Readme"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Selesai"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

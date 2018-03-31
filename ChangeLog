@@ -1,3 +1,246 @@
+2007-09-29  kichik
+
+	* Menu/images/header.gif: 2.31
+
+2007-09-29  kichik
+
+	* Docs/src/history.but: 2.31
+
+2007-09-29  kichik
+
+	* SCons/Config/gnu: fixed bug #1800834 - CVS FTBFS with new mingw32
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI 2/Pages/Finish.nsh: unload nsDialogs after it's
+	done
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI 2/Pages/Finish.nsh: display reboot text
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI 2/Pages/Finish.nsh: - use BM_GETCHECK instead
+	of BM_SETCHECK to get reboot now's state - compare check state as a
+	number (rebooting should work now)
+
+2007-09-28  kichik
+
+	* Include/WinMessages.nsh: convert BST_* to numbers without prefix
+	for easier comparison
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI 2/Localization.nsh: fixed
+	mui.LangDLL.RegistryLanguage variable warning when
+	MUI_LANGDLL_REGISTRY_ROOT and friends weren't used
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI 2/Interface.nsh: removed stray Goto
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI/System.nsh: tabs to spaces
+
+2007-09-28  kichik
+
+	* Contrib/Modern UI/System.nsh: add Nsis2Io only when it's really
+	needed to avoid unused function warnings
+
+2007-09-28  kichik
+
+	* Contrib/InstallOptions/InstallOptions.nsh: allow multiple
+	inclusions
+
+2007-09-28  kichik
+
+	* Contrib/InstallOptions/InstallOptions.nsh: fixed bug #1786899 -
+	MUI_PAGE_WELCOME error when use SimpChinese Lang
+
+2007-09-27  kichik
+
+	* Docs/src/credits.but: credits for romanian and persian
+
+2007-09-27  kichik
+
+	* Contrib/Language files/Farsi.nlf: applied patch #1776386 -
+	Persian translation updated
+
+2007-09-25  kichik
+
+	* Contrib/Language files/Romanian.nlf, Contrib/Language
+	files/Romanian.nsh: applied patch #1783853 - Improved Romanian
+	translation
+
+2007-09-21  kichik
+
+	* Source/build.cpp, Source/script.cpp, Source/exehead/Ui.c: size
+	optimization - better values for status_update
+
+2007-09-20  joostverburg
+
+	* Contrib/Modern UI 2/Interface.nsh: fix NOSTRETCH option for
+	header image
+
+2007-09-20  joostverburg
+
+	* Contrib/Modern UI 2/Pages/InstallFiles.nsh, Contrib/Modern UI
+	2/Pages/UninstallConfirm.nsh: fix control handles
+
+2007-09-19  kichik
+
+	* Source/build.cpp, Source/script.cpp, Source/exehead/Ui.c,
+	Source/exehead/exec.h: fixed plug-in system's SetDetailsPrint usage
+
+2007-09-18  kichik
+
+	* Contrib/Makensisw/makensisw.cpp, Contrib/Makensisw/utils.cpp:
+	fixed bug #1796053 - makensisw command-line parsing error due to
+	GlobalAlloc/GlobalFree mismatch
+
+2007-09-14  kichik
+
+	* Contrib/nsDialogs/nsDialogs.nsh: BST_* moved to WinMessages.nsh
+
+2007-09-11  joostverburg
+
+	* Contrib/Language files/Afrikaans.nsh, Contrib/Language
+	files/Albanian.nsh, Contrib/Language files/Arabic.nsh,
+	Contrib/Language files/Basque.nsh, Contrib/Language
+	files/Belarusian.nsh, Contrib/Language files/Bosnian.nsh,
+	Contrib/Language files/Breton.nsh, Contrib/Language
+	files/Bulgarian.nsh, Contrib/Language files/Catalan.nsh,
+	Contrib/Language files/Croatian.nsh, Contrib/Language
+	files/Czech.nsh, Contrib/Language files/Danish.nsh,
+	Contrib/Language files/Dutch.nsh, Contrib/Language
+	files/English.nsh, Contrib/Language files/Estonian.nsh,
+	Contrib/Language files/Farsi.nsh, Contrib/Language
+	files/Finnish.nsh, Contrib/Language files/French.nsh,
+	Contrib/Language files/Galician.nsh, Contrib/Language
+	files/German.nsh, Contrib/Language files/Greek.nsh,
+	Contrib/Language files/Hebrew.nsh, Contrib/Language
+	files/Hungarian.nsh, Contrib/Language files/Icelandic.nsh,
+	Contrib/Language files/Indonesian.nsh, Contrib/Language
+	files/Irish.nsh, Contrib/Language files/Italian.nsh,
+	Contrib/Language files/Japanese.nsh, Contrib/Language
+	files/Korean.nsh, Contrib/Language files/Kurdish.nsh,
+	Contrib/Language files/Latvian.nsh, Contrib/Language
+	files/Lithuanian.nsh, Contrib/Language files/Luxembourgish.nsh,
+	Contrib/Language files/Macedonian.nsh, Contrib/Language
+	files/Malay.nsh, Contrib/Language files/Mongolian.nsh,
+	Contrib/Language files/Norwegian.nsh, Contrib/Language
+	files/NorwegianNynorsk.nsh, Contrib/Language files/Polish.nsh,
+	Contrib/Language files/Portuguese.nsh, Contrib/Language
+	files/PortugueseBR.nsh, Contrib/Language files/Romanian.nsh,
+	Contrib/Language files/Russian.nsh, Contrib/Language
+	files/Serbian.nsh, Contrib/Language files/SerbianLatin.nsh,
+	Contrib/Language files/SimpChinese.nsh, Contrib/Language
+	files/Slovak.nsh, Contrib/Language files/Slovenian.nsh,
+	Contrib/Language files/Spanish.nsh, Contrib/Language
+	files/SpanishInternational.nsh, Contrib/Language files/Swedish.nsh,
+	Contrib/Language files/Thai.nsh, Contrib/Language
+	files/TradChinese.nsh, Contrib/Language files/Turkish.nsh,
+	Contrib/Language files/Ukrainian.nsh, Contrib/Language
+	files/Uzbek.nsh, Contrib/Language files/Welsh.nsh: fix texts for
+	uninstaller components page
+
+2007-09-11  kichik
+
+	* Include/WinMessages.nsh: added BST_* for bug #1792422
+
+2007-09-09  joostverburg
+
+	* Contrib/Language files/Afrikaans.nsh, Contrib/Language
+	files/Albanian.nsh, Contrib/Language files/Arabic.nsh,
+	Contrib/Language files/Basque.nsh, Contrib/Language
+	files/Belarusian.nsh, Contrib/Language files/Bosnian.nsh,
+	Contrib/Language files/Breton.nsh, Contrib/Language
+	files/Bulgarian.nsh, Contrib/Language files/Catalan.nsh,
+	Contrib/Language files/Croatian.nsh, Contrib/Language
+	files/Czech.nsh, Contrib/Language files/Danish.nsh,
+	Contrib/Language files/Dutch.nsh, Contrib/Language
+	files/English.nsh, Contrib/Language files/Estonian.nsh,
+	Contrib/Language files/Farsi.nsh, Contrib/Language
+	files/Finnish.nsh, Contrib/Language files/French.nsh,
+	Contrib/Language files/Galician.nsh, Contrib/Language
+	files/German.nsh, Contrib/Language files/Greek.nsh,
+	Contrib/Language files/Hebrew.nsh, Contrib/Language
+	files/Hungarian.nsh, Contrib/Language files/Icelandic.nsh,
+	Contrib/Language files/Indonesian.nsh, Contrib/Language
+	files/Irish.nsh, Contrib/Language files/Italian.nsh,
+	Contrib/Language files/Japanese.nsh, Contrib/Language
+	files/Korean.nsh, Contrib/Language files/Kurdish.nsh,
+	Contrib/Language files/Latvian.nsh, Contrib/Language
+	files/Lithuanian.nsh, Contrib/Language files/Luxembourgish.nsh,
+	Contrib/Language files/Macedonian.nsh, Contrib/Language
+	files/Malay.nsh, Contrib/Language files/Mongolian.nsh,
+	Contrib/Language files/Norwegian.nsh, Contrib/Language
+	files/NorwegianNynorsk.nsh, Contrib/Language files/Polish.nsh,
+	Contrib/Language files/Portuguese.nsh, Contrib/Language
+	files/PortugueseBR.nsh, Contrib/Language files/Romanian.nsh,
+	Contrib/Language files/Russian.nsh, Contrib/Language
+	files/Serbian.nsh, Contrib/Language files/SerbianLatin.nsh,
+	Contrib/Language files/SimpChinese.nsh, Contrib/Language
+	files/Slovak.nsh, Contrib/Language files/Slovenian.nsh,
+	Contrib/Language files/Spanish.nsh, Contrib/Language
+	files/SpanishInternational.nsh, Contrib/Language files/Swedish.nsh,
+	Contrib/Language files/Thai.nsh, Contrib/Language
+	files/TradChinese.nsh, Contrib/Language files/Turkish.nsh,
+	Contrib/Language files/Ukrainian.nsh, Contrib/Language
+	files/Uzbek.nsh, Contrib/Language files/Welsh.nsh: move finish
+	button text to right category
+
+2007-09-09  kichik
+
+	* Source/script.cpp: missing null terminator
+
+2007-09-08  kichik
+
+	* Docs/src/library.but, Include/Library.nsh: use SetRegView
+	lastused to avoid resetting the user's setting
+
+2007-09-08  kichik
+
+	* Docs/src/misc.but, Source/script.cpp, Source/tokens.cpp: added
+	SetRegView lastused
+
+2007-09-08  kichik
+
+	* Source/exehead/Ui.c, Source/exehead/exec.c,
+	Source/exehead/fileform.c, Source/exehead/fileform.h,
+	Source/exehead/ui.h, Source/script.cpp: move SetDetailsPrint flag
+	to g_exec_flag and added a lastused capability to EW_SETFLAG
+
+2007-09-07  kichik
+
+	* Contrib/Language files/Korean.nsh: fixed line breaks (thanks
+	koder)
+
+2007-09-07  kichik
+
+	* Docs/src/callback.but: added un.onSelChange
+
+2007-09-01  joostverburg
+
+	* Contrib/Modern UI 2/Localization.nsh, Contrib/Modern UI
+	2/Pages/StartMenu.nsh: don't declare variables for registry values
+	if they won't be used
+
+2007-08-27  joostverburg
+
+	* Contrib/Modern UI 2/Localization.nsh: fixed language selection
+	dialog
+
+2007-08-27  joostverburg
+
+	* Contrib/Modern UI 2/Interface.nsh: initialize header image
+
+2007-08-25  kichik
+
+	* Docs/src/history.but: oops... forgot release date
+
 2007-08-25  kichik
 
 	* Menu/images/header.gif: 2.30

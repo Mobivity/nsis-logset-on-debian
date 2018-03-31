@@ -58,7 +58,7 @@ Var mui.Button.Back
       !ifndef MUI_HEADERIMAGE_UNBITMAP
         !define MUI_HEADERIMAGE_UNBITMAP "${MUI_HEADERIMAGE_BITMAP}"
         !ifdef MUI_HEADERIMAGE_BITMAP_NOSTRETCH
-          !insertmacro MUI_SET MUI_HEADERIMAGE_UNBITMAP_NOSTRETCH
+          !insertmacro MUI_SET MUI_HEADERIMAGE_UNBITMAP_NOSTRETCH ""
         !endif
       !endif
 
@@ -66,7 +66,7 @@ Var mui.Button.Back
         !ifndef MUI_HEADERIMAGE_UNBITMAP_RTL
           !define MUI_HEADERIMAGE_UNBITMAP_RTL "${MUI_HEADERIMAGE_BITMAP_RTL}"
           !ifdef MUI_HEADERIMAGE_BITMAP_RTL_NOSTRETCH
-            !insertmacro MUI_SET MUI_HEADERIMAGE_UNBITMAP_RTL_NOSTRETCH
+            !insertmacro MUI_SET MUI_HEADERIMAGE_UNBITMAP_RTL_NOSTRETCH ""
           !endif
         !endif
       !endif
@@ -155,8 +155,6 @@ Var mui.Button.Back
           SetBrandingImage /IMGID=1046 "$PLUGINSDIR\modern-header.bmp"
         !endif
 
-        Goto mui.headerimageinit_done
-
       ${else}
 
     !endif
@@ -179,12 +177,11 @@ Var mui.Button.Back
 
 !macroend
 
-!macro MUI_GUIINIT_OUTERDIALOG
+!macro MUI_GUIINIT_OUTERDIALOG UNINSTALLER
 
   ;Initialize outer dialog (fonts & colors)
 
   ;Header
-
   GetDlgItem $mui.Header.Text $HWNDPARENT 1037
   CreateFont $mui.Header.Text.Font "$(^Font)" "$(^FontSize)" "700"
   SendMessage $mui.Header.Text ${WM_SETFONT} $mui.Header.Text.Font 0
@@ -198,6 +195,9 @@ Var mui.Button.Back
     SetCtlColors $mui.Header.Text "" "transparent"
     SetCtlColors $mui.Header.SubText "" "transparent"
   !endif
+  
+  ;Header image
+  !insertmacro MUI_HEADERIMAGE_INIT "${UNINSTALLER}"
 
   ;Header background
   GetDlgItem $mui.Header.Background $HWNDPARENT 1034
@@ -233,7 +233,7 @@ Var mui.Button.Back
 
   Function .onGUIInit
 
-    !insertmacro MUI_GUIINIT_OUTERDIALOG
+    !insertmacro MUI_GUIINIT_OUTERDIALOG ""
 
     !ifdef MUI_PAGE_FUNCTION_GUIINIT
       Call "${MUI_PAGE_FUNCTION_GUIINIT}"
@@ -251,7 +251,7 @@ Var mui.Button.Back
 
   Function un.onGUIInit  
 
-    !insertmacro MUI_GUIINIT_OUTERDIALOG
+    !insertmacro MUI_GUIINIT_OUTERDIALOG UN
     
     !ifdef MUI_UNPAGE_FUNCTION_GUIINIT
       Call "${MUI_UNPAGE_FUNCTION_GUIINIT}"

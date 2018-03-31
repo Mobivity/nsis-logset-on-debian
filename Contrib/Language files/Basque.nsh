@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Laguntzaile honek $(^NameDA)-ren ezabaketa prozesuan zehar gidatuko zaitu.$\r$\n$\r$\nEzabaketa hasi aurretik, ziurtatu $(^NameDA) martxan ez dagoela .$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Amaitu"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Lizentzia hitzarmena"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Mesedez aztertu lizentziaren baldintzak $(^NameDA) instalatu aurretik."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Azalpena"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Osagaien hautatzea"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Hautatu $(^NameDA)-ren zein ezaugarri ezabatu nahi duzun."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Neuk berrabiarazi geroago"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Exekutatu $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Ikusi Readme.txt"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Amaitu"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

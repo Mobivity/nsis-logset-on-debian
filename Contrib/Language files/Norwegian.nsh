@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Denne veiviseren vil lede deg gjennom avinstallasjonen av $(^NameDA).$\r$\n$\r$\nFør du fortsetter må du forsikre deg om at $(^NameDA) ikke kjører.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Ferdig"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Lisensavtale"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Vennligst les gjennom lisensavtalen før du starter installasjonen av $(^NameDA)."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Beskrivelse"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Velg komponenter"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Velg hvilke deler av $(^NameDA) du ønsker å avinstallere."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Nei. Jeg vil starte datamaskinen på nytt senere"
   ${LangFileString} MUI_TEXT_FINISH_RUN "&Kjør $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "&Vis Readme filen"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Ferdig"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

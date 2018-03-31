@@ -13,10 +13,6 @@
   ${LangFileString} MUI_UNTEXT_WELCOME_INFO_TEXT "Vous êtes sur le point de désinstaller $(^NameDA) de votre ordinateur.$\r$\n$\r$\nAvant d'amorcer la désinstallation, assurez-vous que $(^NameDA) ne soit pas en cours d'exécution.$\r$\n$\r$\n$_CLICK"
 !endif
 
-!ifdef MUI_WELCOMEPAGE | MUI_UNWELCOMEPAGE
-  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Fermer"
-!endif
-
 !ifdef MUI_LICENSEPAGE
   ${LangFileString} MUI_TEXT_LICENSE_TITLE "Licence utilisateur"
   ${LangFileString} MUI_TEXT_LICENSE_SUBTITLE "Veuillez examiner les termes de la licence avant d'installer $(^NameDA)."
@@ -43,7 +39,7 @@
   ${LangFileString} MUI_INNERTEXT_COMPONENTS_DESCRIPTION_TITLE "Description"
 !endif
 
-!ifdef MUI_UNCOMPONENETSPAGE
+!ifdef MUI_UNCOMPONENTSPAGE
   ${LangFileString} MUI_UNTEXT_COMPONENTS_TITLE "Choisissez les composants"
   ${LangFileString} MUI_UNTEXT_COMPONENTS_SUBTITLE "Cochez les composants de $(^NameDA) que vous souhaitez désinstaller."
 !endif
@@ -101,6 +97,7 @@
   ${LangFileString} MUI_TEXT_FINISH_REBOOTLATER "Je souhaite redémarrer moi-même plus tard"
   ${LangFileString} MUI_TEXT_FINISH_RUN "Lancer $(^NameDA)"
   ${LangFileString} MUI_TEXT_FINISH_SHOWREADME "Afficher le fichier Readme"
+  ${LangFileString} MUI_BUTTONTEXT_FINISH "&Fermer"  
 !endif
 
 !ifdef MUI_STARTMENUPAGE

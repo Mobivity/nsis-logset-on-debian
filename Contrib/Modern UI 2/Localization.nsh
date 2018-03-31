@@ -10,12 +10,14 @@ Localization
 
 !macro MUI_LANGDLL_VARIABLES
 
-  !ifndef MUI_LANGDLL_VARIABLES
-    !define MUI_LANGDLL_VARIABLES
-    
-    ;/GLOBAL because the macros are included in a function
-    Var /GLOBAL mui.LangDLL.RegistryLanguage
-    
+  !ifdef MUI_LANGDLL_REGISTRY_ROOT & MUI_LANGDLL_REGISTRY_KEY & MUI_LANGDLL_REGISTRY_VALUENAME
+    !ifndef MUI_LANGDLL_REGISTRY_VARAIBLES
+      !define MUI_LANGDLL_REGISTRY_VARAIBLES
+
+      ;/GLOBAL because the macros are included in a function
+      Var /GLOBAL mui.LangDLL.RegistryLanguage
+
+    !endif
   !endif
 
 !macroend
@@ -74,13 +76,13 @@ Localization
   !insertmacro MUI_DEFAULT MUI_LANGDLL_WINDOWTITLE "Installer Language"
   !insertmacro MUI_DEFAULT MUI_LANGDLL_INFO "Please select a language."
 
-  !ifdef MUI_LANGDLL_REGISTRY_ROOT & MUI_LANGDLL_REGISTRY_KEY & MUI_LANGDLL_REGISTRY_VALUENAME
+  !ifdef MUI_LANGDLL_REGISTRY_VARAIBLES
 
     ReadRegStr $mui.LangDLL.RegistryLanguage "${MUI_LANGDLL_REGISTRY_ROOT}" "${MUI_LANGDLL_REGISTRY_KEY}" "${MUI_LANGDLL_REGISTRY_VALUENAME}"
     
     ${if} $mui.LangDLL.RegistryLanguage != ""
       ;Set default langauge to registry language
-      StrCpy $LANGUAGE mui.LangDLL.RegistryLanguage
+      StrCpy $LANGUAGE $mui.LangDLL.RegistryLanguage
     ${endif}
 
   !endif
@@ -90,7 +92,9 @@ Localization
   !endif
 
   !ifndef MUI_LANGDLL_ALWAYSSHOW
-    ${if} $mui.LangDLL.RegistryLanguage != ""
+  !ifdef MUI_LANGDLL_REGISTRY_VARAIBLES
+    ${if} $mui.LangDLL.RegistryLanguage == ""
+  !endif
   !endif
   
   ;Show langauge selection dialog
@@ -106,7 +110,9 @@ Localization
     ${endif}
   
   !ifndef MUI_LANGDLL_ALWAYSSHOW
+  !ifdef MUI_LANGDLL_REGISTRY_VARAIBLES
     ${endif}
+  !endif
   !endif
 
 
