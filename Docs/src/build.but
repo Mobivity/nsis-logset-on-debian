@@ -67,6 +67,8 @@ The open-source \W{http://www.mingw.org/}{MinGW} can also be used to for buildin
 
 To compile the documentation as a CHM file, hhc.exe must be in the PATH. It is available as part of \W{http://msdn.microsoft.com/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp}{HTML Help Workshop}.
 
+To build NSIS Menu, install \W{http://www.wxwidgets.org/}{wxWidgets 2.8}, create an environment variable named \c{WXWIN} containing the path to the installation directory of wxWidgets, run \c{Contrib\\NSIS Menu\\wx\\wxbuild.bat} and build NSIS as usual.
+
 \\<b\\>Important notes for Microsoft Visual C++ 6.0 users:\\</b\\> The latest \W{http://www.microsoft.com/msdownload/platformsdk/sdkupdate/}{Platform SDK} must be installed before building. Because of flaws in the libraries distributed with Microsoft Visual C++ 6.0, not installing the Platform SDK will result in crashes when using the \R{copyfiles}{CopyFiles} command. See \W{http://forums.winamp.com/showthread.php?s=&threadid=131964}{this forum topic} for more information. Installing the \W{http://msdn.microsoft.com/vstudio/downloads/tools/ppack/download.aspx}{Processor Pack} is highly recommended to decrease the size of the installer overhead.
 
 \H{build_posix} Building on POSIX
@@ -78,12 +80,17 @@ If no cross-compiler is available, use the following:
 \c scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all
 \c       NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip
 \c       install-compiler
+\c
+\c scons NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip
+\c       /path/to/extracted/zip/LibraryLocal
 
 This should only build makensis and install it to the directory where a precompiled package, such as the \R{build_nightly}{nightly build} or a \W{http://sourceforge.net/project/showfiles.php?group_id=22049}{zipped release version} (nsis-x.xx.zip), is extracted. Note that the in order for this to work, the precompiled package must be compiled using the exact same sources as makensis. In particular, \c{Source\\exehead\\config.h}, the options passed to scons and \c{Source\\exehead\\fileform.h} must be identical. Nightly builds and zipped release versions are built with the default options.
 
-Currently, the System plug-in \W{http://forums.winamp.com/showthread.php?s=&threadid=227304}{can't be built} using a cross-compiler, but only with MSVC. When building with a cross compiler, always use at least the following flags:
+Currently, the Call, Get and Debug functions of the System plug-in \W{http://forums.winamp.com/showthread.php?s=&threadid=227304}{can't be built} using GCC, but only with MSVC. When building with GCC, either download a MSVC-compiled version or write your own plugin that calls the functions you need. You can skip building the System plugin using the following flags:
 
 \c scons SKIPPLUGINS=System
+
+To build a native version of NSIS Menu, install \W{http://www.wxwidgets.org/}{wxWidgets 2.8} and build as usual. \c{wx-config} must be in the path.
 
 \H{build_nightly} Nightly Builds
 

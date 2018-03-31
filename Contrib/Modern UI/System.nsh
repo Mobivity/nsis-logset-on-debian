@@ -1,4 +1,4 @@
-;NSIS Modern User Interface version 1.77
+;NSIS Modern User Interface version 1.78
 ;Macro System
 ;Written by Joost Verburg
 
@@ -8,7 +8,7 @@
 ;License: License.txt
 ;Examples: Examples\Modern UI
 
-!echo "NSIS Modern User Interface version 1.77 - © 2002-2007 Joost Verburg"
+!echo "NSIS Modern User Interface version 1.78 - © 2002-2007 Joost Verburg"
 
 ;--------------------------------
 
@@ -32,7 +32,7 @@
 !include "WinMessages.nsh"
 !verbose pop
 
-!define MUI_SYSVERSION "1.77"
+!define MUI_SYSVERSION "1.78"
 
 Var /GLOBAL MUI_TEMP1
 Var /GLOBAL MUI_TEMP2
@@ -866,6 +866,7 @@ Var /GLOBAL MUI_TEMP2
 
   !undef MUI_DIRECTORYPAGE_TEXT_TOP
   !undef MUI_DIRECTORYPAGE_TEXT_DESTINATION
+  !insertmacro MUI_UNSET MUI_DIRECTORYPAGE_BGCOLOR
   !insertmacro MUI_UNSET MUI_DIRECTORYPAGE_VARIABLE
   !insertmacro MUI_UNSET MUI_DIRECTORYPAGE_VERIFYONLEAVE
 
@@ -922,6 +923,7 @@ Var /GLOBAL MUI_TEMP2
   !insertmacro MUI_UNSET MUI_STARTMENUPAGE_REGISTRY_ROOT
   !insertmacro MUI_UNSET MUI_STARTMENUPAGE_REGISTRY_KEY
   !insertmacro MUI_UNSET MUI_STARTMENUPAGE_REGISTRY_VALUENAME
+  !insertmacro MUI_UNSET MUI_STARTMENUPAGE_BGCOLOR
 
   !verbose pop
 
@@ -1341,6 +1343,12 @@ Var /GLOBAL MUI_TEMP2
   FunctionEnd
 
   Function "${SHOW}"
+    !ifdef MUI_DIRECTORYPAGE_BGCOLOR
+      FindWindow $MUI_TEMP1 "#32770" "" $HWNDPARENT
+      GetDlgItem $MUI_TEMP1 $MUI_TEMP1 1019
+      SetCtlColors $MUI_TEMP1 "" "0x${MUI_DIRECTORYPAGE_BGCOLOR}"
+    !endif
+    
     !insertmacro MUI_PAGE_FUNCTION_CUSTOM SHOW
   FunctionEnd
 
@@ -1384,6 +1392,13 @@ Var /GLOBAL MUI_TEMP2
     mui.startmenu_initdone:
 
   Pop $MUI_HWND
+
+  !ifdef MUI_STARTMENUPAGE_BGCOLOR
+    GetDlgItem $MUI_TEMP1 $MUI_HWND 1002
+    SetCtlColors $MUI_TEMP1 "" "0x${MUI_STARTMENUPAGE_BGCOLOR}"
+    GetDlgItem $MUI_TEMP1 $MUI_HWND 1004
+    SetCtlColors $MUI_TEMP1 "" "0x${MUI_STARTMENUPAGE_BGCOLOR}"
+  !endif
 
   !insertmacro MUI_PAGE_FUNCTION_CUSTOM SHOW
 
@@ -2051,7 +2066,12 @@ Var /GLOBAL MUI_TEMP2
 
   !endif
 
-  LangDLL::LangDialog "${MUI_LANGDLL_WINDOWTITLE}" "${MUI_LANGDLL_INFO}" AC ${MUI_LANGDLL_PUSHLIST} ""
+  !ifdef MUI_LANGDLL_ALLLANGUAGES
+    LangDLL::LangDialog "${MUI_LANGDLL_WINDOWTITLE}" "${MUI_LANGDLL_INFO}" A ${MUI_LANGDLL_PUSHLIST} ""
+  !else
+    LangDLL::LangDialog "${MUI_LANGDLL_WINDOWTITLE}" "${MUI_LANGDLL_INFO}" AC ${MUI_LANGDLL_PUSHLIST} ""
+  !endif
+
 
   Pop $LANGUAGE
   StrCmp $LANGUAGE "cancel" 0 +2
@@ -2230,14 +2250,24 @@ Var /GLOBAL MUI_TEMP2
   !insertmacro MUI_LANGUAGEFILE_DEFINE "MUI_${LANGUAGE}_LANGNAME" "MUI_LANGNAME"
 
   !ifndef MUI_LANGDLL_PUSHLIST
-    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' "
+    !ifdef MUI_LANGDLL_ALLLANGUAGES
+      !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' "
+    !else
+      !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' "
+    !endif
   !else
     !ifdef MUI_LANGDLL_PUSHLIST_TEMP
       !undef MUI_LANGDLL_PUSHLIST_TEMP
     !endif
     !define MUI_LANGDLL_PUSHLIST_TEMP "${MUI_LANGDLL_PUSHLIST}"
     !undef MUI_LANGDLL_PUSHLIST
-    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' ${MUI_LANGDLL_PUSHLIST_TEMP}"
+
+    !ifdef MUI_LANGDLL_ALLLANGUAGES
+      !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' ${MUI_LANGDLL_PUSHLIST_TEMP}"
+    !else
+      !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' ${MUI_LANGDLL_PUSHLIST_TEMP}"
+    !endif
+
   !endif
 
   !insertmacro MUI_LANGUAGEFILE_LANGSTRING_PAGE WELCOME "MUI_TEXT_WELCOME_INFO_TITLE"

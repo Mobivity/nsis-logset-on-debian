@@ -399,12 +399,16 @@ __declspec(dllexport) void download (HWND   parent,
             // progressFunc ("Connecting ...", 0);
             if (last_recv_time+timeout_ms < GetTickCount())
               error = "Timed out on connecting.";
+            else
+              Sleep(10); // don't busy-loop while connecting
 
           } else if (get->get_status () == 1) {
 
             progress_callback("Reading headers", 0);
             if (last_recv_time+timeout_ms < GetTickCount())
               error = "Timed out on getting headers.";
+            else
+              Sleep(10); // don't busy-loop while reading headers
 
           } else if (get->get_status () == 2) {
 
@@ -465,7 +469,21 @@ __declspec(dllexport) void download (HWND   parent,
               }
             }
             if (GetTickCount() > last_recv_time+timeout_ms)
-              error = "Downloading timed out.";
+            {
+              if (sofar != cl)
+              {
+                error = "Downloading timed out.";
+              }
+              else
+              {
+                // workaround for bug #1713562
+                //   buggy servers that wait for the client to close the connection.
+                //   another solution would be manually stopping when cl == sofar,
+                //   but then buggy servers that return wrong content-length will fail.
+                bSuccess = TRUE;
+                error = "success";
+              }
+            }
             else if (!data_downloaded)
               Sleep(10);
 

@@ -1,3 +1,115 @@
+2007-06-08  kichik
+
+	* Menu/images/header.gif: 2.28
+
+2007-06-08  kichik
+
+	* Contrib/Modern UI/Changelog.txt, Contrib/Modern UI/Readme.html,
+	Contrib/Modern UI/System.nsh: bump to 1.78
+
+2007-06-08  kichik
+
+	* Docs/src/history.but: 2.28
+
+2007-06-08  kichik
+
+	* Contrib/Language files/SConscript, Contrib/Modern UI/SConscript:
+	don't install Valencian and Catalan see patch #1558822 for details
+	and
+	http://forums.winamp.com/showthread.php?s=&threadid=270401&highlight=Valencian
+
+2007-06-08  kichik
+
+	* Source/exehead/Ui.c: another focused invisible control problem
+	when hitting the Show Details button that also hides that button
+
+2007-06-08  kichik
+
+	* Source/exehead/Ui.c: fixed bug #1733692 - Hitting any key in the
+	instfiles page freezes under W2K
+
+2007-06-05  kichik
+
+	* Contrib/Modern UI/Readme.html, Contrib/Modern UI/System.nsh:
+	renamed MUI_LANGDLL_SHOW_ALL_LANGUAGES to MUI_LANGDLL_ALLLANGUAGES
+	to match the style of other defines
+
+2007-06-05  kichik
+
+	* Contrib/Modern UI/System.nsh: applied patch #1724876 - Language
+	selection dialog doesn't display all languages
+
+2007-06-05  kichik
+
+	* Contrib/Modern UI/Readme.html: documentation for patch #1724876
+
+2007-05-25  kichik
+
+	* Contrib/System/SConscript: objs are unused for a long time
+
+2007-05-25  kichik
+
+	* Contrib/System/Source/System.sln,
+	Contrib/System/Source/System.vcproj,
+	Contrib/System/Source/chkstk.obj,
+	Contrib/System/Source/vc7ldvrm.obj,
+	Contrib/System/Source/vc7lmul.obj,
+	Contrib/System/Source/vc7lshl.obj,
+	Contrib/System/Source/vc7lshr.obj: unused
+
+2007-05-24  kichik
+
+	* Contrib/NSIS Menu/wx/wxbuild.bat: check for setup.h
+
+2007-05-23  kichik
+
+	* Contrib/NSISdl/nsisdl.cpp: fixed bug #1713562 - NSISdl doesn't
+	finish download after content-length bytes
+
+2007-05-23  kichik
+
+	* Contrib/Modern UI/Readme.html, Contrib/Modern UI/System.nsh:
+	applied patch #1706187 - MUI_STARTMENUPAGE_BGCOLOR and
+	MUI_DIRECTORYPAGE_BGCOLOR
+
+2007-05-23  kichik
+
+	* Docs/src/build.but: LibraryLocal must be compiled for POSIX now
+
+2007-05-23  kichik
+
+	* Source/build.cpp: applied patch #1722147 - equalized compiler
+	errors
+
+2007-05-21  pabs3
+
+	* SConstruct: allow ignoring tests with IGNORETESTS
+
+2007-05-15  pabs3
+
+	* Contrib/System/System.html, Contrib/System/Source/System.c,
+	Docs/src/build.but, Docs/src/usefulinfos.but: applied patch
+	#1711089 - disable System::Call and System::Get when building with
+	GCC
+
+2007-05-13  kichik
+
+	* Contrib/InstallOptions/Readme.html: fixed bug #1716614 -
+	InstallOptions TxtColor
+
+2007-05-05  kichik
+
+	* Docs/src/build.but: added missing new-line
+
+2007-05-05  kichik
+
+	* Contrib/NSISdl/nsisdl.cpp: fixed bug #1713560 - NSISdl 100% CPU
+	usage during DNS resolution
+
+2007-05-05  kichik
+
+	* Docs/src/build.but, INSTALL: building NSIS Menu
+
 2007-05-05  kichik
 
 	* Menu/images/header.gif: 2.27
