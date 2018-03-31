@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ TCHAR g_log_file[1024];
 #endif
 #endif
 
-// *** DO NOT DECLARE MORE VARIABLES INSIDE THIS PRAGMAS ***
+// *** DO NOT DECLARE MORE VARIABLES INSIDE THESE PRAGMAS ***
 // This will produce a special section called ".ndata" (stands for nsis data)
 // this way makensis during build time, can search for this section by name
 // and change the virtual size of this section
-// which result in extra memory for extra variables without code to do allocation :)
+// which results in extra memory for extra variables without code to do allocation :)
 // nsis then removes the "DISCARDABLE" style from section (for safe)
 #ifdef _MSC_VER
 #  pragma bss_seg(NSIS_VARS_SECTION)
@@ -507,7 +507,7 @@ HRESULT NSISCALL UTF16LEBOM(HANDLE h, INT_PTR ForWrite)
   if (0 == orgpos)
   {
     BYTE bom[2];
-    if (myReadFile(h, bom, 2) && (0xff == bom[0] && 0xfe == bom[1]))
+    if (myReadFile(h, bom, 2) && (0xfeff == *(USHORT*) &bom[0]))
     {
       return S_OK;
     }

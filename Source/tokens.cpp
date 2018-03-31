@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,10 +122,16 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_INSTDIR,_T("InstallDir"),1,0,_T("default_install_directory"),TP_GLOBAL},
 {TOK_INSTPROGRESSFLAGS,_T("InstProgressFlags"),0,-1,_T("[flag [...]]\n    flag={smooth|colored}"),TP_GLOBAL},
 {TOK_INSTTYPE,_T("InstType"),1,0,_T("[un.]install_type_name | /NOCUSTOM | /CUSTOMSTRING=str | /COMPONENTSONLYONCUSTOM"),TP_GLOBAL},
-{TOK_INTOP,_T("IntOp"),3,1,_T("$(user_var: result) val1 OP [val2]\n    OP=(+ - * / % | & ^ ~ ! || && << >>)"),TP_CODE},
+{TOK_INTOP,_T("IntOp"),3,1,_T("$(user_var: result) val1 OP [val2]\n    OP=(+ - * / % | & ^ ~ ! || && << >> >>>)"),TP_CODE},
+{TOK_INTPTROP,_T("IntPtrOp"),3,1,_T("$(user_var: result) val1 OP [val2]"),TP_CODE},
 {TOK_INTCMP,_T("IntCmp"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
 {TOK_INTCMPU,_T("IntCmpU"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
+{TOK_INT64CMP,_T("Int64Cmp"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
+{TOK_INT64CMPU,_T("Int64CmpU"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
+{TOK_INTPTRCMP,_T("IntPtrCmp"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
+{TOK_INTPTRCMPU,_T("IntPtrCmpU"),3,2,_T("val1 val2 jump_if_equal [jump_if_val1_less] [jump_if_val1_more]"),TP_CODE},
 {TOK_INTFMT,_T("IntFmt"),3,0,_T("$(user_var: output) format_string input"),TP_CODE},
+{TOK_INT64FMT,_T("Int64Fmt"),3,0,_T("$(user_var: output) format_string input"),TP_CODE},
 {TOK_ISWINDOW,_T("IsWindow"),2,1,_T("hwnd jump_if_window [jump_if_not_window]"),TP_CODE},
 {TOK_GOTO,_T("Goto"),1,0,_T("label"),TP_CODE},
 {TOK_LANGSTRING,_T("LangString"),3,0,_T("[un.]name lang_id|0 string"),TP_GLOBAL},
@@ -248,6 +254,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_XPSTYLE,_T("XPStyle"),1,0,_T("(on|off)"),TP_GLOBAL},
 {TOK_REQEXECLEVEL,_T("RequestExecutionLevel"),1,0,_T("none|user|highest|admin"),TP_GLOBAL},
 {TOK_MANIFEST_DPIAWARE,_T("ManifestDPIAware"),1,0,_T("notset|true|false"),TP_GLOBAL},
+{TOK_MANIFEST_DPIAWARENESS,_T("ManifestDPIAwareness"),1,0,_T("comma_separated_string"),TP_GLOBAL},
 {TOK_MANIFEST_SUPPORTEDOS,_T("ManifestSupportedOS"),1,-1,_T("none|all|WinVista|Win7|Win8|Win8.1|Win10|{GUID} [...]"),TP_GLOBAL},
 {TOK_P_PACKEXEHEADER,_T("!packhdr"),2,0,_T("temp_file_name command_line_to_compress_that_temp_file"),TP_ALL},
 {TOK_P_FINALIZE,_T("!finalize"),1,2,_T("command_with_%1 [<OP retval>]"),TP_ALL},
@@ -261,7 +268,7 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_IFDEF,_T("!ifdef"),1,-1,_T("symbol [| symbol2 [& symbol3 [...]]]"),TP_ALL},
 {TOK_P_IFNDEF,_T("!ifndef"),1,-1,_T("symbol [| symbol2 [& symbol3 [...]]]"),TP_ALL},
 {TOK_P_ENDIF,_T("!endif"),0,0,_T(""),TP_ALL},
-{TOK_P_DEFINE,_T("!define"),1,5,_T("[/ifndef | /redef] ([/date|/utcdate] symbol [value]) | (/file symbol filename) | (/math symbol val1 OP val2)\n    OP=(+ - * / << >> >>> % & | ^)"),TP_ALL},
+{TOK_P_DEFINE,_T("!define"),1,5,_T("[/ifndef | /redef] ([/date|/utcdate] symbol [value]) | (/file symbol filename) | (/math symbol val1 OP val2)\n    OP=(+ - * / % << >> >>> & | ^ ~ ! && ||)"),TP_ALL},
 {TOK_P_UNDEF,_T("!undef"),1,0,_T("symbol"),TP_ALL},
 {TOK_P_ELSE,_T("!else"),0,-1,_T("[if[macro][n][def] ...]"),TP_ALL},
 {TOK_P_ECHO,_T("!echo"),1,0,_T("message"),TP_ALL},
@@ -281,7 +288,8 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_TEMPFILE,_T("!tempfile"),1,0,_T("symbol"),TP_ALL},
 {TOK_P_DELFILE,_T("!delfile"),1,1,_T("[/nonfatal] file"),TP_ALL},
 {TOK_P_APPENDFILE,_T("!appendfile"),2,2,_T("[/CHARSET=<") TSTR_OUTPUTCHARSET _T(">] [/RAWNL] file appended_line"),TP_ALL},
-{TOK_P_GETDLLVERSION,_T("!getdllversion"),2,0,_T("localfilename define_basename"),TP_ALL},
+{TOK_P_GETDLLVERSION,_T("!getdllversion"),2,2,_T("[/noerrors] [/packed] localfilename define_basename"),TP_ALL},
+{TOK_P_GETTLBVERSION,_T("!gettlbversion"),2,2,_T("[/noerrors] [/packed] localfilename define_basename"),TP_ALL},
 
 {TOK_P_SEARCHPARSESTRING,_T("!searchparse"),3,-1,_T("[/ignorecase] [/noerrors] [/file] source_string_or_file substring OUTPUTSYM1 [substring [OUTPUTSYM2 [substring ...]]]"),TP_ALL},
 {TOK_P_SEARCHREPLACESTRING,_T("!searchreplace"),4,1,_T("[/ignorecase] output_name source_string substring replacestring"),TP_ALL},
@@ -312,15 +320,15 @@ static tokenType tokenlist[TOK__LAST] =
 
 const TCHAR* CEXEBuild::get_commandtoken_name(int tok)
 {
-  for (int x = 0; x < TOK__LAST; ++x)
+  for (UINT x = 0; x < TOK__LAST; ++x)
     if (tokenlist[x].id==tok) return tokenlist[x].name;
   return 0;
 }
 
 void CEXEBuild::print_help(const TCHAR *commandname)
 {
-  int x;
-  for (x = 0; x < TOK__LAST; x ++)
+  UINT x;
+  for (x = 0; x < TOK__LAST; ++x)
   {
     if (!commandname || !_tcsicmp(tokenlist[x].name,commandname))
     {
@@ -369,7 +377,7 @@ bool CEXEBuild::is_unsafe_pp_token(int tkid)
 
 int CEXEBuild::get_commandtoken(const TCHAR *s, int *np, int *op, int *pos)
 {
-  for (int x = 0; x < TOK__LAST; x ++)
+  for (UINT x = 0; x < TOK__LAST; ++x)
     if (!_tcsicmp(tokenlist[x].name,s)) 
     {
       *np=tokenlist[x].num_parms;

@@ -420,6 +420,19 @@ def Sign(targets):
 			a = defenv.Action('$CODESIGNER "%s"' % t.path)
 			defenv.AddPostAction(t, a)
 
+Import('IsPEExecutable SetPESecurityFlagsWorker')
+def SetPESecurityFlagsAction(target, source, env):
+	for t in target:
+		SetPESecurityFlagsWorker(t.path)
+def SetPESecurityFlagsActionEcho(target, source, env):
+	for t in target:
+		if IsPEExecutable(t.path):
+			print('Setting PE flags on %s' % t.name)
+def SetPESecurityFlags(targets):
+	for t in targets:
+		a = defenv.Action(SetPESecurityFlagsAction, strfunction=SetPESecurityFlagsActionEcho)
+		defenv.AddPostAction(t, a)
+
 def TestScript(scripts):
 	defenv.Install('$TESTDISTDIR/Tests', scripts)
 
@@ -436,6 +449,7 @@ defenv.DistributeDoc = DistributeDoc
 defenv.DistributeDocs = DistributeDocs
 defenv.DistributeExamples = DistributeExamples
 defenv.Sign = Sign
+defenv.SetPESecurityFlags = SetPESecurityFlags
 defenv.TestScript = TestScript
 
 def DistributeExtras(env, target, examples, docs):
@@ -675,6 +689,7 @@ def BuildPluginWorker(target, source, libs, examples = None, docs = None,
 	defenv.Alias(target, plugin)
 	defenv.Alias('plugins', plugin)
 
+	defenv.SetPESecurityFlags(plugin)
 	defenv.Sign(plugin)
 
 	CleanMap(env, plugin, target)

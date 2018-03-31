@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,6 +149,7 @@ void page_writer::write(const page *data)
 
 void ctlcolors_writer::write(const ctlcolors *data, const writer_target_info&ti)
 {
+  assert(CC_FLAGSMASK >> CC_FLAGSSHIFTFORZERO == 0);
   assert(sizeof(int) == 4 && sizeof(ctlcolors64) > sizeof(ctlcolors32));
   const ctlcolors *p = data;
   m_sink->write_int(p->text);

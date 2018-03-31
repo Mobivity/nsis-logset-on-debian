@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,7 +187,7 @@ static LONG NSISCALL DeleteRegTree(HKEY hThisKey, LPCTSTR SubKey, REGSAM Samview
     TCHAR child[MAX_PATH+1]; // NB - don't change this to static (recursive function)
     while (RegEnumKey(hKey, 0, child, COUNTOF(child)) == ERROR_SUCCESS)
     {
-      if (onlyifempty) return (RegCloseKey(hKey), !ERROR_SUCCESS);
+      if (onlyifempty) return (RegCloseKey(hKey), ERROR_CAN_NOT_COMPLETE);
       if ((retval = DeleteRegTree(hKey, child, SamviewAndFlags)) != ERROR_SUCCESS) break;
     }
     RegCloseKey(hKey);
@@ -210,6 +210,7 @@ static LONG NSISCALL DeleteRegTree(HKEY hThisKey, LPCTSTR SubKey, REGSAM Samview
 static LONG NSISCALL RegDeleteScriptKey(int RootKey, LPCTSTR SubKey, REGSAM SamviewAndFlags)
 {
   HKEY hKey;
+  if (!SubKey[0]) return ERROR_CAN_NOT_COMPLETE; // Don't allow scripts to delete a HKEY root
   SamviewAndFlags |= KEY_FROMSCRIPT;
   hKey = GetRegKeyAndSAM(GetRegRootKey(RootKey), &SamviewAndFlags);
   return hKey ? DeleteRegTree(hKey, SubKey, SamviewAndFlags) : ERROR_INVALID_HANDLE; // ERROR_CANTOPEN?
@@ -683,18 +684,27 @@ static int NSISCALL ExecuteEntry(entry *entry_)
 #ifdef NSIS_SUPPORT_INTOPTS
     case EW_INTCMP:
       {
-        int v,v2;
-        v=GetIntFromParm(0);
-        v2=GetIntFromParm(1);
-        if (!parm5) {
-          // signed
-          if (v<v2) return parm3;
-          if (v>v2) return parm4;
+        UINT supp64=sizeof(void*) > 4, opu=supp64 ? (BYTE) parm5 : parm5, op64=supp64 ? (SHORT) parm5 < 0 : FALSE;
+        INT_PTR v=GetIntPtrFromParm(0), v2=GetIntPtrFromParm(1); // Note: This needs to be INT64 if supp64 is ever set to true for 32-bit builds!
+        if (!opu) { // signed:
+          if (op64) {
+            if ((INT64)v < (INT64)v2) return parm3;
+            if ((INT64)v > (INT64)v2) return parm4;
+          }
+          else {
+            if ((signed int)v < (signed int)v2) return parm3;
+            if ((signed int)v > (signed int)v2) return parm4;
+          }
         }
-        else {
-          // unsigned
-          if ((unsigned int)v<(unsigned int)v2) return parm3;
-          if ((unsigned int)v>(unsigned int)v2) return parm4;
+        else { // unsigned:
+          if (op64) {
+            if ((UINT64)v < (UINT64)v2) return parm3;
+            if ((UINT64)v > (UINT64)v2) return parm4;
+          }
+          else {
+            if ((unsigned int)v < (unsigned int)v2) return parm3;
+            if ((unsigned int)v > (unsigned int)v2) return parm4;
+          }
         }
       }
     return parm2;
@@ -702,7 +712,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
       {
         int v,v2;
         TCHAR *p=var0;
-        v=GetIntFromParm(1); // BUGBUG64: TODO: These should be INT_PTR, the script might be playing with pointers and System::Call
+        v=GetIntFromParm(1);
         v2=GetIntFromParm(2);
         switch (parm3)
         {
@@ -719,15 +729,15 @@ static int NSISCALL ExecuteEntry(entry *entry_)
           case 10: if (v2) v%=v2; else { v=0; exec_error++; } break;
           case 11: v=v<<v2; break;
           case 12: v=v>>v2; break;
+          case 13: v=(unsigned int)v>>(unsigned int)v2; break;
         }
         myitoa(p,v);
       }
     break;
     case EW_INTFMT: {
       TCHAR *buf0=GetStringFromParm(0x01);
-      wsprintf(var0,
-               buf0,
-               GetIntPtrFromParm(2));
+      INT_PTR val=GetIntPtrFromParm(2), op64=sizeof(void*) > 4 && parm3;
+      wsprintf(var0,buf0,op64 ? val : (UINT)val);
     }
     break;
 #endif//NSIS_SUPPORT_INTOPTS

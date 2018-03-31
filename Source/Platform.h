@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -789,16 +789,19 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define IMAGE_SIZEOF_SHORT_NAME 8
 #endif
 #ifndef IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
-#define IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE 0x0040
+#define IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE 0x0040 // ASLR
 #endif
 #ifndef IMAGE_DLLCHARACTERISTICS_NX_COMPAT
-#define IMAGE_DLLCHARACTERISTICS_NX_COMPAT 0x0100
+#define IMAGE_DLLCHARACTERISTICS_NX_COMPAT 0x0100 // DEP
 #endif
 #ifndef IMAGE_DLLCHARACTERISTICS_NO_SEH
 #define IMAGE_DLLCHARACTERISTICS_NO_SEH 0x0400
 #endif
 #ifndef IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE
 #define IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE 0x8000
+#endif
+#ifndef IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA
+#define IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA 0x0020 // HEASLR
 #endif
 
 // structures
