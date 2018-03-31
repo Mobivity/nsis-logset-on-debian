@@ -19,9 +19,8 @@
 
 using namespace std;
 
-int g_noconfig=0;
-int g_display_errors=1;
-FILE *g_output=stdout;
+int g_noconfig=0; // TODO: Not used?
+NSISRT_DEFINEGLOBALS();
 
 int GetTLBVersion(tstring& filepath, DWORD& high, DWORD & low)
 {
@@ -78,6 +77,7 @@ int GetTLBVersion(tstring& filepath, DWORD& high, DWORD & low)
 NSIS_ENTRYPOINT_TMAIN
 int _tmain(int argc, TCHAR* argv[])
 {
+  if (!NSISRT_Initialize()) return 1;
 
   // Parse the command line
 

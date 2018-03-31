@@ -46,7 +46,7 @@ int WinWStrNICmpASCII(const WINWCHAR *a, const char *b, size_t n)
 WINWCHAR* WinWStrDupFromChar(const char *s, unsigned int cp)
 {
   int cch = MultiByteToWideChar(cp, 0, s, -1, 0, 0);
-  wchar_t *p = (wchar_t*) malloc(cch);
+  wchar_t *p = (wchar_t*) malloc(cch * sizeof(wchar_t));
   if (p)
   {
     MultiByteToWideChar(cp, 0, s, -1, p, cch);
@@ -111,7 +111,7 @@ WINWCHAR* WinWStrDupFromWC(const wchar_t *s)
   // NOTE: Anything outside the ASCII range will not convert correctly!
   size_t cch = wcslen(s);
   WINWCHAR* p = (WINWCHAR*) malloc(++cch * 2);
-  if (p) for (size_t i = 0; i < cch; ++i) p[i] = (unsigned char) s[i];
+  if (p) for (size_t i = 0; i < cch; ++i) p[i] = FIX_ENDIAN_INT16(s[i]);
   return p;
 #endif
 }

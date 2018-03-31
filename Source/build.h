@@ -82,12 +82,13 @@ namespace MakensisAPI {
   };
 #ifdef _WIN32
   enum sndmsg_e {
-    QUERYHOST = WM_APP // QUERYHOST_e in wParam
-  };
-  enum QUERYHOST_e {
-    QH_OUTPUTCHARSET = 1 // return (wincodepage+1) or 0 for default (This encoding is used by stdout and the notify messages)
+    QUERYHOST = WM_APP // [0x03000000] QUERYHOST_e in wParam. MUST return 0 for unknown QUERYHOST_e values!
   };
 #endif
+  enum QUERYHOST_e {
+    QH_OUTPUTCHARSET = 1, // [0x03000000] return (wincodepage+1) or 0 for default (This encoding is used by stdout, stderr and the notify messages)
+    QH_ENABLESTDERR // [0x03001000] return 1 to output error messages to stderr or 0 to output error messages to stdout
+  };
 }
 
 #define PAGE_CUSTOM 0
@@ -410,6 +411,7 @@ class CEXEBuild {
     int disable_window_icon;
 
     // User variables stuff
+    int GetUnsafeUserVarIndex(LineParser &line, int token);
     int GetUserVarIndex(LineParser &line, int token);
     // Added by ramon 3 jun 2003
     UserVarsStringList m_UserVarNames;
