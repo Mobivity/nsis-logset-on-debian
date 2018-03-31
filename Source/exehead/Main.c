@@ -197,43 +197,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
     else
     {
       int x;
-      char s[] = "Au_.exe";
 
       mystrcat(state_temp_dir,"~nsu.tmp");
+
+      // check if already running from uninstaller temp dir
+      // this prevents recursive uninstaller calls
+      if (!lstrcmpi(state_temp_dir,state_exe_directory))
+        goto end;
+
       CreateDirectory(state_temp_dir,NULL);
+      SetCurrentDirectory(state_temp_dir);
 
       if (!state_install_directory[0])
         mystrcpy(state_install_directory,state_exe_directory);
 
       mystrcpy(g_usrvars[0], realcmds);
-      mystrcpy(g_usrvars[1], s);
+      *(LPWORD)g_usrvars[1] = CHAR2_TO_WORD('A',0);
 
       for (x = 0; x < 26; x ++)
       {
         static char buf2[NSIS_MAX_STRLEN];
-        static char ibuf[NSIS_MAX_STRLEN];
 
-        GetNSISString(buf2,g_header->str_uninstchild); // $TEMP\$1
+        GetNSISString(buf2,g_header->str_uninstchild); // $TEMP\$1u_.exe
 
         DeleteFile(buf2); // clean up after all the other ones if they are there
 
         if (m_Err) // not done yet
         {
-          // get current name
-          int l=GetModuleFileName(NULL,ibuf,sizeof(ibuf));
-          // check if it is ?u_.exe - if so, fuck it
-          if (!lstrcmpi(ibuf+l-(sizeof(s)-2),s+1)) break;
-
           // copy file
-          if (CopyFile(ibuf,buf2,TRUE))
+          if (CopyFile(state_exe_path,buf2,TRUE))
           {
             HANDLE hProc;
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
             MoveFileOnReboot(buf2,NULL);
-            MoveFileOnReboot(state_temp_dir,NULL);
 #endif
-            GetNSISString(buf2,g_header->str_uninstcmd); // '"$TEMP\$1" $0 _?=$INSTDIR\'
-            hProc=myCreateProcess(buf2,state_temp_dir);
+            GetNSISString(buf2,g_header->str_uninstcmd); // '"$TEMP\$1u_.exe" $0 _?=$INSTDIR\'
+            hProc=myCreateProcess(buf2);
             if (hProc)
             {
               CloseHandle(hProc);
@@ -244,6 +243,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, 
         }
         g_usrvars[1][0]++;
       }
+
+#ifdef NSIS_SUPPORT_MOVEONREBOOT
+      MoveFileOnReboot(state_temp_dir,NULL);
+#endif
+
       goto end;
     }
   }
@@ -278,9 +282,9 @@ end:
     BOOL (WINAPI *OPT)(HANDLE, DWORD,PHANDLE);
     BOOL (WINAPI *LPV)(LPCTSTR,LPCTSTR,PLUID);
     BOOL (WINAPI *ATP)(HANDLE,BOOL,PTOKEN_PRIVILEGES,DWORD,PTOKEN_PRIVILEGES,PDWORD);
-    OPT=myGetProcAddress("ADVAPI32.dll","OpenProcessToken");
-    LPV=myGetProcAddress("ADVAPI32.dll","LookupPrivilegeValueA");
-    ATP=myGetProcAddress("ADVAPI32.dll","AdjustTokenPrivileges");
+    OPT=myGetProcAddress(MGA_OpenProcessToken);
+    LPV=myGetProcAddress(MGA_LookupPrivilegeValueA);
+    ATP=myGetProcAddress(MGA_AdjustTokenPrivileges);
     if (OPT && LPV && ATP)
     {
       HANDLE hToken;

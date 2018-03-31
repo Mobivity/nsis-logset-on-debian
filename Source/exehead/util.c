@@ -23,6 +23,7 @@
 #include "fileform.h"
 #include "exec.h"
 #include "ui.h"
+#include "resource.h"
 
 #ifdef NSIS_CONFIG_LOG
 #if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
@@ -49,16 +50,12 @@ NSIS_STRING g_usrvars[1] __attribute__((section (NSIS_VARS_SECTION)));
 #  endif
 #endif
 
-HANDLE NSISCALL myCreateProcess(char *cmd, char *dir)
+HANDLE NSISCALL myCreateProcess(char *cmd)
 {
-  DWORD d;
   PROCESS_INFORMATION ProcInfo;
   static STARTUPINFO StartUp;
   StartUp.cb=sizeof(StartUp);
-  d=GetFileAttributes(dir);
-  if (d == INVALID_FILE_ATTRIBUTES || !(d&FILE_ATTRIBUTE_DIRECTORY))
-    dir=0;
-  if (!CreateProcess(NULL, cmd, NULL, NULL, FALSE, 0, NULL, dir, &StartUp, &ProcInfo))
+  if (!CreateProcess(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &StartUp, &ProcInfo))
     return NULL;
   CloseHandle(ProcInfo.hThread);
   return ProcInfo.hProcess;
@@ -84,6 +81,19 @@ int NSISCALL my_GetDialogItemText(UINT idx, char *val)
 
 int NSISCALL my_MessageBox(const char *text, UINT type) {
   int _type = type & 0x001FFFFF;
+  static MSGBOXPARAMS mbp = {
+    sizeof(MSGBOXPARAMS),
+    0,
+    0,
+    0,
+    0,
+    0,
+    MAKEINTRESOURCE(IDI_ICON2),
+    0,
+    0,
+    0
+  };
+  
 #ifdef NSIS_CONFIG_SILENT_SUPPORT
   // default for silent installers
   if (g_exec_flags.silent && type >> 21)
@@ -92,7 +102,14 @@ int NSISCALL my_MessageBox(const char *text, UINT type) {
   // no silent or no default, just show
   if (g_exec_flags.rtl)
     _type ^= MB_RIGHT | MB_RTLREADING;
-  return MessageBox(g_hwnd, text, g_caption, _type);
+
+  mbp.hwndOwner = g_hwnd;
+  mbp.hInstance = g_hInstance;
+  mbp.lpszText = text;
+  mbp.lpszCaption = g_caption;
+  mbp.dwStyle = _type;
+  
+  return MessageBoxIndirect(&mbp);
 }
 
 void NSISCALL myDelete(char *buf, int flags)
@@ -243,7 +260,7 @@ char * NSISCALL findchar(char *str, char c)
   return str;
 }
 
-void NSISCALL trimslashtoend(char *buf)
+char * NSISCALL trimslashtoend(char *buf)
 {
   char *p = buf + mystrlen(buf);
   do
@@ -254,6 +271,8 @@ void NSISCALL trimslashtoend(char *buf)
   } while (p > buf);
 
   *p = 0;
+
+  return p + 1;
 }
 
 int NSISCALL validpathspec(char *ubuf)
@@ -331,7 +350,7 @@ int NSISCALL is_valid_instpath(char *s)
   return 1;
 }
 
-char * NSISCALL mystrstri(char *a, char *b)
+char * NSISCALL mystrstri(char *a, const char *b)
 {
   int l = mystrlen(b);
   while (mystrlen(a) >= l)
@@ -401,7 +420,7 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
   BOOL fOk = 0;
   typedef BOOL (WINAPI *mfea_t)(LPCSTR lpExistingFileName,LPCSTR lpNewFileName,DWORD dwFlags);
   mfea_t mfea;
-  mfea=(mfea_t) myGetProcAddress("KERNEL32.dll","MoveFileExA");
+  mfea=(mfea_t) myGetProcAddress(MGA_MoveFileExA);
   if (mfea)
   {
     fOk=mfea(pszExisting, pszNew, MOVEFILE_DELAY_UNTIL_REBOOT|MOVEFILE_REPLACE_EXISTING);
@@ -413,7 +432,7 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
     static char wininit[1024];
     static char tmpbuf[1024];
     int cchRenameLine;
-    char *szRenameSec = "[Rename]\r\n";
+    static const char szRenameSec[] = "[Rename]\r\n";
     HANDLE hfile;
     DWORD dwFileSize;
     DWORD dwBytes;
@@ -494,11 +513,11 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
 }
 #endif
 
-void NSISCALL myRegGetStr(HKEY root, const char *sub, const char *name, char *out)
+void NSISCALL myRegGetStr(HKEY root, const char *sub, const char *name, char *out, int x64)
 {
   HKEY hKey;
   *out=0;
-  if (RegOpenKeyEx(root,sub,0,KEY_READ,&hKey) == ERROR_SUCCESS)
+  if (RegOpenKeyEx(root,sub,0,KEY_READ|(x64?KEY_WOW64_64KEY:0),&hKey) == ERROR_SUCCESS)
   {
     DWORD l = NSIS_MAX_STRLEN;
     DWORD t;
@@ -574,7 +593,8 @@ char * NSISCALL mystrcat(char *out, const char *concat)
 
 char ps_tmpbuf[NSIS_MAX_STRLEN*2];
 
-#define SYSREGKEY "Software\\Microsoft\\Windows\\CurrentVersion"
+const char SYSREGKEY[]   = "Software\\Microsoft\\Windows\\CurrentVersion";
+const char QUICKLAUNCH[] = "\\Microsoft\\Internet Explorer\\Quick Launch";
 
 // Based on Dave Laundon's simplified process_string
 char * NSISCALL GetNSISString(char *outbuf, int strtab)
@@ -611,6 +631,24 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           x = 4;
         }
 
+        if (fldrs[0] & 0x80)
+        {
+          myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, GetNSISStringNP(fldrs[0] & 0x3F), out, fldrs[0] & 0x40);
+          if (!*out)
+            GetNSISString(out, fldrs[2]);
+          x = 0;
+        }
+        else if (fldrs[0] == CSIDL_SYSTEM)
+        {
+          GetSystemDirectory(out, NSIS_MAX_STRLEN);
+          x = 0;
+        }
+        else if (fldrs[0] == CSIDL_WINDOWS)
+        {
+          GetWindowsDirectory(out, NSIS_MAX_STRLEN);
+          x = 0;
+        }
+
         while (x--)
         {
           if (!SHGetSpecialFolderLocation(g_hwnd, fldrs[x], &idl))
@@ -625,36 +663,13 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
           *out=0;
         }
 
-        // resort to old registry methods, only when CSIDL failed
-        if (!*out)
-        {
-          if (fldrs[0] == CSIDL_PROGRAM_FILES_COMMON)
-          {
-            myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "CommonFilesDir", out);
-          }
-          else if (fldrs[0] == CSIDL_PROGRAM_FILES)
-          {
-            myRegGetStr(HKEY_LOCAL_MACHINE, SYSREGKEY, "ProgramFilesDir", out);
-            if (!*out)
-              mystrcpy(out, "C:\\Program Files");
-          }
-          else if (fldrs[0] == CSIDL_SYSTEM)
-          {
-            GetSystemDirectory(out, NSIS_MAX_STRLEN);
-          }
-          else if (fldrs[0] == CSIDL_WINDOWS)
-          {
-            GetWindowsDirectory(out, NSIS_MAX_STRLEN);
-          }
-        }
-
         if (*out)
         {
           // all users' version is CSIDL_APPDATA only for $QUICKLAUNCH
           // for normal $APPDATA, it'd be CSIDL_APPDATA_COMMON
           if (fldrs[2] == CSIDL_APPDATA)
           {
-            mystrcat(out, "\\Microsoft\\Internet Explorer\\Quick Launch");
+            mystrcat(out, QUICKLAUNCH);
           }
         }
 
@@ -662,13 +677,13 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab)
       }
       else if (nVarIdx == NS_VAR_CODE)
       {
-        if (nData == 27) // HWNDPARENT
+        if (nData == 29) // $HWNDPARENT
           myitoa(out, (unsigned int) g_hwnd);
         else
           mystrcpy(out, g_usrvars[nData]);
         // validate the directory name
-        if ((unsigned int)(nData - 21) < 6) {
-          // validate paths for $INSTDIR, $OUTDIR, $EXEDIR, $LANGUAGE, $TEMP and $PLUGINSDIR
+        if ((unsigned int)(nData - 21) < 7) {
+          // validate paths for $INSTDIR, $OUTDIR, $EXEDIR, $LANGUAGE, $TEMP, $PLUGINSDIR and $EXEPATH
           // $LANGUAGE is just a number anyway...
           validate_filename(out);
         }
@@ -870,15 +885,33 @@ WIN32_FIND_DATA * NSISCALL file_exists(char *buf)
   return NULL;
 }
 
-void * NSISCALL myGetProcAddress(char *dll, char *func)
+struct MGA_FUNC
 {
+  const char *dll;
+  const char *func;
+};
+
+struct MGA_FUNC MGA_FUNCS[] = {
+  {"KERNEL32", "GetDiskFreeSpaceExA"},
+  {"KERNEL32", "MoveFileExA"},
+  {"ADVAPI32", "RegDeleteKeyExA"},
+  {"ADVAPI32", "OpenProcessToken"},
+  {"ADVAPI32", "LookupPrivilegeValueA"},
+  {"ADVAPI32", "AdjustTokenPrivileges"},
+  {"KERNEL32", "GetUserDefaultUILanguage"},
+  {"SHLWAPI",  "SHAutoComplete"}
+};
+
+void * NSISCALL myGetProcAddress(const enum myGetProcAddressFunctions func)
+{
+  const char *dll = MGA_FUNCS[func].dll;
   HMODULE hModule = GetModuleHandle(dll);
   if (!hModule)
     hModule = LoadLibrary(dll);
   if (!hModule)
     return NULL;
 
-  return GetProcAddress(hModule, func);
+  return GetProcAddress(hModule, MGA_FUNCS[func].func);
 }
 
 void NSISCALL MessageLoop(UINT uCheckedMsg)

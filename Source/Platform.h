@@ -162,6 +162,12 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  endif
 #endif
 
+#if defined(__GNUC__)
+#define UNUSED __attribute__((unused))
+#else
+#define UNUSED
+#endif
+
 // macros
 
 #ifndef _WIN32
@@ -462,6 +468,7 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define MB_ICONQUESTION 32
 #  define MB_ICONEXCLAMATION 48
 #  define MB_ICONINFORMATION 64
+#  define MB_USERICON 128
 #  define MB_SETFOREGROUND 0x10000
 #  define MB_TOPMOST 0x40000
 #  define MB_RIGHT 0x80000
@@ -541,6 +548,10 @@ typedef DWORDLONG ULONGLONG,*PULONGLONG;
 #  define HKEY_PERFORMANCE_DATA ((HKEY)0x80000004)
 #  define HKEY_CURRENT_CONFIG ((HKEY)0x80000005)
 #  define HKEY_DYN_DATA ((HKEY)0x80000006)
+#endif
+
+#ifndef KEY_WOW64_64KEY
+#  define KEY_WOW64_64KEY 0x100
 #endif
 
 // show modes
@@ -798,8 +809,13 @@ typedef PIMAGE_OPTIONAL_HEADER64        PIMAGE_OPTIONAL_HEADER;
 typedef IMAGE_OPTIONAL_HEADER32         IMAGE_OPTIONAL_HEADER;
 typedef PIMAGE_OPTIONAL_HEADER32        PIMAGE_OPTIONAL_HEADER;
 #endif
-#define IMAGE_NT_OPTIONAL_HDR32_MAGIC 0x10b
-#define IMAGE_NT_OPTIONAL_HDR64_MAGIC 0x20b
+#ifndef __BIG_ENDIAN__
+#  define IMAGE_NT_OPTIONAL_HDR32_MAGIC 0x10b
+#  define IMAGE_NT_OPTIONAL_HDR64_MAGIC 0x20b
+#else
+#  define IMAGE_NT_OPTIONAL_HDR32_MAGIC 0x0b01
+#  define IMAGE_NT_OPTIONAL_HDR64_MAGIC 0x0b02
+#endif
 typedef struct _IMAGE_NT_HEADERS {
   DWORD Signature;
   IMAGE_FILE_HEADER FileHeader;
@@ -833,6 +849,21 @@ typedef struct _IMAGE_EXPORT_DIRECTORY {
   DWORD AddressOfNames;
   DWORD AddressOfNameOrdinals;
 } IMAGE_EXPORT_DIRECTORY,*PIMAGE_EXPORT_DIRECTORY;
+typedef struct tagVS_FIXEDFILEINFO {
+  DWORD dwSignature;
+  DWORD dwStrucVersion;
+  DWORD dwFileVersionMS;
+  DWORD dwFileVersionLS;
+  DWORD dwProductVersionMS;
+  DWORD dwProductVersionLS;
+  DWORD dwFileFlagsMask;
+  DWORD dwFileFlags;
+  DWORD dwFileOS;
+  DWORD dwFileType;
+  DWORD dwFileSubtype;
+  DWORD dwFileDateMS;
+  DWORD dwFileDateLS;
+} VS_FIXEDFILEINFO;
 #  pragma pack()
 #endif
 

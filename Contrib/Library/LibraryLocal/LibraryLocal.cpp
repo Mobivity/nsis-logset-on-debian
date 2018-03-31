@@ -6,25 +6,80 @@
 
 */
 
-#include <windows.h>
+#include "../../../Source/Platform.h"
+
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
 
+#include "../../../Source/util.h"
+#include "../../../Source/winchar.h"
+
 using namespace std;
+
+int g_noconfig=0;
+int g_display_errors=1;
+FILE *g_output=stdout;
+
+int GetTLBVersion(string& filepath, DWORD& high, DWORD & low)
+{
+#ifdef _WIN32
+
+  int found = 0;
+
+  char fullpath[1024];
+  char *p;
+  if (!GetFullPathName(filepath.c_str(), sizeof(fullpath), fullpath, &p))
+    return 0;
+
+  wchar_t ole_filename[1024];
+  MultiByteToWideChar(CP_ACP, 0, fullpath, lstrlen(fullpath) + 1, ole_filename, 1024);
+  
+  ITypeLib* typeLib;
+  HRESULT hr;
+  
+  hr = LoadTypeLib(ole_filename, &typeLib);
+  
+  if (SUCCEEDED(hr)) {
+
+    TLIBATTR* typelibAttr;
+    
+    hr = typeLib->GetLibAttr(&typelibAttr);
+
+    if (SUCCEEDED(hr)) {
+      
+      high = typelibAttr->wMajorVerNum;
+      low = typelibAttr->wMinorVerNum;
+      
+      found = 1;
+
+    }
+
+    typeLib->Release();
+
+  }
+
+  return found;
+
+#else
+
+  return 0;
+
+#endif
+}
 
 int main(int argc, char* argv[])
 {
 
   // Parse the command line
 
-	string cmdline;
+  string cmdline;
 
-	string mode;
-	string filename;
-	string filepath;
+  string mode;
+  string filename;
+  string filepath;
 
-	int filefound = 0;
+  int filefound = 0;
 
   if (argc != 4)
     return 1;
@@ -34,165 +89,71 @@ int main(int argc, char* argv[])
   mode = argv[1];
   filename = argv[2];
 
-  char buf[MAX_PATH];
-  GetCurrentDirectory(MAX_PATH, buf);
-  filepath = buf;
-
-  if ((filename.substr(0, 1).compare("\\") != 0) && (filename.substr(1, 1).compare(":") != 0)) {
-    
-    // Path is relative
-
-    if (filepath.substr(filepath.length() - 1, 1).compare("\\") != 0)
-      filepath.append("\\");
-      
-    filepath.append(filename);
-
-  } else if ((filename.substr(0, 1).compare("\\") == 0) && (filename.substr(1, 1).compare("\\") != 0)) {
-
-    // Path is relative to current root
-
-    if (filepath.substr(1, 1).compare(":") == 0) {
-
-      // Standard path
-
-      filepath = filepath.substr(0, filepath.find('\\'));
-      filepath.append(filename);
-
-    } else {
-
-      // UNC path
-      
-      filepath = filepath.substr(0, filepath.find('\\', filepath.find('\\', 2) + 1));
-      filepath.append(filename);
-        
-    }
-
-  } else {
-    
-    // Absolute path
-
-    filepath = filename;
-
-  }
-
   // Validate filename
 
-  WIN32_FIND_DATA wfd;
-  HANDLE hFind = FindFirstFile(filepath.c_str(), &wfd);
+  ifstream fs(filename.c_str());
   
-  if (hFind != INVALID_HANDLE_VALUE)
+  if (fs.is_open())
   {
     filefound = 1;
-    FindClose(hFind);
+    fs.close();
   }
-	
-	int versionfound = 0;
-	DWORD low = 0, high = 0;
 
-	if (filefound)
-	{
+  // Work
+  
+  int versionfound = 0;
+  DWORD low = 0, high = 0;
 
-		// Get version
-		
-		// DLL
-		
-		if (mode.compare("D") == 0)
-		{
-			
-			DWORD versionsize;
-			DWORD temp;
-			  
-			versionsize = GetFileVersionInfoSize((char*)filepath.c_str(), &temp);
-			
-			if (versionsize)
-			{
-			  
-				void *buf;
-				buf = (void *)GlobalAlloc(GPTR, versionsize);
-			  
-				if (buf)
-				{
-				
-					UINT uLen;
-					VS_FIXEDFILEINFO *pvsf;
+  if (filefound)
+  {
 
-					if (GetFileVersionInfo((char*)filepath.c_str(), 0, versionsize, buf) && VerQueryValue(buf, "\\", (void**)&pvsf,&uLen))
-					{
-						high = pvsf->dwFileVersionMS;
-						low = pvsf->dwFileVersionLS;
+    // Get version
+    
+    // DLL
+    
+    if (mode.compare("D") == 0)
+    {
+      
+      versionfound = GetDLLVersion(filename, high, low);
 
-						versionfound = 1;
-					} 
+    }
 
-					GlobalFree(buf);
+    // TLB
+    
+    if (mode.compare("T") == 0)
+    {
+      
+      versionfound = GetTLBVersion(filename, high, low);
 
-				}
+    }
 
-			}
+  }
 
-		}
+  // Write the version to an NSIS header file
 
-		// TLB
-		
-		if (mode.compare("T") == 0)
-		{
-			
-			wchar_t ole_filename[1024];
-			MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), filepath.length() + 1, ole_filename, 1024);
-			
-			ITypeLib* typeLib;
-			HRESULT hr;
-			
-			hr = LoadTypeLib(ole_filename, &typeLib);
-			
-			if (SUCCEEDED(hr)) {
+  ofstream header(argv[3], ofstream::out);
+  
+  if (header)
+  {
 
-				TLIBATTR* typelibAttr;
-				
-				hr = typeLib->GetLibAttr(&typelibAttr);
+    if (!filefound)
+    {
+      header << "!define LIBRARY_VERSION_FILENOTFOUND" << endl;
+    }
+    else if (!versionfound)
+    {
+      header << "!define LIBRARY_VERSION_NONE" << endl;
+    }
+    else
+    {
+      header << "!define LIBRARY_VERSION_HIGH " << high << endl;
+      header << "!define LIBRARY_VERSION_LOW " << low << endl;
+    }
+    
+    header.close();
 
-				if (SUCCEEDED(hr)) {
-					
-					high = typelibAttr->wMajorVerNum;
-					low = typelibAttr->wMinorVerNum;
-					
-					versionfound = 1;
+  }
 
-				}
-
-				typeLib->Release();
-
-			}
-
-		}
-
-	}
-
-	// Write the version to an NSIS header file
-
-	ofstream header(argv[3], ofstream::out);
-	
-	if (header)
-	{
-
-		if (!filefound)
-		{
-			header << "!define LIBRARY_VERSION_FILENOTFOUND" << endl;
-		}
-		else if (!versionfound)
-		{
-			header << "!define LIBRARY_VERSION_NONE" << endl;
-		}
-		else
-		{
-			header << "!define LIBRARY_VERSION_HIGH " << high << endl;
-			header << "!define LIBRARY_VERSION_LOW " << low << endl;
-		}
-	  
-	  header.close();
-
-	}
-
-	return 0;
+  return 0;
 
 }

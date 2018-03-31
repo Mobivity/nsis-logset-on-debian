@@ -14,6 +14,9 @@
  * warranty.
  */
 
+#ifndef ___NSIS_UTIL_H___
+#define ___NSIS_UTIL_H___
+
 #include "../Platform.h"
 #include "config.h"
 #include <shlobj.h>
@@ -23,7 +26,7 @@ char * NSISCALL GetNSISString(char *outbuf, int strtab);
 #define GetNSISStringTT(strtab) GetNSISString(0, (strtab))
 #define GetNSISStringNP(strtab) ((const char *)g_blocks[NB_STRINGS].offset+(strtab))
 #define GetNSISTab(strtab) (strtab < 0 ? LANG_STR_TAB(strtab) : strtab)
-void NSISCALL myRegGetStr(HKEY root, const char *sub, const char *name, char *out);
+void NSISCALL myRegGetStr(HKEY root, const char *sub, const char *name, char *out, int x64);
 int NSISCALL myatoi(char *s);
 void NSISCALL myitoa(char *s, int d);
 char * NSISCALL mystrcpy(char *out, const char *in);
@@ -72,7 +75,7 @@ extern char g_log_file[1024];
 #define LogData2Hex(x1,x2,x3,x4)
 #endif
 
-HANDLE NSISCALL myCreateProcess(char *cmd, char *dir);
+HANDLE NSISCALL myCreateProcess(char *cmd);
 int NSISCALL my_MessageBox(const char *text, UINT type);
 
 void NSISCALL myDelete(char *buf, int flags);
@@ -83,7 +86,7 @@ char * NSISCALL addtrailingslash(char *str);
 //char NSISCALL lastchar(const char *str);
 #define lastchar(str) *CharPrev(str,str+mystrlen(str))
 char * NSISCALL findchar(char *str, char c);
-void NSISCALL trimslashtoend(char *buf);
+char * NSISCALL trimslashtoend(char *buf);
 char * NSISCALL skip_root(char *path);
 int NSISCALL is_valid_instpath(char *s);
 void NSISCALL validate_filename(char *fn);
@@ -91,7 +94,18 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew);
 void NSISCALL mini_memcpy(void *out, const void *in, int len);
 void NSISCALL remove_ro_attr(char *file);
 
-void * NSISCALL myGetProcAddress(char *dll, char *func);
+enum myGetProcAddressFunctions {
+  MGA_GetDiskFreeSpaceExA,
+  MGA_MoveFileExA,
+  MGA_RegDeleteKeyExA,
+  MGA_OpenProcessToken,
+  MGA_LookupPrivilegeValueA,
+  MGA_AdjustTokenPrivileges,
+  MGA_GetUserDefaultUILanguage,
+  MGA_SHAutoComplete
+};
+
+void * NSISCALL myGetProcAddress(const enum myGetProcAddressFunctions func);
 void NSISCALL MessageLoop(UINT uCheckedMsg);
 
 // Turn a pair of chars into a word
@@ -103,3 +117,5 @@ void NSISCALL MessageLoop(UINT uCheckedMsg);
 #define CHAR2_TO_WORD(a,b) (((WORD)(a))|((b)<<8))
 #define CHAR4_TO_DWORD(a,b,c,d) (((DWORD)CHAR2_TO_WORD(a,b))|(CHAR2_TO_WORD(c,d)<<16))
 #endif
+
+#endif//!___NSIS_UTIL_H___

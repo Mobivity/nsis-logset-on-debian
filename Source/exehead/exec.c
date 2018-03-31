@@ -59,7 +59,14 @@ HRESULT g_hres;
 
 static int NSISCALL ExecuteEntry(entry *entry_);
 
-#define resolveaddr(v) ((v<0) ? myatoi(g_usrvars[-(v+1)]) : v)
+int NSISCALL resolveaddr(int v)
+{
+  if (v < 0)
+  {
+    return myatoi(g_usrvars[-(v+1)]);
+  }
+  return v;
+}
 
 int NSISCALL ExecuteCodeSegment(int pos, HWND hwndProgress)
 {
@@ -85,7 +92,7 @@ int NSISCALL ExecuteCodeSegment(int pos, HWND hwndProgress)
     {
       extern int progress_bar_pos, progress_bar_len;
       progress_bar_pos+=rv;
-      SendMessage(hwndProgress,PBM_SETPOS,MulDiv(progress_bar_pos,30000,progress_bar_len+!progress_bar_len),0);
+      SendMessage(hwndProgress,PBM_SETPOS,MulDiv(progress_bar_pos,30000,progress_bar_len),0);
     }
   }
   return 0;
@@ -125,13 +132,16 @@ static char * NSISCALL GetStringFromParm(int id_)
 }
 
 #ifdef NSIS_SUPPORT_REGISTRYFUNCTIONS
+
+#define AlterRegistrySAM(sam) (sam | g_exec_flags.alter_reg_view)
+
 // based loosely on code from Tim Kosse
 // in win9x this isn't necessary (RegDeleteKey() can delete a tree of keys),
 // but in win2k you need to do this manually.
 static LONG NSISCALL myRegDeleteKeyEx(HKEY thiskey, LPCTSTR lpSubKey, int onlyifempty)
 {
   HKEY key;
-  int retval=RegOpenKeyEx(thiskey,lpSubKey,0,KEY_ENUMERATE_SUB_KEYS,&key);
+  int retval=RegOpenKeyEx(thiskey,lpSubKey,0,AlterRegistrySAM(KEY_ENUMERATE_SUB_KEYS),&key);
   if (retval==ERROR_SUCCESS)
   {
     // NB - don't change this to static (recursive function)
@@ -146,7 +156,16 @@ static LONG NSISCALL myRegDeleteKeyEx(HKEY thiskey, LPCTSTR lpSubKey, int onlyif
       if ((retval=myRegDeleteKeyEx(key,buffer,0)) != ERROR_SUCCESS) break;
     }
     RegCloseKey(key);
-    retval=RegDeleteKey(thiskey,lpSubKey);
+    {
+      typedef LONG (WINAPI * RegDeleteKeyExAPtr)(HKEY, LPCTSTR, REGSAM, DWORD);
+      RegDeleteKeyExAPtr RDKE = (RegDeleteKeyExAPtr)
+        myGetProcAddress(MGA_RegDeleteKeyExA);
+
+      if (RDKE)
+        retval=RDKE(thiskey,lpSubKey,AlterRegistrySAM(0),0);
+      else
+        retval=g_exec_flags.alter_reg_view||RegDeleteKey(thiskey,lpSubKey);
+    }
   }
   return retval;
 }
@@ -163,7 +182,7 @@ static HKEY NSISCALL GetRegRootKey(int hRootKey)
 static HKEY NSISCALL myRegOpenKey(REGSAM samDesired)
 {
   HKEY hKey;
-  if (RegOpenKeyEx(GetRegRootKey(parms[1]), GetStringFromParm(0x22), 0, samDesired, &hKey) == ERROR_SUCCESS)
+  if (RegOpenKeyEx(GetRegRootKey(parms[1]), GetStringFromParm(0x22), 0, AlterRegistrySAM(samDesired), &hKey) == ERROR_SUCCESS)
   {
     return hKey;
   }
@@ -239,19 +258,23 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         return ExecuteCodeSegment(v,NULL);
       }
     case EW_UPDATETEXT:
-      if (parm1) {
-        static int old_st_updateflag=6;
-        if (parm1&8) ui_st_updateflag=old_st_updateflag;
-        else {
-          old_st_updateflag=ui_st_updateflag;
-          ui_st_updateflag=parm1;
-        }
+    {
+      static int old_st_updateflag=6;
+      if (parm2)
+      {
+        ui_st_updateflag=old_st_updateflag;
+      }
+      else if (parm1)
+      {
+        old_st_updateflag=ui_st_updateflag;
+        ui_st_updateflag=parm1;
       }
       else
       {
         log_printf2("detailprint: %s",GetStringFromParm(0x00));
         update_status_text(parm0,0);
       }
+    }
     break;
     case EW_SLEEP:
       {
@@ -847,7 +870,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         log_printf2("Exec: command=\"%s\"",buf0);
         update_status_text(LANG_EXECUTE,buf0);
 
-        hProc=myCreateProcess(buf0,state_output_directory);
+        hProc=myCreateProcess(buf0);
 
         if (hProc)
         {
@@ -905,8 +928,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         char *highout=var0;
         char *lowout=var1;
         DWORD s1;
-        DWORD t[4]; // our two members are the 3rd and 4th..
-        VS_FIXEDFILEINFO *pvsf1=(VS_FIXEDFILEINFO*)t;
+        VS_FIXEDFILEINFO *pvsf1;
         DWORD d;
         char *buf1=GetStringFromParm(-0x12);
         s1=GetFileVersionInfoSize(buf1,&d);
@@ -1064,6 +1086,19 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         char *buf0=GetStringFromParm(0x00);
         char *buf1=GetStringFromParm(0x11);
         log_printf3("CopyFiles \"%s\"->\"%s\"",buf0,buf1);
+
+        if (!file_exists(buf0))
+        {
+          // workaround for bug #774966
+          //
+          // on nt4, SHFileOperation silently fails if the source
+          // file doesn't exist. do a manual check instead.
+
+          update_status_text(LANG_COPYFAILED,0);
+          exec_error++;
+          break;
+        }
+
         op.hwnd=g_hwnd;
         op.wFunc=FO_COPY;
         buf0[mystrlen(buf0)+1]=0;
@@ -1144,7 +1179,7 @@ static int NSISCALL ExecuteEntry(entry *entry_)
     case EW_DELREG:
       {
         long res=!ERROR_SUCCESS;
-        const char *rkn=RegKeyHandleToName((HKEY)parm1);
+        const char *rkn UNUSED=RegKeyHandleToName((HKEY)parm1);
         if (!parm4)
         {
           HKEY hKey=myRegOpenKey(KEY_SET_VALUE);
@@ -1174,10 +1209,10 @@ static int NSISCALL ExecuteEntry(entry *entry_)
         int rtype=parm5;
         char *buf0=GetStringFromParm(0x02);
         char *buf1=GetStringFromParm(0x11);
-        const char *rkn=RegKeyHandleToName(rootkey);
+        const char *rkn UNUSED=RegKeyHandleToName(rootkey);
 
         exec_error++;
-        if (RegCreateKeyEx(rootkey,buf1,0,0,REG_OPTION_NON_VOLATILE,KEY_SET_VALUE,0,&hKey,0) == ERROR_SUCCESS)
+        if (RegCreateKeyEx(rootkey,buf1,0,0,0,AlterRegistrySAM(KEY_SET_VALUE),0,&hKey,0) == ERROR_SUCCESS)
         {
           LPBYTE data = (LPBYTE) buf2;
           DWORD size = 0;
@@ -1246,12 +1281,12 @@ static int NSISCALL ExecuteEntry(entry *entry_)
           {
             if (t==REG_DWORD)
             {
-              if (!parm4) exec_error++;
+              exec_error += !parm4;
               myitoa(p,*((DWORD*)p));
             }
             else
             {
-              if (parm4) exec_error++;
+              exec_error += parm4;
               p[l]=0;
             }
           }

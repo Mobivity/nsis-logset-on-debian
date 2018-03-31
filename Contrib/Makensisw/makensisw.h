@@ -81,7 +81,8 @@ enum {
 };
 
 typedef enum {
-  COMPRESSOR_SCRIPT,
+  COMPRESSOR_NONE_SELECTED = -1,
+  COMPRESSOR_SCRIPT = 0,
   COMPRESSOR_ZLIB,
   COMPRESSOR_ZLIB_SOLID,
   COMPRESSOR_BZIP2,
@@ -142,7 +143,7 @@ int compressor_strings[] = {IDS_SCRIPT,
 extern const char* NSISW_VERSION;
 
 int WINAPI     WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, char *cmdParam, int cmdShow);
-static BOOL    CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL           CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 DWORD WINAPI   MakeNSISProc(LPVOID p);
 BOOL CALLBACK  DialogResize(HWND hWnd, LPARAM /* unused*/);
 BOOL CALLBACK  AboutNSISProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -150,6 +151,7 @@ BOOL CALLBACK  AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK  SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK  SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK  CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+void           SetScript(const char *script, bool clearArgs = true);
 void           CompileNSISScript();
 char*          BuildSymbols();
 void           SetCompressor(NCOMPRESSOR);
@@ -162,17 +164,18 @@ void           RestoreMRUList();
 void           SaveMRUList();
 
 typedef struct NSISScriptData {
-  bool script_alloced;
   char *script;
+  HGLOBAL script_cmd_args;
+  char *compile_command;
   char *output_exe;
   char *input_script;
   char *branding;
   char *brandingv;
   char **symbols;
   int retcode;
+  BOOL userSelectCompressor;
   DWORD logLength;
   DWORD warnings;
-  BOOL appended;
   HINSTANCE hInstance;
   HWND hwnd;
   HMENU menu;

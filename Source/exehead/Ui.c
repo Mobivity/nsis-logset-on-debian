@@ -232,9 +232,8 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
   //   http://msdn.microsoft.com/library/default.asp?url=/library/en-us/intl/nls_0xrn.asp
 
   LANGID (WINAPI *GUDUIL)();
-  static const char guduil[] = "GetUserDefaultUILanguage";
 
-  GUDUIL = myGetProcAddress("KERNEL32.dll", (char *) guduil);
+  GUDUIL = myGetProcAddress(MGA_GetUserDefaultUILanguage);
   if (GUDUIL)
   {
     // Windows ME/2000+
@@ -250,14 +249,14 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
 
     {
       // Windows 9x
-      myRegGetStr(HKEY_CURRENT_USER, reg_9x_locale, NULL, g_tmp);
+      myRegGetStr(HKEY_CURRENT_USER, reg_9x_locale, NULL, g_tmp, 0);
     }
 
     if (!g_tmp[0])
     {
       // Windows NT
       // This key exists on 9x as well, so it's only read if ResourceLocale wasn't found
-      myRegGetStr(HKEY_USERS, reg_nt_locale_key, reg_nt_locale_val, g_tmp);
+      myRegGetStr(HKEY_USERS, reg_nt_locale_key, reg_nt_locale_val, g_tmp, 0);
     }
 
     mystrcat(state_language, g_tmp);
@@ -278,7 +277,8 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
         (HKEY)header->install_reg_rootkey,
         GetNSISStringNP(header->install_reg_key_ptr),
         GetNSISStringNP(header->install_reg_value_ptr),
-        ps_tmpbuf
+        ps_tmpbuf,
+        0
       );
       if (ps_tmpbuf[0])
       {
@@ -373,21 +373,20 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
 
 #ifdef NSIS_CONFIG_LICENSEPAGE
     { // load richedit DLL
-      static char str1[]="RichEd20.dll";
-      static char str2[]="RichEdit20A";
-      if (!LoadLibrary(str1))
+      static const char riched20[]="RichEd20";
+      static const char riched32[]="RichEd32";
+      static const char richedit20a[]="RichEdit20A";
+      static const char richedit[]="RichEdit";
+      if (!LoadLibrary(riched20))
       {
-        *(WORD*)(str1+6) = CHAR2_TO_WORD('3','2');
-        LoadLibrary(str1);
+        LoadLibrary(riched32);
       }
 
       // make richedit20a point to RICHEDIT
-      if (!GetClassInfo(NULL,str2,&wc))
+      if (!GetClassInfo(NULL,richedit20a,&wc))
       {
-        str2[8]=0;
-        GetClassInfo(NULL,str2,&wc);
-        wc.lpszClassName = str2;
-        str2[8]='2';
+        GetClassInfo(NULL,richedit,&wc);
+        wc.lpszClassName = richedit20a;
         RegisterClass(&wc);
       }
     }
@@ -543,6 +542,11 @@ nextPage:
       EnableNext(pflags & PF_NEXT_ENABLE);
       EnableWindow(m_hwndCancel, pflags & PF_CANCEL_ENABLE);
 
+      if (pflags & PF_CANCEL_ENABLE)
+        EnableMenuItem(GetSystemMenu(hwndDlg, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+      else
+        EnableMenuItem(GetSystemMenu(hwndDlg, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+
       SendMessage(hwndtmp, BM_SETSTYLE, BS_PUSHBUTTON, TRUE);
 
       if (g_exec_flags.abort)
@@ -598,6 +602,8 @@ nextPage:
           SetWindowPos(m_curwnd,0,r.left,r.top,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
 #ifdef NSIS_SUPPORT_CODECALLBACKS
           ExecuteCodeSegment(this_page->showfunc,NULL);
+          if (g_quit_flag)
+            return FALSE;
 #endif //NSIS_SUPPORT_CODECALLBACKS
           ShowWindow(m_curwnd,SW_SHOWNA);
           NotifyCurWnd(WM_NOTIFY_START);
@@ -635,14 +641,6 @@ skipPage:
   {
     SetWindowLong(hwndDlg, DWL_MSGRESULT, FALSE);
     return TRUE;
-  }
-  if (uMsg == WM_CLOSE && m_page == g_blocks[NB_PAGES].num - 1)
-  {
-    if (!IsWindowEnabled(m_hwndCancel))
-    {
-      uMsg = WM_COMMAND;
-      wParam = IDOK;
-    }
   }
   if (uMsg == WM_COMMAND)
   {
@@ -920,9 +918,7 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
       typedef HRESULT (WINAPI *SHAutoCompletePtr)(HWND, DWORD);
       SHAutoCompletePtr fSHAutoComplete;
-      static const char shlwapi[] = "shlwapi.dll";
-      static const char shac[] = "SHAutoComplete";
-      fSHAutoComplete = (SHAutoCompletePtr) myGetProcAddress((char *) shlwapi, (char *) shac);
+      fSHAutoComplete = (SHAutoCompletePtr) myGetProcAddress(MGA_SHAutoComplete);
       if (fSHAutoComplete)
       {
         fSHAutoComplete(hDir, SHACF_FILESYSTEM);
@@ -996,7 +992,7 @@ static BOOL CALLBACK DirProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     // Test for and use the GetDiskFreeSpaceEx API
     {
       BOOL (WINAPI *GDFSE)(LPCSTR, PULARGE_INTEGER, PULARGE_INTEGER, PULARGE_INTEGER) =
-          myGetProcAddress("KERNEL32.dll", "GetDiskFreeSpaceExA");
+          myGetProcAddress(MGA_GetDiskFreeSpaceExA);
       if (GDFSE)
       {
         ULARGE_INTEGER available64;

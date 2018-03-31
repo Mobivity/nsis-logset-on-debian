@@ -2735,10 +2735,14 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       // define LANG_LangName as "####" (lang id)
       // for example ${LANG_ENGLISH} = 1033
       char lang_id[16];
+      char lang_cp[16];
       char lang_name[1024];
       wsprintf(lang_name, "LANG_%s", table->nlf.m_szName);
       wsprintf(lang_id, "%u", table->lang_id);
+      wsprintf(lang_cp, "%u", table->nlf.m_uCodePage);
       definedlist.add(lang_name, lang_id);
+      wsprintf(lang_name, "LANG_%s_CP", table->nlf.m_szName);
+      definedlist.add(lang_name, lang_cp);
     }
     return PS_OK;
 
@@ -3555,6 +3559,20 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       if (process_jump(line,1,&ent.offsets[0])) PRINTHELP()
       SCRIPT_MSG("Goto: %s\n",line.gettoken_str(1));
     return add_entry(&ent);
+    case TOK_SETREGVIEW:
+    {
+      ent.which=EW_SETFLAG;
+      ent.offsets[0]=FLAG_OFFSET(alter_reg_view);
+      // "64" results in setting the flag to 1 which alters the view
+      int k=line.gettoken_enum(1,"32\0" "64\0");
+      if (k<0) PRINTHELP()
+      if (k == 0) // 32
+        ent.offsets[1]=add_intstring(0);
+      else if (k == 1) // 64
+        ent.offsets[1]=add_intstring(KEY_WOW64_64KEY);
+      SCRIPT_MSG("SetRegView: %s\n",line.gettoken_str(1));
+    }
+    return add_entry(&ent);
     case TOK_SETSHELLVARCONTEXT:
     {
       ent.which=EW_SETFLAG;
@@ -3776,6 +3794,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           MBD(MB_ICONINFORMATION)
           MBD(MB_ICONQUESTION)
           MBD(MB_ICONSTOP)
+          MBD(MB_USERICON)
           MBD(MB_TOPMOST)
           MBD(MB_SETFOREGROUND)
           MBD(MB_RIGHT)
@@ -4524,7 +4543,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       if (ent.offsets[1] < 0) PRINTHELP();
       switch (ent.offsets[1]) {
         case 0:
-          ent.offsets[1]=8;
+          ent.offsets[2]=1;
         break;
         case 1:
         case 2:
@@ -4648,133 +4667,22 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     return add_entry(&ent);
     case TOK_GETDLLVERSIONLOCAL:
       {
-        char buf[128];
-        DWORD low=0, high=0;
-        int flag=0;
-#ifdef _WIN32
-        DWORD s,d;
-        int alloced=0;
-        char *path=line.gettoken_str(1);
-        if (!((*path == '\\' && path[1] == '\\') || (*path && path[1] == ':'))) {
-          size_t pathlen=strlen(path)+GetCurrentDirectory(0, buf)+2;
-          char *nrpath=(char *)malloc(pathlen);
-          alloced=1;
-          GetCurrentDirectory(pathlen, nrpath);
-          if (path[0] != '\\')
-            strcat(nrpath,"\\");
-          else if (nrpath[1] == ':') {
-            nrpath[2]=0;
-          }
-          else {
-            char *p=nrpath+2;
-            while (*p!='\\') p++;
-            *p=0;
-          }
-          strcat(nrpath,path);
-          FILE *f=FOPEN(nrpath, "r");
-          if (f) {
-            path=nrpath;
-            fclose(f);
-          }
-          else {
-            free(nrpath);
-            alloced=0;
-          }
-        }
-        s=GetFileVersionInfoSize(path,&d);
-        if (s)
-        {
-          void *buf;
-          buf=(void *)GlobalAlloc(GPTR,s);
-          if (buf)
-          {
-            UINT uLen;
-            VS_FIXEDFILEINFO *pvsf;
-            if (GetFileVersionInfo(path,0,s,buf) && VerQueryValue(buf,"\\",(void**)&pvsf,&uLen))
-            {
-              low=pvsf->dwFileVersionLS;
-              high=pvsf->dwFileVersionMS;
-              flag=1;
-            }
-            GlobalFree(buf);
-          }
-        }
-        if (alloced) free(path);
-#else
-        FILE *fdll = FOPEN(line.gettoken_str(1), "rb");
-        if (!fdll) {
-          ERROR_MSG("Error: Can't open \"%s\"!\n", line.gettoken_str(1));
-          return PS_ERROR;
-        }
-        MANAGE_WITH(fdll, fclose);
-
-        fseek(fdll, 0, SEEK_END);
-        unsigned int len = ftell(fdll);
-        fseek(fdll, 0, SEEK_SET);
-        LPBYTE dll = (LPBYTE) malloc(len);
-        if (!dll) {
-          ERROR_MSG("Internal compiler error #12345: malloc(%d) failed\n", dll);
-          extern void quit(); quit();
-        }
-        MANAGE_WITH(dll, free);
-        if (fread(dll, 1, len, fdll) != len) {
-          ERROR_MSG("Error: Can't read \"%s\"!\n", line.gettoken_str(1));
-          return PS_ERROR;
-        }
-
-        try
-        {
-          CResourceEditor *dllre = new CResourceEditor(dll, len);
-          LPBYTE ver = dllre->GetResourceA(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
-          int versize = dllre->GetResourceSizeA(VS_FILE_INFO, MAKEINTRESOURCE(VS_VERSION_INFO), 0);
-
-          if (ver)
-          {
-            if ((size_t) versize > sizeof(WORD) * 3)
-            {
-              // get VS_FIXEDFILEINFO from VS_VERSIONINFO
-              WCHAR *szKey = (WCHAR *)(ver + sizeof(WORD) * 3);
-              int len = WCStrLen(szKey) * sizeof(WCHAR) + sizeof(WORD) * 3;
-              len = (len + 3) & ~3; // align on DWORD boundry
-              VS_FIXEDFILEINFO *verinfo = (VS_FIXEDFILEINFO *)(ver + len);
-              if (versize > len && verinfo->dwSignature == VS_FFI_SIGNATURE)
-              {
-                low = verinfo->dwFileVersionLS;
-                high = verinfo->dwFileVersionMS;
-                flag = 1;
-              }
-            }
-            dllre->FreeResource(ver);
-          }
-
-          delete dllre;
-        }
-        catch (exception& err) {
-          ERROR_MSG(
-            "GetDLLVersionLocal: error reading version info from \"%s\": %s\n",
-            line.gettoken_str(1),
-            err.what()
-          );
-          return PS_ERROR;
-        }
-#endif
-        if (!flag)
+        DWORD low, high;
+        if (!GetDLLVersion(line.gettoken_str(1),high,low))
         {
           ERROR_MSG("GetDLLVersionLocal: error reading version info from \"%s\"\n",line.gettoken_str(1));
           return PS_ERROR;
         }
         ent.which=EW_ASSIGNVAR;
         ent.offsets[0]=GetUserVarIndex(line, 2);
-        wsprintf(buf,"%u",high);
-        ent.offsets[1]=add_string(buf);
+        ent.offsets[1]=add_intstring(high);
         ent.offsets[2]=0;
         ent.offsets[3]=0;
         if (ent.offsets[0]<0) PRINTHELP()
         add_entry(&ent);
 
         ent.offsets[0]=GetUserVarIndex(line, 3);
-        wsprintf(buf,"%u",low);
-        ent.offsets[1]=add_string(buf);
+        ent.offsets[1]=add_intstring(low);
         ent.offsets[2]=0;
         ent.offsets[3]=0;
         if (ent.offsets[0]<0) PRINTHELP()
@@ -5730,7 +5638,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       // DLL name on the user machine
       char tempDLL[NSIS_MAX_STRLEN];
       string dllName = get_file_name(dllPath);
-      wsprintf(tempDLL, "$PLUGINSDIR%c%s", PATH_SEPARATOR_C, dllName.c_str());
+      wsprintf(tempDLL, "$PLUGINSDIR\\%s", dllName.c_str());
 
       // Add the DLL to the installer
       if (data_handle == -1)
@@ -5778,8 +5686,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       // SetDetailsPrint lastused
       ent.which=EW_UPDATETEXT;
       ent.offsets[0]=0;
-      ent.offsets[1]=8; // lastused
-      ent.offsets[2]=0;
+      ent.offsets[1]=0;
+      ent.offsets[2]=1; // lastused
       ret=add_entry(&ent);
       if (ret != PS_OK) {
         return ret;
@@ -5806,6 +5714,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         ent.offsets[0]=add_string(line.gettoken_str(w));
         if (!strcmpi(line.gettoken_str(w), "/NOUNLOAD")) nounloadmisused=1;
         ent.offsets[1]=0;
+        ent.offsets[2]=0;
         ret=add_entry(&ent);
         if (ret != PS_OK) {
           return ret;
@@ -5850,7 +5759,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       // SetDetailsPrint lastused
       ent.which=EW_UPDATETEXT;
       ent.offsets[0]=0;
-      ent.offsets[1]=8; // lastused
+      ent.offsets[1]=0;
+      ent.offsets[2]=1; // lastused
       ret=add_entry(&ent);
       if (ret != PS_OK) return ret;
     }
@@ -5974,7 +5884,7 @@ int CEXEBuild::do_add_file(const char *lgss, int attrib, int recurse, int *total
 
       SCRIPT_MSG("%sFile: Descending to: \"%s\"\n", generatecode ? "" : "Reserve", new_spec.c_str());
 
-      if (do_add_file_create_dir(*dirs_itr, new_dir, attrib) != PS_OK) {
+      if (do_add_file_create_dir(dir + '\\' + *dirs_itr, new_dir, attrib) != PS_OK) {
         return PS_ERROR;
       }
 
@@ -6198,10 +6108,13 @@ int CEXEBuild::add_file(const string& dir, const string& file, int attrib, const
       ent.offsets[4]=0;
       ent.offsets[5]=0;
 
-      a=add_entry(&ent);
-      if (a != PS_OK)
+      if (ent.offsets[1] != INVALID_FILE_ATTRIBUTES)
       {
-        return a;
+        a=add_entry(&ent);
+        if (a != PS_OK)
+        {
+          return a;
+        }
       }
 #endif
     }
@@ -6232,8 +6145,12 @@ int CEXEBuild::do_add_file_create_dir(const string& local_dir, const string& dir
 
     DWORD attr = GetFileAttributes(local_dir.c_str());
 
-    if (add_entry_direct(EW_SETFILEATTRIBUTES, ndc, attr) != PS_OK) {
-      return PS_ERROR;
+    if (attr != INVALID_FILE_ATTRIBUTES)
+    {
+      if (add_entry_direct(EW_SETFILEATTRIBUTES, ndc, attr) != PS_OK)
+      {
+        return PS_ERROR;
+      }
     }
   }
 #endif

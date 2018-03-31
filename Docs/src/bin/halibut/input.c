@@ -443,6 +443,8 @@ token get_token(input * in)
   rdstring rs = { 0, 0, NULL };
   filepos cpos;
 
+  ret.cmd = c__invalid;
+  ret.aux = FALSE;
   ret.text = NULL;              /* default */
   c = get(in, &cpos);
   ret.pos = cpos;

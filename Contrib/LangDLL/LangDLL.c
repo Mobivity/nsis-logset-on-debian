@@ -20,12 +20,14 @@ HWND g_hwndParent;
 char temp[1024];
 char g_wndtitle[1024], g_wndtext[1024];
 int dofont;
+int docp;
 
 int langs_num;
 
 struct lang {
   char *name;
   char *id;
+  UINT cp;
 } *langs;
 
 BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -37,7 +39,12 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
   	case WM_INITDIALOG:
       // add languages
       for (i = langs_num - 1; i >= 0; i--) {
-        int cbi = SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_ADDSTRING, 0, (LPARAM) langs[i].name);
+        int cbi;
+
+        if (langs[i].cp != 0 && langs[i].cp != GetACP())
+          continue;
+
+        cbi = SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_ADDSTRING, 0, (LPARAM) langs[i].name);
         SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETITEMDATA, cbi, (LPARAM) langs[i].id);
 
         // remember selected language
@@ -45,9 +52,15 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
           selected_language = langs[i].name;
         }
       }
+      // empty list box?
+      if (SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_GETCOUNT, 0, 0) == 0) {
+        pushstring("no languages available");
+        EndDialog(hwndDlg, 0);
+        break;
+      }
       // select the current language
       if (selected_language)
-        SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SELECTSTRING, -1, (LPARAM) selected_language);
+        SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SELECTSTRING, (WPARAM) -1, (LPARAM) selected_language);
       else
         SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, 0, 0);
       // set texts
@@ -123,6 +136,18 @@ void __declspec(dllexport) LangDialog(HWND hwndParent, int string_size,
 
     // get flags
     if (popstring(temp)) return;
+
+    // parse flags
+    {
+      char *p=temp;
+      while (*p)
+      {
+        if (*p == 'F') dofont=1; // parse font flag
+        if (*p == 'C') docp=1;   // parse codepage flag
+        p++;
+      }
+    }
+ 
     if (*temp == 'A') {
       // automatic language count
       stack_t *th;
@@ -133,17 +158,14 @@ void __declspec(dllexport) LangDialog(HWND hwndParent, int string_size,
         th = th->next;
       }
       if (!th) return;
-      langs_num /= 2;
+      if (docp)
+        langs_num /= 3;
+      else
+        langs_num /= 2;
       pop_empty_string = TRUE;
     } else {
       // use counts languages
       langs_num = myatoi(temp);
-    }
-
-    {
-      // parse font flag
-      char *p=temp;
-      while (*p) if (*p++ == 'F') dofont=1;
     }
 
     // zero languages?
@@ -164,6 +186,12 @@ void __declspec(dllexport) LangDialog(HWND hwndParent, int string_size,
       langs[i].id = GlobalAlloc(GPTR, lstrlen(temp)+1);
       if (!langs[i].id) return;
       lstrcpy(langs[i].id, temp);
+
+      if (docp)
+      {
+        if (popstring(temp)) return;
+        langs[i].cp = myatoi(temp);
+      }
     }
 
     // pop the empty string to keep the stack clean

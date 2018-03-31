@@ -28,14 +28,15 @@
 NTOOLTIP g_tip;
 LRESULT CALLBACK TipHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 
-char g_mru_list[MRU_LIST_SIZE][MAX_PATH] = { NULL, NULL, NULL, NULL, NULL };
+char g_mru_list[MRU_LIST_SIZE][MAX_PATH] = { "", "", "", "", "" };
 
 extern NSCRIPTDATA g_sdata;
 extern char *compressor_names[];
 
-int SetArgv(char *cmdLine, int *argc, char ***argv)
+int SetArgv(const char *cmdLine, int *argc, char ***argv)
 {
-  char *p, *arg, *argSpace;
+  const char *p;
+  char *arg, *argSpace;
   int size, argSpaceSize, inquote, copy, slashes;
 
   size = 2;
@@ -267,25 +268,43 @@ void CompileNSISScript() {
     DragAcceptFiles(g_sdata.hwnd,TRUE);
     return;
   }
-  if (!g_sdata.appended) {
+  if (!g_sdata.compile_command) {
     if (s) GlobalFree(s);
     char *symbols = BuildSymbols();
     
     char compressor[40];
     if(lstrlen(g_sdata.compressor_name)) {
-      wsprintf(compressor,"/X\"SetCompressor /FINAL %s\" ",g_sdata.compressor_name);
+      wsprintf(compressor,"/X\"SetCompressor /FINAL %s\"",g_sdata.compressor_name);
     }
     else {
       lstrcpy(compressor,"");
     }
 
-    s = (char *)GlobalAlloc(GPTR, lstrlen(g_sdata.script)+lstrlen(symbols)+lstrlen(compressor)+sizeof(EXENAME)+sizeof(" /NOTIFYHWND  ")+23);
-    wsprintf(s,"%s %s%s /NOTIFYHWND %d -- %s",EXENAME,compressor,symbols,g_sdata.hwnd,g_sdata.script);
+    char *args = (char *) GlobalLock(g_sdata.script_cmd_args);
+
+    g_sdata.compile_command = (char *) GlobalAlloc(
+      GPTR,
+      /* makensis.exe        */ sizeof(EXENAME)                   + /* space */ 1 +
+      /* script path         */ lstrlen(g_sdata.script)           + /* space */ 1 +
+      /* script cmd args     */ lstrlen(args)  + /* space */ 1 +
+      /* defines /Dblah=...  */ lstrlen(symbols)                  + /* space */ 1 +
+      /* /XSetCompressor...  */ lstrlen(compressor)               + /* space */ 1 +
+      /* /NOTTIFYHWND + HWND */ sizeof("/NOTIFYHWND -4294967295") + /* space */ 1
+    );
+
+    wsprintf(
+      g_sdata.compile_command,
+      "%s %s %s /NOTIFYHWND %d %s -- \"%s\"",
+      EXENAME,
+      compressor,
+      symbols,
+      g_sdata.hwnd,
+      args,
+      g_sdata.script
+    );
+
+    GlobalUnlock(args);
     GlobalFree(symbols);
-    if (g_sdata.script_alloced) GlobalFree(g_sdata.script);
-    g_sdata.script_alloced = true;
-    g_sdata.script = s;
-    g_sdata.appended = TRUE;
   }
   GlobalFree(g_sdata.input_script);
   GlobalFree(g_sdata.output_exe);
@@ -419,7 +438,7 @@ char** LoadSymbolSet(char *name)
       DWORD t;
       DWORD bufSize;
       DWORD i = 0;
-      HGLOBAL hMem;
+      HGLOBAL hMem = NULL;
 
       while(TRUE) {
         l = 0;
@@ -507,10 +526,13 @@ void SaveSymbolSet(char *name, char **symbols)
 }
 
 void ResetObjects() {
-  g_sdata.appended = FALSE;
+  if (g_sdata.compile_command)
+    GlobalFree(g_sdata.compile_command);
+
   g_sdata.warnings = FALSE;
   g_sdata.retcode = -1;
   g_sdata.thread = NULL;
+  g_sdata.compile_command = NULL;
 }
 
 void ResetSymbols() {
@@ -563,7 +585,6 @@ int InitBranding() {
     }
     char szBuf[1024];
     DWORD dwRead = 1;
-    DWORD dwExit = !STILL_ACTIVE;
     if (WaitForSingleObject(pi.hProcess,10000)!=WAIT_OBJECT_0) {
       return 0;
     }
@@ -701,7 +722,6 @@ BOOL IsValidFile(char *fname)
 void PushMRUFile(char* fname)
 {
   int i;
-  char buf[MAX_PATH+1];
   DWORD   rv;
   char*  file_part;
   char full_file_name[MAX_PATH+1];
@@ -710,16 +730,8 @@ void PushMRUFile(char* fname)
     return;
   }
 
-  if(fname[0] == '"') {
-    fname++;
-  }
-
-  lstrcpy(buf,fname);
-  if(buf[lstrlen(buf)-1] == '"') {
-    buf[lstrlen(buf)-1] = '\0';
-  }
   my_memset(full_file_name,0,sizeof(full_file_name));
-  rv = GetFullPathName(buf,sizeof(full_file_name),full_file_name,&file_part);
+  rv = GetFullPathName(fname,sizeof(full_file_name),full_file_name,&file_part);
   if (rv == 0) {
     return;
   }
@@ -819,8 +831,7 @@ void BuildMRUMenus()
 void LoadMRUFile(int position)
 {
   if (!g_sdata.thread && position >=0 && position < MRU_LIST_SIZE && g_mru_list[position][0]) {
-    g_sdata.script = (char *)GlobalAlloc(GPTR,lstrlen(g_mru_list[position])+3);
-    wsprintf(g_sdata.script,"\"%s\"",g_mru_list[position]);
+    SetScript(g_mru_list[position]);
     if(IsValidFile(g_mru_list[position])) {
       PushMRUFile(g_mru_list[position]);
     }

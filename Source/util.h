@@ -46,10 +46,9 @@ unsigned char* generate_uninstall_icon_data(const char* filename, size_t &size);
 int generate_unicons_offsets(unsigned char* exeHeader, size_t exeHeaderSize, unsigned char* uninstIconData);
 #endif//NSIS_CONFIG_UNINSTALL_SUPPORT
 
-// returns the number of WCHARs in str including null charcter
-size_t WCStrLen(const WCHAR* szwStr);
-
 size_t my_strftime(char *s, size_t max, const char  *fmt, const struct tm *tm);
+
+bool GetDLLVersion(const std::string& filepath, DWORD& high, DWORD& low);
 
 std::string get_full_path(const std::string& path);
 std::string get_dir_name(const std::string& path);

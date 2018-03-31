@@ -301,21 +301,21 @@ CEXEBuild::CEXEBuild() :
   m_UserVarNames.add("LANGUAGE",1);      // 24
   m_UserVarNames.add("TEMP",-1);         // 25
   m_UserVarNames.add("PLUGINSDIR",-1);   // 26
-  m_UserVarNames.add("HWNDPARENT",-1);   // 27
-  m_UserVarNames.add("_CLICK",-1);       // 28
-  m_UserVarNames.add("_OUTDIR",1);       // 29
+  m_UserVarNames.add("EXEPATH",-1);      // 27
+  m_UserVarNames.add("EXEFILE",-1);      // 28
+  m_UserVarNames.add("HWNDPARENT",-1);   // 29
+  m_UserVarNames.add("_CLICK",-1);       // 30
+  m_UserVarNames.add("_OUTDIR",1);       // 31
 
   m_iBaseVarsNum = m_UserVarNames.getnum();
 
   m_ShellConstants.add("WINDIR",CSIDL_WINDOWS,CSIDL_WINDOWS);
   m_ShellConstants.add("SYSDIR",CSIDL_SYSTEM,CSIDL_SYSTEM);
-  m_ShellConstants.add("PROGRAMFILES",CSIDL_PROGRAM_FILES, CSIDL_PROGRAM_FILES);
   m_ShellConstants.add("SMPROGRAMS",CSIDL_PROGRAMS, CSIDL_COMMON_PROGRAMS);
   m_ShellConstants.add("SMSTARTUP",CSIDL_STARTUP, CSIDL_COMMON_STARTUP);
   m_ShellConstants.add("DESKTOP",CSIDL_DESKTOPDIRECTORY, CSIDL_COMMON_DESKTOPDIRECTORY);
   m_ShellConstants.add("STARTMENU",CSIDL_STARTMENU, CSIDL_COMMON_STARTMENU);
   m_ShellConstants.add("QUICKLAUNCH", CSIDL_APPDATA, CSIDL_APPDATA);
-  m_ShellConstants.add("COMMONFILES",CSIDL_PROGRAM_FILES_COMMON, CSIDL_PROGRAM_FILES_COMMON);
   m_ShellConstants.add("DOCUMENTS",CSIDL_PERSONAL, CSIDL_COMMON_DOCUMENTS);
   m_ShellConstants.add("SENDTO",CSIDL_SENDTO, CSIDL_SENDTO);
   m_ShellConstants.add("RECENT",CSIDL_RECENT, CSIDL_RECENT);
@@ -338,6 +338,52 @@ CEXEBuild::CEXEBuild() :
   m_ShellConstants.add("RESOURCES", CSIDL_RESOURCES, CSIDL_RESOURCES);
   m_ShellConstants.add("RESOURCES_LOCALIZED", CSIDL_RESOURCES_LOCALIZED, CSIDL_RESOURCES_LOCALIZED);
   m_ShellConstants.add("CDBURN_AREA", CSIDL_CDBURN_AREA, CSIDL_CDBURN_AREA);
+
+  unsigned int program_files = add_string("ProgramFilesDir", 0);
+  unsigned int program_files_def = add_string("C:\\Program Files");
+
+  if ((program_files >= 0x40) || (program_files_def >= 0xFF))
+  {
+    // see Source\exehead\util.c for implementation details
+    // basically, it knows it needs to get folders from the registry when the 0x80 is on
+    ERROR_MSG("Internal compiler error: too many strings added to strings block before adding shell constants!\n");
+    throw out_of_range("Internal compiler error: too many strings added to strings block before adding shell constants!");
+  }
+
+  m_ShellConstants.add("PROGRAMFILES",   0x80 | program_files, program_files_def);
+  m_ShellConstants.add("PROGRAMFILES32", 0x80 | program_files, program_files_def);
+  m_ShellConstants.add("PROGRAMFILES64", 0xC0 | program_files, program_files_def);
+
+  unsigned int common_files = add_string("CommonFilesDir", 0);
+  unsigned int common_files_def = add_string("$PROGRAMFILES\\Common Files");
+
+  if ((common_files > 0x40) || (common_files_def > 0xFF))
+  {
+    ERROR_MSG("Internal compiler error: too many strings added to strings block before adding shell constants!\n");
+    throw out_of_range("Internal compiler error: too many strings added to strings block before adding shell constants!");
+  }
+
+  m_ShellConstants.add("COMMONFILES",    0x80 | common_files,  common_files_def);
+  m_ShellConstants.add("COMMONFILES32",  0x80 | common_files,  common_files_def);
+  m_ShellConstants.add("COMMONFILES64",  0xC0 | common_files,  common_files_def);
+
+  set_uninstall_mode(1);
+
+  unsigned int uprogram_files = add_string("ProgramFilesDir", 0);
+  unsigned int uprogram_files_def = add_string("C:\\Program Files");
+  unsigned int ucommon_files = add_string("CommonFilesDir", 0);
+  unsigned int ucommon_files_def = add_string("$PROGRAMFILES\\Common Files");
+
+  if (uprogram_files != program_files
+      || uprogram_files_def != program_files_def
+      || ucommon_files != common_files
+      || ucommon_files_def != common_files_def)
+  {
+    ERROR_MSG("Internal compiler error: installer's shell constants are different than uninstallers!\n");
+    throw out_of_range("Internal compiler error: installer's shell constants are different than uninstallers!");
+  }
+
+  set_uninstall_mode(0);
 
   set_code_type_predefines();
 }
@@ -441,16 +487,16 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
       int l = np - p;
       while (l--)
       {
-        int i = (unsigned char)*p++;
+        unsigned char i = (unsigned char)*p++;
         if (i >= NS_CODES_START) {
           *out++ = (char)NS_SKIP_CODE;
         }
-        *out++=i;
+        *out++=(char)i;
       }
       continue;
     }
 
-    int i = (unsigned char)*p;
+    unsigned char i = (unsigned char)*p;
 
     p=np;
 
@@ -579,7 +625,7 @@ int CEXEBuild::preprocess_string(char *out, const char *in, WORD codepage/*=CP_A
         }
       }
     }
-    *out++=i;
+    *out++=(char)i;
   }
   *out=0;
   return 0;
@@ -2089,8 +2135,8 @@ void CEXEBuild::AddStandardStrings()
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
   if (uninstall_mode)
   {
-    cur_header->str_uninstchild = add_string("$TEMP\\$1");
-    cur_header->str_uninstcmd = add_string("\"$TEMP\\$1\" $0 _?=$INSTDIR\\");
+    cur_header->str_uninstchild = add_string("$TEMP\\$1u_.exe");
+    cur_header->str_uninstcmd = add_string("\"$TEMP\\$1u_.exe\" $0 _?=$INSTDIR\\");
   }
 #endif//NSIS_CONFIG_UNINSTALL_SUPPORT
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
@@ -3372,7 +3418,7 @@ void CEXEBuild::VerifyDeclaredUserVarRefs(UserVarsStringList *pVarsStringList)
   {
     if (!pVarsStringList->get_reference(i))
     {
-      warning("Variable \"%s\" not referenced, wasting memory!", pVarsStringList->idx2name(i));
+      warning("Variable \"%s\" not referenced or never set, wasting memory!", pVarsStringList->idx2name(i));
     }
   }
 }

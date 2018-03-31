@@ -130,17 +130,16 @@ const char * NSISCALL loadHeaders(int cl_flags)
 
   HANDLE db_hFile;
 
-  GetModuleFileName(NULL, state_exe_directory, NSIS_MAX_STRLEN);
+  GetModuleFileName(NULL, state_exe_path, NSIS_MAX_STRLEN);
 
-  g_db_hFile = db_hFile = myOpenFile(state_exe_directory, GENERIC_READ, OPEN_EXISTING);
+  g_db_hFile = db_hFile = myOpenFile(state_exe_path, GENERIC_READ, OPEN_EXISTING);
   if (db_hFile == INVALID_HANDLE_VALUE)
   {
     return _LANG_CANTOPENSELF;
   }
 
-  // make state_exe_directory point to dir, not full exe.
-
-  trimslashtoend(state_exe_directory);
+  mystrcpy(state_exe_directory, state_exe_path);
+  mystrcpy(state_exe_file, trimslashtoend(state_exe_directory));
 
   left = m_length = GetFileSize(db_hFile,NULL);
   while (left > 0)

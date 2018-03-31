@@ -68,20 +68,22 @@ char *WINAPI STRDUP(const char *c)
 // NB - the order of this list is important - see below
 
 #define FIELD_INVALID      (0)
-#define FIELD_LABEL        (1)
-#define FIELD_ICON         (2)
-#define FIELD_BITMAP       (3)
-#define FIELD_BROWSEBUTTON (4)
-#define FIELD_LINK         (5)
-#define FIELD_BUTTON       (6)
-#define FIELD_GROUPBOX     (7)
-#define FIELD_CHECKBOX     (8)
-#define FIELD_RADIOBUTTON  (9)
-#define FIELD_TEXT         (10)
-#define FIELD_FILEREQUEST  (11)
-#define FIELD_DIRREQUEST   (12)
-#define FIELD_COMBOBOX     (13)
-#define FIELD_LISTBOX      (14)
+#define FIELD_HLINE        (1)
+#define FIELD_VLINE        (2)
+#define FIELD_LABEL        (3)
+#define FIELD_ICON         (4)
+#define FIELD_BITMAP       (5)
+#define FIELD_BROWSEBUTTON (6)
+#define FIELD_LINK         (7)
+#define FIELD_BUTTON       (8)
+#define FIELD_GROUPBOX     (9)
+#define FIELD_CHECKBOX     (10)
+#define FIELD_RADIOBUTTON  (11)
+#define FIELD_TEXT         (12)
+#define FIELD_FILEREQUEST  (13)
+#define FIELD_DIRREQUEST   (14)
+#define FIELD_COMBOBOX     (15)
+#define FIELD_LISTBOX      (16)
 
 #define FIELD_SETFOCUS     FIELD_CHECKBOX // First field that qualifies for having the initial keyboard focus
 #define FIELD_CHECKLEN     FIELD_TEXT     // First field to have length of state value checked against MinLen/MaxLen
@@ -457,6 +459,8 @@ int WINAPI ReadSettings(void) {
       { "LINK",        FIELD_LABEL       },
 #endif
       { "BUTTON",      FIELD_BUTTON      },
+      { "HLINE",       FIELD_HLINE       },
+      { "VLINE",       FIELD_VLINE       },
       { NULL,          0                 }
     };
     // Control flags
@@ -526,7 +530,7 @@ int WINAPI ReadSettings(void) {
 
     // Label Text - convert newline
     pField->pszText = myGetProfileStringDup("TEXT");
-    if (pField->nType == FIELD_LABEL)
+    if (pField->nType == FIELD_LABEL || pField->nType == FIELD_LINK)
       ConvertNewLines(pField->pszText);
 
     // Dir request - root folder
@@ -766,7 +770,7 @@ BOOL CALLBACK cfgDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
       RECT rc = lpdis->rcItem;
 
       // Calculate needed size of the control
-      DrawText(lpdis->hDC, pField->pszText, -1, &rc, DT_VCENTER | DT_SINGLELINE | DT_CALCRECT);
+      DrawText(lpdis->hDC, pField->pszText, -1, &rc, DT_VCENTER | DT_WORDBREAK | DT_CALCRECT);
 
       // Make some more room so the focus rect won't cut letters off
       rc.right = min(rc.right + 2, lpdis->rcItem.right);
@@ -785,7 +789,7 @@ BOOL CALLBACK cfgDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
           SetTextColor(lpdis->hDC, (COLORREF) pField->hImage);
 
         // Draw the text
-        DrawText(lpdis->hDC, pField->pszText, -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE | (bRTL ? DT_RTLREADING : 0));
+        DrawText(lpdis->hDC, pField->pszText, -1, &rc, DT_CENTER | DT_VCENTER | DT_WORDBREAK | (bRTL ? DT_RTLREADING : 0));
       }
 
       // Draw the focus rect if needed
@@ -964,7 +968,14 @@ int WINAPI createCfgDlg()
   mySetWindowText(hBackButton,pszBackButtonText);
 
   if (bBackEnabled!=-1) EnableWindow(hBackButton,bBackEnabled);
-  if (bCancelEnabled!=-1) EnableWindow(hCancelButton,bCancelEnabled);
+  if (bCancelEnabled!=-1)
+  {
+    EnableWindow(hCancelButton,bCancelEnabled);
+    if (bCancelEnabled)
+      EnableMenuItem(GetSystemMenu(mainwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+    else
+      EnableMenuItem(GetSystemMenu(mainwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+  }
   if (bCancelShow!=-1) old_cancel_visible=ShowWindow(hCancelButton,bCancelShow?SW_SHOWNA:SW_HIDE);
 
   HFONT hFont = (HFONT)mySendMessage(mainwnd, WM_GETFONT, 0, 0);
@@ -1014,6 +1025,16 @@ int WINAPI createCfgDlg()
       DWORD dwExStyle;
       DWORD dwRTLExStyle;
     } ClassTable[] = {
+      { "STATIC",       // FIELD_HLINE
+        DEFAULT_STYLES | SS_ETCHEDHORZ | SS_SUNKEN,
+        DEFAULT_STYLES | SS_ETCHEDHORZ | SS_SUNKEN,
+        WS_EX_TRANSPARENT,
+        WS_EX_TRANSPARENT | RTL_EX_STYLES },
+      { "STATIC",       // FIELD_VLINE
+        DEFAULT_STYLES | SS_ETCHEDVERT | SS_SUNKEN,
+        DEFAULT_STYLES | SS_ETCHEDVERT | SS_SUNKEN,
+        WS_EX_TRANSPARENT,
+        WS_EX_TRANSPARENT | RTL_EX_STYLES },
       { "STATIC",       // FIELD_LABEL
         DEFAULT_STYLES,
         DEFAULT_STYLES | SS_RIGHT,
@@ -1090,7 +1111,7 @@ int WINAPI createCfgDlg()
 
 #undef DEFAULT_STYLES
 
-    if (pField->nType < 1 || pField->nType > (sizeof(ClassTable) / sizeof(ClassTable[0])))
+    if (pField->nType < 1 || pField->nType > (int)(sizeof(ClassTable) / sizeof(ClassTable[0])))
       continue;
 
     DWORD dwStyle, dwExStyle;

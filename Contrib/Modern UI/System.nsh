@@ -1,4 +1,4 @@
-;NSIS Modern User Interface version 1.75
+;NSIS Modern User Interface version 1.77
 ;Macro System
 ;Written by Joost Verburg
 
@@ -8,7 +8,7 @@
 ;License: License.txt
 ;Examples: Examples\Modern UI
 
-!echo "NSIS Modern User Interface version 1.75 - © 2002-2007 Joost Verburg"
+!echo "NSIS Modern User Interface version 1.77 - © 2002-2007 Joost Verburg"
 
 ;--------------------------------
 
@@ -32,7 +32,7 @@
 !include "WinMessages.nsh"
 !verbose pop
 
-!define MUI_SYSVERSION "1.75"
+!define MUI_SYSVERSION "1.77"
 
 Var /GLOBAL MUI_TEMP1
 Var /GLOBAL MUI_TEMP2
@@ -209,8 +209,20 @@ Var /GLOBAL MUI_TEMP2
   !verbose push
   !verbose ${MUI_VERBOSE}
 
+  !ifdef MUI_HEADER_TRANSPARENT_TEXT
+
+    LockWindow on
+
+  !endif
+
   !insertmacro MUI_HEADER_TEXT_INTERNAL 1037 "${TEXT}"
   !insertmacro MUI_HEADER_TEXT_INTERNAL 1038 "${SUBTEXT}"
+
+  !ifdef MUI_HEADER_TRANSPARENT_TEXT
+
+    LockWindow off
+
+  !endif
 
   !verbose pop
 
@@ -973,7 +985,7 @@ Var /GLOBAL MUI_TEMP2
     !endif
   !endif
 
-  !ifdef MUI_FINISHPAGE_RUN | MUI_FINISHPAGE_SHOWREADME
+  !ifdef MUI_FINISHPAGE_CANCEL_ENABLED
     !define MUI_FINISHPAGE_ABORTWARNINGCHECK
     !ifndef MUI_VAR_NOABORTWARNING
       !define MUI_VAR_NOABORTWARNING
@@ -996,9 +1008,11 @@ Var /GLOBAL MUI_TEMP2
   !insertmacro MUI_UNSET MUI_FINISHPAGE_TEXT
   !insertmacro MUI_UNSET MUI_FINISHPAGE_TEXT_LARGE
   !insertmacro MUI_UNSET MUI_FINISHPAGE_BUTTON
+  !insertmacro MUI_UNSET MUI_FINISHPAGE_CANCEL_ENABLED
   !insertmacro MUI_UNSET MUI_FINISHPAGE_TEXT_REBOOT
   !insertmacro MUI_UNSET MUI_FINISHPAGE_TEXT_REBOOTNOW
   !insertmacro MUI_UNSET MUI_FINISHPAGE_TEXT_REBOOTLATER
+  !insertmacro MUI_UNSET MUI_FINISHPAGE_REBOOTLATER_DEFAULT
   !insertmacro MUI_UNSET MUI_FINISHPAGE_RUN
     !insertmacro MUI_UNSET MUI_FINISHPAGE_RUN_TEXT
     !insertmacro MUI_UNSET MUI_FINISHPAGE_RUN_PARAMETERS
@@ -1502,7 +1516,6 @@ Var /GLOBAL MUI_TEMP2
             !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 4" "Bottom" "140"
           !endif
         !endif
-        !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 4" "State" "1"
         !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "Type" "RadioButton"
         !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "Text" "${MUI_FINISHPAGE_TEXT_REBOOTLATER}"
         !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "Left" "120"
@@ -1513,6 +1526,11 @@ Var /GLOBAL MUI_TEMP2
         !else
           !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "Top" "110"
           !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "Bottom" "120"
+        !endif
+        !ifdef MUI_FINISHPAGE_REBOOTLATER_DEFAULT
+          !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 5" "State" "1"
+        !else
+          !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 4" "State" "1"
         !endif
 
         Goto mui.finish_load
@@ -2033,7 +2051,7 @@ Var /GLOBAL MUI_TEMP2
 
   !endif
 
-  LangDLL::LangDialog "${MUI_LANGDLL_WINDOWTITLE}" "${MUI_LANGDLL_INFO}" A ${MUI_LANGDLL_PUSHLIST} ""
+  LangDLL::LangDialog "${MUI_LANGDLL_WINDOWTITLE}" "${MUI_LANGDLL_INFO}" AC ${MUI_LANGDLL_PUSHLIST} ""
 
   Pop $LANGUAGE
   StrCmp $LANGUAGE "cancel" 0 +2
@@ -2212,14 +2230,14 @@ Var /GLOBAL MUI_TEMP2
   !insertmacro MUI_LANGUAGEFILE_DEFINE "MUI_${LANGUAGE}_LANGNAME" "MUI_LANGNAME"
 
   !ifndef MUI_LANGDLL_PUSHLIST
-    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' ${LANG_${LANGUAGE}} "
+    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' "
   !else
     !ifdef MUI_LANGDLL_PUSHLIST_TEMP
       !undef MUI_LANGDLL_PUSHLIST_TEMP
     !endif
     !define MUI_LANGDLL_PUSHLIST_TEMP "${MUI_LANGDLL_PUSHLIST}"
     !undef MUI_LANGDLL_PUSHLIST
-    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' ${LANG_${LANGUAGE}} ${MUI_LANGDLL_PUSHLIST_TEMP}"
+    !define MUI_LANGDLL_PUSHLIST "'${MUI_${LANGUAGE}_LANGNAME}' '${LANG_${LANGUAGE}}' '${LANG_${LANGUAGE}_CP}' ${MUI_LANGDLL_PUSHLIST_TEMP}"
   !endif
 
   !insertmacro MUI_LANGUAGEFILE_LANGSTRING_PAGE WELCOME "MUI_TEXT_WELCOME_INFO_TITLE"
