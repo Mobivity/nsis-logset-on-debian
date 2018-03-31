@@ -1,3 +1,50 @@
+2009-02-21 19:31  kichik
+
+	* /NSIS/tags/v244: Tagging for release 2.44
+
+2009-02-21 19:30  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 2.44
+
+2009-02-21 19:25  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: shorter urls
+
+2009-02-21 19:16  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.44
+
+2009-02-21 19:10  kichik
+
+	* /NSIS/trunk: bugtraq support
+
+2009-02-21 18:30  kichik
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: fixed bug #2595565 -
+	  nsDialogs::CreateTimer documentation
+
+2009-02-21 18:25  kichik
+
+	* /NSIS/trunk/Source/build.cpp: fixed bug #2593369 - global labels
+	  in unused functions can't be used
+
+2009-02-06 14:15  kichik
+
+	* /NSIS/trunk/Source/Tests/icon1.nsi,
+	  /NSIS/trunk/Source/Tests/icon2.nsi,
+	  /NSIS/trunk/Source/Tests/SConscript: basic icon tests to avoid
+	  bugs like #2572035
+
+2009-02-06 14:00  kichik
+
+	* /NSIS/trunk/Source/icon.cpp: fixed bug #2572035 - problem with
+	  2.43 and icons
+
+2009-02-05 07:26  pabs3
+
+	* /NSIS/trunk/SConstruct: fix Library.nsi test by adding the test
+	  directory to PATH so it can run LibraryLocal
+
 2009-02-05 01:43  kichik
 
 	* /NSIS/tags/v243: Tagging for release 2.43
