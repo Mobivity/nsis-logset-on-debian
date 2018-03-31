@@ -1,5 +1,22 @@
 \A{history} Changelog and Release Notes
 
+
+\H{v2.51} 2.51
+
+Released on April 1st, 2016
+
+\S1{v2.51-cl} Changelog
+
+\S2{} Minor Changes
+
+\b More security hardening to prevent dll hijacking
+
+\b Backported support for system 'p' type and logiclib P and Z tests
+
+\S2{} Translations
+
+\b Added missing MULTIUSER_* entries to Japanese.nsh (\W{http://sf.net/p/nsis/patches/266}{patch #266})
+
 \H{v2.50} 2.50
 
 Released on December 26th, 2015
@@ -1977,7 +1994,7 @@ Released on March 19th, 2005
 
 \b Added MB_RTLREADING style to \R{messagebox}{MessageBox} (\W{http://sourceforge.net/support/tracker.php?aid=1159701}{RFE #1159701})
 
-\b All registry instructions now accept SHCTX which is replaced with HKLM or HKCU on runtime according to \R{setshellvarcontext}{SetShellVarContext} (\W{http://sourceforge.net/support/tracker.php?aid=1124901}{RFE #1124901})
+\b All registry instructions now accept SHCTX which is replaced with HKLM or HKCU at runtime according to \R{setshellvarcontext}{SetShellVarContext} (\W{http://sourceforge.net/support/tracker.php?aid=1124901}{RFE #1124901})
 
 \S2{} Minor Changes
 
@@ -2487,7 +2504,7 @@ Released on Decemeber 27th, 2003
 
 \b Added \R{adirverify}{DirVerify} and \R{getinstdirerror}{GetInstDirError} to allow custom error checking when the installation directory is invalid or the drive does not have enough space
 
-\b Support for reading environmental variables on compile time: \R{compenvvar}{$%envVarName%}
+\b Support for reading environmental variables at compile time: \R{compenvvar}{$%envVarName%}
 
 \b Added /SD parameter for \R{messagebox}{MessageBox}. Allows to set default for silent installers.
 
