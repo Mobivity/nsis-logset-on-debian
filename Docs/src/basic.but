@@ -35,7 +35,7 @@ Execute the specified program using ShellExecute. Note that action is usually "o
 
 \c command [user_var(exit code)]
 
-Execute the specified program and wait for the executed process to quit. See Exec for more information. If no output variable is specified ExecWait sets the error flag if the program executed returns a nonzero error code, or if there is an error. If an output variable is specified, ExecWait sets the variable with the exit code (and only sets the error flag if an error occurs; if an error occurs the contents of the user variable are undefined). Note, if the command could have spaces, you should put it in quotes to delimit it from parameters. e.g.: ExecWait '"$INSTDIR\\command.exe" parameters'. If you don't put it in quotes it will \e{not} work on Windows 9x with or without parameters.
+Execute the specified program and wait for the executed process to quit. See \R{exec}{Exec} for more information. If no output variable is specified \R{execwait}{ExecWait} sets the error flag if the program executed returns a nonzero error code, or if there is an error. If an output variable is specified, \R{execwait}{ExecWait} sets the variable with the exit code (and only sets the error flag if an error occurs; if an error occurs the contents of the user variable are undefined). Note, if the command could have spaces, you should put it in quotes to delimit it from parameters. e.g.: ExecWait '"$INSTDIR\\command.exe" parameters'. If you don't put it in quotes it will \e{not} work on Windows 9x with or without parameters.
 
 \c ExecWait '"$INSTDIR\someprogram.exe"'
 \c ExecWait '"$INSTDIR\someprogram.exe"' $0
@@ -59,7 +59,7 @@ Adds file(s) to be extracted to the current output path ($OUTDIR).
 
 \b If the /a switch is used, the attributes of the file(s) added will be preserved.
 
-\b The File command sets the error flag if overwrite mode is set to 'try' and the file could not be overwritten, or if the overwrite mode is set to 'on' and the file could not be overwritten and the user selects ignore.
+\b The \R{file}{File} command sets the error flag if overwrite mode is set to 'try' and the file could not be overwritten, or if the overwrite mode is set to 'on' and the file could not be overwritten and the user selects ignore.
 
 \b If the /nonfatal switch is used and no files are found, a warning will be issued instead of an error.
 
@@ -96,7 +96,7 @@ will match the directory named \e{something} in the root directory, the file nam
 
 \c File /r something\*.*
 
-When adding \e{\\*.*}, it will be used as the matching condition and \e{something} will be used as the directory to search. When only \e{something} is specified, the current directory will be recursively searched for every and directory named \e{something} and \e{another\\something} will be matched.
+When adding \e{\\*.*}, it will be used as the matching condition and \e{something} will be used as the directory to search. When only \e{something} is specified, the current directory will be recursively searched for every file and directory named \e{something} and \e{another\\something} will be matched.
 
 \S2{rename} Rename
 
@@ -110,9 +110,11 @@ If no absolute path is specified the current folder will be used. The current fo
 
 \S2{reservefile} ReserveFile
 
-\c [/nonfatal] [/r] [/x file|wildcard [...]] file [file...]
+\c [/nonfatal] [/r] [/x file|wildcard [...]] file [file...] | [/nonfatal] /plugin file.dll
 
 Reserves a file in the data block for later use. Files are added to the compressed data block in the order they appear in the script. Functions, however, are not necessarily called in the order they appear in the script. Therefore, if you add a file in a function called early but put the function at the end of the script, all of the files added earlier will have to be decompressed to get to the required file. This process can take a long time if there a lot of files. \R{oninit}{.onInit} is one such function. It is called at the very beginning, before anything else appears. If you put it at the very end of the script, extract some files in it and have lots of files added before it, the installer might take a very long time to load. This is where this command comes useful, allowing you to speed up the loading process by including the file at the top of the data block instead of letting NSIS seek all the way down to the bottom of the \e{compressed} data block.
+
+Use /plugin to reserve a plugin in $\{NSISDIR\}\\Plugins\\*.
 
 See \R{file}{File} for more information about the parameters.
 

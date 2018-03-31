@@ -17,24 +17,37 @@
   2. Altered source versions must be plainly marked as such, and must not be
    misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
+
+  Unicode support by Jim Park -- 08/18/2007
 */
 #define MAKENSISW_CPP
 
 #include "makensisw.h"
 #include <windowsx.h>
+#include <shlwapi.h>
 #include <stdio.h>
 #include "resource.h"
-#include "noclib.h"
 #include "toolbar.h"
 #include "update.h"
+
+namespace MakensisAPI {
+#ifdef _WIN64
+  const TCHAR* SigintEventNameFmt = _T("makensis win32 sigint event %Iu");
+#else
+  const TCHAR* SigintEventNameFmt = _T("makensis win32 sigint event %u");
+#endif
+  const TCHAR* SigintEventNameLegacy = _T("makensis win32 signint event");
+}
 
 NSCRIPTDATA g_sdata;
 NRESIZEDATA g_resize;
 NFINDREPLACE g_find;
+TCHAR g_findbuf[128];
 extern NTOOLBAR g_toolbar;
 int g_symbol_set_mode;
 
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, char *cmdParam, int cmdShow) {
+NSIS_ENTRYPOINT_SIMPLEGUI
+int WINAPI _tWinMain(HINSTANCE hInst,HINSTANCE hOldInst,LPTSTR CmdLineParams,int ShowCmd) {
 
   HMODULE hK32 = LoadLibraryA("KERNEL32");
   // We can be associated with .nsi files and when launched from the shell we inherit the current directory so 
@@ -42,24 +55,26 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, char *cmdParam, int cmd
   FARPROC SDDA = GetProcAddress(hK32, "SetDllDirectoryA"); // WinXP.SP1+
   if (SDDA) ((BOOL(WINAPI*)(LPCSTR))SDDA)(""); // Remove the current directory from the default DLL search order
 
-  my_memset(&g_sdata,0,sizeof(NSCRIPTDATA));
-  my_memset(&g_resize,0,sizeof(NRESIZEDATA));
-  my_memset(&g_find,0,sizeof(NFINDREPLACE));
-  g_sdata.hInstance=GetModuleHandle(0);
+  memset(&g_sdata,0,sizeof(NSCRIPTDATA));
+  memset(&g_resize,0,sizeof(NRESIZEDATA));
+  memset(&g_find,0,sizeof(NFINDREPLACE));
+  g_sdata.hInstance = hInst;
   g_sdata.symbols = NULL;
-  g_sdata.sigint_event = CreateEvent(NULL, FALSE, FALSE, "makensis win32 signint event");
+  g_sdata.sigint_event_legacy = CreateEvent(NULL, FALSE, FALSE, MakensisAPI::SigintEventNameLegacy);
+  g_sdata.verbosity = (unsigned char) ReadRegSettingDW(REGVERBOSITY, 4);
+  if (g_sdata.verbosity > 4) g_sdata.verbosity = 4;
   RestoreSymbols();
 
-  HMODULE hRichEditDLL = LoadLibraryA("RichEd32.dll");
+  HMODULE hRichEditDLL = LoadLibraryA("RichEd20.dll");
 
   if (!InitBranding()) {
-    MessageBox(0,NSISERROR,"Error",MB_ICONEXCLAMATION|MB_OK);
+    MessageBox(0,NSISERROR,ERRBOXTITLE,MB_ICONEXCLAMATION|MB_OK|MB_TASKMODAL);
     return 1;
   }
   ResetObjects();
   HWND hDialog = CreateDialog(g_sdata.hInstance,MAKEINTRESOURCE(DLG_MAIN),0,DialogProc);
   if (!hDialog) {
-    MessageBox(0,DLGERROR,"Error",MB_ICONEXCLAMATION|MB_OK);
+    MessageBox(0,DLGERROR,ERRBOXTITLE,MB_ICONEXCLAMATION|MB_OK|MB_TASKMODAL);
     return 1;
   }
   HACCEL haccel = LoadAccelerators(g_sdata.hInstance, MAKEINTRESOURCE(IDK_ACCEL));
@@ -76,21 +91,17 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, char *cmdParam, int cmd
       }
     }
   }
-  if (g_sdata.script) GlobalFree(g_sdata.script);
+  MemSafeFree(g_sdata.script);
   if (g_sdata.script_cmd_args) GlobalFree(g_sdata.script_cmd_args);
   if (g_sdata.sigint_event) CloseHandle(g_sdata.sigint_event);
+  if (g_sdata.sigint_event_legacy) CloseHandle(g_sdata.sigint_event_legacy);
   FreeLibrary(hRichEditDLL);
-  FinalizeUpdate();
-  ExitProcess(msg.wParam);
-  return msg.wParam;
+  return (int) msg.wParam;
 }
 
-void SetScript(const char *script, bool clearArgs /*= true*/)
+void SetScript(const TCHAR *script, bool clearArgs /*= true*/)
 {
-  if (g_sdata.script)
-  {
-    GlobalFree(g_sdata.script);
-  }
+  MemSafeFree(g_sdata.script);
 
   if (clearArgs)
   {
@@ -99,48 +110,46 @@ void SetScript(const char *script, bool clearArgs /*= true*/)
       GlobalFree(g_sdata.script_cmd_args);
     }
 
-    g_sdata.script_cmd_args = GlobalAlloc(GHND, 1);
+    // Pointing to a single char.  Maybe _T('\0')
+    g_sdata.script_cmd_args = GlobalAlloc(GHND, sizeof(TCHAR));
   }
 
-  g_sdata.script = (char *) GlobalAlloc(GPTR, lstrlen(script) + 1);
+  g_sdata.script = (TCHAR*) MemAlloc((lstrlen(script) + 1)*sizeof(TCHAR));
   lstrcpy(g_sdata.script, script);
 }
 
-void AddScriptCmdArgs(const char *arg)
+static void AddScriptCmdArgs(const TCHAR *arg)
 {
   g_sdata.script_cmd_args = GlobalReAlloc(g_sdata.script_cmd_args,
-    GlobalSize(g_sdata.script_cmd_args) + lstrlen(arg) + 2 /* quotes */ + 1 /* space */,
+    GlobalSize(g_sdata.script_cmd_args) + (lstrlen(arg) + 2/* quotes */ + 1 /* space */)*sizeof(TCHAR),
     0);
 
-  char *args = (char *) GlobalLock(g_sdata.script_cmd_args);
+  TCHAR *args = (TCHAR *) GlobalLock(g_sdata.script_cmd_args);
 
-  lstrcat(args, " \"");
+  lstrcat(args, _T(" \""));
   lstrcat(args, arg);
-  lstrcat(args, "\"");
+  lstrcat(args, _T("\""));
 
   GlobalUnlock(g_sdata.script_cmd_args);
 }
 
-void ProcessCommandLine()
+static void ProcessCommandLine()
 {
-  int argc;
-  char **argv;
+  TCHAR **argv;
   int i, j;
-  int argSpaceSize;
-
-  argSpaceSize = SetArgv((char *)GetCommandLine(), &argc, &argv);
+  int argc = SetArgv((TCHAR *)GetCommandLine(), &argv);
   if (argc > 1) {
     for (i = 1; i < argc; i++)
     {
-      if (!lstrncmpi(argv[i], "/XSetCompressor ", lstrlen("/XSetCompressor ")))
+      if (!StrCmpNI(argv[i], _T("/XSetCompressor "), lstrlen(_T("/XSetCompressor "))))
       {
-        char *p = argv[i] + lstrlen("/XSetCompressor ");
-        if(!lstrncmpi(p,"/FINAL ", lstrlen("/FINAL ")))
+        TCHAR *p = argv[i] + lstrlen(_T("/XSetCompressor "));
+        if(!StrCmpNI(p,_T("/FINAL "), lstrlen(_T("/FINAL "))))
         {
-          p += lstrlen("/FINAL ");
+          p += lstrlen(_T("/FINAL "));
         }
 
-        while (*p == ' ') p++;
+        while (*p == _T(' ')) p++;
 
         for (j = (int) COMPRESSOR_SCRIPT + 1; j < (int) COMPRESSOR_BEST; j++)
         {
@@ -150,11 +159,11 @@ void ProcessCommandLine()
           }
         }
       }
-      else if (!lstrcmpi(argv[i], "/ChooseCompressor"))
+      else if (!lstrcmpi(argv[i], _T("/ChooseCompressor")))
       {
         g_sdata.userSelectCompressor = TRUE;
       }
-      else if (argv[i][0] == '-' || argv[i][0] == '/')
+      else if (argv[i][0] == _T('-') || argv[i][0] == _T('/'))
       {
         AddScriptCmdArgs(argv[i]);
       }
@@ -166,18 +175,32 @@ void ProcessCommandLine()
       }
     }
   }
-
-  if (argSpaceSize)
-    GlobalFree(argv);
+  MemSafeFree(argv);
 }
 
-BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+DWORD CALLBACK SaveFileStreamCallback(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
+{
+  HANDLE hFile = (HANDLE) ((DWORD_PTR*)dwCookie)[0];
+  DWORD cbio;
+#ifdef UNICODE
+  if (!((DWORD_PTR*)dwCookie)[1])
+  {
+    if (!WriteUTF16LEBOM(hFile)) return -1;
+    ((DWORD_PTR*)dwCookie)[1] = TRUE;
+  }
+#endif
+  BOOL wop = WriteFile(hFile, pbBuff, cb, &cbio, 0);
+  return (*pcb = (LONG) cbio, !wop);
+}
+
+
+INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch (msg) {
     case WM_INITDIALOG:
     {
       g_sdata.hwnd=hwndDlg;
       HICON hIcon = LoadIcon(g_sdata.hInstance,MAKEINTRESOURCE(IDI_ICON));
-      SetClassLong(hwndDlg,GCL_HICON,(long)hIcon);
+      SetClassLongPtr(hwndDlg,GCLP_HICON,(LONG_PTR)hIcon);
       // Altered by Darren Owen (DrO) on 29/9/2003
       // Added in receiving of mouse and key events from the richedit control
       SendMessage(GetDlgItem(hwndDlg,IDC_LOGWIN),EM_SETEVENTMASK,(WPARAM)NULL,ENM_SELCHANGE|ENM_MOUSEEVENTS|ENM_KEYEVENTS);
@@ -189,15 +212,15 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       RestoreMRUList();
       CreateToolBar();
       InitTooltips(g_sdata.hwnd);
-      SetBranding(g_sdata.hwnd);
-      HFONT hFont = CreateFont(14,0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,OUT_CHARACTER_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,FIXED_PITCH|FF_DONTCARE,"Courier New");
+      SetDlgItemText(g_sdata.hwnd,IDC_VERSION,g_sdata.branding);
+      HFONT hFont = CreateFont(14,FW_NORMAL,FIXED_PITCH|FF_DONTCARE,_T("Courier New"));
       SendDlgItemMessage(hwndDlg,IDC_LOGWIN,WM_SETFONT,(WPARAM)hFont,0);
       RestoreWindowPos(g_sdata.hwnd);
       RestoreCompressor();
-      SetScript("");
+      SetScript(_T(""));
       g_sdata.compressor = COMPRESSOR_NONE_SELECTED;
       g_sdata.userSelectCompressor = FALSE;
-      
+
       ProcessCommandLine();
 
       if(g_sdata.compressor == COMPRESSOR_NONE_SELECTED) {
@@ -217,19 +240,16 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_PAINT:
     {
       PAINTSTRUCT ps;
-      GetClientRect(g_sdata.hwnd, &g_resize.griprect);
-      HDC hdc = BeginPaint(g_sdata.hwnd, &ps);
-      g_resize.griprect.left = g_resize.griprect.right - GetSystemMetrics(SM_CXVSCROLL);
-      g_resize.griprect.top = g_resize.griprect.bottom - GetSystemMetrics(SM_CYVSCROLL);
+      GetGripperPos(hwndDlg, g_resize.griprect);
+      HDC hdc = BeginPaint(hwndDlg, &ps);
       DrawFrameControl(hdc, &g_resize.griprect, DFC_SCROLL, DFCS_SCROLLSIZEGRIP);
-      EndPaint(g_sdata.hwnd,&ps);
+      EndPaint(hwndDlg, &ps);
       return TRUE;
     }
     case WM_DESTROY:
     {
-      DragAcceptFiles(g_sdata.hwnd,FALSE);
+      DragAcceptFiles(g_sdata.hwnd, FALSE);
       SaveSymbols();
-      SaveCompressor();
       SaveMRUList();
       SaveWindowPos(g_sdata.hwnd);
       ImageList_Destroy(g_toolbar.imagelist);
@@ -248,18 +268,18 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     case WM_DROPFILES: {
       int num;
-      char szTmp[MAX_PATH];
+      TCHAR szTmp[MAX_PATH];
       num = DragQueryFile((HDROP)wParam,(UINT)-1,NULL,0);
       if (num==1) {
         DragQueryFile((HDROP)wParam,0,szTmp,MAX_PATH);
-        if (lstrlen(szTmp)>0) {
+        if (szTmp[0]) {
           SetScript(szTmp);
           PushMRUFile(g_sdata.script);
           ResetObjects();
           CompileNSISScript();
         }
       } else {
-        MessageBox(hwndDlg,MULTIDROPERROR,"Error",MB_OK|MB_ICONSTOP);
+        MessageBox(hwndDlg,MULTIDROPERROR,ERRBOXTITLE,MB_OK|MB_ICONSTOP);
       }
       DragFinish((HDROP)wParam);
       break;
@@ -290,11 +310,21 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     case WM_SIZING:
     {
-      InvalidateRect(g_sdata.hwnd,&g_resize.griprect,TRUE);
-      GetClientRect(g_sdata.hwnd, &g_resize.griprect);
-      g_resize.griprect.left = g_resize.griprect.right - GetSystemMetrics(SM_CXVSCROLL);
-      g_resize.griprect.top = g_resize.griprect.bottom - GetSystemMetrics(SM_CYVSCROLL);
+      InvalidateRect(hwndDlg, &g_resize.griprect, TRUE);
+      GetGripperPos(hwndDlg, g_resize.griprect);
       return TRUE;
+    }
+    case WM_NCHITTEST:
+    {
+      RECT r = g_resize.griprect;
+      MapWindowPoints(hwndDlg, 0, (POINT*)&r, 2);
+      POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+      if (PtInRect(&r, pt))
+      {
+        SetWindowLongPtr(hwndDlg, DWLP_MSGRESULT, HTBOTTOMRIGHT);
+        return TRUE;
+      }
+      return FALSE;
     }
     case WM_MAKENSIS_PROCESSCOMPLETE:
     {
@@ -304,8 +334,8 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       }
       if(g_sdata.compressor == COMPRESSOR_BEST) {
         if (g_sdata.retcode==0 && FileExists(g_sdata.output_exe)) {
-          char temp_file_name[1024];
-          wsprintf(temp_file_name,"%s_makensisw_temp",g_sdata.output_exe);
+          TCHAR temp_file_name[1024]; // BUGBUG: Hardcoded buffer size
+          wsprintf(temp_file_name,_T("%s_makensisw_temp"),g_sdata.output_exe);
           if(!lstrcmpi(g_sdata.compressor_name,compressor_names[(int)COMPRESSOR_SCRIPT+1])) {
             SetCompressorStats();
             CopyFile(g_sdata.output_exe,temp_file_name,false);
@@ -317,31 +347,27 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
             return TRUE;
           }
           else {
-            int this_compressor=0;
-            int last_compressor;
-            int i;
+            int this_compressor=0, i;
             HANDLE hPrev, hThis;
             DWORD prevSize=0, thisSize=0;
-
 
             for(i=(int)COMPRESSOR_SCRIPT+2; i<(int)COMPRESSOR_BEST; i++) {
               if(!lstrcmpi(g_sdata.compressor_name,compressor_names[i])) {
                 this_compressor = i;
-                last_compressor = i-1;
                 break;
               }
             }
 
             if(FileExists(temp_file_name)) {
               hPrev = CreateFile(temp_file_name,GENERIC_READ, FILE_SHARE_READ,
-                                 NULL, OPEN_EXISTING, (DWORD)NULL, NULL);
+                                 NULL, OPEN_EXISTING, 0, NULL);
               if(hPrev != INVALID_HANDLE_VALUE) {
                 prevSize = GetFileSize(hPrev, 0);
                 CloseHandle(hPrev);
 
                 if(prevSize != INVALID_FILE_SIZE) {
                   hThis = CreateFile(g_sdata.output_exe,GENERIC_READ, FILE_SHARE_READ,
-                                     NULL, OPEN_EXISTING, (DWORD)NULL, NULL);
+                                     NULL, OPEN_EXISTING, 0, NULL);
                   if(hThis != INVALID_HANDLE_VALUE) {
                     thisSize = GetFileSize(hThis, 0);
                     CloseHandle(hThis);
@@ -359,7 +385,7 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
 
             if(this_compressor == ((int)COMPRESSOR_BEST - 1)) {
-              char buf[1024];
+              TCHAR buf[1024];
 
               g_sdata.compressor_name = compressor_names[(int)COMPRESSOR_SCRIPT+1];
 
@@ -374,7 +400,7 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
                 LogMessage(g_sdata.hwnd, g_sdata.compressor_stats);
               }
               DeleteFile(temp_file_name);
-              lstrcpy(g_sdata.compressor_stats,"");
+              g_sdata.compressor_stats[0] = _T('\0');
             }
             else {
               g_sdata.compressor_name = compressor_names[this_compressor+1];
@@ -390,16 +416,16 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       if (!g_sdata.retcode) {
         MessageBeep(MB_ICONASTERISK);
         if (g_sdata.warnings)
-          SetTitle(g_sdata.hwnd,"Finished with Warnings");
+          SetTitle(g_sdata.hwnd,_T("Finished with Warnings"));
         else
-          SetTitle(g_sdata.hwnd,"Finished Sucessfully");
+          SetTitle(g_sdata.hwnd,_T("Finished Sucessfully"));
         // Added by Darren Owen (DrO) on 1/10/2003
         if(g_sdata.recompile_test)
           PostMessage(g_sdata.hwnd, WM_COMMAND, LOWORD(IDC_TEST), 0);
       }
       else {
         MessageBeep(MB_ICONEXCLAMATION);
-        SetTitle(g_sdata.hwnd,"Compile Error: See Log for Details");
+        SetTitle(g_sdata.hwnd,_T("Compile Error: See Log for Details"));
       }
 
       // Added by Darren Owen (DrO) on 1/10/2003
@@ -407,6 +433,14 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       g_sdata.recompile_test = 0;
       DragAcceptFiles(g_sdata.hwnd,TRUE);
       return TRUE;
+    }
+    case MakensisAPI::QUERYHOST: {
+      if (MakensisAPI::QH_OUTPUTCHARSET == wParam) {
+        const UINT reqcp = 1200; // We want UTF-16LE
+        SetWindowLongPtr(hwndDlg, DWLP_MSGRESULT, (LONG_PTR)(1+reqcp));
+        return TRUE;
+      }
+      return FALSE;
     }
     case WM_NOTIFY:
       switch (((NMHDR*)lParam)->code ) {
@@ -458,20 +492,20 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     {
       PCOPYDATASTRUCT cds = PCOPYDATASTRUCT(lParam);
       switch (cds->dwData) {
-        case MAKENSIS_NOTIFY_SCRIPT:
-          if (g_sdata.input_script) GlobalFree(g_sdata.input_script);
-          g_sdata.input_script = (char *)GlobalAlloc(GPTR, cds->cbData);
-          lstrcpy(g_sdata.input_script, (char *)cds->lpData);
+        case MakensisAPI::NOTIFY_SCRIPT:
+          MemSafeFree(g_sdata.input_script);
+          g_sdata.input_script = (TCHAR*) MemAlloc(cds->cbData * sizeof(TCHAR));
+          lstrcpy(g_sdata.input_script, (TCHAR *)cds->lpData);
           break;
-        case MAKENSIS_NOTIFY_WARNING:
+        case MakensisAPI::NOTIFY_WARNING:
           g_sdata.warnings++;
           break;
-        case MAKENSIS_NOTIFY_ERROR:
+        case MakensisAPI::NOTIFY_ERROR:
           break;
-        case MAKENSIS_NOTIFY_OUTPUT:
-          if (g_sdata.output_exe) GlobalFree(g_sdata.output_exe);
-          g_sdata.output_exe = (char *)GlobalAlloc(GPTR, cds->cbData);
-          lstrcpy(g_sdata.output_exe, (char *)cds->lpData);
+        case MakensisAPI::NOTIFY_OUTPUT:
+          MemSafeFree(g_sdata.output_exe);
+          g_sdata.output_exe = (TCHAR*) MemAlloc(cds->cbData * sizeof(TCHAR));
+          lstrcpy(g_sdata.output_exe, (TCHAR *)cds->lpData);
           break;
       }
       return TRUE;
@@ -481,32 +515,29 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       switch (LOWORD(wParam)) {
         case IDM_BROWSESCR: {
           if (g_sdata.input_script) {
-            char str[MAX_PATH],*str2;
+            TCHAR str[MAX_PATH],*str2;
             lstrcpy(str,g_sdata.input_script);
-            str2=my_strrchr(str,'\\');
+            str2=_tcsrchr(str,_T('\\'));
             if(str2!=NULL) *(str2+1)=0;
-            ShellExecute(g_sdata.hwnd,"open",str,NULL,NULL,SW_SHOWNORMAL);
+            ShellExecute(g_sdata.hwnd,_T("open"),str,NULL,NULL,SW_SHOWNORMAL);
           }
           return TRUE;
         }
         case IDM_ABOUT:
         {
-          DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_ABOUT),g_sdata.hwnd,(DLGPROC)AboutProc);
-          return TRUE;
+          return DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_ABOUT),hwndDlg,(DLGPROC)AboutProc);
         }
         case IDM_NSISHOME:
         {
-          ShellExecute(g_sdata.hwnd,"open",NSIS_URL,NULL,NULL,SW_SHOWNORMAL);
-          return TRUE;
+          return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_URL);
         }
         case IDM_FORUM:
         {
-          ShellExecute(g_sdata.hwnd,"open",NSIS_FOR,NULL,NULL,SW_SHOWNORMAL);
-          return TRUE;
+          return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_FORUM_URL);
         }
         case IDM_NSISUPDATE:
         {
-          Update();
+          CheckForUpdate();
           return TRUE;
         }
         case IDM_SELECTALL:
@@ -523,17 +554,17 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         {
           if (!g_sdata.thread) {
             OPENFILENAME l={sizeof(l),};
-            char buf[MAX_PATH];
+            TCHAR buf[MAX_PATH];
             l.hwndOwner = hwndDlg;
-            l.lpstrFilter = "NSIS Script (*.nsi)\0*.nsi\0All Files (*.*)\0*.*\0";
+            l.lpstrFilter = _T("NSIS Script (*.nsi)\0*.nsi\0All Files (*.*)\0*.*\0");
             l.lpstrFile = buf;
             l.nMaxFile = MAX_STRING-1;
-            l.lpstrTitle = "Load Script";
-            l.lpstrDefExt = "log";
+            l.lpstrTitle = _T("Load Script");
+            l.lpstrDefExt = _T("log");
             l.lpstrFileTitle = NULL;
             l.lpstrInitialDir = NULL;
             l.Flags = OFN_HIDEREADONLY|OFN_EXPLORER|OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST;
-            lstrcpy(buf,"");
+            buf[0] = _T('\0');
             if (GetOpenFileName(&l)) {
               SetScript(buf);
               PushMRUFile(g_sdata.script);
@@ -572,7 +603,6 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         // Added by Darren Owen (DrO) on 1/10/2003
         case IDM_RECOMPILE_TEST:
-        case IDC_RECOMPILE_TEST:
         {
           g_sdata.recompile_test = 1;
           CompileNSISScript();
@@ -587,18 +617,20 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         case IDC_TEST:
         {
           if (g_sdata.output_exe) {
-            ShellExecute(g_sdata.hwnd,"open",g_sdata.output_exe,NULL,NULL,SW_SHOWNORMAL);
+            ShellExecute(g_sdata.hwnd,_T("open"),g_sdata.output_exe,NULL,NULL,SW_SHOWNORMAL);
           }
           return TRUE;
         }
         case IDM_EDITSCRIPT:
         {
           if (g_sdata.input_script) {
-            if ((int)ShellExecute(g_sdata.hwnd,"open",g_sdata.input_script,NULL,NULL,SW_SHOWNORMAL)<=32) {
-              char path[MAX_PATH];
+            LPCTSTR verb = _T("open"); // BUGBUG: Should not force the open verb?
+            HINSTANCE hi = ShellExecute(g_sdata.hwnd,verb,g_sdata.input_script,NULL,NULL,SW_SHOWNORMAL);
+            if ((UINT_PTR)hi <= 32) {
+              TCHAR path[MAX_PATH];
               if (GetWindowsDirectory(path,sizeof(path))) {
-                lstrcat(path,"\\notepad.exe");
-                ShellExecute(g_sdata.hwnd,"open",path,g_sdata.input_script,NULL,SW_SHOWNORMAL);
+                lstrcat(path,_T("\\notepad.exe"));
+                ShellExecute(g_sdata.hwnd,verb,path,g_sdata.input_script,NULL,SW_SHOWNORMAL);
               }
             }
           }
@@ -615,6 +647,7 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         case IDM_CANCEL:
         {
           SetEvent(g_sdata.sigint_event);
+          SetEvent(g_sdata.sigint_event_legacy);
           return TRUE;
         }
         case IDM_COPY:
@@ -630,27 +663,24 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         case IDM_SAVE:
         {
           OPENFILENAME l={sizeof(l),};
-          char buf[MAX_STRING];
+          TCHAR buf[MAX_STRING];
           l.hwndOwner = hwndDlg;
-          l.lpstrFilter = "Log Files (*.log)\0*.log\0Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
+          l.lpstrFilter = _T("Log Files (*.log)\0*.log\0Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
           l.lpstrFile = buf;
           l.nMaxFile = MAX_STRING-1;
-          l.lpstrTitle = "Save Output";
-          l.lpstrDefExt = "log";
+          l.lpstrTitle = _T("Save Output");
+          l.lpstrDefExt = _T("log");
           l.lpstrInitialDir = NULL;
           l.Flags = OFN_HIDEREADONLY|OFN_EXPLORER|OFN_PATHMUSTEXIST;
-          lstrcpy(buf,"output");
+          lstrcpy(buf,_T("output"));
           if (GetSaveFileName(&l)) {
-            HANDLE hFile = CreateFile(buf,GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
-            if (hFile) {
-              int len=SendDlgItemMessage(g_sdata.hwnd,IDC_LOGWIN,WM_GETTEXTLENGTH,0,0);
-              char *existing_text=(char*)GlobalAlloc(GPTR,len);
-              existing_text[0]=0;
-              GetDlgItemText(g_sdata.hwnd, IDC_LOGWIN, existing_text, len);
-              DWORD dwWritten = 0;
-              WriteFile(hFile,existing_text,len,&dwWritten,0);
+            HANDLE hFile = CreateFile(buf, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+            if (INVALID_HANDLE_VALUE != hFile) { // BUGBUG:TODO: Error message for bad hFile or failed EM_STREAMOUT?
+              WPARAM opts = sizeof(TCHAR) > 1 ? (SF_TEXT|SF_UNICODE) : (SF_TEXT);
+              DWORD_PTR cookie[2] = { (DWORD_PTR)hFile, FALSE };
+              EDITSTREAM es = { (DWORD_PTR)&cookie, 0, SaveFileStreamCallback };
+              SendMessage(GetDlgItem(g_sdata.hwnd, IDC_LOGWIN), EM_STREAMOUT, opts, (LPARAM)&es);
               CloseHandle(hFile);
-              GlobalFree(existing_text);
             }
           }
           return TRUE;
@@ -658,13 +688,12 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
         case IDM_FIND:
         {
           if (!g_find.uFindReplaceMsg) g_find.uFindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
-          my_memset(&g_find.fr, 0, sizeof(FINDREPLACE));
+          memset(&g_find.fr, 0, sizeof(FINDREPLACE));
           g_find.fr.lStructSize = sizeof(FINDREPLACE);
           g_find.fr.hwndOwner = hwndDlg;
           g_find.fr.Flags = FR_NOUPDOWN;
-          g_find.fr.lpstrFindWhat = (char *)GlobalAlloc(GPTR, 128);
-          if (!g_find.fr.lpstrFindWhat) return TRUE;
-          g_find.fr.wFindWhatLen = 128;
+          g_find.fr.lpstrFindWhat = g_findbuf;
+          g_find.fr.wFindWhatLen = COUNTOF(g_findbuf);
           g_find.hwndFind = FindText(&g_find.fr);
           return TRUE;
         }
@@ -690,13 +719,14 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
       if (lpfr->Flags & FR_WHOLEWORD) flags |= FR_WHOLEWORD;
       FINDTEXTEX ft;
       SendDlgItemMessage(hwndDlg, IDC_LOGWIN, EM_EXGETSEL, 0, (LPARAM)&ft.chrg);
-      if (ft.chrg.cpMax == ft.chrg.cpMin) ft.chrg.cpMin = 0;
-      else ft.chrg.cpMin = ft.chrg.cpMax;
-      ft.chrg.cpMax = SendDlgItemMessage(hwndDlg, IDC_LOGWIN, WM_GETTEXTLENGTH, 0, 0);
+      ft.chrg.cpMin = (ft.chrg.cpMax == ft.chrg.cpMin) ? 0 : ft.chrg.cpMax;
+      ft.chrg.cpMax = (LONG) SendDlgItemMessage(hwndDlg, IDC_LOGWIN, WM_GETTEXTLENGTH, 0, 0);
       ft.lpstrText = lpfr->lpstrFindWhat;
-      ft.chrg.cpMin = SendDlgItemMessage(hwndDlg, IDC_LOGWIN, EM_FINDTEXTEX, flags, (LPARAM)&ft);
-      if (ft.chrg.cpMin != -1) SendDlgItemMessage(hwndDlg, IDC_LOGWIN, EM_SETSEL, ft.chrgText.cpMin, ft.chrgText.cpMax);
-      else MessageBeep(MB_ICONASTERISK);
+      ft.chrg.cpMin = (LONG) SendDlgItemMessage(hwndDlg, IDC_LOGWIN, EM_FINDTEXTEX, flags, (LPARAM)&ft);
+      if (ft.chrg.cpMin != -1)
+        SendDlgItemMessage(hwndDlg, IDC_LOGWIN, EM_SETSEL, ft.chrgText.cpMin, ft.chrgText.cpMax);
+      else
+        MessageBeep(MB_ICONASTERISK);
     }
     if (lpfr->Flags & FR_DIALOGTERM) g_find.hwndFind = 0;
     return TRUE;
@@ -704,73 +734,72 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   return 0;
 }
 
-DWORD WINAPI MakeNSISProc(LPVOID p) {
-  STARTUPINFO si={sizeof(si),};
-  SECURITY_ATTRIBUTES sa={sizeof(sa),};
-  SECURITY_DESCRIPTOR sd={0,};
-  PROCESS_INFORMATION pi={0,};
-  HANDLE newstdout=0,read_stdout=0;
-  HANDLE newstdin=0,read_stdin=0;
-  OSVERSIONINFO osv={sizeof(osv)};
-  GetVersionEx(&osv);
-  if (osv.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-    InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
-    SetSecurityDescriptorDacl(&sd,true,NULL,false);
-    sa.lpSecurityDescriptor = &sd;
-  }
-  else sa.lpSecurityDescriptor = NULL;
-  sa.bInheritHandle = true;
-  if (!CreatePipe(&read_stdout,&newstdout,&sa,0)) {
-    ErrorMessage(g_sdata.hwnd,"There was an error creating the output pipe.");
-    PostMessage(g_sdata.hwnd,WM_MAKENSIS_PROCESSCOMPLETE,0,0);
+DWORD WINAPI MakeNSISProc(LPVOID TreadParam) {
+  TCHAR eventnamebuf[100];
+  wsprintf(eventnamebuf, MakensisAPI::SigintEventNameFmt, g_sdata.hwnd);
+  if (g_sdata.sigint_event) CloseHandle(g_sdata.sigint_event);
+  g_sdata.sigint_event = CreateEvent(NULL, FALSE, FALSE, eventnamebuf);
+  if (!g_sdata.sigint_event) {
+    ErrorMessage(g_sdata.hwnd, _T("There was an error creating the abort event."));
+    PostMessage(g_sdata.hwnd, WM_MAKENSIS_PROCESSCOMPLETE, 0, 0);
     return 1;
-  }
-  if (!CreatePipe(&read_stdin,&newstdin,&sa,0)) {
-    ErrorMessage(g_sdata.hwnd,"There was an error creating the input pipe.");
-    PostMessage(g_sdata.hwnd,WM_MAKENSIS_PROCESSCOMPLETE,0,0);
-    return 1;
-  }
-  GetStartupInfo(&si);
-  si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-  si.wShowWindow = SW_HIDE;
-  si.hStdOutput = newstdout;
-  si.hStdError = newstdout;
-  si.hStdInput = newstdin;
-  if (!CreateProcess(NULL,g_sdata.compile_command,NULL,NULL,TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&pi)) {
-    char buf[MAX_STRING];
-    wsprintf(buf,"Could not execute:\r\n %s.",g_sdata.compile_command);
-    ErrorMessage(g_sdata.hwnd,buf);
-    CloseHandle(newstdout);
-    CloseHandle(read_stdout);
-    PostMessage(g_sdata.hwnd,WM_MAKENSIS_PROCESSCOMPLETE,0,0);
-    return 1;
-  }
-  char szBuf[1024];
-  DWORD dwRead = 1;
-  DWORD dwExit = !STILL_ACTIVE;
-  while (dwExit == STILL_ACTIVE || dwRead) {
-    PeekNamedPipe(read_stdout, 0, 0, 0, &dwRead, NULL);
-    if (dwRead) {
-      ReadFile(read_stdout, szBuf, sizeof(szBuf)-1, &dwRead, NULL);
-      szBuf[dwRead] = 0;
-      LogMessage(g_sdata.hwnd, szBuf);
-    }
-    else Sleep(TIMEOUT);
-    GetExitCodeProcess(pi.hProcess, &dwExit);
-    // Make sure we have no data before killing getting out of the loop
-    if (dwExit != STILL_ACTIVE) {
-      PeekNamedPipe(read_stdout, 0, 0, 0, &dwRead, NULL);
-    }
   }
 
-  g_sdata.retcode = dwExit;
-  CloseHandle(pi.hThread);
-  CloseHandle(pi.hProcess);
-  CloseHandle(newstdout);
-  CloseHandle(read_stdout);
-  CloseHandle(newstdin);
-  CloseHandle(read_stdin);
-  PostMessage(g_sdata.hwnd,WM_MAKENSIS_PROCESSCOMPLETE,0,0);
+  STARTUPINFO si;
+  HANDLE newstdout,read_stdout;
+  
+  if (!InitSpawn(si, read_stdout, newstdout)) {
+    ErrorMessage(g_sdata.hwnd, _T("There was an error creating the pipe."));
+    PostMessage(g_sdata.hwnd, WM_MAKENSIS_PROCESSCOMPLETE, 0, 0);
+    return 1;
+  }
+  PROCESS_INFORMATION pi;
+  if (!CreateProcess(0, g_sdata.compile_command, 0, 0, TRUE, CREATE_NEW_CONSOLE, 0, 0, &si, &pi)) {
+    TCHAR buf[MAX_STRING]; // BUGBUG: TODO: Too small?
+    wsprintf(buf,_T("Could not execute:\r\n %s."), g_sdata.compile_command);
+    ErrorMessage(g_sdata.hwnd, buf);
+    FreeSpawn(0, read_stdout, newstdout);
+    PostMessage(g_sdata.hwnd, WM_MAKENSIS_PROCESSCOMPLETE, 0, 0);
+    return 1;
+  }
+  CloseHandle(newstdout); // Close this handle (duplicated in subprocess) now so we get ERROR_BROKEN_PIPE
+
+  char iob[(1024 & ~1) + sizeof(WCHAR)];
+  WCHAR *p = (WCHAR*) iob, wcl = 0;
+  DWORD cbiob = sizeof(iob) - sizeof(WCHAR), cb = 0, cbofs = 0, cch, cbio;
+  for(;;)
+  {
+    BOOL rok = ReadFile(read_stdout, iob+cbofs, cbiob-cbofs, &cbio, NULL);
+    cb += cbio, cch = cb / sizeof(WCHAR);
+    if (!cch)
+    {
+      if (!rok) break; // TODO: If cb is non-zero we should report a incomplete read error?
+      cbofs += cbio; // We only have 1 byte, need to read more to get a complete WCHAR
+      continue;
+    }
+    char oddbyte = (char)(cb % 2), incompsurr;
+    cbofs = 0;
+    if ((incompsurr = IS_HIGH_SURROGATE(p[cch-1])))
+      wcl = p[--cch], cbofs = sizeof(WCHAR); // Store leading surrogate part and complete it later
+    if (oddbyte)
+      oddbyte = iob[cb-1], ++cbofs;
+logappendfinal:
+    p[cch] = L'\0';
+    LogMessage(g_sdata.hwnd, p);
+    p[0] = wcl, iob[cbofs - !!oddbyte] = oddbyte, cb = 0;
+    if (!rok) // No more data can be read
+    {
+      if (cbofs) // Unable to complete the surrogate pair or odd byte
+      {
+        p[0] = 0xfffd, cch = 1, cbofs = 0; 
+        goto logappendfinal;
+      }
+      break;
+    }
+  }
+  FreeSpawn(&pi, read_stdout, 0);
+  g_sdata.retcode = pi.dwProcessId;
+  PostMessage(g_sdata.hwnd, WM_MAKENSIS_PROCESSCOMPLETE, 0, 0);
   return 0;
 }
 
@@ -803,110 +832,80 @@ BOOL CALLBACK DialogResize(HWND hWnd, LPARAM /* unused */)
   return TRUE;
 }
 
-BOOL CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch(msg) {
     case WM_INITDIALOG:
     {
-      HFONT bfont = CreateFont(13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,
-              OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-              FIXED_PITCH|FF_DONTCARE, "Tahoma");
-      HFONT bfontb = CreateFont(13,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,
-              OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-              FIXED_PITCH|FF_DONTCARE, "Tahoma");
-      HFONT rfont = CreateFont(12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,
-              OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-              FIXED_PITCH|FF_DONTCARE, "MS Shell Dlg");
-      HFONT rfontb = CreateFont(12,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,
-              OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-              FIXED_PITCH|FF_DONTCARE, "MS Shell Dlg");
-      if (bfont&&bfontb) {
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_SETFONT, (WPARAM)bfontb, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_SETFONT, (WPARAM)bfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTPORTIONS, WM_SETFONT, (WPARAM)bfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_NSISVER, WM_SETFONT, (WPARAM)bfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_OTHERCONTRIB, WM_SETFONT, (WPARAM)bfont, FALSE);
+      HFONT fontnorm = CreateFont(13, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, _T("Tahoma")),
+            fontbold = CreateFont(13, FW_BOLD, FIXED_PITCH|FF_DONTCARE, _T("Tahoma"));
+      if (!fontbold) {
+        fontnorm = CreateFont(12, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, _T("MS Shell Dlg"));
+        fontbold = CreateFont(12, FW_BOLD, FIXED_PITCH|FF_DONTCARE, _T("MS Shell Dlg"));
       }
-      else if (rfont&&rfontb) {
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_SETFONT, (WPARAM)rfontb, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_SETFONT, (WPARAM)rfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_ABOUTPORTIONS, WM_SETFONT, (WPARAM)rfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_NSISVER, WM_SETFONT, (WPARAM)rfont, FALSE);
-        SendDlgItemMessage(hwndDlg, IDC_OTHERCONTRIB, WM_SETFONT, (WPARAM)rfont, FALSE);
-      }
-      SetDlgItemText(hwndDlg,IDC_NSISVER,g_sdata.branding);
-      SetDlgItemText(hwndDlg,IDC_ABOUTVERSION,NSISW_VERSION);
-      SetDlgItemText(hwndDlg,IDC_ABOUTCOPY,COPYRIGHT);
-      SetDlgItemText(hwndDlg,IDC_OTHERCONTRIB,CONTRIB);
+      SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_SETFONT, (WPARAM)fontbold, FALSE);
+      SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_SETFONT, (WPARAM)fontnorm, FALSE);
+      SendDlgItemMessage(hwndDlg, IDC_ABOUTPORTIONS, WM_SETFONT, (WPARAM)fontnorm, FALSE);
+      SendDlgItemMessage(hwndDlg, IDC_NSISVER, WM_SETFONT, (WPARAM)fontnorm, FALSE);
+      SendDlgItemMessage(hwndDlg, IDC_OTHERCONTRIB, WM_SETFONT, (WPARAM)fontnorm, FALSE);
+      SetDlgItemText(hwndDlg, IDC_NSISVER, g_sdata.branding);
+      SetDlgItemText(hwndDlg, IDC_ABOUTVERSION, NSISW_VERSION);
+      SetDlgItemText(hwndDlg, IDC_ABOUTCOPY, COPYRIGHT);
+      SetDlgItemText(hwndDlg, IDC_OTHERCONTRIB, CONTRIB);
       break;
     }
     case WM_COMMAND:
-    {
-      switch (LOWORD(wParam)) {
-        case IDOK:
-          EndDialog(hwndDlg, TRUE);
-          break;
-      }
-    }
+      if (IDOK != LOWORD(wParam)) break;
+      // fall through
+    case WM_CLOSE:
+      return EndDialog(hwndDlg, TRUE);
+    case WM_DESTROY:
+      DeleteObject((HGDIOBJ)SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_GETFONT, 0, 0));
+      DeleteObject((HGDIOBJ)SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_GETFONT, 0, 0));
+      break;
   }
   return FALSE;
 }
 
-void EnableSymbolSetButtons(HWND hwndDlg)
+static void EnableSymbolSetButtons(HWND hwndDlg)
 {
-  int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETCOUNT, 0, 0);
-  if(n > 0) {
-    EnableWindow(GetDlgItem(hwndDlg, IDCLEAR), TRUE);
-    EnableWindow(GetDlgItem(hwndDlg, IDSAVE), TRUE);
-  }
-  else {
-    EnableWindow(GetDlgItem(hwndDlg, IDCLEAR), FALSE);
-    EnableWindow(GetDlgItem(hwndDlg, IDSAVE), FALSE);
-  }
+  LRESULT n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETCOUNT, 0, 0);
+  EnableWindow(GetDlgItem(hwndDlg, IDC_CLEAR), n > 0);
+  EnableWindow(GetDlgItem(hwndDlg, IDC_SAVE), n > 0);
 }
 
-void EnableSymbolEditButtons(HWND hwndDlg)
+static void EnableSymbolEditButtons(HWND hwndDlg)
 {
-  int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELCOUNT, 0, 0);
-  if(n == 0) {
-    EnableWindow(GetDlgItem(hwndDlg, IDLEFT), FALSE);
-    EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
-  }
-  else if(n == 1) {
-    EnableWindow(GetDlgItem(hwndDlg, IDLEFT), TRUE);
-    EnableWindow(GetDlgItem(hwndDlg, IDDEL), TRUE);
-  }
-  else if(n > 1) {
-    EnableWindow(GetDlgItem(hwndDlg, IDLEFT), FALSE);
-    EnableWindow(GetDlgItem(hwndDlg, IDDEL), TRUE);
-  }
+  LRESULT n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELCOUNT, 0, 0);
+  EnableWindow(GetDlgItem(hwndDlg, IDC_LEFT), n == 1);
+  EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), n != 0);
 }
 
-void SetSymbols(HWND hwndDlg, char **symbols)
+static void SetSymbols(HWND hwndDlg, TCHAR **symbols)
 {
-    int i = 0;
     SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_RESETCONTENT , 0, 0);
     if (symbols) {
-      while (symbols[i]) {
+      for (SIZE_T i = 0; symbols[i]; ++i)
         SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_ADDSTRING, 0, (LPARAM)symbols[i]);
-        i++;
-      }
     }
     EnableSymbolSetButtons(hwndDlg);
-    EnableWindow(GetDlgItem(hwndDlg, IDRIGHT), FALSE);
-    EnableWindow(GetDlgItem(hwndDlg, IDLEFT), FALSE);
-    EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
+    EnableWindow(GetDlgItem(hwndDlg, IDC_RIGHT), FALSE);
+    EnableWindow(GetDlgItem(hwndDlg, IDC_LEFT), FALSE);
+    EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), FALSE);
 }
 
-char **GetSymbols(HWND hwndDlg)
+static TCHAR **GetSymbols(HWND hwndDlg)
 {
-  int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETCOUNT, 0, 0);
-  char **symbols = NULL;
+  LRESULT n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETCOUNT, 0, 0);
+  TCHAR **symbols = NULL;
   if(n > 0) {
-    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT, (n+1)*sizeof(char *));
-    symbols = (char **)GlobalLock(hMem);
-    for (int i = 0; i < n; i++) {
-      int len = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXTLEN, (WPARAM)i, 0);
-      symbols[i] = (char *)GlobalAlloc(GPTR, (len+1)*sizeof(char));
+    symbols = (TCHAR **) GlobalAlloc(GPTR, (n+1)*sizeof(TCHAR *));
+    for (LRESULT i = 0; i < n; i++) {
+      LRESULT len = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXTLEN, (WPARAM)i, 0);
+      symbols[i] = (TCHAR*) MemAllocZI((len+1)*sizeof(TCHAR));
+      if (!symbols[i]) {
+        FreeSymbolSet(symbols);
+        return NULL;
+      }
       SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXT, (WPARAM)i, (LPARAM)symbols[i]);
     }
     symbols[n] = NULL;
@@ -915,17 +914,13 @@ char **GetSymbols(HWND hwndDlg)
   return symbols;
 }
 
-BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch(msg) {
     case WM_INITDIALOG:
     {
-      int i = 0;
-      LRESULT rv;
-
-      for(i = (int)COMPRESSOR_SCRIPT; i <= (int)COMPRESSOR_BEST; i++) {
-        rv = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
-      }
-      rv = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.default_compressor, (LPARAM)0);
+      for(int i = (int)COMPRESSOR_SCRIPT; i <= (int)COMPRESSOR_BEST; i++)
+        SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
+      SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.default_compressor, (LPARAM)0);
 
       SetSymbols(hwndDlg, g_sdata.symbols);
       SetFocus(GetDlgItem(hwndDlg, IDC_SYMBOL));
@@ -933,29 +928,21 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
     }
     case WM_MAKENSIS_LOADSYMBOLSET:
     {
-      char *name = (char *)wParam;
-      char **symbols = LoadSymbolSet(name);
-      HGLOBAL hMem;
-
-      SetSymbols(hwndDlg, symbols);
+      TCHAR *name = (TCHAR *)wParam;
+      TCHAR **symbols = LoadSymbolSet(name);
       if(symbols) {
-        hMem = GlobalHandle(symbols);
-        GlobalUnlock(hMem);
-        GlobalFree(hMem);
+        SetSymbols(hwndDlg, symbols);
+        GlobalFree((HGLOBAL) symbols);
       }
       break;
     }
     case WM_MAKENSIS_SAVESYMBOLSET:
     {
-      char *name = (char *)wParam;
-      char **symbols = GetSymbols(hwndDlg);
-      HGLOBAL hMem;
-
+      TCHAR *name = (TCHAR *)wParam;
+      TCHAR **symbols = GetSymbols(hwndDlg);
       if(symbols) {
         SaveSymbolSet(name, symbols);
-        hMem = GlobalHandle(symbols);
-        GlobalUnlock(hMem);
-        GlobalFree(hMem);
+        GlobalFree((HGLOBAL) symbols);
       }
       break;
     }
@@ -968,43 +955,42 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
           ResetSymbols();
           g_sdata.symbols = GetSymbols(hwndDlg);
 
-          int n = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
-          if (n >= (int)COMPRESSOR_SCRIPT && n <= (int)COMPRESSOR_BEST) {
+          INT_PTR n = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+          if (n >= (INT_PTR)COMPRESSOR_SCRIPT && n <= (INT_PTR)COMPRESSOR_BEST)
             g_sdata.default_compressor = (NCOMPRESSOR)n;
-          }
-          else {
+          else
             g_sdata.default_compressor = COMPRESSOR_SCRIPT;
-          }
-          EndDialog(hwndDlg, TRUE);
+          SaveCompressor();
           SetCompressor(g_sdata.default_compressor);
+          EndDialog(hwndDlg, TRUE);
         }
         break;
         case IDCANCEL:
           EndDialog(hwndDlg, TRUE);
           break;
-        case IDRIGHT:
+        case IDC_RIGHT:
         {
-          int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_GETTEXTLENGTH, 0, 0);
+          LRESULT n = SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_GETTEXTLENGTH, 0, 0);
           if(n > 0) {
-            char *buf = (char *)GlobalAlloc(GPTR, (n+1)*sizeof(char));
+            TCHAR *buf = (TCHAR*) MemAllocZI((n+1)*sizeof(TCHAR));
             SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_GETTEXT, n+1, (LPARAM)buf);
-            if(my_strstr(buf," ") || my_strstr(buf,"\t")) {
-              MessageBox(hwndDlg,SYMBOLSERROR,"Error",MB_OK|MB_ICONSTOP);
-              GlobalFree(buf);
+            if(_tcsstr(buf,_T(" ")) || _tcsstr(buf,_T("\t"))) {
+              MessageBox(hwndDlg,SYMBOLSERROR,ERRBOXTITLE,MB_OK|MB_ICONSTOP);
+              MemFree(buf);
               break;
             }
 
             n = SendDlgItemMessage(hwndDlg, IDC_VALUE, WM_GETTEXTLENGTH, 0, 0);
             if(n > 0) {
-              char *buf2 = (char *)GlobalAlloc(GPTR, (n+1)*sizeof(char));
+              TCHAR *buf2 = (TCHAR*) MemAllocZI((n+1)*sizeof(TCHAR));
               SendDlgItemMessage(hwndDlg, IDC_VALUE, WM_GETTEXT, n+1, (LPARAM)buf2);
-              char *buf3 = (char *)GlobalAlloc(GPTR, (lstrlen(buf)+lstrlen(buf2)+2)*sizeof(char));
-              wsprintf(buf3,"%s=%s",buf,buf2);
-              GlobalFree(buf);
+              TCHAR *buf3 = (TCHAR*) MemAllocZI((lstrlen(buf)+lstrlen(buf2)+2)*sizeof(TCHAR));
+              wsprintf(buf3,_T("%s=%s"),buf,buf2);
+              MemFree(buf);
               buf = buf3;
-              GlobalFree(buf2);
+              MemFree(buf2);
             }
-            int idx = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_ADDSTRING, 0, (LPARAM)buf);
+            INT_PTR idx = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_ADDSTRING, 0, (LPARAM)buf);
             if (idx >= 0)
             {
               SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_SETSEL, FALSE, -1);
@@ -1013,64 +999,60 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
             EnableSymbolEditButtons(hwndDlg);
             SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_SETTEXT, 0, 0);
             SendDlgItemMessage(hwndDlg, IDC_VALUE, WM_SETTEXT, 0, 0);
-            GlobalFree(buf);
+            MemFree(buf);
             EnableSymbolSetButtons(hwndDlg);
           }
         }
         break;
-        case IDLEFT:
+        case IDC_LEFT:
         {
           if (SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELCOUNT, 0, 0) != 1)
             break;
 
           int index;
-          int num = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELITEMS, 1, (LPARAM) &index);
+          INT_PTR num = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELITEMS, 1, (LPARAM)&index);
           if(num == 1) {
-            int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXTLEN, (WPARAM)index, 0);
+            INT_PTR n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXTLEN, (WPARAM)index, 0);
             if(n > 0) {
-              char *buf = (char *)GlobalAlloc(GPTR, (n+1)*sizeof(char));
+              TCHAR *buf = (TCHAR*) MemAllocZI((n+1)*sizeof(TCHAR));
               SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETTEXT, (WPARAM)index, (LPARAM)buf);
-              char *p = my_strstr(buf,"=");
+              TCHAR *p = _tcsstr(buf,_T("="));
               if(p) {
                 SendDlgItemMessage(hwndDlg, IDC_VALUE, WM_SETTEXT, 0, (LPARAM)(p+1));
                 *p=0;
               }
               SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_SETTEXT, 0, (LPARAM)buf);
-              GlobalFree(buf);
+              MemFree(buf);
               SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_DELETESTRING, (WPARAM)index, 0);
-              EnableWindow(GetDlgItem(hwndDlg, IDLEFT), FALSE);
-              EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
+              EnableWindow(GetDlgItem(hwndDlg, IDC_LEFT), FALSE);
+              EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), FALSE);
               EnableSymbolSetButtons(hwndDlg);
             }
           }
         }
         break;
-        case IDCLEAR:
+        case IDC_CLEAR:
         {
           SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_RESETCONTENT , 0, 0);
           EnableSymbolSetButtons(hwndDlg);
         }
         break;
-        case IDLOAD:
+        case IDC_LOAD:
+        case IDC_SAVE:
         {
-          g_symbol_set_mode=1;
+          g_symbol_set_mode = IDC_LOAD == LOWORD(wParam) ? 1 : 2;
           DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_SYMBOLSET),hwndDlg,(DLGPROC)SymbolSetProc);
         }
         break;
-        case IDSAVE:
+        case IDC_DEL:
         {
-          g_symbol_set_mode=2;
-          DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_SYMBOLSET),hwndDlg,(DLGPROC)SymbolSetProc);
-        }
-        break;
-        case IDDEL:
-        {
-          int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELCOUNT, 0, 0);
-          int *items = (int *)GlobalAlloc(GPTR, n*sizeof(int));
-          SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELITEMS, (WPARAM)n, (LPARAM)items);
-          int i;
-          for(i=n-1;i>=0;i--) {
-            SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_DELETESTRING, (WPARAM)items[i], 0);
+          INT_PTR n = SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELCOUNT, 0, 0);
+          int *items = (int*) MemAllocZI(n*sizeof(int));
+          if (items) {
+            SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_GETSELITEMS, (WPARAM)n, (LPARAM)items);
+            for(INT_PTR i=n-1;i>=0;i--)
+              SendDlgItemMessage(hwndDlg, IDC_SYMBOLS, LB_DELETESTRING, (WPARAM)items[i], 0);
+            MemFree(items);
           }
           EnableSymbolEditButtons(hwndDlg);
           EnableSymbolSetButtons(hwndDlg);
@@ -1079,13 +1061,8 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
         case IDC_SYMBOL:
           if(HIWORD(wParam) == EN_CHANGE)
           {
-            int n = SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_GETTEXTLENGTH, 0, 0);
-            if(n > 0) {
-              EnableWindow(GetDlgItem(hwndDlg, IDRIGHT), TRUE);
-            }
-            else {
-              EnableWindow(GetDlgItem(hwndDlg, IDRIGHT), FALSE);
-            }
+            LRESULT n = SendDlgItemMessage(hwndDlg, IDC_SYMBOL, WM_GETTEXTLENGTH, 0, 0);
+            EnableWindow(GetDlgItem(hwndDlg, IDC_RIGHT), n > 0);
           }
           break;
         case IDC_SYMBOLS:
@@ -1095,7 +1072,7 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
           }
           else if (HIWORD(wParam) == LBN_DBLCLK)
           {
-            SendDlgItemMessage(hwndDlg, IDLEFT, BM_CLICK, 0, 0);
+            SendDlgItemMessage(hwndDlg, IDC_LEFT, BM_CLICK, 0, 0);
           }
           break;
         }
@@ -1105,17 +1082,16 @@ BOOL CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
-BOOL CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch(msg) {
     case WM_INITDIALOG:
     {
       int i=0;
-      LRESULT rv;
 
       for(i=(int)COMPRESSOR_SCRIPT; i<= (int)COMPRESSOR_BEST; i++) {
-        rv = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
+        SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
       }
-      rv = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.compressor, (LPARAM)0);
+      SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.compressor, (LPARAM)0);
 
       SetFocus(GetDlgItem(hwndDlg, IDC_COMPRESSOR));
       break;
@@ -1125,15 +1101,11 @@ BOOL CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPara
       switch (LOWORD(wParam)) {
         case IDOK:
         {
-          int n;
-          n = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
-          if(n >= (int)COMPRESSOR_SCRIPT && n <= (int)COMPRESSOR_BEST) {
+          INT_PTR n = SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+          if(n >= (INT_PTR)COMPRESSOR_SCRIPT && n <= (INT_PTR)COMPRESSOR_BEST)
             SetCompressor((NCOMPRESSOR)n);
-          }
-          else {
+          else
             SetCompressor(g_sdata.default_compressor);
-          }
-
           EndDialog(hwndDlg, 0);
           break;
         }
@@ -1150,19 +1122,19 @@ BOOL CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPara
   return FALSE;
 }
 
-BOOL CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch(msg) {
     case WM_INITDIALOG:
     {
       HWND hwndEdit;
       HKEY hKey;
 
-      EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
+      EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), FALSE);
       if (OpenRegSettingsKey(hKey)) {
         HKEY hSubKey;
 
         if (RegOpenKeyEx(hKey,REGSYMSUBKEY,0,KEY_READ,&hSubKey) == ERROR_SUCCESS) {
-          char subkey[1024];
+          TCHAR subkey[1024];
           int i=0;
 
           while (RegEnumKey(hSubKey,i,subkey,sizeof(subkey)) == ERROR_SUCCESS) {
@@ -1176,7 +1148,7 @@ BOOL CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 
       hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), 0, 0, 0); // Handle of list
       hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), hwndEdit, 0, 0); //Handle of edit box
-      SendMessage(hwndEdit, EM_LIMITTEXT, (WPARAM)SYMBOL_SET_NAME_MAXLEN, 0);
+      SendMessage(hwndEdit, EM_LIMITTEXT, (WPARAM)SYMSETNAME_MAXLEN, 0);
       if(g_symbol_set_mode == 1) { //Load
         SetWindowText(hwndDlg, LOAD_SYMBOL_SET_DLG_NAME);
         SetWindowText(GetDlgItem(hwndDlg, IDOK), LOAD_BUTTON_TEXT);
@@ -1194,12 +1166,12 @@ BOOL CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
         case IDOK:
         {
           HWND hwndEdit;
-          char name[SYMBOL_SET_NAME_MAXLEN+1];
+          TCHAR name[SYMSETNAME_MAXLEN+1];
 
           hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), 0, 0, 0); // Handle of list
           hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), hwndEdit, 0, 0); //Handle of edit box
-          SendMessage(hwndEdit, WM_GETTEXT, (WPARAM)SYMBOL_SET_NAME_MAXLEN+1, (LPARAM)name);
-          if(!lstrlen(name)) {
+          SendMessage(hwndEdit, WM_GETTEXT, (WPARAM)COUNTOF(name), (LPARAM)name);
+          if(!*name) {
             if(g_symbol_set_mode == 1) { //Load
               MessageBox(hwndDlg,LOAD_SYMBOL_SET_MESSAGE,LOAD_SYMBOL_SET_DLG_NAME,MB_OK|MB_ICONEXCLAMATION);
             }
@@ -1224,40 +1196,32 @@ BOOL CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
           EndDialog(hwndDlg, TRUE);
           break;
         }
-        case IDDEL:
+        case IDC_DEL:
         {
-          int n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
+          LONG_PTR n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
           if(n != CB_ERR) {
-            long len = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETLBTEXTLEN, (WPARAM)n, 0);
-            char *buf = (char *)GlobalAlloc(GPTR, (len+1)*sizeof(char));
+            INT_PTR len = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETLBTEXTLEN, (WPARAM)n, 0);
+            TCHAR *buf = (TCHAR*) MemAllocZI((len+1)*sizeof(TCHAR));
             if(SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETLBTEXT, (WPARAM)n, (LPARAM)buf) != CB_ERR) {
               SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_DELETESTRING, n, 0);
               DeleteSymbolSet(buf);
             }
-            GlobalFree(buf);
+            MemFree(buf);
           }
-          EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
+          EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), FALSE);
           break;
         }
         case IDC_NAMES:
         {
           if(HIWORD(wParam) == CBN_SELCHANGE)
           {
-            int n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
-            if(n == CB_ERR) {
-              EnableWindow(GetDlgItem(hwndDlg, IDDEL), FALSE);
-            }
-            else {
-              EnableWindow(GetDlgItem(hwndDlg, IDDEL), TRUE);
-            }
+            LONG_PTR n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
+            EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), CB_ERR != n);
           }
           else if(HIWORD(wParam) == CBN_DBLCLK)
           {
-            int n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
-            if (n != CB_ERR)
-            {
-              SendDlgItemMessage(hwndDlg, IDOK, BM_CLICK, 0, 0);
-            }
+            LONG_PTR n = SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_GETCURSEL, 0, 0);
+            if (n != CB_ERR) SendDlgItemMessage(hwndDlg, IDOK, BM_CLICK, 0, 0);
           }
           break;
         }
@@ -1274,7 +1238,7 @@ void SetCompressor(NCOMPRESSOR compressor)
 
   if(g_sdata.compressor != compressor) {
     WORD command;
-    const char *compressor_name;
+    LPCTSTR compressor_name;
 
     if(compressor > COMPRESSOR_SCRIPT && compressor < COMPRESSOR_BEST) {
       command = compressor_commands[(int)compressor];
@@ -1287,7 +1251,7 @@ void SetCompressor(NCOMPRESSOR compressor)
     else {
       compressor = COMPRESSOR_SCRIPT;
       command = IDM_COMPRESSOR_SCRIPT;
-      compressor_name = "";
+      compressor_name = _T("");
     }
     g_sdata.compressor = compressor;
     g_sdata.compressor_name = compressor_name;

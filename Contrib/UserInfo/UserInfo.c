@@ -1,10 +1,20 @@
+// Unicode support by Jim Park -- 08/23/2007
+
 #include <windows.h>
 #include <nsis/pluginapi.h> // nsis plugin
+
+#if defined(_MSC_VER) && !defined(GetVersion)
+#if _MSC_VER >= 1500
+FORCEINLINE DWORD NoDepr_GetVersion() { __pragma(warning(push))__pragma(warning(disable:4996)) DWORD r = GetVersion(); __pragma(warning(pop)) return r; }
+#define GetVersion NoDepr_GetVersion
+#endif //~ _MSC_VER >= 1500
+#endif //~ _MSC_VER
+
 typedef BOOL (WINAPI*CHECKTOKENMEMBERSHIP)(HANDLE TokenHandle,PSID SidToCheck,PBOOL IsMember);
 CHECKTOKENMEMBERSHIP _CheckTokenMembership=NULL;
 
 void __declspec(dllexport) GetName(HWND hwndParent, int string_size, 
-                                   char *variables, stack_t **stacktop)
+                                   TCHAR *variables, stack_t **stacktop)
 {
   EXDLL_INIT();
 
@@ -12,36 +22,45 @@ void __declspec(dllexport) GetName(HWND hwndParent, int string_size,
     DWORD dwStringSize = g_stringsize;
     stack_t *th;
     if (!g_stacktop) return;
-    th = (stack_t*) GlobalAlloc(GPTR, sizeof(stack_t) + g_stringsize);
+    th = (stack_t*) GlobalAlloc(GPTR, sizeof(stack_t) + g_stringsize*sizeof(TCHAR));
     GetUserName(th->text, &dwStringSize);
     th->next = *g_stacktop;
     *g_stacktop = th;
   }
 }
 
-char* GetAccountTypeHelper(BOOL CheckTokenForGroupDeny) 
+struct group
 {
-  char  *group = NULL;
+ DWORD auth_id;
+ TCHAR *name;
+};
+
+// Jim Park: Moved this array from inside the func to the outside.  While it
+// was probably "safe" for this array to be inside because the strings are in
+// the .data section and so the pointer to the string returned is probably
+// safe, this is a bad practice to have as that's making an assumption on what
+// the compiler will do.  Besides which, other types of data returned would
+// actually fail as the local vars would be popped off the stack.
+struct group groups[] = 
+{
+ {DOMAIN_ALIAS_RID_USERS, _T("User")},
+ // every user belongs to the users group, hence users come before guests
+ {DOMAIN_ALIAS_RID_GUESTS, _T("Guest")},
+ {DOMAIN_ALIAS_RID_POWER_USERS, _T("Power")},
+ {DOMAIN_ALIAS_RID_ADMINS, _T("Admin")}
+};
+
+TCHAR* GetAccountTypeHelper(BOOL CheckTokenForGroupDeny) 
+{
+  TCHAR  *group = NULL;
   HANDLE  hToken = NULL;
-  struct group
-  {
-    DWORD auth_id;
-    char *name;
-  };
 
-  struct group groups[] = 
-  {
-    {DOMAIN_ALIAS_RID_USERS, "User"},
-    // every user belongs to the users group, hence users come before guests
-    {DOMAIN_ALIAS_RID_GUESTS, "Guest"},
-    {DOMAIN_ALIAS_RID_POWER_USERS, "Power"},
-    {DOMAIN_ALIAS_RID_ADMINS, "Admin"}
-  };
-
+#ifndef _WIN64
   if (GetVersion() & 0x80000000) // Not NT
   {
-    return "Admin";
+    return _T("Admin");
   }
+#endif
 
   // First we must open a handle to the access token for this thread.
   if (OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, FALSE, &hToken) ||
@@ -57,8 +76,12 @@ char* GetAccountTypeHelper(BOOL CheckTokenForGroupDeny)
     if (CheckTokenForGroupDeny)
       // GetUserName is in advapi32.dll so we can avoid Load/Freelibrary
       _CheckTokenMembership=
+      #ifndef _WIN64
         (CHECKTOKENMEMBERSHIP) GetProcAddress(
-          GetModuleHandle("ADVAPI32"), "CheckTokenMembership");
+          GetModuleHandle(_T("ADVAPI32")), "CheckTokenMembership");
+      #else
+        CheckTokenMembership;
+      #endif
     
     // Use "old school" membership check?
     if (!CheckTokenForGroupDeny || _CheckTokenMembership == NULL)
@@ -121,18 +144,18 @@ char* GetAccountTypeHelper(BOOL CheckTokenForGroupDeny)
     return group;
   }
 
-  return "";
+  return _T("");
 }
 
 void __declspec(dllexport) GetAccountType(HWND hwndParent, int string_size, 
-                                          char *variables, stack_t **stacktop)
+                                          TCHAR *variables, stack_t **stacktop)
 {
   EXDLL_INIT();
   pushstring(GetAccountTypeHelper(TRUE));
 }
 
 void __declspec(dllexport) GetOriginalAccountType(HWND hwndParent, int string_size, 
-                                                  char *variables, stack_t **stacktop)
+                                                  TCHAR *variables, stack_t **stacktop)
 {
   EXDLL_INIT();
   pushstring(GetAccountTypeHelper(FALSE));

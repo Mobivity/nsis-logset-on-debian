@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2015 Nullsoft and Contributors
+ * Copyright (C) 1999-2016 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
  * This software is provided 'as-is', without any express or implied
  * warranty.
  */
+
+/* Unicode support by Jim Park -- 11/16/2007 */
 
 #ifndef _ICON_H_
 #define _ICON_H_
@@ -60,7 +62,7 @@ typedef struct
 
 typedef std::vector<Icon> IconGroup;
 
-IconGroup load_icon_file(const char* filename);
+IconGroup load_icon_file(const TCHAR* filename);
 IconGroup load_icon_res(CResourceEditor* re, WORD id);
 void free_loaded_icon(IconGroup icon);
 

@@ -1,12 +1,19 @@
-#include <windows.h>
+// Unicode support by Jim Park -- 08/23/2007
+
+#include "../../Source/Platform.h"
 #include <commctrl.h>
 #include "resource.h"
 
-#define CBL(x) {x,#x}
+#ifndef LANG_SCOTTISH_GAELIC
+#define LANG_SCOTTISH_GAELIC    0x91
+#define SUBLANG_SCOTTISH_GAELIC 0x01
+#endif
+
+#define CBL(x) {x,_T(#x)}
 
 struct line {
 	unsigned short id;
-	const char *name;
+	const TCHAR *name;
 };
 
 line primary[] = {
@@ -70,6 +77,7 @@ line primary[] = {
 	CBL(LANG_ROMANIAN),
 	CBL(LANG_RUSSIAN),
 	CBL(LANG_SANSKRIT),
+	CBL(LANG_SCOTTISH_GAELIC),
 	CBL(LANG_SERBIAN),
 	CBL(LANG_SINDHI),
 	CBL(LANG_SLOVAK),
@@ -154,6 +162,7 @@ line sub[] = {
 	CBL(SUBLANG_NORWEGIAN_NYNORSK),
 	CBL(SUBLANG_PORTUGUESE),
 	CBL(SUBLANG_PORTUGUESE_BRAZILIAN),
+	CBL(SUBLANG_SCOTTISH_GAELIC),
 	CBL(SUBLANG_SERBIAN_LATIN),
 	CBL(SUBLANG_SERBIAN_CYRILLIC),
 	CBL(SUBLANG_SPANISH),
@@ -184,7 +193,7 @@ line sub[] = {
 	CBL(SUBLANG_UZBEK_CYRILLIC)
 };
 
-BOOL CALLBACK DialogProc(HWND hwndDlg,UINT uMsg,WPARAM wParam,LPARAM lParam) {
+INT_PTR CALLBACK DialogProc(HWND hwndDlg,UINT uMsg,WPARAM wParam,LPARAM lParam) {
 	size_t i;
 	switch (uMsg) {
 	case WM_INITDIALOG:
@@ -201,33 +210,35 @@ BOOL CALLBACK DialogProc(HWND hwndDlg,UINT uMsg,WPARAM wParam,LPARAM lParam) {
 		}
 		else if (HIWORD(wParam) == CBN_SELCHANGE) {
 			if (SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0) != CB_ERR && SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0) != CB_ERR) {
-				char lang[512];
-				wsprintf(lang, "Language ID: %d", MAKELANGID(primary[SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0)].id, sub[SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0)].id));
+				TCHAR lang[512];
+				wsprintf(lang, _T("Language ID: %d"), MAKELANGID(primary[SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0)].id, sub[SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0)].id));
 				SetDlgItemText(hwndDlg, IDC_RESULT, lang);
 			}
 		}
 		else if (LOWORD(wParam) == IDOK) {
 			if (SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0) != CB_ERR && SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0) != CB_ERR) {
-				HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, 16);
+				HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, 16*sizeof(TCHAR));
 				if (!hMem) return 0;
-				char *lang_id = (char *)GlobalLock(hMem);
-				wsprintf(lang_id, "%u", MAKELANGID(primary[SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0)].id, sub[SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0)].id));
+				TCHAR *lang_id = (TCHAR *)GlobalLock(hMem);
+				wsprintf(lang_id, _T("%u"), MAKELANGID(primary[SendDlgItemMessage(hwndDlg, IDC_PRIMARY, CB_GETCURSEL, 0, 0)].id, sub[SendDlgItemMessage(hwndDlg, IDC_SUB, CB_GETCURSEL, 0, 0)].id));
 				GlobalUnlock(hMem);
-				if (!OpenClipboard(hwndDlg)) return 0;
+				if (!OpenClipboard(hwndDlg)) return FALSE;
 				EmptyClipboard();
+#ifdef _UNICODE
+				SetClipboardData(CF_UNICODETEXT,hMem);
+#else
 				SetClipboardData(CF_TEXT,hMem);
+#endif
 				CloseClipboard();
 			}
 		}
 		break;
 	}
-	return 0;
+	return FALSE;
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPSTR     lpCmdLine,
-                     int       nCmdShow)
+NSIS_ENTRYPOINT_GUINOCRT
+EXTERN_C void NSISWinMainNOCRT()
 {
 	InitCommonControls();
 
@@ -239,6 +250,5 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	);
 
 	ExitProcess(0);
-
-	return 0;
 }
+

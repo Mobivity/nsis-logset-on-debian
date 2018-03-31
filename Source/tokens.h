@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2015 Nullsoft and Contributors
+ * Copyright (C) 1999-2016 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty.
+ *
+ * Added commands for Unicode support by Jim Park -- 08/21/2007
  */
 
 #ifndef _TOKENS_H_
@@ -57,8 +59,12 @@ enum
   TOK_BRANDINGTEXT,
   TOK_FILEERRORTEXT,
   TOK_INSTPROGRESSFLAGS,
+  TOK_PEDLLCHARACTERISTICS,
+  TOK_PESUBSYSVER,
   TOK_XPSTYLE,
   TOK_REQEXECLEVEL,
+  TOK_MANIFEST_DPIAWARE,
+  TOK_MANIFEST_SUPPORTEDOS,
   TOK_CHANGEUI,
   TOK_ADDBRANDINGIMAGE,
   TOK_SETFONT,
@@ -68,6 +74,12 @@ enum
   TOK_DEFVAR,
   TOK_VI_ADDKEY,
   TOK_VI_SETPRODUCTVERSION,
+  TOK_VI_SETFILEVERSION,
+#ifdef _UNICODE
+  TOK_TARGET,
+  TOK_TARGETCPU,
+  TOK_TARGETUNICODE,
+#endif
 
   TOK_MISCBUTTONTEXT,
   TOK_DETAILSBUTTONTEXT,
@@ -96,8 +108,10 @@ enum
   TOK_P_DEFINE,
   TOK_P_UNDEF,
   TOK_P_PACKEXEHEADER,
+  TOK_P_FINALIZE,
   TOK_P_SYSTEMEXEC,
   TOK_P_EXECUTE,
+  TOK_P_MAKENSIS,
   TOK_P_ADDINCLUDEDIR,
   TOK_P_INCLUDE,
   TOK_P_CD,
@@ -109,6 +123,7 @@ enum
 
   TOK_P_MACRO,
   TOK_P_MACROEND,
+  TOK_P_MACROUNDEF,
   TOK_P_INSERTMACRO,
   TOK_P_IFMACRODEF,
   TOK_P_IFMACRONDEF,
@@ -116,11 +131,12 @@ enum
   TOK_P_TEMPFILE,
   TOK_P_DELFILE,
   TOK_P_APPENDFILE,
+  TOK_P_GETDLLVERSION,
 
   TOK_P_SEARCHPARSESTRING,
   TOK_P_SEARCHREPLACESTRING,
 
-  // section/function shit
+  // section/function stuff
   TOK_SECTION,
   TOK_SECTIONEND,
   TOK_SECTIONIN,
@@ -196,6 +212,7 @@ enum
   TOK_SETERRORS,
   TOK_IFABORT,
   TOK_STRCPY,
+  TOK_UNSAFESTRCPY,
   TOK_STRCMP,
   TOK_STRCMPS,
   TOK_GETTEMPFILENAME,
@@ -236,6 +253,12 @@ enum
   TOK_FILEWRITE,
   TOK_FILEREADBYTE,
   TOK_FILEWRITEBYTE,
+#ifdef _UNICODE
+  TOK_FILEREADUTF16LE,
+  TOK_FILEWRITEUTF16LE,
+  TOK_FILEREADWORD,
+  TOK_FILEWRITEWORD,
+#endif
   TOK_FILESEEK,
   TOK_GETFULLPATHNAME,
   TOK_REBOOT,

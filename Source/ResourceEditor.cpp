@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 2002-2015 Amir Szekely <kichik@users.sourceforge.net>
+ * Copyright (C) 2002-2016 Amir Szekely <kichik@users.sourceforge.net>
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,33 +12,28 @@
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty.
+ *
+ * Reviewed for Unicode support by Jim Park -- 08/21/2007
  */
 
 #include "ResourceEditor.h"
 #include "util.h"
 #include "winchar.h"
 #include <queue>
+#include "tchar.h"
+#include "utf.h"
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Utilities
 //////////////////////////////////////////////////////////////////////
 
+#define WCHARPTR2WINWCHARPTR(s) ( (WINWCHAR*) (s) ) // Only for WinSDK structs like IMAGE_RESOURCE_DIR_STRING_U where we cannot change the WCHAR type!
 #define ALIGN(dwToAlign, dwAlignOn) dwToAlign = (dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn
 #define RALIGN(dwToAlign, dwAlignOn) ((dwToAlign%dwAlignOn == 0) ? dwToAlign : dwToAlign - (dwToAlign%dwAlignOn) + dwAlignOn)
 
-#ifndef _WIN32
-static inline ULONG ConvertEndianness(ULONG u) {
-  return FIX_ENDIAN_INT32(u);
-}
-#endif
-
 static inline DWORD ConvertEndianness(DWORD d) {
   return FIX_ENDIAN_INT32(d);
-}
-
-static inline LONG ConvertEndianness(LONG l) {
-  return FIX_ENDIAN_INT32(l);
 }
 
 static inline WORD ConvertEndianness(WORD w) {
@@ -52,13 +47,13 @@ PIMAGE_NT_HEADERS CResourceEditor::GetNTHeaders(BYTE* pbPE) {
     throw runtime_error("PE file contains invalid DOS header");
 
   // Get NT headers
-  PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)(pbPE + ConvertEndianness(dosHeader->e_lfanew));
+  PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)(pbPE + ConvertEndianness((DWORD)dosHeader->e_lfanew));
   if (ntHeaders->Signature != IMAGE_NT_SIGNATURE)
     throw runtime_error("PE file missing NT signature");
 
   // Make sure this is a supported PE format
-  if (ntHeaders->OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC &&
-      ntHeaders->OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC)
+  const WORD ohm = *GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, Magic);
+  if (ohm != IMAGE_NT_OPTIONAL_HDR32_MAGIC && ohm != IMAGE_NT_OPTIONAL_HDR64_MAGIC)
     throw runtime_error("Unsupported PE format");
 
   return ntHeaders;
@@ -71,8 +66,8 @@ PRESOURCE_DIRECTORY CResourceEditor::GetResourceDirectory(
   DWORD *pdwResSecVA /*=NULL*/,
   DWORD *pdwSectionIndex /*=NULL*/
 ) {
-  PIMAGE_DATA_DIRECTORY dataDirectory = *GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, DataDirectory);
-  DWORD dwNumberOfRvaAndSizes = *GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, NumberOfRvaAndSizes);
+  PIMAGE_DATA_DIRECTORY dataDirectory = *GetMemberFromPEOptHdr(ntHeaders->OptionalHeader, DataDirectory);
+  DWORD dwNumberOfRvaAndSizes = *GetMemberFromPEOptHdr(ntHeaders->OptionalHeader, NumberOfRvaAndSizes);
   
   if (ConvertEndianness(dwNumberOfRvaAndSizes) <= IMAGE_DIRECTORY_ENTRY_RESOURCE)
     throw runtime_error("No resource section found");
@@ -135,7 +130,7 @@ CResourceEditor::CResourceEditor(BYTE* pbPE, int iSize, bool bKeepData /*=true*/
   m_ntHeaders = GetNTHeaders(m_pbPE);
 
   // No check sum support yet...
-  DWORD* pdwCheckSum = GetMemberFromOptionalHeader(m_ntHeaders->OptionalHeader, CheckSum);
+  DWORD* pdwCheckSum = GetCommonMemberFromPEOptHdr(m_ntHeaders->OptionalHeader, CheckSum);
   if (*pdwCheckSum)
   {
     // clear checksum (should be [re]calculated after all changes done)
@@ -151,10 +146,7 @@ CResourceEditor::CResourceEditor(BYTE* pbPE, int iSize, bool bKeepData /*=true*/
 }
 
 CResourceEditor::~CResourceEditor() {
-  if (m_cResDir) {
-    m_cResDir->Destroy();
-    delete m_cResDir;
-  }
+  delete m_cResDir;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -163,7 +155,7 @@ CResourceEditor::~CResourceEditor() {
 
 // Adds/Replaces/Removes a resource.
 // If lpData is 0 UpdateResource removes the resource.
-bool CResourceEditor::UpdateResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
+bool CResourceEditor::UpdateResourceW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
   CResourceDirectory* nameDir = 0;
   CResourceDirectory* langDir = 0;
   CResourceDataEntry* data = 0;
@@ -193,17 +185,20 @@ bool CResourceEditor::UpdateResourceW(WCHAR* szType, WCHAR* szName, LANGID wLang
     if (!nameDir) {
       // Type doesn't yet exist
       nameDir = new CResourceDirectory(&rd);
-      m_cResDir->AddEntry(new CResourceDirectoryEntry(szType, nameDir));
+      CResourceDirectoryEntry *pRDE = new CResourceDirectoryEntry(szType, nameDir);
+      if (!m_cResDir->AddEntry(pRDE)) delete pRDE;
     }
     if (!langDir) {
       // Name doesn't yet exist
       langDir = new CResourceDirectory(&rd);
-      nameDir->AddEntry(new CResourceDirectoryEntry(szName, langDir));
+      CResourceDirectoryEntry *pRDE = new CResourceDirectoryEntry(szName, langDir);
+      if (!nameDir->AddEntry(pRDE)) delete pRDE;
     }
     if (!data) {
       // Language doesn't yet exist, hence data nither
       data = new CResourceDataEntry(lpData, dwSize);
-      langDir->AddEntry(new CResourceDirectoryEntry(MAKEINTRESOURCEW(wLanguage), data));
+      CResourceDirectoryEntry *pRDE = new CResourceDirectoryEntry(MAKEINTRESOURCEWINW(wLanguage), data);
+      if (!langDir->AddEntry(pRDE)) delete pRDE;
     }
   }
   else if (data) {
@@ -224,53 +219,45 @@ bool CResourceEditor::UpdateResourceW(WCHAR* szType, WCHAR* szName, LANGID wLang
   return true;
 }
 
-static WCHAR* ResStringToUnicode(const char *szString) {
-  if (IS_INTRESOURCE(szString))
-    return MAKEINTRESOURCEW((ULONG_PTR)szString);
-  else
-    return winchar_fromansi(szString);
+#ifndef _UNICODE
+static WINWCHAR* ResStringToUnicode(const char *szString) {
+  if (IS_INTRESOURCE(szString)) return MAKEINTRESOURCEWINW((ULONG_PTR)szString);
+  WINWCHAR *s = WinWStrDupFromTChar(szString);
+  if (!s) throw std::bad_alloc();
+  return s;
 }
-
-static void FreeUnicodeResString(WCHAR* szwString) {
-  if (!IS_INTRESOURCE(szwString))
-    delete [] szwString;
+static void FreeUnicodeResString(WINWCHAR* szwString) {
+  if (!IS_INTRESOURCE(szwString)) free(szwString);
 }
-
-bool CResourceEditor::UpdateResourceW(WORD szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  return UpdateResourceW(MAKEINTRESOURCEW(szType), szName, wLanguage, lpData, dwSize);
+#else
+#ifndef _WIN32
+static WINWCHAR* ResStringToUnicode(const TCHAR *s) {
+  if (IS_INTRESOURCE(s)) return MAKEINTRESOURCEWINW((ULONG_PTR)s);
+  WCToUTF16LEHlpr cnv;
+  if (!cnv.Create(s)) throw std::runtime_error("Unicode conversion failed");
+  return (WINWCHAR*) cnv.Detach();
 }
-
-bool CResourceEditor::UpdateResourceW(WCHAR* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  return UpdateResourceW(szType, MAKEINTRESOURCEW(szName), wLanguage, lpData, dwSize);
+static void FreeUnicodeResString(WINWCHAR* s) {
+  if (!IS_INTRESOURCE(s)) free(s);
 }
+#endif // ~_WIN32
+#endif // ~_UNICODE
 
-bool CResourceEditor::UpdateResourceA(char* szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  WCHAR* szwType = ResStringToUnicode(szType);
-  WCHAR* szwName = ResStringToUnicode(szName);
 
-  bool result = UpdateResourceW(szwType, szwName, wLanguage, lpData, dwSize);
-
+bool CResourceEditor::UpdateResourceT(const TCHAR* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
+#if defined(_WIN32) && defined(_UNICODE)
+  return UpdateResourceW((WINWCHAR*)szType, MAKEINTRESOURCEWINW(szName), wLanguage, lpData, dwSize);
+#else
+  WINWCHAR* szwType = ResStringToUnicode(szType); 
+  bool result = UpdateResourceW(szwType, MAKEINTRESOURCEWINW(szName), wLanguage, lpData, dwSize);
   FreeUnicodeResString(szwType);
-  FreeUnicodeResString(szwName);
-
   return result;
-}
-
-bool CResourceEditor::UpdateResourceA(WORD szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  return UpdateResourceA(MAKEINTRESOURCE(szType), szName, wLanguage, lpData, dwSize);
-}
-
-bool CResourceEditor::UpdateResourceA(char* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  return UpdateResourceA(szType, MAKEINTRESOURCE(szName), wLanguage, lpData, dwSize);
-}
-
-bool CResourceEditor::UpdateResource(WORD szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize) {
-  return UpdateResourceW(MAKEINTRESOURCEW(szType), MAKEINTRESOURCEW(szName), wLanguage, lpData, dwSize);
+#endif
 }
 
 // Returns a copy of the requested resource
 // Returns 0 if the requested resource can't be found
-BYTE* CResourceEditor::GetResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage) {
+BYTE* CResourceEditor::GetResourceW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage) {
   if (!m_bKeepData)
     throw runtime_error("Can't GetResource() when bKeepData is false");
 
@@ -284,9 +271,7 @@ BYTE* CResourceEditor::GetResourceW(WCHAR* szType, WCHAR* szName, LANGID wLangua
     i = nameDir->Find(szName);
     if (i > -1) {
       langDir = nameDir->GetEntry(i)->GetSubDirectory();
-      i = 0;
-      if (wLanguage)
-        i = langDir->Find(wLanguage);
+      i = wLanguage ? langDir->Find(wLanguage) : 0;
       if (i > -1) {
         data = langDir->GetEntry(i)->GetDataEntry();
       }
@@ -302,21 +287,20 @@ BYTE* CResourceEditor::GetResourceW(WCHAR* szType, WCHAR* szName, LANGID wLangua
     return NULL;
 }
 
-BYTE* CResourceEditor::GetResourceA(char* szType, char* szName, LANGID wLanguage) {
-  WCHAR* szwType = ResStringToUnicode(szType);
-  WCHAR* szwName = ResStringToUnicode(szName);
-
-  BYTE* result = GetResourceW(szwType, szwName, wLanguage);
-
+BYTE* CResourceEditor::GetResourceT(const TCHAR* szType, WORD szName, LANGID wLanguage) {
+#if defined(_WIN32) && defined(_UNICODE)
+  return GetResourceW((WINWCHAR*)szType, MAKEINTRESOURCEWINW(szName), wLanguage);
+#else
+  WINWCHAR* szwType = ResStringToUnicode(szType);
+  BYTE* result = GetResourceW(szwType, MAKEINTRESOURCEWINW(szName), wLanguage);
   FreeUnicodeResString(szwType);
-  FreeUnicodeResString(szwName);
-
   return result;
+#endif
 }
 
 // Returns the size of the requested resource
 // Returns -1 if the requested resource can't be found
-int CResourceEditor::GetResourceSizeW(WCHAR* szType, WCHAR* szName, LANGID wLanguage) {
+int CResourceEditor::GetResourceSizeW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage) {
   CResourceDirectory* nameDir = 0;
   CResourceDirectory* langDir = 0;
   CResourceDataEntry* data = 0;
@@ -327,9 +311,7 @@ int CResourceEditor::GetResourceSizeW(WCHAR* szType, WCHAR* szName, LANGID wLang
     i = nameDir->Find(szName);
     if (i > -1) {
       langDir = nameDir->GetEntry(i)->GetSubDirectory();
-      i = 0;
-      if (wLanguage)
-        i = langDir->Find(wLanguage);
+      i = wLanguage ? langDir->Find(wLanguage) : 0;
       if (i > -1) {
         data = langDir->GetEntry(i)->GetDataEntry();
       }
@@ -342,21 +324,20 @@ int CResourceEditor::GetResourceSizeW(WCHAR* szType, WCHAR* szName, LANGID wLang
     return -1;
 }
 
-int CResourceEditor::GetResourceSizeA(char* szType, char* szName, LANGID wLanguage) {
-  WCHAR* szwType = ResStringToUnicode(szType);
-  WCHAR* szwName = ResStringToUnicode(szName);
-
-  int result = GetResourceSizeW(szwType, szwName, wLanguage);
-
+int CResourceEditor::GetResourceSizeT(const TCHAR* szType, WORD szName, LANGID wLanguage) {
+#if defined(_WIN32) && defined(_UNICODE)
+  return GetResourceSizeW((WINWCHAR*)szType, MAKEINTRESOURCEWINW(szName), wLanguage);
+#else
+  WINWCHAR* szwType = ResStringToUnicode(szType);
+  int result = GetResourceSizeW(szwType, MAKEINTRESOURCEWINW(szName), wLanguage);
   FreeUnicodeResString(szwType);
-  FreeUnicodeResString(szwName);
-
   return result;
+#endif
 }
 
 // Returns the offset of the requested resource in the original PE
 // Returns -1 if the requested resource can't be found
-DWORD CResourceEditor::GetResourceOffsetW(WCHAR* szType, WCHAR* szName, LANGID wLanguage) {
+DWORD CResourceEditor::GetResourceOffsetW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage) {
   CResourceDirectory* nameDir = 0;
   CResourceDirectory* langDir = 0;
   CResourceDataEntry* data = 0;
@@ -367,9 +348,7 @@ DWORD CResourceEditor::GetResourceOffsetW(WCHAR* szType, WCHAR* szName, LANGID w
     i = nameDir->Find(szName);
     if (i > -1) {
       langDir = nameDir->GetEntry(i)->GetSubDirectory();
-      i = 0;
-      if (wLanguage)
-        i = langDir->Find(wLanguage);
+      i = wLanguage ? langDir->Find(wLanguage) : 0;
       if (i > -1) {
         data = langDir->GetEntry(i)->GetDataEntry();
       }
@@ -382,16 +361,15 @@ DWORD CResourceEditor::GetResourceOffsetW(WCHAR* szType, WCHAR* szName, LANGID w
     return DWORD(-1);
 }
 
-DWORD CResourceEditor::GetResourceOffsetA(char* szType, char* szName, LANGID wLanguage) {
-  WCHAR* szwType = ResStringToUnicode(szType);
-  WCHAR* szwName = ResStringToUnicode(szName);
-
-  DWORD result = GetResourceOffsetW(szwType, szwName, wLanguage);
-
+DWORD CResourceEditor::GetResourceOffsetT(const TCHAR* szType, WORD szName, LANGID wLanguage) {
+#if defined(_WIN32) && defined(_UNICODE)
+  return GetResourceOffsetW((WINWCHAR*)szType, MAKEINTRESOURCEWINW(szName), wLanguage);
+#else
+  WINWCHAR* szwType = ResStringToUnicode(szType);
+  DWORD result = GetResourceOffsetW(szwType, MAKEINTRESOURCEWINW(szName), wLanguage);
   FreeUnicodeResString(szwType);
-  FreeUnicodeResString(szwName);
-
   return result;
+#endif
 }
 
 void CResourceEditor::FreeResource(BYTE* pbResource)
@@ -406,10 +384,12 @@ DWORD CResourceEditor::Save(BYTE* pbBuf, DWORD &dwSize) {
     throw runtime_error("Can't Save() when bKeepData is false");
 
   unsigned int i;
-  DWORD dwReqSize;
+  DWORD dwReqSize, temp32;
 
-  DWORD dwFileAlign = ConvertEndianness(m_ntHeaders->OptionalHeader.FileAlignment);
-  DWORD dwSecAlign = ConvertEndianness(m_ntHeaders->OptionalHeader.SectionAlignment);
+  temp32 = *GetCommonMemberFromPEOptHdr(m_ntHeaders->OptionalHeader, FileAlignment);
+  const DWORD dwFileAlign = ConvertEndianness(temp32);
+  temp32 = *GetCommonMemberFromPEOptHdr(m_ntHeaders->OptionalHeader, SectionAlignment);
+  const DWORD dwSecAlign = ConvertEndianness(temp32);
 
   DWORD dwRsrcSize = m_cResDir->GetSize(); // Size of new resource section
   DWORD dwRsrcSizeAligned = RALIGN(dwRsrcSize, dwFileAlign); // Align it to FileAlignment
@@ -462,36 +442,36 @@ DWORD CResourceEditor::Save(BYTE* pbBuf, DWORD &dwSize) {
   sectionHeadersArray[m_dwResourceSectionIndex].SizeOfRawData = ConvertEndianness(dwRsrcSizeAligned);
   // Set the virtual size as well (in memory)
   sectionHeadersArray[m_dwResourceSectionIndex].Misc.VirtualSize = ConvertEndianness(dwRsrcSize);
-  (*GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, DataDirectory))[IMAGE_DIRECTORY_ENTRY_RESOURCE].Size = ConvertEndianness(dwRsrcSize);
+  (*GetMemberFromPEOptHdr(ntHeaders->OptionalHeader, DataDirectory))[IMAGE_DIRECTORY_ENTRY_RESOURCE].Size = ConvertEndianness(dwRsrcSize);
 
   // Set the new virtual size of the image
-  DWORD* pdwSizeOfImage = GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, SizeOfImage);
-  *pdwSizeOfImage = AlignVA(*GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, SizeOfHeaders));
+  DWORD* pdwSizeOfImage = GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, SizeOfImage);
+  *pdwSizeOfImage = AlignVA(*GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, SizeOfHeaders));
   for (i = 0; i < wNumberOfSections; i++) {
     DWORD dwSecSize = ConvertEndianness(sectionHeadersArray[i].Misc.VirtualSize);
     *pdwSizeOfImage = AlignVA(AdjustVA(*pdwSizeOfImage, dwSecSize));
   }
 
   // Set the new AddressOfEntryPoint if needed
-  DWORD* pdwAddressOfEntryPoint = GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, AddressOfEntryPoint);
+  DWORD* pdwAddressOfEntryPoint = GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, AddressOfEntryPoint);
   if (ConvertEndianness(*pdwAddressOfEntryPoint) > m_dwResourceSectionVA)
     *pdwAddressOfEntryPoint = AdjustVA(*pdwAddressOfEntryPoint, dwVAAdjustment);
 
   // Set the new BaseOfCode if needed
-  DWORD* pdwBaseOfCode = GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, BaseOfCode);
+  DWORD* pdwBaseOfCode = GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, BaseOfCode);
   if (ConvertEndianness(*pdwBaseOfCode) > m_dwResourceSectionVA)
     *pdwBaseOfCode = AdjustVA(*pdwBaseOfCode, dwVAAdjustment);
 
   // Set the new BaseOfData if needed
-  if (ntHeaders->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) {
+  if (*GetCommonMemberFromPEOptHdr(ntHeaders->OptionalHeader, Magic) == IMAGE_NT_OPTIONAL_HDR32_MAGIC) {
     DWORD* pdwBaseOfData = &((PIMAGE_OPTIONAL_HEADER32)&ntHeaders->OptionalHeader)->BaseOfData;
     if (ConvertEndianness(*pdwBaseOfData) > m_dwResourceSectionVA)
       *pdwBaseOfData = AdjustVA(*pdwBaseOfData, dwVAAdjustment);
   }
 
   // Refresh the headers of the sections that come after the resource section, and the data directory
-  DWORD dwNumberOfRvaAndSizes = *GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, NumberOfRvaAndSizes);
-  PIMAGE_DATA_DIRECTORY pDataDirectory = *GetMemberFromOptionalHeader(ntHeaders->OptionalHeader, DataDirectory);
+  DWORD dwNumberOfRvaAndSizes = *GetMemberFromPEOptHdr(ntHeaders->OptionalHeader, NumberOfRvaAndSizes);
+  PIMAGE_DATA_DIRECTORY pDataDirectory = *GetMemberFromPEOptHdr(ntHeaders->OptionalHeader, DataDirectory);
   for (i = m_dwResourceSectionIndex + 1; i < wNumberOfSections; i++) {
     if (sectionHeadersArray[i].PointerToRawData) {
       AdjustVA(sectionHeadersArray[i].PointerToRawData, dwRsrcSizeAligned - dwOldRsrcSize);
@@ -516,12 +496,12 @@ DWORD CResourceEditor::Save(BYTE* pbBuf, DWORD &dwSize) {
   seeker += dwRsrcSizeAligned;
 
   // Copy everything that comes after the resource section (other sections and tacked data)
-  DWORD dwLeft = m_iSize - (oldSeeker - m_pbPE);
-  if (dwLeft)
-    CopyMemory(seeker, oldSeeker, dwLeft);
+  size_t cbLeft = m_iSize - (oldSeeker - m_pbPE);
+  if (cbLeft)
+    CopyMemory(seeker, oldSeeker, cbLeft);
 
-  seeker += dwLeft;
-  oldSeeker += dwLeft;
+  seeker += cbLeft;
+  oldSeeker += cbLeft;
 
   /**********************************************************
    * To add checksum to the header use MapFileAndCheckSum
@@ -541,14 +521,15 @@ DWORD CResourceEditor::Save(BYTE* pbBuf, DWORD &dwSize) {
 
 // This function scans exe sections and after find a match with given name
 // increments it's virtual size (auto fixes image size based on section alignment, etc)
-bool CResourceEditor::AddExtraVirtualSize2PESection(const char* pszSectionName, int addsize)
+// Jim Park: The section name must be ASCII code.  Do not TCHAR this stuff.
+bool CResourceEditor::SetPESectionVirtualSize(const char* pszSectionName, DWORD newsize)
 {
   PIMAGE_SECTION_HEADER sectionHeadersArray = IMAGE_FIRST_SECTION(m_ntHeaders);
 
   // Refresh the headers of the sections that come after the resource section, and the data directory
   for (int i = 0; i < ConvertEndianness(m_ntHeaders->FileHeader.NumberOfSections); i++) {
     if (!strcmp((LPCSTR)sectionHeadersArray[i].Name, pszSectionName)) {
-      sectionHeadersArray[i].Misc.VirtualSize = AlignVA(AdjustVA(sectionHeadersArray[i].Misc.VirtualSize, addsize));
+      sectionHeadersArray[i].Misc.VirtualSize = AlignVA(ConvertEndianness(newsize));
 
       sectionHeadersArray[i].Characteristics &= ConvertEndianness((DWORD) ~IMAGE_SCN_MEM_DISCARDABLE);
 
@@ -563,7 +544,7 @@ bool CResourceEditor::AddExtraVirtualSize2PESection(const char* pszSectionName, 
         if (m_dwResourceSectionIndex == (DWORD) k)
         {
           // fix the resources virtual address if it changed
-          PIMAGE_DATA_DIRECTORY pDataDirectory = *GetMemberFromOptionalHeader(m_ntHeaders->OptionalHeader, DataDirectory);
+          PIMAGE_DATA_DIRECTORY pDataDirectory = *GetMemberFromPEOptHdr(m_ntHeaders->OptionalHeader, DataDirectory);
           pDataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress = dwSecVA;
           m_dwResourceSectionVA = ConvertEndianness(dwSecVA);
         }
@@ -580,12 +561,12 @@ bool CResourceEditor::AddExtraVirtualSize2PESection(const char* pszSectionName, 
 // Private Methods
 //////////////////////////////////////////////////////////////////////
 
-// This function scans a give resource directory and return a CResourceDirectory object
+// This function scans a given resource directory and returns a CResourceDirectory object
 // rdRoot must point to the root directory of the resource section
 CResourceDirectory* CResourceEditor::ScanDirectory(PRESOURCE_DIRECTORY rdRoot, PRESOURCE_DIRECTORY rdToScan) {
   // Create CResourceDirectory from rdToScan
   CResourceDirectory* rdc = new CResourceDirectory(PIMAGE_RESOURCE_DIRECTORY(rdToScan));
-  WCHAR* szName;
+  WINWCHAR* szName;
   PIMAGE_RESOURCE_DATA_ENTRY rde = NULL;
 
   // Go through all entries of this resource directory
@@ -606,25 +587,24 @@ CResourceDirectory* CResourceEditor::ScanDirectory(PRESOURCE_DIRECTORY rdRoot, P
       PIMAGE_RESOURCE_DIR_STRING_U rds = PIMAGE_RESOURCE_DIR_STRING_U(rd.UName.NameString.NameOffset + (char*)rdRoot);
 
       size_t nameSize = ConvertEndianness(rds->Length);
-      szName = new WCHAR[nameSize+1];
-      winchar_strncpy(szName, rds->NameString, nameSize);
+      szName = new WINWCHAR[nameSize+1];
+      WinWStrNCpy(szName, WCHARPTR2WINWCHARPTR(rds->NameString), nameSize);
       szName[nameSize] = 0;
     }
     // Else, set the name to this entry's id
     else
-      szName = MAKEINTRESOURCEW(ConvertEndianness(rdToScan->Entries[i].UName.Id));
+      szName = MAKEINTRESOURCEWINW(ConvertEndianness(rdToScan->Entries[i].UName.Id));
 
     if (rd.UOffset.DirectoryOffset.DataIsDirectory)
     {
-      rdc->AddEntry(
-        new CResourceDirectoryEntry(
-          szName,
-          ScanDirectory(
-            rdRoot,
-            PRESOURCE_DIRECTORY(rd.UOffset.DirectoryOffset.OffsetToDirectory + (LPBYTE)rdRoot)
-          )
+      CResourceDirectoryEntry *pRDE = new CResourceDirectoryEntry(
+        szName,
+        ScanDirectory(
+          rdRoot,
+          PRESOURCE_DIRECTORY(rd.UOffset.DirectoryOffset.OffsetToDirectory + (LPBYTE)rdRoot)
         )
       );
+      if (!rdc->AddEntry(pRDE)) delete pRDE;
     }
     else
     {
@@ -642,18 +622,16 @@ CResourceDirectory* CResourceEditor::ScanDirectory(PRESOURCE_DIRECTORY rdRoot, P
       {
         pbData = m_pbPE; // dummy pointer to "nothing"
       }
-
-      rdc->AddEntry(
-        new CResourceDirectoryEntry(
-          szName,
-          new CResourceDataEntry(
-            pbData,
-            ConvertEndianness(rde->Size),
-            ConvertEndianness(rde->CodePage),
-            dwOffset
-          )
+      CResourceDirectoryEntry *pRDE = new CResourceDirectoryEntry(
+        szName,
+        new CResourceDataEntry(
+          pbData,
+          ConvertEndianness(rde->Size),
+          ConvertEndianness(rde->CodePage),
+          dwOffset
         )
       );
+      if (!rdc->AddEntry(pRDE)) delete pRDE;
     }
 
     // Delete the dynamicly allocated name if it is a name and not an id
@@ -684,10 +662,10 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
     rdDir.NumberOfIdEntries = ConvertEndianness(rdDir.NumberOfIdEntries);
 
     CopyMemory(seeker, &rdDir, sizeof(IMAGE_RESOURCE_DIRECTORY));
-    crd->m_dwWrittenAt = DWORD(seeker);
+    crd->m_ulWrittenAt = (ULONG_PTR)(seeker);
     seeker += sizeof(IMAGE_RESOURCE_DIRECTORY);
 
-    for (int i = 0; i < crd->CountEntries(); i++) {
+    for (unsigned int i = 0; i < crd->CountEntries(); i++) {
       if (crd->GetEntry(i)->HasName())
         qStrings.push(crd->GetEntry(i));
       if (crd->GetEntry(i)->IsDataDirectory())
@@ -705,7 +683,7 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
       rDirE.UName.NameString.NameIsString = (crd->GetEntry(i)->HasName()) ? 1 : 0;
 
       CopyMemory(seeker, &rDirE, sizeof(MY_IMAGE_RESOURCE_DIRECTORY_ENTRY));
-      crd->GetEntry(i)->m_dwWrittenAt = DWORD(seeker);
+      crd->GetEntry(i)->m_ulWrittenAt = (ULONG_PTR)(seeker);
       seeker += sizeof(MY_IMAGE_RESOURCE_DIRECTORY_ENTRY);
     }
     qDirs.pop();
@@ -721,7 +699,7 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
     rDataE.Size = ConvertEndianness(cRDataE->GetSize());
 
     CopyMemory(seeker, &rDataE, sizeof(IMAGE_RESOURCE_DATA_ENTRY));
-    cRDataE->m_dwWrittenAt = DWORD(seeker);
+    cRDataE->m_ulWrittenAt = (ULONG_PTR)(seeker);
     seeker += sizeof(IMAGE_RESOURCE_DATA_ENTRY);
 
     qDataEntries.pop();
@@ -733,17 +711,15 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
   while (!qStrings.empty()) {
     CResourceDirectoryEntry* cRDirE = qStrings.front();
 
-    PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY(cRDirE->m_dwWrittenAt)->UName.NameString.NameOffset = ConvertEndianness(DWORD(seeker) - DWORD(pbRsrcSec));
+    PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY(cRDirE->m_ulWrittenAt)->UName.NameString.NameOffset = ConvertEndianness((DWORD) (seeker - pbRsrcSec));
 
-    WCHAR* szName = cRDirE->GetName();
-    WORD iLen = winchar_strlen(szName) + 1;
+    const WINWCHAR* szName = cRDirE->GetName();
+    WORD iLen = (WORD) WinWStrLen(szName) + 1;
 
     *(WORD*)seeker = ConvertEndianness(iLen);
-    CopyMemory(seeker + sizeof(WORD), szName, iLen*sizeof(WCHAR));
+    CopyMemory(seeker + sizeof(WORD), szName, iLen*sizeof(WINWCHAR));
 
-    seeker += RALIGN(iLen * sizeof(WCHAR) + sizeof(WORD), 4);
-
-    delete [] szName;
+    seeker += RALIGN(iLen * sizeof(WINWCHAR) + sizeof(WORD), 4);
 
     qStrings.pop();
   }
@@ -754,7 +730,7 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
   while (!qDataEntries2.empty()) {
     CResourceDataEntry* cRDataE = qDataEntries2.front();
     CopyMemory(seeker, cRDataE->GetData(), cRDataE->GetSize());
-    PIMAGE_RESOURCE_DATA_ENTRY(cRDataE->m_dwWrittenAt)->OffsetToData = ConvertEndianness(seeker - pbRsrcSec + m_dwResourceSectionVA);
+    PIMAGE_RESOURCE_DATA_ENTRY(cRDataE->m_ulWrittenAt)->OffsetToData = ConvertEndianness((DWORD)(seeker - pbRsrcSec) + m_dwResourceSectionVA);
 
     seeker += RALIGN(cRDataE->GetSize(), 8);
 
@@ -764,21 +740,21 @@ void CResourceEditor::WriteRsrcSec(BYTE* pbRsrcSec) {
   /*
    * Set all of the directory entries offsets.
    */
-  SetOffsets(m_cResDir, DWORD(pbRsrcSec));
+  SetOffsets(m_cResDir, (ULONG_PTR)(pbRsrcSec));
 }
 
 // Sets the offsets in directory entries
-void CResourceEditor::SetOffsets(CResourceDirectory* resDir, DWORD newResDirAt) {
-  for (int i = 0; i < resDir->CountEntries(); i++) {
-    PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY rde = PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY(resDir->GetEntry(i)->m_dwWrittenAt);
+void CResourceEditor::SetOffsets(CResourceDirectory* resDir, ULONG_PTR newResDirAt) {
+  for (unsigned int i = 0; i < resDir->CountEntries(); i++) {
+    PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY rde = PMY_IMAGE_RESOURCE_DIRECTORY_ENTRY(resDir->GetEntry(i)->m_ulWrittenAt);
     if (resDir->GetEntry(i)->IsDataDirectory()) {
       rde->UOffset.DirectoryOffset.DataIsDirectory = 1;
-      rde->UOffset.DirectoryOffset.OffsetToDirectory = resDir->GetEntry(i)->GetSubDirectory()->m_dwWrittenAt - newResDirAt;
+      rde->UOffset.DirectoryOffset.OffsetToDirectory = resDir->GetEntry(i)->GetSubDirectory()->m_ulWrittenAt - newResDirAt;
       rde->UOffset.OffsetToData = ConvertEndianness(rde->UOffset.OffsetToData);
       SetOffsets(resDir->GetEntry(i)->GetSubDirectory(), newResDirAt);
     }
     else {
-      rde->UOffset.OffsetToData = ConvertEndianness(resDir->GetEntry(i)->GetDataEntry()->m_dwWrittenAt - newResDirAt);
+      rde->UOffset.OffsetToData = ConvertEndianness((DWORD)(resDir->GetEntry(i)->GetDataEntry()->m_ulWrittenAt - newResDirAt));
     }
   }
 }
@@ -794,8 +770,8 @@ DWORD CResourceEditor::AdjustVA(DWORD dwVirtualAddress, DWORD dwAdjustment) {
 
 // Aligns a virtual address to the section alignment
 DWORD CResourceEditor::AlignVA(DWORD dwVirtualAddress) {
-  DWORD dwSectionAlignment = *GetMemberFromOptionalHeader(m_ntHeaders->OptionalHeader, SectionAlignment);
-  DWORD dwAlignment = ConvertEndianness(dwSectionAlignment);
+  DWORD temp32 = *GetCommonMemberFromPEOptHdr(m_ntHeaders->OptionalHeader, SectionAlignment);
+  DWORD dwAlignment = ConvertEndianness(temp32);
 
   dwVirtualAddress = ConvertEndianness(dwVirtualAddress);
   dwVirtualAddress = RALIGN(dwVirtualAddress, dwAlignment);
@@ -821,6 +797,7 @@ CResourceDirectory::CResourceDirectory(PIMAGE_RESOURCE_DIRECTORY prd) {
 }
 
 CResourceDirectory::~CResourceDirectory() {
+  Destroy();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -839,34 +816,29 @@ CResourceDirectoryEntry* CResourceDirectory::GetEntry(unsigned int i) {
 
 // This function inserts a new directory entry
 // It also keeps the directory entries sorted
-void CResourceDirectory::AddEntry(CResourceDirectoryEntry* entry) {
+bool CResourceDirectory::AddEntry(CResourceDirectoryEntry* entry) {
   int i = 0;
   if (entry->HasName()) {
-    WCHAR* szEntName = entry->GetName();
+    const WINWCHAR* szEntName = entry->GetName();
     for (i = 0; i < m_rdDir.NumberOfNamedEntries; i++) {
-      WCHAR* szName = m_vEntries[i]->GetName();
-      int cmp = winchar_strcmp(szName, szEntName);
-      delete [] szName;
-      if (cmp == 0) {
-        delete [] szEntName;
-        return;
-      }
+      const WINWCHAR* szName = m_vEntries[i]->GetName();
+      int cmp = WinWStrCmp(szName, szEntName);
+      if (cmp == 0)
+        return false;
       if (cmp > 0)
         break;
     }
-    delete [] szEntName;
     m_rdDir.NumberOfNamedEntries++;
   }
   else {
     for (i = m_rdDir.NumberOfNamedEntries; i < m_rdDir.NumberOfNamedEntries+m_rdDir.NumberOfIdEntries; i++) {
-      if (m_vEntries[i]->GetId() == entry->GetId()) 
-        return;
-      if (m_vEntries[i]->GetId() > entry->GetId())
-        break;
+      if (m_vEntries[i]->GetId() == entry->GetId()) return false;
+      if (m_vEntries[i]->GetId() > entry->GetId()) break;
     }
     m_rdDir.NumberOfIdEntries++;
   }
   m_vEntries.insert(m_vEntries.begin() + i, entry);
+  return true;
 }
 
 void CResourceDirectory::RemoveEntry(int i) {
@@ -878,32 +850,29 @@ void CResourceDirectory::RemoveEntry(int i) {
   m_vEntries.erase(m_vEntries.begin() + i);
 }
 
-int CResourceDirectory::CountEntries() {
-  return m_vEntries.size();
+unsigned int CResourceDirectory::CountEntries() {
+  return truncate_cast(unsigned int,m_vEntries.size());
 }
 
 // Returns the index of a directory entry with the specified name
 // Name can be a string or an id
 // Returns -1 if can not be found
-int CResourceDirectory::Find(WCHAR* szName) {
+int CResourceDirectory::Find(const WINWCHAR* szName) {
   if (IS_INTRESOURCE(szName))
-    return Find((WORD) (DWORD) szName);
+    return Find((WORD) (ULONG_PTR) szName);
   else
-    if (szName[0] == '#')
-      return Find(WORD(winchar_stoi(szName + 1)));
+    if (szName[0] == L'#')
+      return Find(WORD(WinWStrToInt(szName + 1)));
 
   for (unsigned int i = 0; i < m_vEntries.size(); i++) {
     if (!m_vEntries[i]->HasName())
       continue;
 
-    WCHAR* szEntName = m_vEntries[i]->GetName();
-    int cmp = winchar_strcmp(szName, szEntName);
-    delete [] szEntName;
-
+    const WINWCHAR* szEntName = m_vEntries[i]->GetName();
+    int cmp = WinWStrCmp(szName, szEntName);
     if (!cmp)
       return i;
   }
-
   return -1;
 }
 
@@ -911,13 +880,9 @@ int CResourceDirectory::Find(WCHAR* szName) {
 // Returns -1 if can not be found
 int CResourceDirectory::Find(WORD wId) {
   for (unsigned int i = 0; i < m_vEntries.size(); i++) {
-    if (m_vEntries[i]->HasName())
-      continue;
-
-    if (wId == m_vEntries[i]->GetId())
-      return i;
+    if (m_vEntries[i]->HasName()) continue;
+    if (wId == m_vEntries[i]->GetId()) return i;
   }
-
   return -1;
 }
 
@@ -927,7 +892,7 @@ DWORD CResourceDirectory::GetSize() {
   for (unsigned int i = 0; i < m_vEntries.size(); i++) {
     dwSize += sizeof(MY_IMAGE_RESOURCE_DIRECTORY_ENTRY);
     if (m_vEntries[i]->HasName())
-      dwSize += sizeof(IMAGE_RESOURCE_DIR_STRING_U) + (m_vEntries[i]->GetNameLength()+1)*sizeof(WCHAR);
+      dwSize += sizeof(IMAGE_RESOURCE_DIR_STRING_U) + (m_vEntries[i]->GetNameLength()+1)*sizeof(WINWCHAR);
     if (m_vEntries[i]->IsDataDirectory())
       dwSize += m_vEntries[i]->GetSubDirectory()->GetSize();
     else {
@@ -948,7 +913,9 @@ void CResourceDirectory::Destroy() {
     }
     else
       delete m_vEntries[i]->GetDataEntry();
+    delete m_vEntries[i];
   }
+  m_vEntries.clear();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -961,75 +928,71 @@ void CResourceDirectory::Destroy() {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CResourceDirectoryEntry::CResourceDirectoryEntry(WCHAR* szName, CResourceDirectory* rdSubDir) {
+CResourceDirectoryEntry::CResourceDirectoryEntry(const WINWCHAR* szName, CResourceDirectory* rdSubDir) {
   if (IS_INTRESOURCE(szName)) {
     m_bHasName = false;
     m_szName = 0;
-    m_wId = (WORD) (DWORD) szName;
+    m_wId = (WORD) (ULONG_PTR) szName;
   }
   else {
     m_bHasName = true;
-    m_szName = winchar_strdup(szName);
+    m_szName = WinWStrDupFromWinWStr(szName);
   }
   m_bIsDataDirectory = true;
   m_rdSubDir = rdSubDir;
 }
 
-CResourceDirectoryEntry::CResourceDirectoryEntry(WCHAR* szName, CResourceDataEntry* rdeData) {
+CResourceDirectoryEntry::CResourceDirectoryEntry(const WINWCHAR* szName, CResourceDataEntry* rdeData) {
   if (IS_INTRESOURCE(szName)) {
     m_bHasName = false;
     m_szName = 0;
-    m_wId = (WORD) (DWORD) szName;
+    m_wId = (WORD) (ULONG_PTR) szName;
   }
   else {
     m_bHasName = true;
-    m_szName = winchar_strdup(szName);
+    m_szName = WinWStrDupFromWinWStr(szName);
   }
   m_bIsDataDirectory = false;
   m_rdeData = rdeData;
 }
 
 CResourceDirectoryEntry::~CResourceDirectoryEntry() {
-  if (m_szName && m_bHasName)
-    delete [] m_szName;
+  if (m_bHasName)
+    free(m_szName);
 }
 
 //////////////////////////////////////////////////////////////////////
 // Methods
 //////////////////////////////////////////////////////////////////////
 
-bool CResourceDirectoryEntry::HasName() {
+bool CResourceDirectoryEntry::HasName() const {
   return m_bHasName;
 }
 
 // Don't forget to free the memory used by the string after usage!
-WCHAR* CResourceDirectoryEntry::GetName() {
-  if (!m_bHasName)
-    return 0;
-  return winchar_strdup(m_szName);
+const WINWCHAR* CResourceDirectoryEntry::GetName() const {
+  return m_bHasName ? m_szName : 0;
 }
 
-int CResourceDirectoryEntry::GetNameLength() {
-  return winchar_strlen(m_szName);
+int CResourceDirectoryEntry::GetNameLength() const {
+  return (int) WinWStrLen(m_szName);
 }
 
-WORD CResourceDirectoryEntry::GetId() {
-  if (m_bHasName)
-    return 0;
-  return m_wId;
+WORD CResourceDirectoryEntry::GetId() const {
+  return m_bHasName ? 0 : m_wId;
 }
 
-bool CResourceDirectoryEntry::IsDataDirectory() {
+bool CResourceDirectoryEntry::IsDataDirectory() const {
   return m_bIsDataDirectory;
 }
 
-CResourceDirectory* CResourceDirectoryEntry::GetSubDirectory() {
+CResourceDirectory* CResourceDirectoryEntry::GetSubDirectory() const {
   if (!m_bIsDataDirectory)
     return NULL;
   return m_rdSubDir;
 }
 
-CResourceDataEntry* CResourceDirectoryEntry::GetDataEntry() {
+CResourceDataEntry* CResourceDirectoryEntry::GetDataEntry() const {
   if (m_bIsDataDirectory)
     return NULL;
   return m_rdeData;

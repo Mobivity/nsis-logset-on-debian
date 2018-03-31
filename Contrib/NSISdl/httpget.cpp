@@ -4,6 +4,8 @@
 ** Author: Justin Frankel
 ** File: httpget.cpp - JNL HTTP GET implementation
 ** License: see License.txt
+**
+** Unicode support by Jim Park -- 08/24/2007
 */
 
 #include "netinc.h"
@@ -179,14 +181,14 @@ void JNL_HTTPGet::connect(const char *url)
 
   if (!m_http_proxyhost || !m_http_proxyhost[0])
   {
-    wsprintf(str,"GET %s HTTP/1.0\r\n",m_http_request);
+    wsprintfA(str,"GET %s HTTP/1.0\r\n",m_http_request);
   }
   else
   {
-    wsprintf(str,"GET %s HTTP/1.0\r\n",m_http_url);
+    wsprintfA(str,"GET %s HTTP/1.0\r\n",m_http_url);
   }
 
-  wsprintf(str+strlen(str),"Host: %s\r\n",m_http_host);
+  wsprintfA(str+strlen(str),"Host: %s\r\n",m_http_host);
 
   if (m_http_lpinfo&&m_http_lpinfo[0])
   {
@@ -228,7 +230,7 @@ void JNL_HTTPGet::connect(const char *url)
 
 }
 
-static int my_strnicmp(const char *b1, const char *b2, int l)
+static int my_strnicmp(char *b1, const char *b2, int l)
 {
   while (l-- && *b1 && *b2)
   {
@@ -318,12 +320,12 @@ const char *JNL_HTTPGet::getallheaders()
 
 const char *JNL_HTTPGet::getheader(const char *headername)
 {
-  const char *ret=NULL;
+  char *ret=NULL;
   if (strlen(headername)<1||!m_recvheaders) return NULL;
   char *p=m_recvheaders;
   while (*p)
   {
-    if (!my_strnicmp(headername,p,strlen(headername)))
+    if (!my_strnicmp(p,headername,strlen(headername)))
     {
       ret=p+strlen(headername);
       while (*ret == ' ') ret++;

@@ -3,6 +3,7 @@ requires Python Image Library - http://www.pythonware.com/products/pil/
 requires grep and diff - http://www.mingw.org/msys.shtml
 requires command line svn - http://subversion.tigris.org/
 requires pysvn - http://pysvn.tigris.org/
+requires win32com - http://starship.python.net/~skippy/win32/Downloads.html
 
 example release.cfg:
 =========================
@@ -19,7 +20,7 @@ VER_BUILD=0
 
 [svn]
 SVN="C:\svn-win32\bin\svn.exe"
-SVNROOT=https://nsis.svn.sourceforge.net/svnroot/nsis/NSIS
+SVNROOT=https://svn.code.sf.net/p/nsis/code/NSIS
 
 [compression]
 TAR_BZ2=7zatarbz2.bat %s %s
@@ -29,14 +30,14 @@ ZIP="C:\Program Files\7-zip\7za.exe" a -tzip %s -mx9 -mfb=255 -mpass=4 %s
 RSH="C:\Program Files\PuTTY\plink.exe" -2 -l kichik nsis.sourceforge.net
 
 [sftp]
-SFTP="C:\Program Files\PuTTY\psftp.exe" -2 -l kichik -batch -b %s frs.sourceforge.net
+SFTP="C:\Program Files\PuTTY\psftp.exe" -2 -l kichik,nsis -batch -b %s frs.sourceforge.net
 
 [wiki]
 PURGE_URL=http://nsis.sourceforge.net/%s?action=purge
 UPDATE_URL=http://nsis.sourceforge.net/Special:Simpleupdate?action=raw
 
 [svn2cl]
-SVN2CL_XSL=svl2cl.xsl
+SVN2CL_XSL=svn2cl.xsl
 
 [options]
 SKIP_CPPUNIT=no
@@ -81,6 +82,8 @@ VER_MAJOR = cfg.get('version', 'VER_MAJOR')
 VER_MINOR = cfg.get('version', 'VER_MINOR')
 VER_REVISION = cfg.get('version', 'VER_REVISION')
 VER_BUILD = cfg.get('version', 'VER_BUILD')
+
+PRE_RELEASE_VERSION = 'a' in VERSION or 'b' in VERSION
 
 SVN = cfg.get('svn', 'SVN')
 SVNROOT = cfg.get('svn', 'SVNROOT')
@@ -189,11 +192,14 @@ def TestSubversionEOL():
 	svn = pysvn.Client()
 
 	for root, dirs, files in walk('..'):
-		if '.svn' not in dirs:
-			continue
-
 		def versioned(f):
-			s = svn.status(join(root, f))[0].text_status
+			try:
+				s = svn.status(join(root, f))[0].text_status
+			except pysvn.ClientError, e:
+				if 'not a working copy' in e.message:
+					return False
+				else:
+					raise
 			return s != pysvn.wc_status_kind.unversioned
 
 		svn_files = filter(versioned, files)
@@ -203,10 +209,11 @@ def TestSubversionEOL():
 			ext = splitext(f)[1]
 			if ext in eoldict.keys():
 				eol = eoldict[ext]
-				s = svn.propget('svn:eol-style', join(root, f)).values()
+				path = join(root, f)
+				s = svn.propget('svn:eol-style', path).values()
 				if not s or s[0] != eol:
-					print '*** %s has bad eol-style' % f
-					log('*** %s has bad eol-style' % f)
+					print '*** %s has bad eol-style' % path
+					log('*** %s has bad eol-style' % path)
 					exit()
 
 def CreateMenuImage():
@@ -270,7 +277,7 @@ def Tag():
 	print 'tagging...'
 
 	run(
-		'%s copy %s/branches/nsis2 %s/tags/%s -m "Tagging for release %s"' % (SVN, SVNROOT, SVNROOT, SVN_TAG, VERSION),
+		'%s copy %s/trunk %s/tags/%s -m "Tagging for release %s"' % (SVN, SVNROOT, SVNROOT, SVN_TAG, VERSION),
 		LOG_ALL,
 		'failed creating tag %s' % SVN_TAG
 	)
@@ -294,7 +301,7 @@ def CreateChangeLog():
 
 		print 'downloading svn2cl.xsl stylesheet...'
 
-		urllib.urlretrieve('http://svn.collab.net/repos/svn/trunk/contrib/client-side/svn2cl/svn2cl.xsl', SVN2CL_XSL)
+		urllib.urlretrieve('http://svn.apache.org/repos/asf/subversion/trunk/contrib/client-side/svn2cl/svn2cl.xsl', SVN2CL_XSL)
 
 	print 'generating ChangeLog...'
 
@@ -372,13 +379,19 @@ def CreateSpecialBuilds():
 def UploadFiles():
 	print 'uploading files to SourceForge...'
 
+	folder = 'NSIS 3/' + VERSION
+	if PRE_RELEASE_VERSION:
+		folder = 'NSIS 3 Pre-release/' + VERSION
+
 	sftpcmds = file('sftp-commands', 'w')
-	sftpcmds.write('cd uploads\n')
+	sftpcmds.write('mkdir "/home/frs/project/nsis/%s"\n' % folder)
+	sftpcmds.write('cd "/home/frs/project/nsis/%s"\n' % folder)
 	sftpcmds.write('put %s.tar.bz2\n' % newverdir)
 	sftpcmds.write('put %s\\nsis-%s-setup.exe\n' % (newverdir, VERSION))
 	sftpcmds.write('put %s\\nsis-%s.zip\n' % (newverdir, VERSION))
 	sftpcmds.write('put nsis-%s-log.zip\n' % VERSION)
 	sftpcmds.write('put nsis-%s-strlen_8192.zip\n' % VERSION)
+	sftpcmds.write('put %s\\build\\urelease\\Docs\\chm\\SectionF.1.html RELEASE.html\n' % newverdir)
 	sftpcmds.close()
 
 	run(
@@ -390,16 +403,13 @@ def UploadFiles():
 	os.unlink('sftp-commands')
 
 def ManualRelease():
-	print 'release url:'
+	print 'go fix release notes...'
 	print '  http://nsis.sf.net/rn/new'
 	print
 
-	sys.stdout.write('What\'s the SF release id of the new version? ')
-	release_id = raw_input()
+	raw_input()
 
-	return release_id
-
-def UpdateWiki(release_id):
+def UpdateWiki():
 	print 'updating wiki...'
 
 	def update_wiki_page(page, data, summary):
@@ -417,9 +427,14 @@ def UpdateWiki(release_id):
 			log('*** failed updating `%s` wiki page' % page)
 			print '	*** failed updating `%s` wiki page' % page
 
-	update_wiki_page('Template:NSISVersion', VERSION, 'new version')
-	update_wiki_page('Template:NSISReleaseDate', time.strftime('%B %d, %Y'), 'new version')
-	update_wiki_page('Template:NSISReleaseID', release_id, 'new version')
+	if not PRE_RELEASE_VERSION:
+		update_wiki_page('Template:NSISVersion', VERSION, 'new version')
+		update_wiki_page('Template:NSISReleaseDate', time.strftime('%B %d, %Y'), 'new version')
+		update_wiki_page('Template:NSISIsPreRelease', 'no', 'new version')
+	else:
+		update_wiki_page('Template:NSISPreVersion', VERSION, 'new version')
+		update_wiki_page('Template:NSISPreReleaseDate', time.strftime('%B %d, %Y'), 'new version')
+		update_wiki_page('Template:NSISIsPreRelease', 'yes', 'new version')
 
 	os.system('start ' + PURGE_URL % 'Download')
 
@@ -452,7 +467,7 @@ CreateSourceTarball()
 BuildRelease()
 CreateSpecialBuilds()
 UploadFiles()
-release_id = ManualRelease()
-UpdateWiki(release_id)
+ManualRelease()
+UpdateWiki()
 ToDo()
 CloseLog()

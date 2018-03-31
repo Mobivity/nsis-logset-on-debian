@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2015 Nullsoft and Contributors
+ * Copyright (C) 1999-2016 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty.
+ *
+ * Unicode support by Jim Park -- 08/13/2007
  */
 
 #include "config.h"
@@ -26,6 +28,7 @@
 // firstheader (struct firstheader)
 // * headers (compressed together):
 //   header (struct header - contains pointers to all blocks)
+//   * nsis blocks (described in header->blocks)
 //     pages (struct page)
 //     section headers (struct section)
 //     entries/instructions (struct entry)
@@ -135,7 +138,7 @@ enum
 #endif
 
 #ifdef NSIS_SUPPORT_CREATESHORTCUT
-  EW_CREATESHORTCUT,    // Make Shortcut: 5, [link file, target file, parameters, icon file, iconindex|show mode<<8|hotkey<<16]
+  EW_CREATESHORTCUT,    // Make Shortcut: 5, [link file, target file, parameters, icon file, packed CS_*]
 #endif
 
 #ifdef NSIS_SUPPORT_COPYFILES
@@ -197,7 +200,16 @@ enum
 #ifdef NSIS_LOCKWINDOW_SUPPORT
   EW_LOCKWINDOW,
 #endif
+
+#ifdef _UNICODE     // opcodes available only in Unicode installers must be at the end of the enumeration
+#ifdef NSIS_SUPPORT_FILEFUNCTIONS
+  EW_FPUTWS,            // FileWriteUTF16LE: 3 [handle, string, ?int:string]
+  EW_FGETWS,            // FileReadUTF16LE: 4 [handle, output, maxlen, ?getchar:gets]
+#endif//NSIS_SUPPORT_FILEFUNCTIONS
+#endif
 };
+
+#pragma pack(push, 1) // fileform.cpp assumes no padding/alignment
 
 #define FH_FLAGS_MASK 15
 #define FH_FLAGS_UNINSTALL 1
@@ -248,7 +260,11 @@ typedef struct
 
 // nsis blocks
 struct block_header {
+#ifdef MAKENSIS
   int offset;
+#else
+  UINT_PTR offset; // exehead stores a memory location here so it needs to be pointer sized
+#endif
   int num;
 };
 
@@ -270,14 +286,13 @@ enum {
 };
 
 // nsis strings
-
-typedef char NSIS_STRING[NSIS_MAX_STRLEN];
+typedef TCHAR NSIS_STRING[NSIS_MAX_STRLEN];
 
 // Settings common to both installers and uninstallers
 typedef struct
 {
   int flags; // CH_FLAGS_*
-  struct block_header blocks[BLOCKS_NUM];
+  struct block_header blocks[BLOCKS_NUM]; // CEXEBuild::get_header_size needs to adjust the size of this based on the targets pointer size
 
   // InstallDirRegKey stuff
   int install_reg_rootkey;
@@ -333,7 +348,7 @@ typedef struct
   int str_uninstcmd;
 #endif//NSIS_CONFIG_UNINSTALL_SUPPORT
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
-  int str_wininit;
+  int str_wininit;   // Points to the path of wininit.ini
 #endif//NSIS_SUPPORT_MOVEONREBOOT
 } header;
 
@@ -376,18 +391,22 @@ typedef struct
   int name_ptr; // initial name pointer
   int install_types; // bits set for each of the different install_types, if any.
   int flags; // SF_* - defined above
-  int code;
-  int code_size;
+             // for labels, it looks like it's only used to track how often it is used.
+  int code;       // The "address" of the start of the code in count of struct entries.
+  int code_size;  // The size of the code in num of entries?
   int size_kb;
-  char name[NSIS_MAX_STRLEN]; // '' for invisible sections
+  TCHAR name[NSIS_MAX_STRLEN]; // '' for invisible sections
 } section;
 
 #define SECTION_OFFSET(field) (FIELD_OFFSET(section, field)/sizeof(int))
 
 typedef struct
 {
-  int which;
+  int which;   // EW_* enum.  Look at the enum values to see what offsets mean.
   int offsets[MAX_ENTRY_OFFSETS]; // count and meaning of offsets depend on 'which'
+                                  // sometimes they are just straight int values or bool
+                                  // values and sometimes they are indices into string
+                                  // tables.
 } entry;
 
 // page window proc
@@ -459,10 +478,31 @@ typedef struct {
   COLORREF text;
   COLORREF bkc;
   UINT lbStyle;
+#ifndef MAKENSIS
   HBRUSH bkb;
+#else
+  INT32 bkb;
+#endif
   int bkmode;
   int flags;
-} ctlcolors;
+} ctlcolors32;
+typedef struct {
+  COLORREF text;
+  COLORREF bkc;
+#ifndef MAKENSIS
+  HBRUSH bkb; // NOTE: Placed above lbStyle for better alignment
+#else
+  INT64 bkb;
+#endif
+  UINT lbStyle;
+  int bkmode;
+  int flags;
+} ctlcolors64;
+#if defined(_WIN64) && !defined(MAKENSIS)
+#  define ctlcolors ctlcolors64
+#else
+#  define ctlcolors ctlcolors32
+#endif
 
 // constants for myDelete (util.c)
 #define DEL_DIR 1
@@ -470,21 +510,37 @@ typedef struct {
 #define DEL_REBOOT 4
 #define DEL_SIMPLE 8
 
-// $0..$9, $INSTDIR, etc are encoded as ASCII bytes starting from this value.
-// Added by ramon 3 jun 2003
-#define NS_SKIP_CODE 252
-#define NS_VAR_CODE 253
-#define NS_SHELL_CODE 254
-#define NS_LANG_CODE 255
-#define NS_CODES_START NS_SKIP_CODE
+#ifdef NSIS_SUPPORT_CREATESHORTCUT
+#define CS_HK_MASK 0xffff0000 // HotKey
+#define CS_HK_SHIFT 16
+#define CS_NWD     0x00008000 // NoWorkingDirectory flag
+#define CS_SC_MASK 0x00007000 // ShowCmd
+#define CS_SC_SHIFT 12
+#define CS_II_MASK 0x00000fff // IconIndex
+#define CS_II_SHIFT 0
+#define CS_II_MAX (CS_II_MASK >> CS_II_SHIFT)
+#endif
 
+// special escape characters used in strings: (we use control codes in order to minimize conflicts with normal characters)
+#define NS_LANG_CODE  _T('\x01')    // for a langstring
+#define NS_SHELL_CODE _T('\x02')    // for a shell folder path
+#define NS_VAR_CODE   _T('\x03')    // for a variable
+#define NS_SKIP_CODE  _T('\x04')    // to consider next character as a normal character
+#define NS_IS_CODE(x) ((x) <= NS_SKIP_CODE) // NS_SKIP_CODE must always be the higher code
+
+// We are doing this to store an integer value into a char string and we
+// don't want false end of string values
 #define CODE_SHORT(x) (WORD)((((WORD)(x) & 0x7F) | (((WORD)(x) & 0x3F80) << 1) | 0x8080))
-#define MAX_CODED 16383
+#define MAX_CODED 0x3FFF
+// This macro takes a pointer to CHAR
+#define DECODE_SHORT(c) (((((char*)c)[1] & 0x7F) << 7) | (((char*)c)[0] & 0x7F))
 
 #define NSIS_INSTDIR_INVALID 1
 #define NSIS_INSTDIR_NOT_ENOUGH_SPACE 2
 
 #define FIELDN(x, y) (((int *)&x)[y])
+
+#pragma pack(pop)
 
 #ifdef EXEHEAD
 
@@ -496,9 +552,9 @@ int NSISCALL isheader(firstheader *h); // returns 0 on not header, length_of_dat
 // returns 0 on success
 // on success, m_header will be set to a pointer that should eventually be GlobalFree()'d.
 // (or m_uninstheader)
-const char * NSISCALL loadHeaders(int cl_flags);
+const TCHAR * NSISCALL loadHeaders(int cl_flags);
 
-int NSISCALL _dodecomp(int offset, HANDLE hFileOut, char *outbuf, int outbuflen);
+int NSISCALL _dodecomp(int offset, HANDLE hFileOut, unsigned char *outbuf, int outbuflen);
 
 #define GetCompressedDataFromDataBlock(offset, hFileOut) _dodecomp(offset,hFileOut,NULL,0)
 #define GetCompressedDataFromDataBlockToMemory(offset, out, out_len) _dodecomp(offset,NULL,out,out_len)
@@ -515,10 +571,10 @@ extern int g_flags;
 extern int g_filehdrsize;
 extern int g_is_uninstaller;
 
-#define g_pages ((page*)g_blocks[NB_PAGES].offset)
-#define g_sections ((section*)g_blocks[NB_SECTIONS].offset)
-#define num_sections (g_blocks[NB_SECTIONS].num)
-#define g_entries ((entry*)g_blocks[NB_ENTRIES].offset)
+#define g_pages ( (page*) g_blocks[NB_PAGES].offset )
+#define g_sections ( (section*) g_blocks[NB_SECTIONS].offset )
+#define num_sections ( g_blocks[NB_SECTIONS].num )
+#define g_entries ( (entry*) g_blocks[NB_ENTRIES].offset )
 #endif
 
 #endif //_FILEFORM_H_

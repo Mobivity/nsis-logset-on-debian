@@ -18,12 +18,11 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 
+  Reviewed for Unicode support by Jim Park -- 08/20/2007
 */
 #ifndef TOOLBAR_H
 #define TOOLBAR_H
 #include <commctrl.h>
-
-#define TOOLBAR_ID                   10001
 
 #define BUTTONCOUNT     15
 

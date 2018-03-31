@@ -19,28 +19,45 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 
+  Unicode support by Jim Park -- 08/20/2007
+
 */
 #ifndef UTILS_H
 #define UTILS_H
 #include "resource.h"
 #include "toolbar.h"
 
+#ifdef COUNTOF
+#undef COUNTOF
+#endif
+#define COUNTOF(a) (sizeof(a)/sizeof(a[0]))
+
 #define MRU_LIST_SIZE 5
 #define MRU_DISPLAY_LENGTH 40
+#define SYMSETNAME_MAXLEN 40
 
-int SetArgv(const char *cmdLine, int *argc, char ***argv);
-void SetTitle(HWND hwnd,const char *substr);
-void SetBranding(HWND hwnd);
+void* MemAllocZI(SIZE_T cb);
+void MemSafeFree(void*mem);
+#define MemAlloc MemAllocZI
+#define MemFree MemSafeFree
+bool WriteUTF16LEBOM(HANDLE hFile);
+
+void FreeSpawn(PROCESS_INFORMATION *pPI, HANDLE hRd, HANDLE hWr);
+BOOL InitSpawn(STARTUPINFO &si, HANDLE &hRd, HANDLE &hWr);
+
+int SetArgv(const TCHAR *cmdLine, TCHAR ***argv);
+void SetTitle(HWND hwnd,const TCHAR *substr);
 void CopyToClipboard(HWND hwnd);
 void ClearLog(HWND hwnd);
-void LogMessage(HWND hwnd,const char *str);
-void ErrorMessage(HWND hwnd,const char *str);
-#define DisableItems(hwnd) Items(hwnd, 0)
-#define EnableItems(hwnd) Items(hwnd, 1)
-void Items(HWND hwnd, int on);
-/*void DisableItems(HWND hwnd);
-void EnableItems(HWND hwnd);*/
+void LogMessage(HWND hwnd,const TCHAR *str);
+void ErrorMessage(HWND hwnd,const TCHAR *str);
+void SetDialogFocus(HWND hDlg, HWND hCtl); // Use this and not SetFocus()!
+#define DisableItems(hwnd) EnableDisableItems(hwnd, 0)
+#define EnableItems(hwnd) EnableDisableItems(hwnd, 1)
+void EnableDisableItems(HWND hwnd, int on);
 bool OpenRegSettingsKey(HKEY &hKey, bool create = false);
+#define CreateRegSettingsKey(refhkey) OpenRegSettingsKey((refhkey), true)
+DWORD ReadRegSettingDW(LPCTSTR name, const DWORD defval);
 void RestoreWindowPos(HWND hwnd);
 void SaveWindowPos(HWND hwnd);
 void ResetObjects();
@@ -48,19 +65,28 @@ void ResetSymbols();
 int InitBranding();
 void InitTooltips(HWND h);
 void DestroyTooltips();
-void AddTip(HWND hWnd,LPCSTR lpszToolTip);
+void AddTip(HWND hWnd,LPCTSTR lpszToolTip);
 void ShowDocs();
 void RestoreCompressor();
 void SaveCompressor();
 void SetCompressorStats();
 
-BOOL PopMRUFile(char* fname);
-void PushMRUFile(char* fname);
+BOOL PopMRUFile(TCHAR* fname);
+void PushMRUFile(TCHAR* fname);
 void BuildMRUMenus();
 void LoadMRUFile(int position);
 void ClearMRUList();
 
-BOOL FileExists(char *fname);
+bool FileExists(const TCHAR *fname);
+bool OpenUrlInDefaultBrowser(HWND hwnd, LPCSTR Url);
 
 HMENU FindSubMenu(HMENU hMenu, UINT uId);
+HFONT CreateFont(int Height, int Weight, DWORD PitchAndFamily, LPCTSTR Face);
+
+inline void GetGripperPos(HWND hwnd, RECT&r)
+{
+  GetClientRect(hwnd, &r);
+  r.left = r.right - GetSystemMetrics(SM_CXVSCROLL);
+  r.top = r.bottom - GetSystemMetrics(SM_CYVSCROLL);
+}
 #endif
