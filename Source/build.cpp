@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@
 #include "crc32.h"
 #include "manifest.h"
 #include "icon.h"
+#include "utf.h" // For NStream
 
 #include "exehead/api.h"
 #include "exehead/resource.h"
@@ -133,7 +134,7 @@ CEXEBuild::CEXEBuild(signed char pponly) :
 
   m_target_type=TARGET_X86ANSI;
 #ifdef _WIN32
-  if (sizeof(void*) > 4) m_target_type = TARGET_AMD64; // BUGBUG: There is no instruction to select it so we force
+  if (sizeof(void*) > 4) m_target_type = TARGET_AMD64; // BUGBUG: scons 'TARGET_ARCH' should specify the default
 #endif
   build_unicode=TARGET_X86ANSI != m_target_type;
   build_lockedunicodetarget=false;
@@ -362,8 +363,8 @@ CEXEBuild::CEXEBuild(signed char pponly) :
   m_ShellConstants.add(_T("NETHOOD"), CSIDL_NETHOOD, CSIDL_NETHOOD);
   m_ShellConstants.add(_T("FONTS"), CSIDL_FONTS, CSIDL_FONTS);
   m_ShellConstants.add(_T("TEMPLATES"), CSIDL_TEMPLATES, CSIDL_COMMON_TEMPLATES);
-  m_ShellConstants.add(_T("APPDATA"), CSIDL_APPDATA, CSIDL_COMMON_APPDATA);
-  m_ShellConstants.add(_T("LOCALAPPDATA"), CSIDL_LOCAL_APPDATA, CSIDL_LOCAL_APPDATA);
+  m_ShellConstants.add(_T("APPDATA"), CSIDL_APPDATA, CSIDL_COMMON_APPDATA); // Note: There is no all-users roaming appdata folder.
+  m_ShellConstants.add(_T("LOCALAPPDATA"), CSIDL_LOCAL_APPDATA, CSIDL_COMMON_APPDATA);
   m_ShellConstants.add(_T("PRINTHOOD"), CSIDL_PRINTHOOD, CSIDL_PRINTHOOD);
   //m_ShellConstants.add(_T("ALTSTARTUP"), CSIDL_ALTSTARTUP, CSIDL_COMMON_ALTSTARTUP);
   m_ShellConstants.add(_T("INTERNET_CACHE"), CSIDL_INTERNET_CACHE, CSIDL_INTERNET_CACHE);
@@ -375,7 +376,7 @@ CEXEBuild::CEXEBuild(signed char pponly) :
   m_ShellConstants.add(_T("RESOURCES_LOCALIZED"), CSIDL_RESOURCES_LOCALIZED, CSIDL_RESOURCES_LOCALIZED);
   m_ShellConstants.add(_T("CDBURN_AREA"), CSIDL_CDBURN_AREA, CSIDL_CDBURN_AREA);
   // PROGRAMFILES&COMMONFILES does a registry lookup and the required string offsets are filled in later.
-  // We do this because the unicode mode has to be locked when we call add_string...
+  // We do this later because the unicode mode has to be locked when we call add_string...
   m_ShellConstants.add(_T("PROGRAMFILES"),   0, 0);
   m_ShellConstants.add(_T("PROGRAMFILES32"), 0, 0);
   m_ShellConstants.add(_T("PROGRAMFILES64"), 0, 0);
@@ -426,24 +427,25 @@ void CEXEBuild::init_shellconstantvalues()
   static bool done = false;
   if (done) return ; else done = true;
 
-  const int orgunmode = uninstall_mode;
+  const int orgunmode = uninstall_mode, t64 = is_target_64bit(), reg = 0x80, r32 = t64 ? 0xC0 : reg, r64 = r32 ^ 0x40;
   set_uninstall_mode(0);
   // Note: The order matters because some of the strings are preprocessed and cf must be <= 0x40
   unsigned int pf       = add_asciistring(_T("ProgramFilesDir"), 0);
   unsigned int cf       = add_asciistring(_T("CommonFilesDir"), 0);
-  unsigned int pf_def   = add_asciistring(_T("C:\\Program Files"));
-  m_ShellConstants.set_values(_T("PROGRAMFILES"),   0x80 | pf, pf_def);
-  unsigned int pf64_def = add_asciistring(_T("$PROGRAMFILES"));
-  m_ShellConstants.set_values(_T("PROGRAMFILES32"), 0x80 | pf, pf_def);
-  m_ShellConstants.set_values(_T("PROGRAMFILES64"), 0xC0 | pf, pf64_def);
+  unsigned int pf_def   = add_asciistring(_T("C:\\Program Files")); // Ultimate fallback
+  // TODO: 64-bit targets could use CSIDL_PROGRAM_FILES+CSIDL_PROGRAM_FILESX86?
+  m_ShellConstants.set_values(_T("PROGRAMFILES"),   reg | pf, pf_def);
+  unsigned int pf_var = add_asciistring(_T("$PROGRAMFILES")); // Fallback for the 32/64 specific constants if the WOW registry view fails
+  m_ShellConstants.set_values(_T("PROGRAMFILES32"), r32 | pf, reg != r32 ? pf_var : pf_def);
+  m_ShellConstants.set_values(_T("PROGRAMFILES64"), r64 | pf, reg != r64 ? pf_var : pf_def);
   unsigned int cf_def   = add_asciistring(_T("$PROGRAMFILES\\Common Files"));
-  m_ShellConstants.set_values(_T("COMMONFILES"),    0x80 | cf, cf_def);
-  unsigned int cf64_def = add_asciistring(_T("$COMMONFILES"));
-  m_ShellConstants.set_values(_T("COMMONFILES32"),  0x80 | cf, cf_def);
-  m_ShellConstants.set_values(_T("COMMONFILES64"),  0xC0 | cf, cf64_def);
+  m_ShellConstants.set_values(_T("COMMONFILES"),    reg | cf, cf_def);
+  unsigned int cf_var = add_asciistring(_T("$COMMONFILES"));
+  m_ShellConstants.set_values(_T("COMMONFILES32"),  r32 | cf, reg != r32 ? cf_var : cf_def);
+  m_ShellConstants.set_values(_T("COMMONFILES64"),  r64 | cf, reg != r64 ? cf_var : cf_def);
 
-  if ( (pf >= 0x40 || pf_def >= 0xFF || pf64_def > 0xFF) // BUGBUG: pf_def should be ">"?
-    || (cf >  0x40 || cf_def >  0xFF || cf64_def > 0xFF) )
+  if ( (pf >= 0x40 || pf_def >= 0xFF || pf_var > 0xFF) // BUGBUG: pf_def should be ">"?
+    || (cf >  0x40 || cf_def >  0xFF || cf_var > 0xFF) )
   {
     // see Source\exehead\util.c for implementation details
     // basically, it knows it needs to get folders from the registry when the 0x80 is on
@@ -456,17 +458,13 @@ void CEXEBuild::init_shellconstantvalues()
   unsigned int unpf = add_asciistring(_T("ProgramFilesDir"), 0);
   unsigned int uncf = add_asciistring(_T("CommonFilesDir"), 0);
   unsigned int unpf_def = add_asciistring(_T("C:\\Program Files"));
-  unsigned int unpf64_def = add_asciistring(_T("$PROGRAMFILES"));
+  unsigned int unpf_var = add_asciistring(_T("$PROGRAMFILES"));
   unsigned int uncf_def = add_asciistring(_T("$PROGRAMFILES\\Common Files"));
-  unsigned int uncf64_def = add_asciistring(_T("$COMMONFILES"));
+  unsigned int uncf_var = add_asciistring(_T("$COMMONFILES"));
   set_uninstall_mode(orgunmode);
 
-  if ( unpf != pf
-    || unpf_def != pf_def
-    || unpf64_def != pf64_def
-    || uncf != cf
-    || uncf_def != cf_def
-    || uncf64_def != cf64_def)
+  if ( unpf != pf || unpf_def != pf_def || unpf_var != pf_var
+    || uncf != cf || uncf_def != cf_def || uncf_var != cf_var )
   {
     const char* msg = "Internal compiler error: installer's shell constants are different than uninstallers!";
     ERROR_MSG(_T("%") NPRIns, msg);
@@ -716,7 +714,7 @@ int CEXEBuild::preprocess_string(TCHAR *out, const TCHAR *in, WORD codepage/*=CP
             if (_tcsstr(tbuf,_T(" "))) _tcsstr(tbuf,_T(" "))[0]=0;
           }
           if ( bDoWarning )
-            warning_fl(_T("unknown variable/constant \"%") NPRIs _T("\" detected, ignoring"),tbuf);
+            warning_fl(DW_VAR_IGNORED_UNKNOWN, _T("unknown variable/constant \"%") NPRIs _T("\" detected, ignoring"),tbuf);
           i = _T('$'); // redundant since i is already '$' and has not changed.
         }
       } // else
@@ -1683,7 +1681,7 @@ int CEXEBuild::resolve_coderefs(const TCHAR *str)
         {
           if (sec->code_size>0)
           {
-            warning(_T("%") NPRIs _T(" function \"%") NPRIs _T("\" not referenced - zeroing code (%d-%d) out\n"),str,
+            warning(DW_UNUSED_FUNCTION, _T("%") NPRIs _T(" function \"%") NPRIs _T("\" not referenced - zeroing code (%d-%d) out\n"),str,
               ns_func.get()+sec->name_ptr,
               sec->code,sec->code+sec->code_size);
             memset(w+sec->code,0,sec->code_size*sizeof(entry));
@@ -1703,8 +1701,8 @@ int CEXEBuild::resolve_coderefs(const TCHAR *str)
       if (!t->flags)
       {
         TCHAR *n=(TCHAR*)ns_label.get()+t->name_ptr;
-        if (*n == _T('.')) warning(_T("global label \"%") NPRIs _T("\" not used"),n);
-        else warning(_T("label \"%") NPRIs _T("\" not used"),n);
+        if (*n == _T('.')) warning(DW_UNUSED_GLOBALLABEL, _T("global label \"%") NPRIs _T("\" not used"),n);
+        else warning(DW_UNUSED_LABEL, _T("label \"%") NPRIs _T("\" not used"),n);
       }
       t++;
     }
@@ -1837,7 +1835,7 @@ int CEXEBuild::AddVersionInfo()
           {
             if ( !*recverkeys ) break;
             if ( !rVersionInfo.FindKey(lang_id, code_page, recverkeys) )
-              warning(_T("Generating version information for language \"%04d-%") NPRIs _T("\" without standard key \"%") NPRIs _T("\""), lang_id, lang_name, recverkeys);
+              warning(DW_VI_MISSINGSTDKEY, _T("Generating version information for language \"%04d-%") NPRIs _T("\" without standard key \"%") NPRIs _T("\""), lang_id, lang_name, recverkeys);
             recverkeys += _tcsclen(recverkeys) + 1;
           }
 
@@ -2163,7 +2161,7 @@ again:
       }
 
       if (!instlog_used) {
-        warning(_T("%") NPRIs _T("age instfiles not used, no sections will be executed!"), uninstall_mode ? _T("Uninstall p") : _T("P"));
+        warning(DW_INSTFILESPAGE_NOT_USED, _T("%") NPRIs _T("age instfiles not used, no sections will be executed!"), uninstall_mode ? _T("Uninstall p") : _T("P"));
       }
     }
   }
@@ -2490,7 +2488,7 @@ int CEXEBuild::prepare_uninstaller() {
   {
     if (!uninstaller_writes_used)
     {
-      warning(_T("Uninstaller script code found but WriteUninstaller never used - no uninstaller will be created."));
+      warning(DW_UNCODE_WITHOUT_UNEXE, _T("Uninstaller script code found but WriteUninstaller never used - no uninstaller will be created."));
       return PS_OK;
     }
 
@@ -2547,7 +2545,7 @@ int CEXEBuild::pack_exe_header()
     return PS_ERROR;
   }
   if (ec != 0)
-    warning(_T("Packer returned %d, \"%") NPRIs _T("\" might still be unpacked\n"),ec,build_packname);
+    warning(DW_PACKHDR_RETNONZERO, _T("Packer returned %d, \"%") NPRIs _T("\" might still be unpacked\n"),ec,build_packname);
 
   int result = update_exehead(build_packname);
   _tremove(build_packname);
@@ -2649,7 +2647,7 @@ int CEXEBuild::write_output(void)
     {
       const bool orgdispwarn = display_warnings;
       display_warnings = false; // Don't display warning inline in the middle of our statistics output.
-      warning(_T("Insecure filename \"%") NPRIs _T("\", Windows will unsafely load compatibility shims into the process."), fname);
+      warning(DW_INSECURE_OUTFILENAME, _T("Insecure filename \"%") NPRIs _T("\", Windows will unsafely load compatibility shims into the process."), fname);
       display_warnings = orgdispwarn;
     }
   }
@@ -3409,23 +3407,96 @@ void CEXEBuild::set_verbosity(int lvl)
   g_display_errors = display_errors;
 }
 
-void CEXEBuild::warninghelper(const TCHAR *msg)
+int CEXEBuild::parse_pragma(LineParser &line)
 {
-  m_warnings.add(msg,0);
+  const int rvSucc = PS_OK, rvWarn = PS_WARNING, rvErr = PS_WARNING; // rvErr is not PS_ERROR because we want !pragma parsing to be very forgiving.
 
+  // 2.47 shipped with a corrupted CHM file (bug #1129). This minimal verification command exists because the !searchparse hack we added does not work with codepage 936!
+  if (line.gettoken_enum(1, _T("verifychm\0")) == 0)
+  {
+    struct { UINT32 Sig, Ver, cbH; } chm;
+    NIStream f;
+    bool valid = f.OpenFileForReading(line.gettoken_str(2));
+    valid = valid && 12 == f.ReadOctets(&chm, 12);
+    valid = valid && FIX_ENDIAN_INT32(chm.Sig) == 0x46535449 && (FIX_ENDIAN_INT32(chm.Ver)|1) == 3; // 'ITSF' v2..3
+    return valid ? rvSucc : (ERROR_MSG(_T("Error: Invalid format\n")), PS_ERROR);
+  }
+
+  if (line.gettoken_enum(1, _T("warning\0")) == -1)
+    return (warning_fl(DW_PP_PRAGMA_UNKNOWN, _T("Unknown pragma")), rvErr);
+
+  int warnOp = line.gettoken_enum(2, _T("disable\0enable\0default\0push\0pop\0")), ret = rvSucc;
+  if (warnOp < 0)
+    ret = rvErr, warning_fl(DW_PP_PRAGMA_UNKNOWN, _T("Unknown pragma")); // Unknown warning pragma action
+  else if (warnOp == 3)
+    diagstate.Push();
+  else if (warnOp == 4)
+  {
+    if (!diagstate.Pop())
+      ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Unexpected"));
+  }
+  else // warning: disable/enable/default
+  {
+    for (int ti = 3; ti < line.getnumtokens(); ++ti)
+    {
+      DIAGCODE code = static_cast<DIAGCODE>(line.gettoken_int(ti));
+      if (!diagstate.IsValidCode(code))
+        ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Invalid number: \"%") NPRIs _T("\""), line.gettoken_str(ti));
+      else if (warnOp == 0)
+        diagstate.Disable(code);
+      else // if ((warnOp == 1) | (warnOp == 2)) All warnings currently default to enabled
+        diagstate.Enable(code);
+    }
+  }
+  return ret;
+}
+
+void DiagState::Push()
+{
+  DiagState *p = new DiagState();
+  p->m_Disabled = m_Disabled; // Copy current state
+  p->m_pStack = m_pStack, m_pStack = p;
+}
+bool DiagState::Pop()
+{
+  if (!m_pStack) return false;
+  DiagState *pPop = m_pStack;
+  m_pStack = pPop->m_pStack, pPop->m_pStack = 0;
+  m_Disabled.swap(pPop->m_Disabled);
+  delete pPop;
+  return true;
+}
+
+void CEXEBuild::warninghelper(DIAGCODE dc, bool fl, const TCHAR *fmt, va_list args)
+{
   extern bool g_warnaserror;
-  MakensisAPI::notify_e hostnotifyevnt = MakensisAPI::NOTIFY_WARNING;
-  if (g_warnaserror)
-  {
-    hostnotifyevnt = MakensisAPI::NOTIFY_ERROR;
-    display_warnings = display_errors;
-  }
-  notify(hostnotifyevnt, msg);
+  bool showcode = dc != DIAGCODE_INTERNAL_HIDEDIAGCODE;
+  if (diagstate.IsDisabled(dc)) return ;
 
-  if (display_warnings)
+  TCHAR codbuf[11+2+!0];
+  _stprintf(codbuf, showcode ? _T("%u: ") : _T(""), static_cast<unsigned int>(dc));
+  ExpandoString<TCHAR, COUNTOF(codbuf) + NSIS_MAX_STRLEN + 100> msgbuf;
+  ExpandoString<TCHAR, COUNTOF(codbuf) + 200> fmtbuf;
+  fmtbuf.StrFmt(_T("%") NPRIs _T("%") NPRIs, codbuf, fmt);
+  size_t cchMsg = msgbuf.StrVFmt(fmtbuf.GetPtr(), args);
+  if (fl)
   {
-    PrintColorFmtMsg_WARN(_T("warning: %") NPRIs _T("\n"), msg);
+    msgbuf.Reserve(cchMsg+2+_tcslen(curfilename)+1+11+1+!0);
+    _stprintf(&msgbuf[cchMsg], _T(" (%") NPRIs _T(":%u)"), curfilename, linecnt);
   }
+  const TCHAR *msg = msgbuf.GetPtr();
+
+  m_warnings.add(msg,0); // Add to list of warnings to display at the end
+
+  MakensisAPI::notify_e hostevent = MakensisAPI::NOTIFY_WARNING;
+  if (g_warnaserror)
+    hostevent = MakensisAPI::NOTIFY_ERROR, display_warnings = display_errors;
+
+  notify(hostevent, msg); // Notify the host
+
+  if (display_warnings) // Print "warning %msgwithcodeprefix%" or "warning: %msg%"
+    PrintColorFmtMsg_WARN(_T("warning%") NPRIs _T("%") NPRIs _T("\n"), showcode ? _T(" ") : _T(": "), msg);
+
   if (g_warnaserror)
   {
     ERROR_MSG(_T("Error: warning treated as error\n"));
@@ -3435,28 +3506,20 @@ void CEXEBuild::warninghelper(const TCHAR *msg)
   }
 }
 
-void CEXEBuild::warning(const TCHAR *s, ...)
+void CEXEBuild::warning(DIAGCODE dc, const TCHAR *s, ...)
 {
-  ExpandoString<TCHAR, NSIS_MAX_STRLEN + 100> buf;
   va_list val;
-  va_start(val,s);
-  buf.StrFmt(s,val);
+  va_start(val, s);
+  warninghelper(dc, false, s, val);
   va_end(val);
-
-  warninghelper(buf.GetPtr());
 }
 
-void CEXEBuild::warning_fl(const TCHAR *s, ...)
+void CEXEBuild::warning_fl(DIAGCODE dc, const TCHAR *s, ...)
 {
-  ExpandoString<TCHAR, NSIS_MAX_STRLEN + 100> buf;
   va_list val;
-  va_start(val,s);
-  size_t cchMsg = buf.StrFmt(s, val);
+  va_start(val, s);
+  warninghelper(dc, true, s, val);
   va_end(val);
-
-  buf.Reserve(cchMsg+2+_tcslen(curfilename)+50+1+!0);
-  _stprintf(&buf[cchMsg], _T(" (%") NPRIs _T(":%u)"), curfilename, linecnt);
-  warninghelper(buf.GetPtr());
 }
 
 void CEXEBuild::ERROR_MSG(const TCHAR *s, ...) const
@@ -3466,7 +3529,7 @@ void CEXEBuild::ERROR_MSG(const TCHAR *s, ...) const
     ExpandoString<TCHAR, NSIS_MAX_STRLEN + 100> buf;
     va_list val;
     va_start(val,s);
-    buf.StrFmt(s,val);
+    buf.StrVFmt(s,val);
     va_end(val);
 
     notify(MakensisAPI::NOTIFY_ERROR, buf.GetPtr());
@@ -3766,7 +3829,7 @@ void CEXEBuild::VerifyDeclaredUserVarRefs(UserVarsStringList *pVarsStringList)
   {
     if (!pVarsStringList->get_reference(i))
     {
-      warning(_T("Variable \"%") NPRIs _T("\" not referenced or never set, wasting memory!"), pVarsStringList->idx2name(i));
+      warning(DW_VAR_NOREF, _T("Variable \"%") NPRIs _T("\" not referenced or never set, wasting memory!"), pVarsStringList->idx2name(i));
     }
   }
 }
@@ -3781,7 +3844,7 @@ bool CEXEBuild::IsIntOrUserVar(const LineParser &line, int token) const
   }
   int succ;
   line.gettoken_int(token, &succ);
-  return !!succ;
+  return succ != false;
 }
 
 int CEXEBuild::set_target_architecture_data()
@@ -3799,6 +3862,9 @@ int CEXEBuild::set_target_architecture_data()
     definedlist.set(_T("NSIS_CHAR_SIZE"), _T("1"));
   }
   definedlist.set(_T("NSIS_PTR_SIZE"), is_target_64bit() ? _T("8") : _T("4"));
+
+  tstring cpu = get_string_prefix(get_target_suffix(m_target_type), _T("-"));
+  definedlist.set(_T("NSIS_CPU"), cpu.c_str()); // Used by Library.nsh to pick the correct RegTool
 
   definedlist.del(_T("NSIS_IX86"));
   definedlist.del(_T("NSIS_AMD64"));

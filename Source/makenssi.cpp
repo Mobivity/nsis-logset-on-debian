@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@
 #include "winchar.h" // assert(sizeof(WINWCHAR)...)
 
 #include <nsis-version.h>
-#define NSIS_COPYYEARS _T("1999-2016")
+#define NSIS_COPYYEARS _T("1999-2017")
 
 using namespace std;
 
@@ -439,9 +439,9 @@ static inline int makensismain(int argc, TCHAR **argv)
 #else
   const TCHAR*const badnonwinswitchfmt=OPT_STR _T("%") NPRIs _T(" is disabled for non Win32 platforms.");
   if (hostnotifyhandle)
-    build.warning(badnonwinswitchfmt,_T("NOTIFYHWND"));
+    build.warning(DW_CMDLINE_UNSUPP_NIX,badnonwinswitchfmt,_T("NOTIFYHWND"));
   if (NStreamEncoding::UNKNOWN==outputenc.GetCodepage())
-    build.warning(badnonwinswitchfmt,_T("OUTPUTCHARSET"));
+    build.warning(DW_CMDLINE_UNSUPP_NIX,badnonwinswitchfmt,_T("OUTPUTCHARSET"));
 #endif // ~_WIN32
 
   if (!argc)
@@ -491,7 +491,7 @@ static inline int makensismain(int argc, TCHAR **argv)
         if (NStreamEncoding::UNKNOWN == cp)
         {
           if (_tcsicmp(argv[argpos], _T("AUTO")))
-            build.warning(OPT_STR _T("INPUTCHARSET: Ignoring invalid charset %") NPRIs , argv[argpos]);
+            build.warning(DW_CMDLINE_BAD_INPUTENC, OPT_STR _T("INPUTCHARSET: Ignoring invalid charset %") NPRIs , argv[argpos]);
           cp = NStreamEncoding::AUTO;
         }
         inputenc.SafeSetCodepage(cp);
@@ -522,9 +522,9 @@ static inline int makensismain(int argc, TCHAR **argv)
         };
         if (!SetPriorityClass(hProc, classes[p].priority))
           SetPriorityClass(hProc, classes[p].fallback);
-        if (p == 5) build.warning(_T("makensis is running in REALTIME priority mode!"));
+        if (p == 5) build.warning(DW_CMDLINE_HIGHPRIORITY,_T("makensis is running in REALTIME priority mode!"));
 #else
-        build.warning(badnonwinswitchfmt,_T("Px"));
+        build.warning(DW_CMDLINE_UNSUPP_NIX,badnonwinswitchfmt,_T("Px"));
 #endif
       }
       // Already parsed these (must adjust argpos)
@@ -543,7 +543,7 @@ static inline int makensismain(int argc, TCHAR **argv)
       }
       else if (S7IsChEqualI('x',swname[0]) && swname[1])
       {
-        if (build.process_oneline(swname+1,_T("<command line>"),argpos+1) != PS_OK)
+        if (build.process_oneline(swname+1,build.get_commandlinecode_filename(),argpos+1) != PS_OK)
         {
           return 1;
         }
@@ -567,7 +567,7 @@ static inline int makensismain(int argc, TCHAR **argv)
         noconfig=true;
         tstring main_conf;
         TCHAR* env_var = _tgetenv(_T("NSISCONFDIR"));
-        if(env_var == NULL)
+        if (env_var == NULL)
 #ifndef NSIS_CONFIG_CONST_DATA_PATH
           main_conf = get_dir_name(get_executable_dir(argv[0]));
 #else
@@ -704,8 +704,10 @@ int main(int argc, char **argv)
   int wargc = 0;
   wchar_t term[1], *p, **wargv = (wchar_t **) malloc((argc+1) * sizeof(void*));
   if (wargv) 
+  {
     for ( ; wargc < argc; ++wargc )
       if ((p = NSISRT_mbtowc(argv[wargc]))) wargv[wargc] = p; else break;
+  }
   if (wargc == argc)
     *term = L'\0', wargv[wargc] = term, errno = _tmain(wargc,wargv);
   else

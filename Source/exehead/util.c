@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,6 +99,13 @@ HANDLE NSISCALL myCreateProcess(TCHAR *cmd)
   return ProcInfo.hProcess;
 }
 
+BOOL NSISCALL myShellExecuteEx(SHELLEXECUTEINFO*pSEI)
+{
+  pSEI->cbSize = sizeof(SHELLEXECUTEINFO);
+  pSEI->lpIDList = NULL; // Must set this because SEE_MASK_INVOKEIDLIST might be set by ExecShell[Wait]
+  return ShellExecuteEx(pSEI);
+}
+
 /*BOOL NSISCALL my_SetWindowText(HWND hWnd, const TCHAR *val)
 {
   return SendMessage(hWnd,WM_SETTEXT,0,(LPARAM)val);
@@ -144,7 +151,7 @@ int NSISCALL my_MessageBox(const TCHAR *text, UINT type) {
   mbp.hwndOwner = g_hwnd;
   mbp.hInstance = g_hInstance;
   mbp.lpszText = text;
-  mbp.lpszCaption = g_caption;
+  mbp.lpszCaption = g_caption; // Should call update_caption() here?
   mbp.dwStyle = _type;
   
   return MessageBoxIndirect(&mbp);
@@ -539,7 +546,11 @@ void RenameViaWininit(const TCHAR* prevName, const TCHAR* newName)
 
   int spn;   // length of the short path name in TCHARs.
 
-  lstrcpy(tmpbuf, _T("NUL"));
+  // Optimized mystrcpy(tmpbuf, _T("NUL")):
+  if (sizeof(TCHAR) == 1)
+    *(UINT32*)tmpbuf = ((UINT32)'N' <<  0) | ((UINT32)'U' <<  8) | ((UINT32)'L' << 16) | ((UINT32)'\0' << 24);
+  else
+    *(UINT64*)tmpbuf = ((UINT64)'N' <<  0) | ((UINT64)'U' << 16) | ((UINT64)'L' << 32) | ((UINT64)'\0' << 48);
 
   if (newName) {
     // create the file if it's not already there to prevent GetShortPathName from failing
@@ -643,22 +654,52 @@ void NSISCALL MoveFileOnReboot(LPCTSTR pszExisting, LPCTSTR pszNew)
 }
 #endif
 
-// The value of registry->sub->name is stored in out.  If failure, then out becomes
-// an empty string "".
-void NSISCALL myRegGetStr(HKEY root, const TCHAR *sub, const TCHAR *name, TCHAR *out, int x64)
+#define GetAltViewREGSAM() ( sizeof(void*) > 4 ? KEY_WOW64_32KEY : KEY_WOW64_64KEY )
+HKEY NSISCALL GetRegKeyAndSAM(HKEY hKey, REGSAM*pRS)
+{
+  const REGSAM samviewmask = (KEY_WOW64_32KEY|KEY_WOW64_64KEY);
+  const REGSAM incompatsamview = SystemSupportsAltRegView() ? 0 : GetAltViewREGSAM();
+  REGSAM sam = *pRS, incompatsam = incompatsamview;
+#ifdef C_ASSERT
+  {C_ASSERT(REGROOTVIEWTOSAMVIEW(REGROOTVIEW32|REGROOTVIEW64) == (KEY_WOW64_32KEY|KEY_WOW64_64KEY));}
+#endif
+  if ((sam & KEY_FORCEVIEW) && IsRegRootkeyForcedView(hKey))
+  {
+    REGSAM keysamview = REGROOTVIEWTOSAMVIEW(hKey);
+    if (keysamview == samviewmask) keysamview = (g_exec_flags.alter_reg_view & ~incompatsamview); // HKxxANY tries to honor SetRegView
+    sam &= ~samviewmask, sam |= (keysamview & ~(sizeof(void*) > 4 ? 0 : KEY_WOW64_32KEY)); // HKxx32 has the *_32KEY bit set but WinNT4&2000 cannot handle any KEY_WOW64_xxKEY flags.
+    hKey = (HKEY) ( (UINT_PTR) hKey & ~(REGROOTVIEW32|REGROOTVIEW64) );
+  }
+  else if (sam & KEY_ALTERVIEW)
+  {
+    sam |= g_exec_flags.alter_reg_view; // We don't mask away the incompatsamview bits because the operation is supposed to fail if the view is not supported.
+  }
+  *pRS = sam & ~(NSIS_REGSAM_PRIVATEMASK); // Filter away internal flags
+  return (incompatsam & sam) ? NULL : hKey; // Fail if the requested view is not supported
+}
+LONG NSISCALL RegKeyOpen(HKEY hBase, LPCTSTR SubKey, REGSAM RS, HKEY*phKey)
+{
+  if (!(hBase = GetRegKeyAndSAM(hBase, &RS))) return ERROR_INVALID_HANDLE; // ERROR_CANTOPEN?
+  return RegOpenKeyEx(hBase, SubKey, 0, RS, phKey);
+}
+LONG NSISCALL RegKeyCreate(HKEY hBase, LPCTSTR SubKey, REGSAM RS, HKEY*phKey)
+{
+  if (!(hBase = GetRegKeyAndSAM(hBase, &RS))) return ERROR_INVALID_HANDLE; // ERROR_CANTOPEN?
+  return RegCreateKeyEx(hBase, SubKey, 0, 0, 0, RS, 0, phKey, 0);
+}
+
+void NSISCALL myRegGetStr(HKEY root, const TCHAR *sub, const TCHAR *name, TCHAR *out, UINT altview)
 {
   HKEY hKey;
-  *out=0;
-  if (RegOpenKeyEx(root,sub,0,KEY_READ|(x64?KEY_WOW64_64KEY:0),&hKey) == ERROR_SUCCESS)
+  DWORD cb = NSIS_MAX_STRLEN*sizeof(TCHAR), rt, ec;
+  REGSAM samview = altview ? GetAltViewREGSAM() : 0;
+  if ((ec = RegKeyOpen(root, sub, KEY_READ|samview, &hKey)) == ERROR_SUCCESS)
   {
-    DWORD l = NSIS_MAX_STRLEN*sizeof(TCHAR);
-    DWORD t;
-    // Note that RegQueryValueEx returns Unicode strings if _UNICODE is defined for the
-    // REG_SZ type.
-    if (RegQueryValueEx(hKey,name,NULL,&t,(LPBYTE)out,&l ) != ERROR_SUCCESS || (t != REG_SZ && t != REG_EXPAND_SZ)) *out=0;
-    out[NSIS_MAX_STRLEN-1]=0;
+    ec = RegQueryValueEx(hKey, name, NULL, &rt, (LPBYTE)out, &cb);
     RegCloseKey(hKey);
+    out[NSIS_MAX_STRLEN-1] = 0; // Make sure the string is terminated. This could potentially truncate a long string by 1 character!
   }
+  if (ec != ERROR_SUCCESS || (rt != REG_SZ && rt != REG_EXPAND_SZ)) *out = 0; // Empty string on failure
 }
 
 void NSISCALL iptrtostr(TCHAR *s, INT_PTR d)
@@ -764,8 +805,10 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
     int fldrs[4];
     if (nVarIdx < NS_SKIP_CODE)
     {
-      // the next 2 BYTEs in the string might be coding either a value 0..MAX_CODED (nData), or 2 CSIDL of Special folders (for NS_SHELL_CODE)
+      // The next 2 BYTEs in the string might be coding either a value 0..MAX_CODED (nData), or 2 CSIDL of Special folders (for NS_SHELL_CODE)
       nData = DECODE_SHORT(in);
+      // There are 2 CSIDL parameters for each context and query must be used before create 
+      // because of bug #820 (CSIDL_FLAG_CREATE failures on root paths are cached in Vista).
 #ifdef _UNICODE
       fldrs[1] = LOBYTE(*in); // current user
       fldrs[0] = fldrs[1] | CSIDL_FLAG_CREATE;
@@ -777,7 +820,6 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
       fldrs[2] = in[1] | CSIDL_FLAG_CREATE; // all users
       fldrs[3] = in[1];
 #endif
-      //TODO: are fldrs[1] and fldrs[3] really useful? why not force folder creation directly?
       in += sizeof(SHORT)/sizeof(TCHAR);
 
       if (nVarIdx == NS_SHELL_CODE)
@@ -785,10 +827,8 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
         LPITEMIDLIST idl;
 
         int x = 2;
-        DWORD ver = GetVersion();
-
+        DWORD ver = sizeof(void*) > 4 ? MAKEWORD(5, 2) : g_WinVer; // We only care about 95/98 vs ME/NT4+
         /*
-
         SHGetFolderPath as provided by shfolder.dll is used to get special folders
         unless the installer is running on Windows 95/98. For 95/98 shfolder.dll is
         only used for the Application Data and Documents folder (if the DLL exists).
@@ -802,12 +842,10 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
         SHGetFolderPath in shell32.dll could be called directly for Windows versions
         later than 95/98 but there is no need to do so, because shfolder.dll is still
         provided and calls shell32.dll.
-
         */
-
         BOOL use_shfolder =
           // Use shfolder if not on 95/98
-          !((ver & 0x80000000) && (LOWORD(ver) != 0x5A04)) ||
+          !((ver & 0x80000000) && (LOWORD(ver) != MAKEWORD(4,90))) ||
 
           // Unless the Application Data or Documents folder is requested
           (
@@ -819,7 +857,7 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
 
         if (g_exec_flags.all_user_var)
         {
-          x = 4;
+          x = 4; // Get common folder > Create common folder > Get user folder > Create user folder
         }
 
         if (fldrs[1] & 0x80)
@@ -829,12 +867,12 @@ TCHAR * NSISCALL GetNSISString(TCHAR *outbuf, int strtab)
             GetNSISString(out, fldrs[3]);
           x = 0;
         }
-        else if (fldrs[1] == CSIDL_SYSTEM)
+        else if (fldrs[1] == CSIDL_SYSTEM) // Does not work on 95, 98 nor NT4. Works on ME and 2000+.
         {
           GetSystemDirectory(out, NSIS_MAX_STRLEN);
           x = 0;
         }
-        else if (fldrs[1] == CSIDL_WINDOWS)
+        else if (fldrs[1] == CSIDL_WINDOWS) // Does not work on 95, 98 nor NT4. Works on ME and 2000+.
         {
           GetWindowsDirectory(out, NSIS_MAX_STRLEN);
           x = 0;
@@ -982,22 +1020,27 @@ void NSISCALL log_write(int close)
 
 const TCHAR * _RegKeyHandleToName(HKEY hKey)
 {
-  if (hKey == HKEY_CLASSES_ROOT)
-    return _T("HKEY_CLASSES_ROOT");
-  else if (hKey == HKEY_CURRENT_USER)
-    return _T("HKEY_CURRENT_USER");
-  else if (hKey == HKEY_LOCAL_MACHINE)
-    return _T("HKEY_LOCAL_MACHINE");
-  else if (hKey == HKEY_USERS)
-    return _T("HKEY_USERS");
-  else if (hKey == HKEY_PERFORMANCE_DATA)
-    return _T("HKEY_PERFORMANCE_DATA");
-  else if (hKey == HKEY_CURRENT_CONFIG)
-    return _T("HKEY_CURRENT_CONFIG");
-  else if (hKey == HKEY_DYN_DATA)
-    return _T("HKEY_DYN_DATA");
-  else
-    return _T("invalid registry key");
+  if (hKey == HKEY_CLASSES_ROOT) return _T("HKEY_CLASSES_ROOT");
+  if (hKey == HKEY_CURRENT_USER) return _T("HKEY_CURRENT_USER");
+  if (hKey == HKEY_LOCAL_MACHINE) return _T("HKEY_LOCAL_MACHINE");
+  if (hKey == HKEY_USERS) return _T("HKEY_USERS");
+  if (hKey == HKEY_PERFORMANCE_DATA) return _T("HKEY_PERFORMANCE_DATA");
+  if (hKey == HKEY_CURRENT_CONFIG) return _T("HKEY_CURRENT_CONFIG");
+  if (hKey == HKEY_DYN_DATA) return _T("HKEY_DYN_DATA");
+  if (hKey == HKSHCTX) return _T("HKSHCTX");
+  if (hKey == HKSHCTX32) return _T("HKSHCTX32");
+  if (hKey == HKSHCTX64) return _T("HKSHCTX64");
+  if (hKey == HKCR32) return _T("HKCR32");
+  if (hKey == HKCR64) return _T("HKCR64");
+  if (hKey == HKCU32) return _T("HKCU32");
+  if (hKey == HKCU64) return _T("HKCU64");
+  if (hKey == HKLM32) return _T("HKLM32");
+  if (hKey == HKLM64) return _T("HKLM64");
+  if (hKey == HKSHCTXANY) return _T("HKSHCTXANY");
+  if (hKey == HKCRANY) return _T("HKCRANY");
+  if (hKey == HKCUANY) return _T("HKCUANY");
+  if (hKey == HKLMANY) return _T("HKLMANY");
+  return _T("HK??");
 }
 
 void _LogData2Hex(TCHAR *buf, size_t cchbuf, BYTE *data, size_t cbdata)
@@ -1103,6 +1146,9 @@ struct MGA_FUNC MGA_FUNCS[] = {
 #endif
   {"ADVAPI32", "InitiateShutdownW"},
   {"SHELL32", (CHAR*) 680}, // IsUserAnAdmin
+#ifndef _WIN64
+  {"SHLWAPI", (CHAR*) 437}, // IsOS
+#endif
   {"SHLWAPI",  "SHAutoComplete"},
   {"SHFOLDER", "SHGetFolderPathW"},
 #ifdef NSIS_SUPPORT_GETDLLVERSION
@@ -1118,6 +1164,9 @@ struct MGA_FUNC MGA_FUNCS[] = {
   {"ADVAPI32", "RegDeleteKeyExA"},
   {"ADVAPI32", "InitiateShutdownA"},
   {"SHELL32", (CHAR*) 680}, // IsUserAnAdmin
+#ifndef _WIN64
+  {"SHLWAPI", (CHAR*) 437}, // IsOS
+#endif
   {"SHLWAPI",  "SHAutoComplete"},
   {"SHFOLDER", "SHGetFolderPathA"},
 #ifdef NSIS_SUPPORT_GETDLLVERSION
@@ -1191,4 +1240,14 @@ void * NSISCALL NSISGetProcAddress(HANDLE dllHandle, TCHAR* funcName)
 #else
   return GetProcAddress(dllHandle, funcName);
 #endif
+}
+
+DWORD NSISCALL WaitForProcess(HANDLE hProcess)
+{
+  DWORD excod;
+  while (WaitForSingleObject(hProcess, 100) == WAIT_TIMEOUT)
+    MessageLoop(WM_PAINT);
+
+  GetExitCodeProcess(hProcess, &excod);
+  return excod;
 }

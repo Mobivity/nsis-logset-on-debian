@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ class LineParser {
     double gettoken_float(int token, int *success=0) const;
     int gettoken_int(int token, int *success=0) const;
     double gettoken_number(int token, int *success=0) const;
+    int gettoken_binstrdata(int token, char*buffer, int bufcap) const;
     TCHAR *gettoken_str(int token) const;
     int gettoken_enum(int token, const TCHAR *strlist); // null separated list
 

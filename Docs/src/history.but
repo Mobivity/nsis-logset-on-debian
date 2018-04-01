@@ -1,5 +1,55 @@
 \A{history} Changelog and Release Notes
 
+\H{v3.02.1} 3.02.1
+
+Released on July 31st, 2017
+
+\S1{v3.02.1-cl} Changelog
+
+\S2{} Translations
+
+\b Fixed Chinese (Traditional) and Romanian translation bugs (\W{http://sf.net/p/nsis/bugs/1189}{bug #1189} and \W{http://sf.net/p/nsis/bugs/1191}{bug #1191})
+
+\b Fixed Scots Gaelic MUI finish page translation
+
+\H{v3.02} 3.02
+
+Released on July 23rd, 2017
+
+\S1{v3.02-cl} Changelog
+
+\S2{} Major Changes
+
+\b Fixed NSIS3 RegTool Win9x bug
+
+\b Added the HKCR32, HKCR64, HKCU32, HKCU64, HKLM32 and HKLM64 root keys
+
+\b Unsupported \R{setregview}{SetRegView} mode now fails all registry operations
+
+\b Added \R{execshellwait}{ExecShellWait}
+
+\b Added \R{writeregmultistr}{WriteRegMultiStr} (\W{http://sf.net/p/nsis/feature-requests/382}{RFE #382}, \W{http://sf.net/p/nsis/patches/219}{patch #219}) and WriteRegNone
+
+\b Added \R{pragma}{!pragma warning} (\W{http://sf.net/p/nsis/patches/267}{patch #267})
+
+\b \R{varconstant}{$LocalAppData} now resolves to the ProgramData folder in the \R{setshellvarcontext}{SetShellVarContext all} context
+
+\S2{} Minor Changes
+
+\b Variables used in \R{acaption}{Caption} can now be set in \R{onguiinit}{.onGUIInit} (\W{http://sf.net/p/nsis/feature-requests/539}{RFE #539})
+
+\b \L{../Docs/MultiUser/Readme.html}{MultiUser} now supports \R{varconstant}{$ProgramFiles64} (\W{http://sf.net/p/nsis/bugs/843}{bug #843})
+
+\b Added support for MUI_UNCONFIRMPAGE_VARIABLE (\W{http://sf.net/p/nsis/feature-requests/511}{RFE #511}) and MUI_PAGE_CUSTOMFUNCTION_DESTROYED
+
+\b Unicode nsExec now supports the /OEM switch (\W{http://sf.net/p/nsis/bugs/1171}{bug #1171})
+
+\S2{} Translations
+
+\b Chinese (Traditional) updates by Walter Cheuk
+
+\b Minor French improvements (\W{http://sf.net/p/nsis/patches/221}{patch #221})
+
 \H{v3.01} 3.01
 
 Released on December 11th, 2016
@@ -28,7 +78,7 @@ Released on December 11th, 2016
 
 \b Updated Danish translation (\W{http://sf.net/p/nsis/bugs/1164}{bug #1164})
 
-\b Arabic, Norwegian, Portuguese, Ukrainian and Swedish MultiUser fixes (\W{http://sf.net/p/nsis/patches/278}{patch #278}, \W{http://sf.net/p/nsis/patches/279}{patch #279}, \W{http://sf.net/p/nsis/patches/274}{patch #274}, \W{http://sf.net/p/nsis/patches/275}{patch #275} & \W{http://sf.net/p/nsis/patches/277}{patch #277})
+\b Arabic, Norwegian, Portuguese, Ukrainian and Swedish \L{../Docs/MultiUser/Readme.html}{MultiUser} fixes (\W{http://sf.net/p/nsis/patches/278}{patch #278}, \W{http://sf.net/p/nsis/patches/279}{patch #279}, \W{http://sf.net/p/nsis/patches/274}{patch #274}, \W{http://sf.net/p/nsis/patches/275}{patch #275} & \W{http://sf.net/p/nsis/patches/277}{patch #277})
 
 \H{v3.0} 3.0
 
@@ -3235,7 +3285,7 @@ Released on December 6th, 2002
 
 \b !ifdef and friends can now be used in macros
 
-\b \R{sendmessage}{SendMessage} can send strings (put cw{STR:} before a param) and supports timeouts
+\b \R{sendmessage}{SendMessage} can send strings (put \cw{STR:} before a param) and supports timeouts
 
 \b Right mouse button "Copy to clipboard" context menu for the Details window
 

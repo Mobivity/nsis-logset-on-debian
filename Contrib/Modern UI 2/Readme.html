@@ -191,7 +191,7 @@
                         </div>
                     </div>
                     <h1>
-                        Modern UI 2.0</h1>
+                        Modern UI 2.1</h1>
                     <div>
                         <p>
                             This new version makes it easier to customize pages, because the same method can
@@ -855,6 +855,10 @@ Var PLUGINS_FOLDER
                                     <p>
                                         <strong>MUI_UNCONFIRMPAGE_TEXT_LOCATION</strong> <span class="parameter">text</span><br />
                                         Text to display next to the uninstall location text box.</p>
+                                    <p>
+                                        <strong>MUI_UNCONFIRMPAGE_VARIABLE</strong> <span class="parameter">variable</span><br />
+                                        Variable in which to store the uninstall source folder.<br />
+                                        <em>Default: $INSTDIR</em></p>
                                 </div>
                         </div>
                     </div>
@@ -1082,6 +1086,7 @@ FunctionEnd</pre>
                                 <strong>MUI_PAGE_CUSTOMFUNCTION_PRE</strong> <span class="parameter">function</span><br />
                                 <strong>MUI_PAGE_CUSTOMFUNCTION_SHOW</strong> <span class="parameter">function</span><br />
                                 <strong>MUI_PAGE_CUSTOMFUNCTION_LEAVE</strong> <span class="parameter">function</span><br />
+                                <strong>MUI_PAGE_CUSTOMFUNCTION_DESTROYED</strong> <span class="parameter">function</span><br />
                             </p>
                             <p>
                                 The pre function is called first and allows you to initalize variables or decide
@@ -1091,8 +1096,10 @@ FunctionEnd</pre>
                             <p>
                                 In the show function, the window handles of all controls on the page can be retrieved
                                 from a Modern UI variable. A list of the variables names is not yet available. For
-                                now, refer to the source files of the Modern UI 2.0. The variable declarations can
+                                now, refer to the source files of the Modern UI 2. The variable declarations can
                                 be found in the first lines of the header file for a certain page.</p>
+                            <p>
+                                The destroyed function is called after a external/plug-in page has been destroyed.
                         </div>
                     </div>
                     <h1>
@@ -1124,7 +1131,7 @@ FunctionEnd</pre>
                             License Terms</h3>
                         <div class="toggle" id="toggle_lic">
                             <pre>
-Copyright &copy; 2002-2016 Joost Verburg
+Copyright &copy; 2002-2017 Joost Verburg
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages

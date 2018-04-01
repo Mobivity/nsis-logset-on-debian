@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ namespace manifest
       if (-1 == pos) return 0;
       return m_list.get() + pos;
     }
-    void addall();
+    bool addall();
     void deleteall() 
     { 
       m_list.deleteall();

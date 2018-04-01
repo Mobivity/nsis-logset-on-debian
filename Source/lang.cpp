@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * Copyright (C) 1999-2017 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,9 +136,9 @@ NLFString NLFStrings[NLF_STRINGS] = {
   {_T("^CopyDetails"), _T("Copy Details To Clipboard"), BOTH_STATIC},
   {_T("^LogInstall"), _T("Log install process"), BOTH_STATIC},
   {_T("^Byte"), _T("B"), BOTH_STATIC},
-  {_T("^Kilo"), _T("K"), BOTH_STATIC},
-  {_T("^Mega"), _T("M"), BOTH_STATIC},
-  {_T("^Giga"), _T("G"), BOTH_STATIC},
+  {_T("^Kilo"), _T(" K"), BOTH_STATIC},
+  {_T("^Mega"), _T(" M"), BOTH_STATIC},
+  {_T("^Giga"), _T(" G"), BOTH_STATIC},
   {_T("^Font"), _T("MS Shell Dlg"), NONE_STATIC},
   {_T("^FontSize"), _T("8"), NONE_STATIC},
   {_T("^RTL"), _T("0"), NONE_STATIC},
@@ -494,7 +494,7 @@ int CEXEBuild::SetLangString(const TCHAR *name, LANGID lang, const TCHAR *str, B
   int sn;
 
   if (!LicenseData && _tcsclen(str) > NSIS_MAX_STRLEN-1)
-    warning_fl(_T("LangString \"%") NPRIs _T("\" longer than NSIS_MAX_STRLEN!"), name);
+    warning_fl(DW_LANGSTRING_OVERLONGLENGTH, _T("LangString \"%") NPRIs _T("\" longer than NSIS_MAX_STRLEN!"), name);
 
   int pos = build_langstrings.get(name, &sn);
   if (pos < 0)
@@ -589,9 +589,9 @@ int CEXEBuild::GenerateLangTable(LanguageTable *lt, int num_lang_tables) {
               if (lsn[0] != _T('^'))
               {
                 if (lt[i].nlf.m_bLoaded)
-                  warning(_T("LangString \"%") NPRIs _T("\" is not set in language table of language %") NPRIs, lsn, lt[i].nlf.m_szName);
+                  warning(DW_LANGSTRING_NOTSETINLANG, _T("LangString \"%") NPRIs _T("\" is not set in language table of language %") NPRIs, lsn, lt[i].nlf.m_szName);
                 else
-                  warning(_T("LangString \"%") NPRIs _T("\" is not set in language table of language %d"), lsn, lt[i].lang_id);
+                  warning(DW_LANGSTRING_NOTSETINLANG, _T("LangString \"%") NPRIs _T("\" is not set in language table of language %d"), lsn, lt[i].lang_id);
               }
             }
             else
@@ -1009,7 +1009,7 @@ l_readerr:
   if (p) *p = t;
 
   if (nlf_version != NLF_VERSION) {
-    warning_fl(_T("%") NPRIs _T(" language file version doesn't match. Using default English texts for missing strings."), nlf->m_szName);
+    warning_fl(DW_NLF_OLDVERSION, _T("%") NPRIs _T(" language file version doesn't match. Using default English texts for missing strings."), nlf->m_szName);
   }
 
   // set ^Language
@@ -1036,7 +1036,7 @@ l_readerr:
 
   // Get code page
   bool isnlfdataucp = false; // Unicode-only language?
-  nlf->m_uCodePage = CP_ACP;
+  nlf->m_uCodePage = NSISRT_GetASCIICodepage();
   if (!GetNextNLFLine(lr, buf, NSIS_MAX_STRLEN, errlr)) goto l_readerr;
   TrimTrailingNewlines(buf);
   if (buf[0] != _T('-') || buf[1] != 0) {
@@ -1049,11 +1049,11 @@ l_readerr:
     }
     if ((unsigned)nlf->m_uCodePage <= 1 && !lr.IsUnicode()) // Warn if someone uses a system specific codepage
     {
-      warning_fl(_T("%") NPRIs _T(" language file uses the system default codepage!"), nlf->m_szName);
+      warning_fl(DW_NLF_SYSCP, _T("%") NPRIs _T(" language file uses the system default codepage!"), nlf->m_szName);
     }
     if (CP_ACP != nlf->m_uCodePage && !isnlfdataucp && !IsValidCodePage(nlf->m_uCodePage))
     {
-      warning_fl(_T("%") NPRIs _T(" language file uses a codepage (%d) that is not supported on this system, using ACP!"), nlf->m_szName, nlf->m_uCodePage);
+      warning_fl(DW_NLF_UNSUPPORTED_CP, _T("%") NPRIs _T(" language file uses a codepage (%d) that is not supported on this system, using ACP!"), nlf->m_szName, nlf->m_uCodePage);
       nlf->m_uCodePage = CP_ACP;
     }
   }
@@ -1061,7 +1061,7 @@ l_readerr:
   // SVN is not a big fan of UTF16 so we should always use UTF8SIG
   if (isnlfdataucp && !lr.StreamEncoding().IsUTF8())
   {
-    warning_fl(_T("%") NPRIs _T(" Unicode language file is not UTF8SIG."), nlf->m_szName);
+    warning_fl(DW_NLF_NOT_PREFERRED_ENC, _T("%") NPRIs _T(" Unicode language file is not UTF8SIG."), nlf->m_szName);
   }
 
 #ifdef _UNICODE
