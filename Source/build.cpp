@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2008 Nullsoft and Contributors
+ * Copyright (C) 1999-2015 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -3316,8 +3316,8 @@ again:
   // Delete $0 [simple, nothing that could clash with special temp permissions]
   ret=add_entry_direct(EW_DELETEFILE, zero_offset, DEL_SIMPLE);
   if (ret != PS_OK) return ret;
-  // CraeteDirectory $0 - a dir instead of that temp file
-  ret=add_entry_direct(EW_CREATEDIR, zero_offset);
+  // CreateDirectory $0 - a dir instead of that temp file
+  ret=add_entry_direct(EW_CREATEDIR, zero_offset, 0, 1);
   if (ret != PS_OK) return ret;
   // IfErrors Initialize_____Plugins_error - detect errors
   ret=add_entry_direct(EW_IFFLAG, ns_label.add("Initialize_____Plugins_error",0), 0, FLAG_OFFSET(exec_error));

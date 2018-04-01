@@ -37,6 +37,9 @@ UPDATE_URL=http://nsis.sourceforge.net/Special:Simpleupdate?action=raw
 
 [svn2cl]
 SVN2CL_XSL=svl2cl.xsl
+
+[options]
+SKIP_CPPUNIT=no
 =========================
 
 7zatarbz2.bat:
@@ -94,6 +97,8 @@ UPDATE_URL = cfg.get('wiki', 'UPDATE_URL')
 
 SVN2CL_XSL = cfg.get('svn2cl', 'SVN2CL_XSL')
 
+SKIP_CPPUINT = cfg.get('options', 'SKIP_CPPUNIT')
+
 ### config env
 
 SVN_TAG = 'v' + ''.join(VERSION.split('.'))
@@ -127,7 +132,7 @@ def run(command, log_level, err, wanted_ret = 0, log_dir = '.'):
 	else:
 		raise ValueError
 
-	ret = os.system(cmd)
+	ret = os.system('if 1==1 ' + cmd)
 
 	# sleep because for some weird reason, running cvs.exe hugs
 	# the release log for some time after os.system returns
@@ -158,7 +163,7 @@ def RunTests():
 	print 'running tests...'
 
 	run(
-		'scons -C .. test',
+		'scons -C .. %s' % (SKIP_CPPUINT == 'yes' and 'test-scripts' or 'test'),
 		LOG_ALL,
 		'tests failed - see test.log for details'
 	)
@@ -265,7 +270,7 @@ def Tag():
 	print 'tagging...'
 
 	run(
-		'%s copy %s/trunk %s/tags/%s -m "Tagging for release %s"' % (SVN, SVNROOT, SVNROOT, SVN_TAG, VERSION),
+		'%s copy %s/branches/nsis2 %s/tags/%s -m "Tagging for release %s"' % (SVN, SVNROOT, SVNROOT, SVN_TAG, VERSION),
 		LOG_ALL,
 		'failed creating tag %s' % SVN_TAG
 	)
