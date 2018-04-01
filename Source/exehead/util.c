@@ -46,7 +46,7 @@ NSIS_STRING g_usrvars[1];
 #  ifdef __GNUC__
 NSIS_STRING g_usrvars[1] __attribute__((section (NSIS_VARS_SECTION)));
 #  else
-#    error Unknown compiler. You must implement the seperate PE section yourself.
+#    error Unknown compiler. You must implement the separate PE section yourself.
 #  endif
 #endif
 
@@ -993,7 +993,7 @@ HMODULE NSISCALL LoadSystemLibrary(LPCSTR name)
     cch = 0;          // \\?\ paths so we have to settle for just the name.
   wsprintf(path + cch, fmt, TEXT("\\") + (!cch || path[cch-1] == '\\'), name);
 
-  return LoadLibrary(path);
+  return LoadLibraryEx(path, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 }
 
 void* NSISCALL myGetProcAddress(const enum myGetProcAddressFunctions func)

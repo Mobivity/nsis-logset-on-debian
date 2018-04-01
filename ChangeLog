@@ -1,3 +1,457 @@
+2016-04-02 03:17  kichik
+
+	* /NSIS/tags/v251: Tagging for release 2.51
+
+2016-04-02 03:16  kichik
+
+	* /NSIS/branches/nsis2/Menu/images/header.gif: 2.51
+
+2016-04-02 03:10  kichik
+
+	* /NSIS/branches/nsis2/Docs/src/history.but: updated history.but
+	  for release of 2.51
+
+2016-04-01 20:17  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/browse.c: popstringn takes a
+	  character count, not a byte size as the max length!
+
+2016-04-01 17:39  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi: Only install the stubs and
+	  plugins of the same bitness as us for now until we can get SCons
+	  to actually build both
+
+2016-03-28 16:54  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/branches/nsis2/Docs/src/attributes.but,
+	  /NSIS/branches/nsis2/Docs/src/basic.but,
+	  /NSIS/branches/nsis2/Docs/src/build.but,
+	  /NSIS/branches/nsis2/Docs/src/callback.but,
+	  /NSIS/branches/nsis2/Docs/src/compiler.but,
+	  /NSIS/branches/nsis2/Docs/src/compilerflags.but,
+	  /NSIS/branches/nsis2/Docs/src/file.but,
+	  /NSIS/branches/nsis2/Docs/src/flowcontrol.but,
+	  /NSIS/branches/nsis2/Docs/src/generalpurpose.but,
+	  /NSIS/branches/nsis2/Docs/src/headers.but,
+	  /NSIS/branches/nsis2/Docs/src/history.but,
+	  /NSIS/branches/nsis2/Docs/src/intro.but,
+	  /NSIS/branches/nsis2/Docs/src/labels.but,
+	  /NSIS/branches/nsis2/Docs/src/langs.but,
+	  /NSIS/branches/nsis2/Docs/src/library.but,
+	  /NSIS/branches/nsis2/Docs/src/log.but,
+	  /NSIS/branches/nsis2/Docs/src/registry.but,
+	  /NSIS/branches/nsis2/Docs/src/script.but,
+	  /NSIS/branches/nsis2/Docs/src/sec.but,
+	  /NSIS/branches/nsis2/Docs/src/sections.but,
+	  /NSIS/branches/nsis2/Docs/src/stack.but,
+	  /NSIS/branches/nsis2/Docs/src/string.but,
+	  /NSIS/branches/nsis2/Docs/src/tutorial.but,
+	  /NSIS/branches/nsis2/Docs/src/ui.but,
+	  /NSIS/branches/nsis2/Docs/src/usage.but,
+	  /NSIS/branches/nsis2/Docs/src/usefulfunc.but,
+	  /NSIS/branches/nsis2/Docs/src/usefulinfos.but,
+	  /NSIS/branches/nsis2/Docs/src/var.but,
+	  /NSIS/branches/nsis2/Source/tokens.cpp: Backported some
+	  documentation fixes from [r6728]
+
+2016-03-28 05:52  kichik
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/makenssi.cpp: no
+	  need for conversions here
+
+2016-03-27 23:24  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Docs/src/attributes.but,
+	  /NSIS/trunk/Docs/src/basic.but, /NSIS/trunk/Docs/src/build.but,
+	  /NSIS/trunk/Docs/src/callback.but,
+	  /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/compilerflags.but,
+	  /NSIS/trunk/Docs/src/defines.but, /NSIS/trunk/Docs/src/file.but,
+	  /NSIS/trunk/Docs/src/flowcontrol.but,
+	  /NSIS/trunk/Docs/src/generalpurpose.but,
+	  /NSIS/trunk/Docs/src/headers.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/intro.but,
+	  /NSIS/trunk/Docs/src/jumps.but, /NSIS/trunk/Docs/src/labels.but,
+	  /NSIS/trunk/Docs/src/langs.but, /NSIS/trunk/Docs/src/library.but,
+	  /NSIS/trunk/Docs/src/log.but, /NSIS/trunk/Docs/src/misc.but,
+	  /NSIS/trunk/Docs/src/modernui.but,
+	  /NSIS/trunk/Docs/src/pages.but, /NSIS/trunk/Docs/src/plugin.but,
+	  /NSIS/trunk/Docs/src/registry.but,
+	  /NSIS/trunk/Docs/src/script.but, /NSIS/trunk/Docs/src/sec.but,
+	  /NSIS/trunk/Docs/src/sections.but,
+	  /NSIS/trunk/Docs/src/silent.but, /NSIS/trunk/Docs/src/stack.but,
+	  /NSIS/trunk/Docs/src/string.but,
+	  /NSIS/trunk/Docs/src/tutorial.but, /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Docs/src/uninstall.but,
+	  /NSIS/trunk/Docs/src/usage.but,
+	  /NSIS/trunk/Docs/src/usefulfunc.but,
+	  /NSIS/trunk/Docs/src/usefulinfos.but,
+	  /NSIS/trunk/Docs/src/var.but, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/TODO.txt: Documentation fixes and clarifications
+
+2016-03-23 22:55  anders_k
+
+	* /NSIS/trunk/Source/exehead/Ui.c: WM_CONTEXTMENU lParam keyboard
+	  check needs to be sign extended on 64-bit
+
+2016-03-23 13:50  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/noclib.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/noclib.h: Backported
+	  [r6725] MakeNSISW should not load libraries from the current
+	  directory because we don't control that directory when started
+	  from the shell (file associations).
+
+2016-03-23 13:42  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp: MakeNSISW should not
+	  load libraries from the current directory because we don't
+	  control that directory when started from the shell (file
+	  associations).
+
+2016-03-22 13:21  anders_k
+
+	* /NSIS/trunk/Source/script.cpp: Separate error messages for plugin
+	  dll not found and plugin function not found
+
+2016-03-17 21:36  anders_k
+
+	* /NSIS/branches/nsis2/Source/build.cpp: Backported [6722] Must use
+	  a POSIX compatible string comparison
+
+2016-03-17 21:36  anders_k
+
+	* /NSIS/trunk/Source/build.cpp: Must use a POSIX compatible string
+	  comparison
+
+2016-03-11 19:32  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/exehead/Main.c: Changed the name of the
+	  uninstaller created in %TEMP%\\~nsu.tmp from %UNIQUE%u_.exe to
+	  Un_%UNIQUE%.exe
+
+2016-03-11 19:16  anders_k
+
+	* /NSIS/trunk/Contrib/ExDLL/nsis_tchar.h,
+	  /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/SubStart/substart.c,
+	  /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/Call-amd64.S,
+	  /NSIS/trunk/Contrib/System/System.html, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/VB6RunTime.nsh,
+	  /NSIS/trunk/Source/7zip/7zGuids.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree2.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3Z.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3ZMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4b.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMF.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMFMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/IMatchFinder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMA.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBitTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderOpt.h,
+	  /NSIS/trunk/Source/7zip/7zip/ICoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/IStream.h,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.cpp,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.h,
+	  /NSIS/trunk/Source/7zip/Common/CRC.cpp,
+	  /NSIS/trunk/Source/7zip/Common/CRC.h,
+	  /NSIS/trunk/Source/7zip/Common/Defs.h,
+	  /NSIS/trunk/Source/7zip/Common/MyCom.h,
+	  /NSIS/trunk/Source/7zip/Common/MyGuidDef.h,
+	  /NSIS/trunk/Source/7zip/Common/MyUnknown.h,
+	  /NSIS/trunk/Source/7zip/Common/MyWindows.h,
+	  /NSIS/trunk/Source/7zip/Common/StdAfx.h,
+	  /NSIS/trunk/Source/7zip/Common/Types.h,
+	  /NSIS/trunk/Source/7zip/LZMADecode.c,
+	  /NSIS/trunk/Source/7zip/LZMADecode.h,
+	  /NSIS/trunk/Source/afxres.h, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/bzip2/blocksort.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.h,
+	  /NSIS/trunk/Source/bzip2/compress.c,
+	  /NSIS/trunk/Source/bzip2/decompress.c,
+	  /NSIS/trunk/Source/bzip2/huffman.c, /NSIS/trunk/Source/cbzip2.h,
+	  /NSIS/trunk/Source/clzma.cpp, /NSIS/trunk/Source/clzma.h,
+	  /NSIS/trunk/Source/compressor.h, /NSIS/trunk/Source/crc32.c,
+	  /NSIS/trunk/Source/crc32.h, /NSIS/trunk/Source/czlib.h,
+	  /NSIS/trunk/Source/DialogTemplate.cpp,
+	  /NSIS/trunk/Source/DialogTemplate.h,
+	  /NSIS/trunk/Source/dirreader.cpp, /NSIS/trunk/Source/dirreader.h,
+	  /NSIS/trunk/Source/exehead/afxres.h,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/bgbg.c,
+	  /NSIS/trunk/Source/exehead/components.c,
+	  /NSIS/trunk/Source/exehead/components.h,
+	  /NSIS/trunk/Source/exehead/config.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/lang.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/state.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/fileform.cpp, /NSIS/trunk/Source/fileform.h,
+	  /NSIS/trunk/Source/growbuf.cpp, /NSIS/trunk/Source/growbuf.h,
+	  /NSIS/trunk/Source/icon.cpp, /NSIS/trunk/Source/icon.h,
+	  /NSIS/trunk/Source/lang.cpp, /NSIS/trunk/Source/lang.h,
+	  /NSIS/trunk/Source/lineparse.cpp, /NSIS/trunk/Source/lineparse.h,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/manifest.cpp,
+	  /NSIS/trunk/Source/manifest.h, /NSIS/trunk/Source/mmap.cpp,
+	  /NSIS/trunk/Source/mmap.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/Plugins.cpp, /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/ShConstants.cpp,
+	  /NSIS/trunk/Source/ShConstants.h, /NSIS/trunk/Source/strlist.cpp,
+	  /NSIS/trunk/Source/strlist.h, /NSIS/trunk/Source/tchar.h,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/tstring.cpp, /NSIS/trunk/Source/tstring.h,
+	  /NSIS/trunk/Source/uservars.h, /NSIS/trunk/Source/utf.cpp,
+	  /NSIS/trunk/Source/utf.h, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h,
+	  /NSIS/trunk/Source/validateunicode.cpp,
+	  /NSIS/trunk/Source/validateunicode.h,
+	  /NSIS/trunk/Source/winchar.cpp, /NSIS/trunk/Source/winchar.h,
+	  /NSIS/trunk/Source/writer.cpp, /NSIS/trunk/Source/writer.h,
+	  /NSIS/trunk/Source/zlib/INFBLOCK.C,
+	  /NSIS/trunk/Source/zlib/ZCONF.H, /NSIS/trunk/Source/zlib/ZLIB.H,
+	  /NSIS/trunk/Source/zlib/ZUTIL.H: Copyright 2016
+
+2016-03-09 22:58  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/VPatch/Readme.html,
+	  /NSIS/branches/nsis2/Include/LogicLib.nsh,
+	  /NSIS/branches/nsis2/Source/build.cpp,
+	  /NSIS/branches/nsis2/Source/exehead/Main.c,
+	  /NSIS/branches/nsis2/Source/lang.cpp: Backported some security
+	  fixes from trunk
+	  [r6706] Delayload CLBCATQ for XP
+	  [r6708] Warn when the output filename is setup.exe because
+	  Windows will unsafely load compatibility shims
+	  [r6718] Display the correct uninstaller langstring name in the
+	  recursive error string
+
+2016-03-09 22:33  anders_k
+
+	* /NSIS/trunk/Source/lang.cpp: Display the correct uninstaller
+	  langstring name in the recursive error string
+
+2016-03-09 19:26  anders_k
+
+	* /NSIS/trunk/Include/LogicLib.nsh, /NSIS/trunk/Include/Util.nsh:
+	  ${Int64CmpU} in Util.nsh cannot use LogicLib because the LogicLib
+	  Z operators calls ${Int64CmpU} on 64-bit systems
+
+2016-03-09 12:50  anders_k
+
+	* /NSIS/trunk/Docs/src/compiler.but: Document ${NSIS_CHAR_SIZE} and
+	  ${NSIS_PTR_SIZE}
+
+2016-03-08 03:05  anders_k
+
+	* /NSIS/trunk/Contrib/VPatch/Readme.html,
+	  /NSIS/trunk/Docs/src/compiler.but, /NSIS/trunk/Docs/src/var.but,
+	  /NSIS/trunk/Include/Win/WinDef.nsh: Minor documentation tweaks
+
+2016-03-07 14:37  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/Makensisw/makensisw.h,
+	  /NSIS/branches/nsis2/Contrib/System/Source/Buffers.c,
+	  /NSIS/branches/nsis2/Contrib/System/Source/System.c,
+	  /NSIS/branches/nsis2/Contrib/System/System.html,
+	  /NSIS/branches/nsis2/Include/LogicLib.nsh: Backported support for
+	  system 'p' type and logiclib P and Z tests
+
+2016-03-07 14:34  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/NSISdl/httpget.cpp,
+	  /NSIS/trunk/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/trunk/Include/LogicLib.nsh: Incomplete support for Z
+	  (size_t) logiclib integer tests and other minor fixes
+
+2016-03-06 16:28  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/AdvSplash/advsplash.c,
+	  /NSIS/branches/nsis2/Contrib/Banner/Banner.c,
+	  /NSIS/branches/nsis2/Contrib/BgImage/BgImage.cpp,
+	  /NSIS/branches/nsis2/Contrib/Dialer/dialer.c,
+	  /NSIS/branches/nsis2/Contrib/ExDLL/exdll.c,
+	  /NSIS/branches/nsis2/Contrib/InstallOptions/InstallerOptions.cpp,
+	  /NSIS/branches/nsis2/Contrib/LangDLL/LangDLL.c,
+	  /NSIS/branches/nsis2/Contrib/Library/TypeLib/TypeLib.cpp,
+	  /NSIS/branches/nsis2/Contrib/MakeLangId/MakeLangId.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/jnetlib/connection.h,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/jnetlib/httpget.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/jnetlib/httpget.h,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/jnetlib/util.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/jnetlib/util.h,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/makensisw.h,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/utils.cpp,
+	  /NSIS/branches/nsis2/Contrib/Makensisw/utils.h,
+	  /NSIS/branches/nsis2/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/branches/nsis2/Contrib/nsExec/nsexec.c,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/connection.h,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/httpget.cpp,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/httpget.h,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/util.cpp,
+	  /NSIS/branches/nsis2/Contrib/NSISdl/util.h,
+	  /NSIS/branches/nsis2/Contrib/Splash/splash.c,
+	  /NSIS/branches/nsis2/Contrib/StartMenu/StartMenu.c,
+	  /NSIS/branches/nsis2/Contrib/System/Resource/Main.c,
+	  /NSIS/branches/nsis2/Contrib/System/Source/System.c,
+	  /NSIS/branches/nsis2/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/branches/nsis2/Contrib/VPatch/Source/Plugin/vpatchdll.c,
+	  /NSIS/branches/nsis2/Contrib/zip2exe/main.cpp,
+	  /NSIS/branches/nsis2/SCons/Config/gnu,
+	  /NSIS/branches/nsis2/Source/7zip/Common/Alloc.cpp,
+	  /NSIS/branches/nsis2/Source/DialogTemplate.cpp,
+	  /NSIS/branches/nsis2/Source/DialogTemplate.h,
+	  /NSIS/branches/nsis2/Source/exehead/Ui.c,
+	  /NSIS/branches/nsis2/Source/util.cpp: Fixed some errors and
+	  warnings for GCC 4.5.2
+
+2016-02-26 16:16  anders_k
+
+	* /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/script.cpp: Warn
+	  when the [License]LangString language id parameter is not a valid
+	  number
+
+2016-02-16 18:01  anders_k
+
+	* /NSIS/trunk/Source/build.cpp: Make sure the filename string is
+	  not destroyed before we are done with the .c_str() pointer.
+
+2016-02-16 14:59  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h: Use a
+	  warning helper function so "warn as error" works everywhere
+
+2016-02-16 14:35  anders_k
+
+	* /NSIS/trunk/Source/build.cpp: Warn when the output filename is
+	  setup.exe because Windows will unsafely load compatibility shims
+
+2016-02-12 14:01  anders_k
+
+	* /NSIS/trunk/Include/StrFunc.nsh: Don't redefine
+	  STRFUNC_*VERBOSITY when StrFunc.nsh is included multiple times
+
+2016-02-12 12:52  anders_k
+
+	* /NSIS/trunk/Source/exehead/Main.c: Delayload CLBCATQ for XP
+
+2016-02-04 20:14  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/ExDLL/nsis.pas,
+	  /NSIS/branches/nsis2/Contrib/VPatch/Source/Plugin/apply_patch.c,
+	  /NSIS/branches/nsis2/Docs/src/usefulinfos.but,
+	  /NSIS/branches/nsis2/Examples/rtest.nsi,
+	  /NSIS/branches/nsis2/Source/exehead/fileform.h,
+	  /NSIS/branches/nsis2/Source/exehead/util.c,
+	  /NSIS/branches/nsis2/Source/lineparse.cpp,
+	  /NSIS/branches/nsis2/Source/lineparse.h,
+	  /NSIS/branches/nsis2/Source/util.cpp: Fixed some typos (Most of
+	  them found by codespell/Stefan Weil)
+
+2016-02-04 20:14  anders_k
+
+	* /NSIS/trunk/Contrib/VPatch/Source/Plugin/apply_patch.c,
+	  /NSIS/trunk/Docs/src/bin/halibut/bk_xhtml.c,
+	  /NSIS/trunk/Docs/src/usefulinfos.but,
+	  /NSIS/trunk/Examples/rtest.nsi,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/util.c, /NSIS/trunk/Source/lang.cpp,
+	  /NSIS/trunk/Source/util.cpp: Fixed some typos (Most of them found
+	  by codespell/Stefan Weil)
+
+2016-02-04 19:17  anders_k
+
+	* /NSIS/branches/nsis2/Contrib/Language files/Japanese.nsh,
+	  /NSIS/branches/nsis2/Docs/src/history.but: Added missing
+	  MULTIUSER_* entries to Japanese.nsh (patch #266)
+
+2016-02-04 19:17  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Japanese.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Added missing MULTIUSER_*
+	  entries to Japanese.nsh (patch #266)
+
+2016-02-04 18:43  anders_k
+
+	* /NSIS/branches/nsis2/Source/exehead/exec.c,
+	  /NSIS/branches/nsis2/Source/exehead/Main.c,
+	  /NSIS/branches/nsis2/Source/exehead/util.c: Backported latest dll
+	  preload code from trunk (r6700)
+
+2016-02-04 18:32  anders_k
+
+	* /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/util.c: Preload more dlls for Vista
+	  and 7 without KB2533623
+
+2015-12-27 06:22  kichik
+
+	* /NSIS/tags/v30b3: Tagging for release 3.0b3
+
+2015-12-27 06:21  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.0b3
+
+2015-12-27 06:13  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 3.0b3 changelog
+
+2015-12-27 05:43  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 2.50 changelog
+
 2015-12-27 05:36  kichik
 
 	* /NSIS/tags/v250: Tagging for release 2.50
