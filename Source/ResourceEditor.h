@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 2002-2015 Amir Szekely <kichik@users.sourceforge.net>
+ * Copyright (C) 2002-2016 Amir Szekely <kichik@users.sourceforge.net>
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty.
+ *
+ * Reviewed for Unicode support by Jim Park -- 08/21/2007
  */
 
 #if !defined(AFX_RESOURCEEDITOR_H__683BF710_E805_4093_975B_D5729186A89A__INCLUDED_)
@@ -22,12 +24,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include <vector>
-
 #include "Platform.h"
+#include "winchar.h"
+#include <vector>
+#include <cassert>
+
 #ifdef _WIN32
-#  include <WinNT.h>
+#include <winnt.h>
 #else
 // all definitions for non Win32 platforms were taken from MinGW's free Win32 library
 #  define IMAGE_DIRECTORY_ENTRY_RESOURCE  2
@@ -102,32 +105,71 @@ typedef struct RESOURCE_DIRECTORY {
   MY_IMAGE_RESOURCE_DIRECTORY_ENTRY Entries[1];
 } *PRESOURCE_DIRECTORY;
 
-#define GetMemberFromOptionalHeader(optionalHeader, member) \
-    ( (optionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) ? \
-      &((PIMAGE_OPTIONAL_HEADER32)&optionalHeader)->member : \
-      &((PIMAGE_OPTIONAL_HEADER64)&optionalHeader)->member \
-    )
+#define GetCommonStructField(ref, s1, s2, fld) \
+  ( (&((ref).fld))[(1 / ( 0 + !!(FIELD_OFFSET(s1, fld) == FIELD_OFFSET(s2, fld) && sizeof(((s1*)0)->fld) == sizeof(((s2*)0)->fld)) )) - 1] ) // Try to fail at compile-time if the field is not at the same offset in both structs or does not have the same size
+#define GetCommonMemberFromPEOptHdr(OptHdr, Member) \
+  ( &GetCommonStructField(OptHdr, IMAGE_OPTIONAL_HEADER32, IMAGE_OPTIONAL_HEADER64, Member) )
+#define GetMemberFromPEOptHdrEx(OptHdr, Member, Sixtyfour) \
+  ( (Sixtyfour) ? \
+    &((PIMAGE_OPTIONAL_HEADER64)&(OptHdr))->Member : \
+    &((PIMAGE_OPTIONAL_HEADER32)&(OptHdr))->Member \
+  )
+#define GetMemberFromPEOptHdr(OptHdr, Member) \
+  ( GetMemberFromPEOptHdrEx(OptHdr, Member, ((OptHdr).Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)) )
+
 class CResourceEditor {
 public:
   CResourceEditor(BYTE* pbPE, int iSize, bool bKeepData = true);
   virtual ~CResourceEditor();
 
-  bool  UpdateResource(WORD szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceW(WORD szType, WCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceW(WCHAR* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceA(char* szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceA(WORD szType, char* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  bool  UpdateResourceA(char* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
-  BYTE* GetResourceW(WCHAR* szType, WCHAR* szName, LANGID wLanguage);
-  BYTE* GetResourceA(char* szType, char* szName, LANGID wLanguage);
-  int   GetResourceSizeW(WCHAR* szType, WCHAR* szName, LANGID wLanguage);
-  int   GetResourceSizeA(char* szType, char* szName, LANGID wLanguage);
-  DWORD GetResourceOffsetW(WCHAR* szType, WCHAR* szName, LANGID wLanguage);
-  DWORD GetResourceOffsetA(char* szType, char* szName, LANGID wLanguage);
+  // On POSIX+Unicode GetResource(RT_VERSION,..) is not TCHAR nor WINWCHAR, it is WCHAR/UINT16.
+  // If it passes IS_INTRESOURCE we must allow it.
+  // Use TCHAR* for real strings. If you need to pass in a WINWCHAR*, make GetResourceW public...
+  template<class T> bool UpdateResource(const T*Type, WORD Name, LANGID Lang, BYTE*Data, DWORD Size)
+  {
+    if (sizeof(T) != sizeof(TCHAR) && !IS_INTRESOURCE(Type))
+    {
+      assert(IS_INTRESOURCE(Type));
+      return false;
+    }
+    return UpdateResourceT((const TCHAR*) Type, Name, Lang, Data, Size);
+  }
+  template<class T> BYTE* GetResource(const T*Type, WORD Name, LANGID Lang)
+  {
+    if (sizeof(T) != sizeof(TCHAR) && !IS_INTRESOURCE(Type))
+    {
+      assert(IS_INTRESOURCE(Type));
+      return NULL;
+    }
+    return GetResourceT((const TCHAR*) Type, Name, Lang);
+  }
+  template<class T> int GetResourceSize(const T*Type, WORD Name, LANGID Lang)
+  {
+    if (sizeof(T) != sizeof(TCHAR) && !IS_INTRESOURCE(Type))
+    {
+      assert(IS_INTRESOURCE(Type));
+      return -1;
+    }
+    return GetResourceSizeT((const TCHAR*) Type, Name, Lang);
+  }
+  template<class T> DWORD GetResourceOffset(const T*Type, WORD Name, LANGID Lang)
+  {
+    if (sizeof(T) != sizeof(TCHAR) && !IS_INTRESOURCE(Type))
+    {
+      assert(IS_INTRESOURCE(Type));
+      return -1;
+    }
+    return GetResourceOffsetT((const TCHAR*) Type, Name, Lang);
+  }
+
+  bool  UpdateResourceT   (const TCHAR* szType, WORD szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  BYTE* GetResourceT      (const TCHAR* szType, WORD szName, LANGID wLanguage);
+  int   GetResourceSizeT  (const TCHAR* szType, WORD szName, LANGID wLanguage);
+  DWORD GetResourceOffsetT(const TCHAR* szType, WORD szName, LANGID wLanguage);
   void  FreeResource(BYTE* pbResource);
 
-  bool  AddExtraVirtualSize2PESection(const char* pszSectionName, int addsize);
+  // The section name must be in ASCII.
+  bool  SetPESectionVirtualSize(const char* pszSectionName, DWORD newsize);
   DWORD Save(BYTE* pbBuf, DWORD &dwSize);
 
   // utitlity functions
@@ -140,6 +182,11 @@ public:
     DWORD *pdwResSecVA = NULL,
     DWORD *pdwSectionIndex = NULL
   );
+private:
+  bool  UpdateResourceW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage, BYTE* lpData, DWORD dwSize);
+  BYTE* GetResourceW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage);
+  int   GetResourceSizeW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage);
+  DWORD GetResourceOffsetW(const WINWCHAR* szType, WINWCHAR* szName, LANGID wLanguage);
 
 private:
   BYTE* m_pbPE;
@@ -156,7 +203,7 @@ private:
   CResourceDirectory* ScanDirectory(PRESOURCE_DIRECTORY rdRoot, PRESOURCE_DIRECTORY rdToScan);
 
   void WriteRsrcSec(BYTE* pbRsrcSec);
-  void SetOffsets(CResourceDirectory* resDir, DWORD newResDirAt);
+  void SetOffsets(CResourceDirectory* resDir, ULONG_PTR newResDirAt);
 
   DWORD AdjustVA(DWORD dwVirtualAddress, DWORD dwAdjustment);
   DWORD AlignVA(DWORD dwVirtualAddress);
@@ -170,17 +217,17 @@ public:
   IMAGE_RESOURCE_DIRECTORY GetInfo();
 
   CResourceDirectoryEntry* GetEntry(unsigned int i);
-  void AddEntry(CResourceDirectoryEntry* entry);
+  bool AddEntry(CResourceDirectoryEntry* entry);
   void RemoveEntry(int i);
-  int  CountEntries();
-  int  Find(WCHAR* szName);
+  unsigned int  CountEntries();
+  int  Find(const WINWCHAR* szName);
   int  Find(WORD wId);
 
   DWORD GetSize();
 
   void Destroy();
 
-  DWORD m_dwWrittenAt;
+  ULONG_PTR m_ulWrittenAt;
 
 private:
   IMAGE_RESOURCE_DIRECTORY m_rdDir;
@@ -189,26 +236,26 @@ private:
 
 class CResourceDirectoryEntry {
 public:
-  CResourceDirectoryEntry(WCHAR* szName, CResourceDirectory* rdSubDir);
-  CResourceDirectoryEntry(WCHAR* szName, CResourceDataEntry* rdeData);
+  CResourceDirectoryEntry(const WINWCHAR* szName, CResourceDirectory* rdSubDir);
+  CResourceDirectoryEntry(const WINWCHAR* szName, CResourceDataEntry* rdeData);
   virtual ~CResourceDirectoryEntry();
 
-  bool HasName();
-  WCHAR* GetName();
-  int GetNameLength();
+  bool HasName() const;
+  const WINWCHAR* GetName() const;
+  int GetNameLength() const;
 
-  WORD GetId();
+  WORD GetId() const;
 
-  bool IsDataDirectory();
-  CResourceDirectory* GetSubDirectory();
+  bool IsDataDirectory() const;
+  CResourceDirectory* GetSubDirectory() const;
 
-  CResourceDataEntry* GetDataEntry();
+  CResourceDataEntry* GetDataEntry() const;
 
-  DWORD m_dwWrittenAt;
+  ULONG_PTR m_ulWrittenAt;
 
 private:
   bool m_bHasName;
-  WCHAR* m_szName;
+  WINWCHAR* m_szName;
   WORD m_wId;
 
   bool m_bIsDataDirectory;
@@ -232,7 +279,7 @@ public:
   DWORD GetCodePage();
   DWORD GetOffset();
 
-  DWORD m_dwWrittenAt;
+  ULONG_PTR m_ulWrittenAt;
 
 private:
   BYTE* m_pbData;

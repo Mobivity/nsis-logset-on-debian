@@ -1,3 +1,192 @@
+2016-07-25 00:52  kichik
+
+	* /NSIS/tags/v30: Tagging for release 3.0
+
+2016-07-25 00:49  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.0
+
+2016-07-25 00:47  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: 3.0 release notes
+
+2016-07-16 12:58  anders_k
+
+	* /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nslinks.cpp: Attempt to
+	  work around wxWidgets CustomLinks/Links incompatibility
+
+2016-07-16 12:47  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Docs/src/history.but: PortugueseBR fixes (bug #1149)
+
+2016-07-14 10:53  anders_k
+
+	* /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp: Added support for !finalize return
+	  value comparison
+
+2016-07-09 15:42  anders_k
+
+	* /NSIS/trunk/Docs/src/credits.but: Fixed some Unicode characters
+	  in the credits
+
+2016-07-09 04:34  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: oops got date wrong
+
+2016-07-09 04:09  kichik
+
+	* /NSIS/tags/v30rc2: Tagging for release 3.0rc2
+
+2016-07-09 04:08  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.0rc2
+
+2016-07-09 04:07  kichik
+
+	* /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nslinks.cpp: #1144 fix
+	  windows build
+
+2016-07-09 03:37  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: prepare changelog for 3.0rc2
+
+2016-07-06 11:28  anders_k
+
+	* /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: Disable batch-file workaround for
+	  !makensis command
+
+2016-07-04 12:23  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/script.cpp:
+	  Fixed bug #1147: !makensis command must force Unicode output to
+	  be UTF-8
+
+2016-06-28 16:56  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Docs/src/history.but: PortugueseBR fixes by deguix
+
+2016-06-26 15:32  anders_k
+
+	* /NSIS/trunk/Source/exehead/Ui.c: cchTextMax is count of TCHARs
+	  including \0
+
+2016-06-26 13:39  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html: DocFix: System::Call/Get
+	  have been available when compiling with GCC for a very long time.
+
+2016-06-26 13:36  anders_k
+
+	* /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nsismenu.cpp,
+	  /NSIS/trunk/Contrib/NSIS Menu/nsismenu/nslinks.cpp,
+	  /NSIS/trunk/Contrib/NSIS Menu/SConscript,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Menu/index.html,
+	  /NSIS/trunk/SConstruct: NSIS Menu POSIX fixes (bug #1144)
+
+2016-06-18 20:59  anders_k
+
+	* /NSIS/trunk/Include/WinVer.nsh: Changed the VER_NT_WORKSTATION
+	  comparison check to match the MSDN recommendation
+
+2016-06-12 13:16  anders_k
+
+	* /NSIS/branches/nsis2/Source/util.h: include <unistd.h> in util.h
+	  (Bug #1146)
+
+2016-06-12 00:09  anders_k
+
+	* /NSIS/trunk/Contrib/NSIS Menu/SConscript: Must distribute
+	  notinstalled.html
+
+2016-06-07 18:51  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/LogicLib.nsh: Added LogicLib & operator
+
+2016-05-25 18:08  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/api.h: Updated changelog and fixed a
+	  typo
+
+2016-05-23 23:52  anders_k
+
+	* /NSIS/trunk/Include/LogicLib.nsh: Hopefully fixed reported issue
+	  where the LogicLib EndSelectLabel is not found when using
+	  ${Case2} in nested ${Select}s
+
+2016-05-08 08:51  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/icon.ico, /NSIS/trunk/Contrib/NSIS
+	  Menu/nsismenu/nsisicon.ico: Added 128x128 image to the NSIS Menu
+	  icon
+	  Changed the 32x32x16 and 16x16x16 images to look like the
+	  standard round NSIS logo
+	  Tweaked the 48x48 images
+
+2016-04-22 13:46  anders_k
+
+	* /NSIS/trunk/Contrib/zip2exe/main.cpp,
+	  /NSIS/trunk/Contrib/zip2exe/res.rc,
+	  /NSIS/trunk/Docs/src/history.but: Bumped zip2exe version and
+	  linked to bugreport in history
+
+2016-04-21 23:01  anders_k
+
+	* /NSIS/trunk/Contrib/zip2exe/main.cpp,
+	  /NSIS/trunk/Docs/src/history.but: Zip2Exe aborts if the zip file
+	  is encrypted
+
+2016-04-12 14:36  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Danish.nlf,
+	  /NSIS/trunk/Docs/src/history.but: Minor tweaks to Danish.nlf (bug
+	  #1140)
+
+2016-04-04 21:06  anders_k
+
+	* /NSIS/branches/nsis2/SCons/Config/gnu: Fixed bug #1139: Broken
+	  defenv['STDCALL'] value
+	  
+	  * MinGW (GCC 4.5.2, GNU Binutils 2.24) cannot handle a space in
+	  the value, windres preprocessing will fail
+	  * POSIX GCC needs the space (Bug #1139)
+	  
+	  Backported doubled quotes trick from trunk
+
+2016-04-03 20:29  kichik
+
+	* /NSIS/trunk/Scripts/release.py: automate uploading
+
+2016-04-03 20:16  kichik
+
+	* /NSIS/tags/v30rc1: Tagging for release 3.0rc1
+
+2016-04-03 20:13  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.0rc1
+
+2016-04-03 20:12  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: move to major
+
+2016-04-03 05:56  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: update for 3.0rc1
+
+2016-04-03 05:47  kichik
+
+	* /NSIS/trunk/Source/utf.cpp: fix !appendfile writing null bytes on
+	  linux and breaking LogicLib ${Switch} statements
+
 2016-04-02 03:17  kichik
 
 	* /NSIS/tags/v251: Tagging for release 2.51

@@ -1,3 +1,20 @@
+/*
+ * icon.cpp
+ * 
+ * This file is a part of NSIS.
+ * 
+ * Copyright (C) 1999-2016 Nullsoft and Contributors
+ * 
+ * Licensed under the zlib/libpng license (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ * Licence details can be found in the file COPYING.
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty.
+ */
+
+
 #include "Platform.h"
 #include "icon.h"
 #include "util.h"
@@ -15,21 +32,27 @@ extern FILE *g_output;
 
 #define SIZEOF_RSRC_ICON_GROUP_ENTRY 14
 
-static FILE * open_icon(const char* filename, IconGroupHeader& igh)
+static FILE * open_icon(const TCHAR* filename, IconGroupHeader& igh)
 {
-  FILE* f = FOPEN(filename, "rb");
+  FILE* f = FOPEN(filename, ("rb"));
   if (!f)
     throw runtime_error("can't open file");
 
   if (!fread(&igh, sizeof(IconGroupHeader), 1, f))
+  {
+    fclose(f);
     throw runtime_error("unable to read header from file");
+  }
 
   FIX_ENDIAN_INT16_INPLACE(igh.wIsIcon);
   FIX_ENDIAN_INT16_INPLACE(igh.wReserved);
   FIX_ENDIAN_INT16_INPLACE(igh.wCount);
 
   if (igh.wIsIcon != 1 || igh.wReserved != 0)
+  {
+    fclose(f);
     throw runtime_error("invalid icon file");
+  }
 
   return f;
 }
@@ -47,8 +70,8 @@ IconGroup load_icon_res(CResourceEditor* re, WORD id)
   IconGroupHeader* header;
   IconGroup result;
 
-  LPBYTE group = re->GetResourceA(
-    RT_GROUP_ICON, MAKEINTRESOURCE(id), NSIS_DEFAULT_LANG);
+  LPBYTE group = re->GetResource(
+    RT_GROUP_ICON, id, NSIS_DEFAULT_LANG);
 
   if (!group)
     throw runtime_error("can't find icon group");
@@ -67,7 +90,7 @@ IconGroup load_icon_res(CResourceEditor* re, WORD id)
 
     WORD rsrc_id = FIX_ENDIAN_INT16(entry->wRsrcId);
 
-    icon.data = re->GetResourceA(RT_ICON, MAKEINTRESOURCE(rsrc_id), NSIS_DEFAULT_LANG);
+    icon.data = re->GetResource(RT_ICON, rsrc_id, NSIS_DEFAULT_LANG);
 
     if (!icon.data)
     {
@@ -78,15 +101,17 @@ IconGroup load_icon_res(CResourceEditor* re, WORD id)
     result.push_back(icon);
   }
 
+  re->FreeResource(group);
   return result;
 }
 
-IconGroup load_icon_file(const char* filename)
+IconGroup load_icon_file(const TCHAR* filename)
 {
   IconGroupHeader iconHeader;
   IconGroup result;
 
   FILE *file = open_icon(filename, iconHeader);
+  MANAGE_WITH(file, fclose);
 
   for (WORD i = 0; i < iconHeader.wCount; i++)
   {
@@ -150,6 +175,7 @@ typedef struct
   unsigned size_index;
 } IconPair;
 
+
 typedef vector<IconPair> IconPairs;
 
 static bool compare_icon(Icon a, Icon b)
@@ -202,7 +228,7 @@ static IconPairs get_icon_order(IconGroup icon1, IconGroup icon2)
       FIX_ENDIAN_INT32(sorted_icons1[i].meta.dwRawSize),
       FIX_ENDIAN_INT32(sorted_icons2[i].meta.dwRawSize)
     );
-    pair.size_index = i;
+    pair.size_index = truncate_cast(unsigned int,i);
 
     result.push_back(pair);
   }
@@ -216,7 +242,7 @@ static IconPairs get_icon_order(IconGroup icon1, IconGroup icon2)
       pair.index1 = sorted_icons1[i].index;
       pair.index2 = 0xffff;
       pair.size = FIX_ENDIAN_INT32(sorted_icons1[i].meta.dwRawSize);
-      pair.size_index = i;
+      pair.size_index = truncate_cast(unsigned int,i);
     }
 
     if (i < sorted_icons2.size())
@@ -224,7 +250,7 @@ static IconPairs get_icon_order(IconGroup icon1, IconGroup icon2)
       pair.index2 = sorted_icons2[i].index;
       pair.index1 = 0xffff;
       pair.size = FIX_ENDIAN_INT32(sorted_icons2[i].meta.dwRawSize);
-      pair.size_index = i;
+      pair.size_index = truncate_cast(unsigned int,i);
     }
 
     result.push_back(pair);
@@ -233,6 +259,7 @@ static IconPairs get_icon_order(IconGroup icon1, IconGroup icon2)
   return result;
 }
 
+#define destroy_icon_group(p) ( delete [] (p) )
 static LPBYTE generate_icon_group(IconGroup icon, IconPairs order, bool first)
 {
   LPBYTE group = new BYTE[
@@ -244,7 +271,7 @@ static LPBYTE generate_icon_group(IconGroup icon, IconPairs order, bool first)
 
   header->wReserved = 0;
   header->wIsIcon   = FIX_ENDIAN_INT16(1);
-  header->wCount    = FIX_ENDIAN_INT16(icon.size());
+  header->wCount    = FIX_ENDIAN_INT16((WORD)icon.size());
 
   order = sort_pairs(order, first);
 
@@ -273,17 +300,18 @@ void set_icon(CResourceEditor* re, WORD wIconId, IconGroup icon1, IconGroup icon
   size_t group_size = sizeof(IconGroupHeader) // header
     + order.size() * SIZEOF_RSRC_ICON_GROUP_ENTRY; // entries
 
-  re->UpdateResourceA(RT_GROUP_ICON, MAKEINTRESOURCE(wIconId), NSIS_DEFAULT_LANG, group1, group_size);
+  re->UpdateResource(RT_GROUP_ICON, wIconId, NSIS_DEFAULT_LANG, group1, (DWORD)group_size);
+  destroy_icon_group(group1);
 
   // delete old icons
   unsigned i = 1;
-  while (re->UpdateResourceA(RT_ICON, MAKEINTRESOURCE(i++), NSIS_DEFAULT_LANG, 0, 0));
+  while (re->UpdateResource(RT_ICON, i++, NSIS_DEFAULT_LANG, 0, 0));
 
   // set new icons
   IconGroup::size_type order_index;
   for (order_index = 0; order_index < order.size(); order_index++)
   {
-    DWORD size_index = order[order_index].size_index;
+    WORD size_index = order[order_index].size_index;
     DWORD size = order[order_index].size;
     LPBYTE data = new BYTE[size];
     memset(data, 0, size);
@@ -294,7 +322,7 @@ void set_icon(CResourceEditor* re, WORD wIconId, IconGroup icon1, IconGroup icon
       memcpy(data, icon->data, FIX_ENDIAN_INT32(icon->meta.dwRawSize));
     }
 
-    re->UpdateResourceA(RT_ICON, MAKEINTRESOURCE(size_index + 1), NSIS_DEFAULT_LANG, data, size);
+    re->UpdateResource(RT_ICON, size_index + 1, NSIS_DEFAULT_LANG, data, size);
 
     delete [] data;
   }
@@ -330,7 +358,7 @@ unsigned char* generate_uninstall_icon_data(IconGroup icon1, IconGroup icon2, si
   LPBYTE seeker = uninst_data;
 
   // fill group header
-  *(LPDWORD) seeker = FIX_ENDIAN_INT32(group_size);
+  *(LPDWORD) seeker = FIX_ENDIAN_INT32((UINT32)group_size);
   seeker += sizeof(DWORD);
   *(LPDWORD) seeker = 0;
   seeker += sizeof(DWORD);
@@ -357,6 +385,7 @@ unsigned char* generate_uninstall_icon_data(IconGroup icon1, IconGroup icon2, si
   *(LPDWORD) seeker = 0;
 
   // done
+  destroy_icon_group(group);
   return uninst_data;
 }
 
@@ -368,11 +397,11 @@ int generate_unicons_offsets(LPBYTE exeHeader, size_t exeHeaderSize, LPBYTE unin
     DWORD offset;
     DWORD size;
 
-    CResourceEditor re(exeHeader, exeHeaderSize, false);
+    CResourceEditor re(exeHeader, (DWORD)exeHeaderSize, false);
 
     LPBYTE seeker = uninstIconData;
 
-    offset = re.GetResourceOffsetA(RT_GROUP_ICON, MAKEINTRESOURCE(wIconId), NSIS_DEFAULT_LANG);
+    offset = re.GetResourceOffset(RT_GROUP_ICON, wIconId, NSIS_DEFAULT_LANG);
 
     size = FIX_ENDIAN_INT32(*(LPDWORD)seeker);
     seeker += sizeof(DWORD);
@@ -385,14 +414,14 @@ int generate_unicons_offsets(LPBYTE exeHeader, size_t exeHeaderSize, LPBYTE unin
 
     while (*(LPDWORD)seeker)
     {
-      offset = re.GetResourceOffsetA(RT_ICON, MAKEINTRESOURCE(icon_index), NSIS_DEFAULT_LANG);
+      offset = re.GetResourceOffset(RT_ICON, icon_index, NSIS_DEFAULT_LANG);
 
       if (offset > exeHeaderSize)
       {
         throw runtime_error("invalid icon offset (possibly compressed icon)");
       }
 
-      DWORD real_size = re.GetResourceSizeA(RT_ICON, MAKEINTRESOURCE(icon_index), NSIS_DEFAULT_LANG);
+      DWORD real_size = re.GetResourceSize(RT_ICON, icon_index, NSIS_DEFAULT_LANG);
 
       size = FIX_ENDIAN_INT32(*(LPDWORD)seeker);
       seeker += sizeof(DWORD);
@@ -413,7 +442,7 @@ int generate_unicons_offsets(LPBYTE exeHeader, size_t exeHeaderSize, LPBYTE unin
   catch (const exception& e)
   {
     if (g_display_errors)
-      fprintf(g_output, "\nError generating uninstaller icon: %s -- failing!\n", e.what());
+      PrintColorFmtMsg_ERR(_T("\nError generating uninstaller icon: %") NPRIs _T(" -- failing!\n"), CtoTStrParam(e.what()));
     return 0;
   }
 

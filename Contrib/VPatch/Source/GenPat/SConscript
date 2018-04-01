@@ -13,8 +13,9 @@ files = Split("""
 """)
 
 libs = Split("""
+	z
 """)
 
 Import('BuildUtil')
 
-BuildUtil(target, files, libs, flags = ['$EXCEPTION_FLAG'], cross_platform = True)
+BuildUtil(target, files, libs, flags = ['$EXCEPTION_FLAG'], cross_platform = True, cli = True)

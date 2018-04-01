@@ -2,15 +2,10 @@ target = 'makensisw'
 
 files = Split("""
 	makensisw.cpp
-	noclib.cpp
 	toolbar.cpp
 	utils.cpp
 	version.cpp
 	update.cpp
-	jnetlib/asyncdns.cpp
-	jnetlib/connection.cpp
-	jnetlib/httpget.cpp
-	jnetlib/util.cpp
 """)
 
 res = Split("""
@@ -18,8 +13,9 @@ res = Split("""
 """)
 
 resources = Split("""
-	shell.ico
 	icon.ico
+	assoc_nsi.ico
+	assoc_nsh.ico
 	makensisw.xml
 	logo.bmp
 	toolbar.bmp
@@ -34,9 +30,10 @@ libs = Split("""
 	user32
 	gdi32
 	shell32
+	shlwapi
 	comdlg32
 	comctl32
-	wsock32
+	wininet
 """)
 
 docs = Split("""
@@ -52,8 +49,8 @@ BuildUtil(
 	libs,
 	res = res,
 	resources = resources,
-	entry = 'WinMain',
-	defines = ['RELEASE=2.3'],
+	entry = None,
+	defines = ['RELEASE=2.3.3'],
 	docs = docs,
 	root_util = True
 )

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2015 Nullsoft and Contributors
+ * Copyright (C) 1999-2016 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 #include "../Platform.h"
 #include <shlobj.h>
-#include <shellapi.h>
 #include "resource.h"
 #include "util.h"
 #include "fileform.h"
@@ -59,7 +58,7 @@
 extern HANDLE dbd_hFile;
 #endif
 
-char g_caption[NSIS_MAX_STRLEN*2];
+TCHAR g_caption[NSIS_MAX_STRLEN*2];
 #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
 HWND g_hwnd;
 HANDLE g_hInstance;
@@ -67,7 +66,7 @@ HANDLE g_hInstance;
 
 void NSISCALL CleanUp();
 
-char *ValidateTempDir()
+TCHAR *ValidateTempDir()
 {
   validate_filename(state_temp_dir);
   if (!validpathspec(state_temp_dir))
@@ -80,16 +79,17 @@ char *ValidateTempDir()
 
 void *g_SHGetFolderPath;
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam, int nCmdShow)
+NSIS_ENTRYPOINT_GUINOCRT
+EXTERN_C void NSISWinMainNOCRT()
 {
   int ret = 0;
-  const char *m_Err = _LANG_ERRORWRITINGTEMP;
+  const TCHAR *m_Err = _LANG_ERRORWRITINGTEMP;
 
   int cl_flags = 0;
 
-  char *realcmds;
-  char seekchar=' ';
-  char *cmdline;
+  TCHAR *realcmds;
+  TCHAR seekchar=_T(' ');
+  TCHAR *cmdline;
 
   SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
 
@@ -140,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
 #ifdef NSIS_SUPPORT_GETDLLVERSION
   myGetProcAddress(MGA_GetFileVersionInfo); // VERSION
 #endif
-  g_SHGetFolderPath = myGetProcAddress(MGA_SHGetFolderPathA); // and SHFOLDER
+  g_SHGetFolderPath = myGetProcAddress(MGA_SHGetFolderPath); // and SHFOLDER
 
 
   InitCommonControls();
@@ -171,7 +171,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
     // of special folders (CSIDL_*).
 
     SHFILEINFO shfi;
-    SHGetFileInfo("", 0, &shfi, sizeof(SHFILEINFO), 0);
+    SHGetFileInfo(_T(""), 0, &shfi, sizeof(SHFILEINFO), 0);
   }
 
   mystrcpy(g_caption,_LANG_GENERIC_ERROR);
@@ -183,7 +183,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
 #endif//NSIS_CONFIG_VISIBLE_SUPPORT
 
   cmdline = state_command_line;
-  if (*cmdline == '\"') seekchar = *cmdline++;
+  if (*cmdline == _T('\"')) seekchar = *cmdline++;
 
   cmdline=findchar(cmdline, seekchar);
   cmdline=CharNext(cmdline);
@@ -192,36 +192,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
   while (*cmdline)
   {
     // skip over any spaces
-    while (*cmdline == ' ') cmdline++;
+    while (*cmdline == _T(' ')) cmdline++;
     
     // get char we should look for to get the next parm
-    seekchar = ' ';
-    if (cmdline[0] == '\"')
+    seekchar = _T(' ');
+    if (cmdline[0] == _T('\"'))
     {
       cmdline++;
-      seekchar = '\"';
+      seekchar = _T('\"');
     }
 
     // is it a switch?
-    if (cmdline[0] == '/')
+    if (cmdline[0] == _T('/'))
     {
       cmdline++;
 
-// this only works with spaces because they have just one bit on
-#define END_OF_ARG(c) (((c)|' ')==' ')
+#define END_OF_ARG(c) (c == _T(' ') || c == _T('\0'))
 
 #if defined(NSIS_CONFIG_VISIBLE_SUPPORT) && defined(NSIS_CONFIG_SILENT_SUPPORT)
-      if (cmdline[0] == 'S' && END_OF_ARG(cmdline[1]))
-        cl_flags |= FH_FLAGS_SILENT;
+      if (cmdline[0] == _T('S') && END_OF_ARG(cmdline[1]))
+        g_exec_flags.silent = 1; // bug #1076 - just set the silent flag. the user really wants it silent.
+                                 // loadHeaders() will not reset this as it uses |= to apply the script flags.
+                                 // there is also no option to force non-silent like `CRCCheck force`
 #endif//NSIS_CONFIG_SILENT_SUPPORT && NSIS_CONFIG_VISIBLE_SUPPORT
 #ifdef NSIS_CONFIG_CRC_SUPPORT
-      if (*(LPDWORD)cmdline == CHAR4_TO_DWORD('N','C','R','C') && END_OF_ARG(cmdline[4]))
+      if (CMP4CHAR(cmdline, _T("NCRC")) && END_OF_ARG(cmdline[4]))
         cl_flags |= FH_FLAGS_NO_CRC;
 #endif//NSIS_CONFIG_CRC_SUPPORT
 
-      if (*(LPDWORD)(cmdline-2) == CHAR4_TO_DWORD(' ', '/', 'D','='))
+      if (CMP4CHAR(cmdline-2, _T(" /D=")))
       {
-        *(LPDWORD)(cmdline-2)=0; // keep this from being passed to uninstaller if necessary
+        *(cmdline-2)=_T('\0'); // keep this from being passed to uninstaller if necessary
         mystrcpy(state_install_directory,cmdline+2);
         break; // /D= must always be last
       }
@@ -230,7 +231,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
     // skip over our parm
     cmdline = findchar(cmdline, seekchar);
     // skip the quote
-    if (*cmdline == '\"')
+    if (*cmdline == _T('\"'))
       cmdline++;
   }
 
@@ -238,10 +239,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
   if (!ValidateTempDir())
   {
     GetWindowsDirectory(state_temp_dir, NSIS_MAX_STRLEN - 5); // leave space for \Temp
-    mystrcat(state_temp_dir, "\\Temp");
+    mystrcat(state_temp_dir, _T("\\Temp"));
     if (!ValidateTempDir())
     {
-      goto end;
+      // Bug #2909242:
+      // When running at <= Low IL we cannot write to %Temp% but we can try the temp folder used by IE.
+      // There does not seem to be a API to get the low temp dir directly, so we build the path on our own
+
+      GetTempPath(NSIS_MAX_STRLEN - 4, state_temp_dir); // leave space for \Low
+      mystrcat(state_temp_dir, _T("Low"));
+
+      // If we don't call SetEnvironmentVariable 
+      // child processes will use %temp% and not %temp%\Low
+      // and some apps probably can't handle a read only %temp%
+      // Do it before ValidateTempDir() because it appends a backslash.
+      // TODO: Should this be moved to ValidateTempDir() so it also updates for %windir%\Temp?
+      SetEnvironmentVariable(_T("TEMP"), state_temp_dir);
+      SetEnvironmentVariable(_T("TMP"), state_temp_dir);
+
+      if (!ValidateTempDir())
+      {
+        goto end;
+      }
     }
   }
   DeleteFile(state_language);
@@ -252,11 +271,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
 #ifdef NSIS_CONFIG_UNINSTALL_SUPPORT
   if (g_is_uninstaller)
   {
-    char *p = findchar(state_command_line, 0);
+    TCHAR *p = findchar(state_command_line, 0);
 
     // state_command_line has state_install_directory right after it in memory, so reading
     // a bit over state_command_line won't do any harm
-    while (p >= state_command_line && *(LPDWORD)p != CHAR4_TO_DWORD(' ', '_', '?', '=')) p--;
+    while (p >= state_command_line && !CMP4CHAR(p, _T(" _?="))) p--;
 
     m_Err = _LANG_UNINSTINITERROR;
 
@@ -279,9 +298,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
     {
       int x, admin = UserIsAdminGrpMember();
 
-      mystrcat(state_temp_dir,TEXT("~nsu"));
-      if (admin) mystrcat(state_temp_dir,TEXT("A")); // Don't lock down the directory used by non-admins
-      mystrcat(state_temp_dir,TEXT(".tmp"));
+      mystrcat(state_temp_dir,_T("~nsu"));
+      if (admin) mystrcat(state_temp_dir,_T("A")); // Don't lock down the directory used by non-admins
+      mystrcat(state_temp_dir,_T(".tmp"));
 
       // check if already running from uninstaller temp dir
       // this prevents recursive uninstaller calls
@@ -291,17 +310,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
       admin ? CreateRestrictedDirectory(state_temp_dir) : CreateNormalDirectory(state_temp_dir);
       SetCurrentDirectory(state_temp_dir);
 
-      if (!state_install_directory[0])
+      if (!(*state_install_directory))
         mystrcpy(state_install_directory,state_exe_directory);
 
       mystrcpy(g_usrvars[0], realcmds);
-      *(LPWORD)g_usrvars[1] = CHAR2_TO_WORD('A',0);
+      SET2CHAR(g_usrvars[1], _T("A\0"));
 
       for (x = 0; x < 26; x ++)
       {
-        static char buf2[NSIS_MAX_STRLEN];
+        static TCHAR buf2[NSIS_MAX_STRLEN];
 
-        GetNSISString(buf2,g_header->str_uninstchild); // $TEMP\$1u_.exe
+        GetNSISString(buf2,g_header->str_uninstchild); // $TEMP\Un_$1.exe
 
         DeleteFile(buf2); // clean up after all the other ones if they are there
 
@@ -314,7 +333,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
             MoveFileOnReboot(buf2,NULL);
 #endif
-            GetNSISString(buf2,g_header->str_uninstcmd); // '"$TEMP\$1u_.exe" $0 _?=$INSTDIR\'
+            GetNSISString(buf2,g_header->str_uninstcmd); // '"$TEMP\Un_$1.exe" $0 _?=$INSTDIR\'
             hProc=myCreateProcess(buf2);
             if (hProc)
             {
@@ -324,7 +343,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
             }
           }
         }
-        g_usrvars[1][0]++;
+        (*(((NSIS_STRING *)g_usrvars)[1]))++;
       }
 
 #ifdef NSIS_SUPPORT_MOVEONREBOOT
@@ -356,31 +375,21 @@ end:
   {
     my_MessageBox(m_Err, MB_OK | MB_ICONSTOP | (IDOK << 21));
     ExitProcess(2);
-    return 0;
   }
 
 #ifdef NSIS_SUPPORT_REBOOT
   if (g_exec_flags.reboot_called)
   {
     const DWORD reason = SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION;
-    BOOL (WINAPI *OPT)(HANDLE, DWORD,PHANDLE);
-    BOOL (WINAPI *LPV)(LPCTSTR,LPCTSTR,PLUID);
-    BOOL (WINAPI *ATP)(HANDLE,BOOL,PTOKEN_PRIVILEGES,DWORD,PTOKEN_PRIVILEGES,PDWORD);
     BOOL (WINAPI *IS)(LPTSTR,LPTSTR,DWORD,DWORD,DWORD);
-    OPT=myGetProcAddress(MGA_OpenProcessToken);
-    LPV=myGetProcAddress(MGA_LookupPrivilegeValueA);
-    ATP=myGetProcAddress(MGA_AdjustTokenPrivileges);
-    if (OPT && LPV && ATP)
+    HANDLE hToken;
+    TOKEN_PRIVILEGES tkp;
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
     {
-      HANDLE hToken;
-      TOKEN_PRIVILEGES tkp;
-      if (OPT(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
-      {
-        LPV(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
-        tkp.PrivilegeCount = 1;
-        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        ATP(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
-      }
+      LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
+      tkp.PrivilegeCount = 1;
+      tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+      AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
     }
 
     IS=myGetProcAddress(MGA_InitiateShutdown);
@@ -395,7 +404,6 @@ end:
     ret = g_exec_flags.errlvl;
 
   ExitProcess(ret);
-  return 0;
 }
 
 void NSISCALL CleanUp()
@@ -412,10 +420,14 @@ void NSISCALL CleanUp()
     dbd_hFile = INVALID_HANDLE_VALUE;
   }
 #endif
+#ifdef NSIS_CONFIG_PLUGIN_SUPPORT
   // Notify plugins that we are about to unload
   Plugins_UnloadAll();
-#ifdef NSIS_CONFIG_PLUGIN_SUPPORT
+
   // Clean up after plug-ins
   myDelete(state_plugins_dir, DEL_DIR | DEL_RECURSE | DEL_REBOOT);
 #endif // NSIS_CONFIG_PLUGIN_SUPPORT
+#ifdef DEBUG
+  // GlobalFree(g_header); ?
+#endif
 }

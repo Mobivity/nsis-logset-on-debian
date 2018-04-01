@@ -1,13 +1,15 @@
+// Unicode support by Jim Park -- 08/22/2007
+
 #define WIN32_LEAN_AND_MEAN 
 #include <windows.h>
 #include <wininet.h>
 
 #include <nsis/pluginapi.h> // nsis plugin
 
-#define NSISFunction(funcname) void __declspec(dllexport) funcname(HWND hwndParent, int string_size, char *variables, stack_t **stacktop, extra_parameters *extra)
+#define NSISFunction(funcname) void __declspec(dllexport) funcname(HWND hwndParent, int string_size, TCHAR *variables, stack_t **stacktop, extra_parameters *extra)
 
 BOOL WINAPI DllMain(HINSTANCE hInst, ULONG ul_reason_for_call, LPVOID lpReserved) {
-	return TRUE;
+  return TRUE;
 }
 
 /*************\
@@ -32,6 +34,7 @@ FARPROC GetWinInetFunc(LPCSTR funcname) {
   return hWinInet ? GetProcAddress(hWinInet, funcname) : (FARPROC) hWinInet;
 }
 
+
 /*************\
  * FUNCTIONS *
 \*************/
@@ -47,10 +50,9 @@ NSISFunction(AutodialOnline) {
   EXDLL_INIT();
 
   if (pInternetAutodial(INTERNET_AUTODIAL_FORCE_ONLINE, 0))
-    pushstring("online");
+    pushstring(_T("online"));
   else
-    pushstring("offline");
-
+    pushstring(_T("offline"));
 }
 
 NSISFunction(AutodialUnattended) {
@@ -64,10 +66,9 @@ NSISFunction(AutodialUnattended) {
   EXDLL_INIT();
 
   if (pInternetAutodial(INTERNET_AUTODIAL_FORCE_UNATTENDED , 0))
-    pushstring("online");
+    pushstring(_T("online"));
   else
-    pushstring("offline");
-
+    pushstring(_T("offline"));
 }
 
 NSISFunction(AttemptConnect) {
@@ -81,10 +82,9 @@ NSISFunction(AttemptConnect) {
   EXDLL_INIT();
 
   if (pInternetAttemptConnect(0) == ERROR_SUCCESS)
-    pushstring("online");
+    pushstring(_T("online"));
   else
-    pushstring("offline");
-
+    pushstring(_T("offline"));
 }
 
 NSISFunction(GetConnectedState) {
@@ -100,10 +100,9 @@ NSISFunction(GetConnectedState) {
   EXDLL_INIT();
 
   if (pInternetGetConnectedState(&dwState, 0))
-    pushstring("online");
+    pushstring(_T("online"));
   else
-    pushstring("offline");
-
+    pushstring(_T("offline"));
 }
 
 NSISFunction(AutodialHangup) {
@@ -117,8 +116,7 @@ NSISFunction(AutodialHangup) {
   EXDLL_INIT();
 
   if (pInternetAutodialHangup(0))
-    pushstring("success");
+    pushstring(_T("success"));
   else
-    pushstring("failure");
-
+    pushstring(_T("failure"));
 }
