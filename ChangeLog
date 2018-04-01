@@ -1,3 +1,283 @@
+2016-12-11 21:47  kichik
+
+	* /NSIS/tags/v301: Tagging for release 3.01
+
+2016-12-11 21:46  kichik
+
+	* /NSIS/trunk/Scripts/release.py: print all bad eols
+
+2016-12-11 21:46  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.01
+
+2016-12-11 21:45  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Corsican.nsh: fix eol
+
+2016-12-11 21:27  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: update history for 3.01
+
+2016-12-11 21:01  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp,
+	  /NSIS/trunk/Contrib/zip2exe/main.cpp: Fixed some minor GCC
+	  warnings
+
+2016-12-10 17:04  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp,
+	  /NSIS/trunk/Contrib/MakeLangId/resource.rc: * Double-click to
+	  copy on Vista+
+	  * Don't include \0 in count from GetLocaleInfo
+
+2016-12-10 01:52  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp,
+	  /NSIS/trunk/Contrib/MakeLangId/MakeLangId.ico,
+	  /NSIS/trunk/Contrib/MakeLangId/resource.h,
+	  /NSIS/trunk/Contrib/MakeLangId/resource.rc: MakeLangId rewritten
+	  from scratch to support EnumSystemLocales and our internal list
+
+2016-12-05 22:52  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif,
+	  /NSIS/trunk/Menu/images/header-notext.gif,
+	  /NSIS/trunk/Menu/images/site.gif: new menu icons
+
+2016-12-05 20:34  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi: use right uninstall icon
+
+2016-12-05 20:30  kichik
+
+	* /NSIS/trunk/Contrib/Graphics/SConscript: install new icons
+
+2016-12-05 19:40  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/assoc_nsh.ico,
+	  /NSIS/trunk/Contrib/Makensisw/assoc_nsi.ico,
+	  /NSIS/trunk/Contrib/Makensisw/icon.ico, /NSIS/trunk/Contrib/NSIS
+	  Menu/nsismenu/nsisicon.ico: * Tweaked filetype icons
+	  * MS resource compiler <= VS 2005 does not like PNG compressed
+	  icons
+
+2016-12-05 15:44  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/script.cpp: Fixed bug #1122 StrCpy maxlen
+	  inconsistent behavior
+
+2016-12-04 17:15  anders_k
+
+	* /NSIS/trunk/Docs/src/build.but: Added final dash in
+	  XGCC_W32_PREFIX documentation description.
+
+2016-12-03 22:06  kichik
+
+	* /NSIS/trunk/Contrib/Graphics/Header/nsis3-branding.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-branding-r.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-grey.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-grey-right.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-metro.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-metro-right.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-vintage.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Header/nsis3-vintage-right.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Icons/nsis3-install.ico,
+	  /NSIS/trunk/Contrib/Graphics/Icons/nsis3-install-alt.ico,
+	  /NSIS/trunk/Contrib/Graphics/Icons/nsis3-uninstall.ico,
+	  /NSIS/trunk/Contrib/Graphics/Wizard/nsis3-branding.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Wizard/nsis3-grey.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Wizard/nsis3-metro.bmp,
+	  /NSIS/trunk/Contrib/Graphics/Wizard/nsis3-vintage.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/assoc_nsh.ico,
+	  /NSIS/trunk/Contrib/Makensisw/assoc_nsi.ico,
+	  /NSIS/trunk/Contrib/Makensisw/icon.ico, /NSIS/trunk/Contrib/NSIS
+	  Menu/nsismenu/nsisicon.ico, /NSIS/trunk/Examples/makensis.nsi:
+	  new graphics by idleberg
+
+2016-12-03 00:21  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp,
+	  /NSIS/trunk/Contrib/MakeLangId/resource.h,
+	  /NSIS/trunk/Contrib/MakeLangId/resource.rc: * MakeLangId will now
+	  display the codepage if Windows supports the specified langid.
+	  * Added more languages.
+
+2016-12-02 19:58  anders_k
+
+	* /NSIS/trunk/Source/utf.cpp: Make sure tstring can store wchar_t.
+	  This currently blocks anyone from writing unit tests for
+	  strlist.cpp because the tests are not Unicode yet!
+
+2016-12-02 19:19  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Danish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Danish.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updated Danish translation (bug
+	  #1164)
+
+2016-11-25 21:35  anders_k
+
+	* /NSIS/trunk/Source/Tests/compression.cpp: A more aggressive
+	  workaround for bug #1156
+
+2016-11-23 17:10  anders_k
+
+	* /NSIS/trunk/Source/Tests/compression.cpp: Temporary workaround
+	  for bug #1156
+
+2016-11-23 15:42  anders_k
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/Tests/mmap.cpp,
+	  /NSIS/trunk/Source/Tests/textrunner.cpp,
+	  /NSIS/trunk/Source/Tests/winchar.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h: Unify
+	  g_output and console initialization
+
+2016-11-23 00:38  anders_k
+
+	* /NSIS/trunk/Source/build.h: Allow POSIX to see QUERYHOST
+	  constants even though there is no way to use them on those
+	  platforms
+
+2016-11-22 23:11  anders_k
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/Tests/mmap.cpp,
+	  /NSIS/trunk/Source/Tests/winchar.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h: Use a
+	  common helper macro to declare some UI output related variables
+
+2016-11-22 21:21  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Norwegian.nsh,
+	  /NSIS/trunk/Contrib/Language files/NorwegianNynorsk.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Norwegian MultiUser fixes
+	  (patch #279)
+
+2016-11-22 21:17  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h: Write
+	  error messages to stderr by default
+	  
+	  Disabled if -O is used or if -NOTIFYHWND is valid and returns 0
+	  to QUERYHOST:QH_ENABLESTDERR
+
+2016-10-22 18:19  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Arabic.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Arabic MultiUser fixes (#278)
+
+2016-10-22 18:16  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Swedish.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Swedish MultiUser fixes (patch
+	  #277)
+
+2016-10-22 18:12  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Interface.nsh,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Source/script.cpp: Added SetCtlColors Windows COLOR_*
+	  constants support
+
+2016-10-12 21:08  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updates to Brazilian Portuguese
+	  translation (Patch #276)
+
+2016-10-12 19:31  anders_k
+
+	* /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/Ui.c: Undo Lockwindow Off fix from
+	  [r6789] because it caused the taskbar button to become invisible!
+
+2016-10-12 17:20  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Ukrainian.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Ukrainian MultiUser fixes
+
+2016-10-11 23:52  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Portuguese.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Portuguese fixes (patch #274)
+
+2016-10-11 19:58  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Source/exehead/Ui.c: Fixed broken MSDN URLs
+
+2016-10-11 19:47  anders_k
+
+	* /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/script.cpp:
+	  LockWindow Off should always enable painting
+
+2016-10-11 19:36  anders_k
+
+	* /NSIS/trunk/Docs/src/credits.but: Tooting my own horn
+
+2016-10-09 22:23  kichik
+
+	* /NSIS/trunk/Docs/src/misc.but, /NSIS/trunk/Docs/src/registry.but:
+	  bug #1153 - better doc location for SetRegView
+
+2016-10-08 13:48  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Corsican.nlf,
+	  /NSIS/trunk/Contrib/Language files/Corsican.nsh,
+	  /NSIS/trunk/Contrib/Language files/SConscript,
+	  /NSIS/trunk/Docs/src/credits.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Examples/Modern
+	  UI/MultiLanguage.nsi, /NSIS/trunk/Source/makenssi.cpp: Added
+	  Corsican translation (patch #268)
+
+2016-10-06 20:31  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh: Added
+	  MUI_LANGUAGEEX macro so language files in other folders can be
+	  used (during testing)
+
+2016-09-30 23:32  kichik
+
+	* /NSIS/trunk/SCons/Tools/crossmingw.py: more mingw versions
+	  https://github.com/kichik/nsis/pull/5/
+
+2016-09-06 18:48  f0rt
+
+	* /NSIS/trunk/Source/Tests/winchar.cpp,
+	  /NSIS/trunk/Source/winchar.cpp: Make WinWStrDupFromWC endian
+	  agnostic (Patch #273)
+
+2016-08-22 19:22  f0rt
+
+	* /NSIS/trunk/SCons/Config/gnu: Make plugins not depend on
+	  libstdc++-6.dll (Patch #272)
+
+2016-08-21 12:00  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/winchar.cpp:
+	  Fixed possible buffer overflow bug in unused WinWStrDupFromChar
+	  function (Patch #271)
+
+2016-07-25 01:26  kichik
+
+	* /NSIS/trunk/Docs/src/SConscript: i'm not sure why the previous
+	  fix fails only on linux, but here is another attempt...
+
+2016-07-25 01:09  kichik
+
+	* /NSIS/trunk/Docs/src/SConscript: fix missing style.css for html
+	  docs
+
 2016-07-25 00:52  kichik
 
 	* /NSIS/tags/v30: Tagging for release 3.0

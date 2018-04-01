@@ -36,14 +36,13 @@
 
 using namespace std;
 
+NSISRT_DEFINEGLOBALS();
 bool g_dopause=false, g_warnaserror=false;
-int g_display_errors=1;
-FILE *g_output;
 NStreamEncoding g_outputenc;
 #ifdef _WIN32
 UINT g_wincon_orgoutcp;
 #ifdef _UNICODE
-WINSIO_OSDATA g_osdata_stdout;
+WINSIO_OSDATA g_osdata_stdout, g_osdata_stderr;
 #endif
 #endif
 const TCHAR *g_argv0=0;
@@ -71,7 +70,8 @@ static void myatexit()
 {
   dopause();
   ResetPrintColor();
-  if (g_output != stdout && g_output) fclose(g_output);
+  if (g_output != stdout && g_output) fclose(g_output), g_output = 0;
+  if (g_errout != stderr && g_errout) fclose(g_errout), g_errout = 0;
 #ifdef _WIN32
   SetConsoleOutputCP(g_wincon_orgoutcp);
 #endif
@@ -108,7 +108,11 @@ static DWORD WINAPI sigint_event_msg_handler(LPVOID ThreadParam)
 
   return 0;
 }
-#endif
+
+static UINT_PTR QueryHost(HWND hHost, UINT_PTR wp, UINT_PTR lp=0, UINT_PTR def=0) { return hHost ? SendMessage(hHost, MakensisAPI::QUERYHOST, wp, lp) : def; }
+#else //! _WIN32
+static inline UINT_PTR QueryHost(HWND hHost, UINT_PTR wp, UINT_PTR lp=0, UINT_PTR def=0) { return def; }
+#endif //~ _WIN32
 
 static void init_signals(HWND notify_hwnd)
 {
@@ -285,6 +289,7 @@ static inline int makensismain(int argc, TCHAR **argv)
   allow_unaligned_data_access();
 #endif
   assert(sizeof(UINT_PTR) == sizeof(void*));
+  assert('a' + 25 == 'z' && '0' < 'A' && 'A' < 'a'); // ASCII, do you speak it?
   assert(sizeof(wchar_t) > 1 && sizeof(wchar_t) <= 4);
   assert(sizeof(WINWCHAR) == 2 && sizeof(WORD) == 2);
   assert(sizeof(WINWCHAR) == sizeof(WCHAR)); // Not really required but if WCHAR changes we need to know
@@ -293,7 +298,7 @@ static inline int makensismain(int argc, TCHAR **argv)
 
   if (!NSISRT_Initialize())
   {
-    _ftprintf(stdout,_T("NSISRT_Initialize failed!\n"));
+    _ftprintf(stderr,_T("NSISRT_Initialize failed!\n"));
     return 1;
   }
 
@@ -301,11 +306,10 @@ static inline int makensismain(int argc, TCHAR **argv)
   const TCHAR*stdoutredirname=0;
   NStreamEncoding inputenc, &outputenc = g_outputenc;
   int argpos=0;
-  bool in_files=false;
-  bool do_cd=true;
+  bool do_cd=true, noconfig=false;
   bool no_logo=true;
-  bool initialparsefail=false;
-  bool noconfig=false;
+  bool initialparsefail=false, in_files=false;
+  bool oneoutputstream=false;
   signed char pponly=0;
 #ifdef _WIN32
   signed char outputbom=1;
@@ -390,17 +394,23 @@ static inline int makensismain(int argc, TCHAR **argv)
   FILE*stdoutredir=stdout;
   if (stdoutredirname) stdoutredir=my_fopen(stdoutredirname,"w");
   g_output=stdoutredir;
-  if (!g_output) g_output=stdout;
+  if (!g_output)
+    g_output=stdout; // We could not open stdoutredirname, fall back to stdout
+  else if (stdoutredirname)
+    oneoutputstream=true; // -O used, put all output in the same file
+  if (oneoutputstream || !(1 & QueryHost(hostnotifyhandle,MakensisAPI::QH_ENABLESTDERR,0,1)))
+    g_errout=g_output;
 #if defined(_WIN32) && defined(_UNICODE)
   if (hostnotifyhandle)
   {
     // The host can override the output format if they want to
     LPARAM lp=MAKELONG(outputenc.GetCodepage(),outputbom);
-    LRESULT mr=SendMessage(hostnotifyhandle,MakensisAPI::QUERYHOST,MakensisAPI::QH_OUTPUTCHARSET,lp);
+    LRESULT mr=QueryHost(hostnotifyhandle,MakensisAPI::QH_OUTPUTCHARSET,lp);
     if (mr) outputenc.SetCodepage((WORD)(--mr)), outputbom = -1;
   }
 
-  if (!WinStdIO_OStreamInit(g_osdata_stdout,g_output,outputenc.GetCodepage(),outputbom))
+  if ((                        !WinStdIO_OStreamInit(g_osdata_stdout,g_output,outputenc.GetCodepage(),outputbom))
+   || (g_errout != g_output && !WinStdIO_OStreamInit(g_osdata_stderr,g_errout,outputenc.GetCodepage(),outputbom)))
   {
     assert(!"StdIO init failed");
     return 1;

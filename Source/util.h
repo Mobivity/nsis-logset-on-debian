@@ -105,6 +105,8 @@ public:
 
 int sane_system(const TCHAR *command);
 
+#define NSISRT_DEFINEGLOBALS() int g_display_errors=1; FILE *g_output=stdout, *g_errout=stderr
+void PrintColorFmtErrMsg(const TCHAR *fmtstr, va_list args);
 void PrintColorFmtMsg(unsigned int type, const TCHAR *fmtstr, va_list args);
 void FlushOutputAndResetPrintColor();
 #ifdef _WIN32
@@ -161,11 +163,12 @@ inline void PrintColorFmtMsg_ERR(const TCHAR *fmtstr, ...)
 {
   va_list val;
   va_start(val,fmtstr);
-  PrintColorFmtMsg(2, fmtstr, val);
+  PrintColorFmtErrMsg(fmtstr, val);
   va_end(val);
 }
 
 
+bool NSISRT_Initialize();
 #ifndef _WIN32
 // iconv const inconsistency workaround by Alexandre Oliva
 template <typename T>
@@ -233,7 +236,6 @@ BOOL IsValidCodePage(UINT CodePage);
 #else
 #define CharNext CharNextA
 #endif
-bool NSISRT_Initialize();
 #define NSISRT_free(p) ( free((void*)(p)) )
 wchar_t* NSISRT_mbtowc(const char *Str);
 char* NSISRT_wctomb(const wchar_t *Str);
@@ -259,8 +261,6 @@ int my_open(const TCHAR *pathname, int flags);
 #define OPEN(a, b) my_open(a, b)
 
 #else // _WIN32
-
-#define NSISRT_Initialize() (true)
 
 #define my_convert(x) (x)
 #define my_convert_free(x)

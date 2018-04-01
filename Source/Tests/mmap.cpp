@@ -9,11 +9,10 @@
 
 using namespace std; // for std::min
 
-int g_display_errors = 1;
-FILE *g_output = stderr;
 
 void quit() {
-  _ftprintf(g_output, _T("MMap quit\n"));
+  extern FILE *g_errout;
+  _ftprintf(g_errout, _T("MMap quit\n"));
 }
 
 class MMapTest : public CppUnit::TestFixture {

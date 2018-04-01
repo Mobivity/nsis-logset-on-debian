@@ -56,7 +56,7 @@ namespace Apple { // defines struct section
 using namespace std;
 
 extern int g_display_errors;
-extern FILE *g_output;
+extern FILE *g_output, *g_errout;
 
 double my_wtof(const wchar_t *str) 
 {
@@ -203,7 +203,7 @@ static char g_nrt_iconv_narrowlocbuf[50], *g_nrt_iconv_narrowloc = 0;
 #ifdef HAVE_LANGINFO_H // BUGBUG: scons needs to check for HAVE_LANGINFO_H and HAVE_NL_LANGINFO support?
 #include <langinfo.h>
 #endif
-bool NSISRT_Initialize()
+bool NSISRT_Initialize() // Init function for POSIX
 {
   iconvdescriptor id;
   g_nrt_iconv_narrowloc = const_cast<char*>(""); // Use "" and not "char", "char" is a GNU extension?
@@ -1019,7 +1019,13 @@ bool GetFileSize64(HANDLE hFile, ULARGE_INTEGER &uli)
   uli.LowPart = GetFileSize(hFile, &uli.HighPart);
   return INVALID_FILE_SIZE != uli.LowPart || !GetLastError();
 }
-#endif
+static HANDLE NSISRT_GetConsoleScreenHandle()
+{
+  DWORD cm;
+  HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+  return GetConsoleMode(hCon, &cm) ? hCon : GetStdHandle(STD_ERROR_HANDLE);
+}
+#endif //~ _WIN32
 #if defined(_WIN32) && defined(_UNICODE) && defined(MAKENSIS)
 #include <io.h> // for _get_osfhandle
 bool WINAPI WinStdIO_OStreamInit(WINSIO_OSDATA&osd, FILE*strm, WORD cp, int bom)
@@ -1073,17 +1079,23 @@ end:
   strm.Detach();
   return retval;
 }
+static WINSIO_OSDATA*WinStdIO_GetNativeStreamData(FILE*strm)
+{
+  extern WINSIO_OSDATA g_osdata_stdout, g_osdata_stderr;
+  if (g_output == strm) return &g_osdata_stdout;
+  return g_errout == strm ? &g_osdata_stderr : NULL;
+}
 int WINAPI WinStdIO_vfwprintf(FILE*strm, const wchar_t*Fmt, va_list val)
 {
-  if (g_output == strm && Fmt)
+  WINSIO_OSDATA*pOSD;
+  if (Fmt && (pOSD = WinStdIO_GetNativeStreamData(strm)))
   {
-    extern WINSIO_OSDATA g_osdata_stdout;
     ExpandoString<wchar_t, NSIS_MAX_STRLEN> buf;
     errno = ENOMEM;
     const size_t cchfmt = buf.StrFmt(Fmt, val, false);
     UINT cch = (UINT) cchfmt;
     assert(sizeof(size_t) <= 4 || cchfmt == cch);
-    if (cch && !WinStdIO_OStreamWrite(g_osdata_stdout, buf, cch))
+    if (cch && !WinStdIO_OStreamWrite(*pOSD, buf, cch))
     {
       cch = 0, errno = EIO;
     }
@@ -1107,12 +1119,36 @@ int WinStdIO_wprintf(const wchar_t*Fmt, ...)
   va_end(val);
   return rv;
 }
+static HANDLE NSISRT_FastGetConsoleScreenHandle()
+{
+  extern WINSIO_OSDATA g_osdata_stdout, g_osdata_stderr;
+  return WinStdIO_IsConsole(g_osdata_stdout) ? g_osdata_stdout.hNative : g_osdata_stderr.hNative;
+}
+bool NSISRT_Initialize() // Init function for MakeNSIS Win32
+{
+  static bool inited = false;
+  if (inited) return inited;
+  extern WINSIO_OSDATA g_osdata_stdout, g_osdata_stderr;
+  g_osdata_stderr.mode = g_osdata_stdout.mode = 0, g_osdata_stderr.hNative = g_osdata_stdout.hNative = 0;
+  return (inited = true);
+}
+#elif defined(_WIN32)
+#define NSISRT_FastGetConsoleScreenHandle NSISRT_GetConsoleScreenHandle
+bool NSISRT_Initialize() { return true; } // Init function for non-MakeNSIS Win32 (NSISRT_DEFINEGLOBALS sets g_output and g_errout)
 #endif
+
+void PrintColorFmtErrMsg(const TCHAR *fmtstr, va_list args)
+{
+  PrintColorFmtMsg_WARN(_T("")); // flush g_output
+  SetPrintColorERR();
+  _vftprintf(g_errout, fmtstr, args), fflush(g_errout);
+  ResetPrintColor();
+}
 
 void PrintColorFmtMsg(unsigned int type, const TCHAR *fmtstr, va_list args)
 {
 #ifdef _WIN32
-  const HANDLE hWin32Con = GetStdHandle(STD_OUTPUT_HANDLE);
+  HANDLE hWin32Con = NSISRT_FastGetConsoleScreenHandle();
   static INT32 contxtattrbak = -1;
   WORD txtattr = 0;
   if (contxtattrbak < 0)

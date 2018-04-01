@@ -108,6 +108,12 @@
 
 \b NSIS 3 patron saint
 
+\b 64-bit support
+
+\b Unicode merge & support
+
+\b NSIS 3 POSIX support
+
 \H{testers} Testers
 
 \e{Jason Ross aka JasonFriday13}
@@ -147,6 +153,8 @@ Breton - \e{Korvigello\uF9{u} An Drouizig}
 Bulgarian - \e{Asparouh Kalyandjiev, Plamen Penkov}
 
 Catalan - \e{falanko}
+
+Corsican - \e{Patriccollu di Santa Maria \uE8{e} Sich\uE8{e}}
 
 Croatian - \e{Igor Ostriz, Vedran "RIV@NVX" Miletic}
 

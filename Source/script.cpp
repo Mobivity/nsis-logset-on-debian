@@ -77,6 +77,36 @@ static UINT read_line_helper(NStreamLineReader&lr, TCHAR*buf, UINT cch)
   return ++cch - eof;
 }
 
+#ifdef NSIS_CONFIG_ENHANCEDUI_SUPPORT
+static bool LookupWinSysColorId(const TCHAR*Str, UINT&Clr)
+{
+  static const struct { const TCHAR*Name; UINT Id; } map[] = { // Note: This list is incomplete.
+    { _T("WINDOW"), 5 }, { _T("WINDOWTEXT"), 8 },
+    { _T("3DFACE"), 15 }, { _T("BTNTEXT"), 18 }, // "Three-dimensional display elements and dialog box"
+    { _T("HIGHLIGHT"), 13 }, { _T("HIGHLIGHTTEXT"), 14 }, // "Item(s) selected in a control"
+    { _T("GRAYTEXT"), 17 }, // "Grayed (disabled) text"
+    { _T("HOTLIGHT"), 26 }, // "Color for a hyperlink or hot-tracked item" (Win98+)
+  };
+  for (UINT i = 0; i < COUNTOF(map); ++i)
+    if (!_tcsicmp(map[i].Name, Str)) return (Clr = map[i].Id, true);
+  return false;
+}
+static UINT ParseCtlColor(const TCHAR*Str, int&CCFlags, int CCFlagmask)
+{
+  UINT clr, v;
+  TCHAR buf[7+!0], *pEnd;
+  my_strncpy(buf, Str, 7+!0), buf[7] = '\0';
+  if (!_tcscmp(_T("SYSCLR:"), buf))
+  {
+    CCFlags |= ((CC_TEXT_SYS|CC_BK_SYS) & CCFlagmask); // ExeHead must call GetSysColor
+    if (!LookupWinSysColorId(Str+7, clr)) clr = _tcstoul(Str+7, &pEnd, 0);
+  }
+  else
+    v = _tcstoul(Str, &pEnd, 16), clr = ((v&0xff)<<16)|(v&0xff00)|((v&0xff0000)>>16);
+  return clr;
+}
+#endif
+
 #ifdef NSIS_SUPPORT_STANDARD_PREDEFINES
 // Added by Sunil Kamath 11 June 2003
 TCHAR *CEXEBuild::set_file_predefine(const TCHAR *filename)
@@ -3205,7 +3235,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         case 1: comp=4; break;
         case 2: comp=5, validparams=!!*(define=line.gettoken_str(2)); break;
         case 3: cmpv=line.gettoken_int(3,&validparams); break;
-        default: comp=-1;
+        default: forceutf8=comp=-1;
         }
         if (!validparams || comp == -1) PRINTHELP()
         tstring compile;
@@ -4458,69 +4488,41 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.which=EW_SETCTLCOLORS;
       ent.offsets[0]=add_string(line.gettoken_str(1));
       ctlcolors c={0, };
-      int a = 2;
-      if (!_tcsicmp(line.gettoken_str(2),_T("/BRANDING")))
-        a++;
-
       TCHAR *p;
-      if (a == 2 && line.getnumtokens() == 5) {
+      int a = 2, ctok = line.getnumtokens();
+      if (!_tcsicmp(line.gettoken_str(2),_T("/BRANDING"))) a+=1;
+      if (!_tcsicmp(line.gettoken_str(2),_T("/RESET"))) { if (ctok != 3) return PS_ERROR; else a+=2; }
+      if (a == 2 && ctok == 5) {
         ERROR_MSG(_T("Error: SetCtlColors expected 3 parameters, got 4\n"));
         return PS_ERROR;
       }
-
       if (!_tcsicmp(line.gettoken_str(a+1),_T("transparent"))) {
-        c.flags|=CC_BKB;
-        c.lbStyle=BS_NULL;
-        c.bkmode=TRANSPARENT;
+        c.flags|=CC_BKB, c.lbStyle=BS_NULL, c.bkmode=TRANSPARENT;
       }
-      else {
-        p=line.gettoken_str(a+1);
-        if (*p) {
-          int v=_tcstoul(p,&p,16);
-          c.bkc=((v&0xff)<<16)|(v&0xff00)|((v&0xff0000)>>16);
-          c.flags|=CC_BK|CC_BKB;
-        }
-        c.lbStyle=BS_SOLID;
-        c.bkmode=OPAQUE;
+      else { // Parse background color
+        c.lbStyle=BS_SOLID, c.bkmode=OPAQUE;
+        if (*(p=line.gettoken_str(a+1)))
+          c.flags|=CC_BK|CC_BKB, c.bkc=ParseCtlColor(p, c.flags, CC_BK_SYS);
       }
-
-      p=line.gettoken_str(a);
-      if (*p) {
-        int v=_tcstoul(p,&p,16);
-        c.text=((v&0xff)<<16)|(v&0xff00)|((v&0xff0000)>>16);
-        c.flags|=CC_TEXT;
-      }
-
-      if (a == 3)
-      {
+      if (*(p=line.gettoken_str(a))) // Set text color?
+        c.flags|=CC_TEXT, c.text=ParseCtlColor(p, c.flags, CC_TEXT_SYS);
+      if (a == 3) { // Handle /BRANDING
         c.flags|=CC_BK|CC_BKB;
         c.lbStyle=BS_NULL;
-        if (!*line.gettoken_str(a+1))
-        {
-          c.bkc=COLOR_BTNFACE;
-          c.flags|=CC_BK_SYS;
-        }
+        if (!*line.gettoken_str(a+1)) c.bkc=COLOR_BTNFACE, c.flags|=CC_BK_SYS;
         c.flags|=CC_TEXT;
-        if (!*line.gettoken_str(a))
-        {
-          c.text=COLOR_BTNFACE;
-          c.flags|=CC_TEXT_SYS;
-        }
+        if (!*line.gettoken_str(a)) c.text=COLOR_BTNFACE, c.flags|=CC_TEXT_SYS;
         c.bkmode=OPAQUE;
       }
-
+      if (a == 4) c.bkmode=OPAQUE, c.flags=0, c.bkb = 0; // Experimental and undocumented /RESET, a formal way of doing SetCtlColors $hCtl "" ""
       assert(sizeof(ctlcolors64) > sizeof(ctlcolors));
       int i, l=cur_ctlcolors->getlen()/sizeof(ctlcolors), pad=is_target_64bit()?sizeof(ctlcolors64)-sizeof(ctlcolors):0;
-      for (i=0; i<l; i++) {
+      for (i=0; i<l; i++)
         if (!memcmp((ctlcolors*)cur_ctlcolors->get()+i,&c,sizeof(ctlcolors))) {
           ent.offsets[1]=i*(sizeof(ctlcolors)+pad);
           break;
         }
-      }
-      if (i>=l) {
-        ent.offsets[1]=cur_ctlcolors->add(&c,sizeof(ctlcolors))+(l*pad);
-      }
-
+      if (i>=l) ent.offsets[1]=cur_ctlcolors->add(&c,sizeof(ctlcolors))+(l*pad);
       SCRIPT_MSG(_T("SetCtlColors: hwnd=%") NPRIs _T(" %") NPRIs _T("text=%") NPRIs _T(" background=%") NPRIs _T("\n"),line.gettoken_str(1),a==2?_T(""):_T("/BRANDING "),line.gettoken_str(a),line.gettoken_str(a+1));
     }
     return add_entry(&ent);
@@ -4599,8 +4601,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.which=EW_SHOWWINDOW;
       ent.offsets[0]=add_asciistring(_T("$HWNDPARENT"));
       ent.offsets[1]=add_asciistring(_T("5")/*SW_SHOW*/);
-      ret = add_entry(&ent);
-      if (ret != PS_OK) return ret;
+      if ((ret = add_entry(&ent)) != PS_OK) return ret;
       ent.which=EW_BRINGTOFRONT;
       ent.offsets[0]=0;
       ent.offsets[1]=0;
@@ -5041,22 +5042,14 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         const TCHAR* msgprefix = _T("");
         int idx = -1;
         if (TOK_STRCPY == which_token)
-        {
           idx = GetUserVarIndex(line, 1);
-        }
         else
-        {
-          msgprefix = _T("Unsafe");
-          TCHAR *p = line.gettoken_str(1);
-          if (*p == _T('$') && *++p) idx = m_UserVarNames.get(p);
-          if (-1 != idx && m_UserVarNames.get_reference(idx) != -1) m_UserVarNames.inc_reference(idx);
-        }
+          idx = GetUnsafeUserVarIndex(line, 1), msgprefix = _T("Unsafe");
         if (idx < 0) PRINTHELP()
-        ent.offsets[0]=idx;
-        ent.offsets[1]=add_string(line.gettoken_str(2));
-        ent.offsets[2]=add_string(line.gettoken_str(3));
-        ent.offsets[3]=add_string(line.gettoken_str(4));
-
+        ent.offsets[0]=idx; // Destination variable
+        ent.offsets[1]=add_string(line.gettoken_str(2)); // Source string
+        ent.offsets[2]=add_string(line.gettoken_str(3)); // Optional MaxLen
+        ent.offsets[3]=add_string(line.gettoken_str(4)); // Optional StartOffset
         SCRIPT_MSG(_T("%") NPRIs _T("StrCpy %") NPRIs _T(" \"%") NPRIs _T("\" (%") NPRIs _T(") (%") NPRIs _T(")\n"),
           msgprefix,line.gettoken_str(1),line.gettoken_str(2),line.gettoken_str(3),line.gettoken_str(4));
         return add_entry(&ent);
@@ -5080,11 +5073,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     return add_entry(&ent);
     case TOK_GETCURRENTADDR:
       ent.which=EW_ASSIGNVAR;
-      ent.offsets[0]=GetUserVarIndex(line, 1);
+      if ((ent.offsets[0]=GetUserVarIndex(line, 1)) < 0) PRINTHELP()
       ent.offsets[1]=add_intstring(1+(cur_header->blocks[NB_ENTRIES].num));
-      if (ent.offsets[0] < 0) PRINTHELP()
-      ent.offsets[2]=0;
-      ent.offsets[3]=0;
+      ent.offsets[2]=ent.offsets[3]=0;
       SCRIPT_MSG(_T("GetCurrentAddress: %") NPRIs _T("\n"),line.gettoken_str(1));
     return add_entry(&ent);
     case TOK_STRCMP:
@@ -5107,18 +5098,13 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
           return PS_ERROR;
         }
         ent.which=EW_ASSIGNVAR;
-        ent.offsets[0]=GetUserVarIndex(line, 2);
+        if ((ent.offsets[0]=GetUserVarIndex(line, 2)) < 0) PRINTHELP()
         ent.offsets[1]=add_intstring(high);
-        ent.offsets[2]=0;
-        ent.offsets[3]=0;
-        if (ent.offsets[0]<0) PRINTHELP()
-        add_entry(&ent);
-
-        ent.offsets[0]=GetUserVarIndex(line, 3);
+        ent.offsets[2]=ent.offsets[3]=0;
+        if (PS_OK != add_entry(&ent)) return PS_ERROR;
+        if ((ent.offsets[0]=GetUserVarIndex(line, 3)) < 0) PRINTHELP()
         ent.offsets[1]=add_intstring(low);
-        ent.offsets[2]=0;
-        ent.offsets[3]=0;
-        if (ent.offsets[0]<0) PRINTHELP()
+        ent.offsets[2]=ent.offsets[3]=0;
         SCRIPT_MSG(_T("%") NPRIs _T(": %") NPRIs _T(" (%u,%u)->(%") NPRIs _T(",%") NPRIs _T(")\n"),
           cmdname,line.gettoken_str(1),high,low,line.gettoken_str(2),line.gettoken_str(3));
       }
@@ -5152,22 +5138,16 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         unsigned long long ll = (st.st_mtime * 10000000LL) + 116444736000000000LL;
         high = (DWORD) (ll >> 32), low = (DWORD) ll;
 #endif
-
         ent.which=EW_ASSIGNVAR;
-        ent.offsets[0]=GetUserVarIndex(line, 2);
+        if ((ent.offsets[0]=GetUserVarIndex(line, 2)) < 0) PRINTHELP()
         wsprintf(buf,_T("%u"),high);
         ent.offsets[1]=add_string(buf);
-        ent.offsets[2]=0;
-        ent.offsets[3]=0;
-        if (ent.offsets[0]<0) PRINTHELP()
-        add_entry(&ent);
-
-        ent.offsets[0]=GetUserVarIndex(line, 3);
+        ent.offsets[2]=ent.offsets[3]=0;
+        if (PS_OK != add_entry(&ent)) return PS_ERROR;
+        if ((ent.offsets[0]=GetUserVarIndex(line, 3)) < 0) PRINTHELP()
         wsprintf(buf,_T("%u"),low);
         ent.offsets[1]=add_string(buf);
-        ent.offsets[2]=0;
-        ent.offsets[3]=0;
-        if (ent.offsets[0]<0) PRINTHELP()
+        ent.offsets[2]=ent.offsets[3]=0;
         SCRIPT_MSG(_T("GetFileTimeLocal: %") NPRIs _T(" (%u,%u)->(%") NPRIs _T(",%") NPRIs _T(")\n"),
           line.gettoken_str(1),high,low,line.gettoken_str(2),line.gettoken_str(3));
       }
@@ -6147,7 +6127,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     PRINTHELP();
     case TOK__PLUGINCOMMAND:
     {
-      int ret;
       tstring command, dllPath;
 
       if (!m_pPlugins->GetCommandInfo(line.gettoken_str(0), command, dllPath))
@@ -6157,17 +6136,14 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       }
 
       tstring dllName = get_file_name(dllPath);
-      int data_handle = m_pPlugins->GetDllDataHandle(!!uninstall_mode, command);
+      int data_handle = m_pPlugins->GetDllDataHandle(!!uninstall_mode, command), ret;
 
       if (uninstall_mode) uninst_plugin_used = true; else plugin_used = true;
 
       // Initialize $PLUGINSDIR
       ent.which=EW_CALL;
       ent.offsets[0]=ns_func.add(uninstall_mode?_T("un.Initialize_____Plugins"):_T("Initialize_____Plugins"),0);
-      ret=add_entry(&ent);
-      if (ret != PS_OK) {
-        return ret;
-      }
+      if ((ret=add_entry(&ent)) != PS_OK) return ret;
 
       // DLL name on the users machine
       TCHAR tempDLL[NSIS_MAX_STRLEN];
@@ -6215,17 +6191,12 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         ent.offsets[3]=0xffffffff;
         ent.offsets[4]=0xffffffff;
         ent.offsets[5]=DefineInnerLangString(NLF_FILE_ERROR);
-        ret=add_entry(&ent);
-        if (ret != PS_OK) {
-          return ret;
-        }
+        if ((ret=add_entry(&ent)) != PS_OK) return ret;
       }
 
       // SetDetailsPrint lastused
       ret=add_entry_direct(EW_SETFLAG, FLAG_OFFSET(status_update), 0, 1);
-      if (ret != PS_OK) {
-        return ret;
-      }
+      if (ret != PS_OK) return ret;
 
       // Call the DLL
       tstring funcname = get_string_suffix(command, _T("::"));
@@ -6234,8 +6205,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       int i = 1;
       int nounload = 0;
       if (!_tcsicmp(line.gettoken_str(i), _T("/NOUNLOAD"))) {
-        i++;
-        nounload++;
+        i++, nounload++;
       }
 
       // First push dll args
@@ -6249,10 +6219,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         if (!_tcsicmp(line.gettoken_str(w), _T("/NOUNLOAD"))) nounloadmisused=1;
         ent.offsets[1]=0;
         ent.offsets[2]=0;
-        ret=add_entry(&ent);
-        if (ret != PS_OK) {
-          return ret;
-        }
+        if ((ret=add_entry(&ent)) != PS_OK) return ret;
         SCRIPT_MSG(_T(" %") NPRIs,line.gettoken_str(i));
       }
       SCRIPT_MSG(_T("\n"));
@@ -6266,10 +6233,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       ent.offsets[2]=0;
       ent.offsets[3]=nounload|build_plugin_unload;
       ent.offsets[4]=1;
-      ret=add_entry(&ent);
-      if (ret != PS_OK) {
-        return ret;
-      }
+      if ((ret=add_entry(&ent)) != PS_OK) return ret;
 
       DefineInnerLangString(NLF_SYMBOL_NOT_FOUND);
       DefineInnerLangString(NLF_COULD_NOT_LOAD);
@@ -6286,8 +6250,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       // Call [un.]Initialize_____Plugins
       ent.which=EW_CALL;
       ent.offsets[0]=ns_func.add(uninstall_mode?_T("un.Initialize_____Plugins"):_T("Initialize_____Plugins"),0);
-      ret=add_entry(&ent);
-      if (ret != PS_OK) return ret;
+      if ((ret=add_entry(&ent)) != PS_OK) return ret;
       // SetDetailsPrint lastused
       ret=add_entry_direct(EW_SETFLAG, FLAG_OFFSET(status_update), 0, 1);
       if (ret != PS_OK) return ret;
@@ -6297,9 +6260,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_PLUGINDIR:
     case TOK__PLUGINCOMMAND:
     case TOK_INITPLUGINSDIR:
-    {
       ERROR_MSG(_T("Error: %") NPRIs _T(" specified, NSIS_CONFIG_PLUGIN_SUPPORT not defined.\n"),line.gettoken_str(0));
-    }
     return PS_ERROR;
 #endif// NSIS_CONFIG_PLUGIN_SUPPORT
 
@@ -6308,8 +6269,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       SCRIPT_MSG(_T("LockWindow: lock state=%d\n"),line.gettoken_str(1));
       ent.which=EW_LOCKWINDOW;
       ent.offsets[0]=line.gettoken_enum(1,_T("on\0off\0"));
-      if (ent.offsets[0] == -1)
-        PRINTHELP();
+      if (ent.offsets[0] == -1) PRINTHELP();
     return add_entry(&ent);
 #else
     case TOK_LOCKWINDOW:
