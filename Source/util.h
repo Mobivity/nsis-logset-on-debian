@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,6 @@ size_t my_strftime(TCHAR *s, size_t max, const TCHAR  *fmt, const struct tm *tm)
 // Adds the bitmap in filename using resource editor re as id id.
 // If width or height are specified it will also make sure the bitmap is in that size
 int update_bitmap(CResourceEditor* re, WORD id, const TCHAR* filename, int width=0, int height=0, int maxbpp=0);
-
-bool GetDLLVersion(const tstring& filepath, DWORD& high, DWORD& low);
 
 tstring get_full_path(const tstring& path);
 tstring get_dir_name(const tstring& path);
@@ -259,8 +257,8 @@ int _wstat(const wchar_t *Path, struct stat *pS);
 
 TCHAR *my_convert(const TCHAR *path);
 void my_convert_free(TCHAR *converted_path);
-int my_open(const TCHAR *pathname, int flags);
 
+int my_open(const TCHAR *pathname, int flags);
 #define OPEN(a, b) my_open(a, b)
 
 #else // _WIN32
@@ -270,10 +268,20 @@ int my_open(const TCHAR *pathname, int flags);
 
 #define OPEN(a, b) _topen(a, b)
 
-#endif // ~_WIN32
+#endif //~ _WIN32
 
 FILE* my_fopen(const TCHAR *path, const char *mode);
 #define FOPEN(a, b) my_fopen((a), (b))
+
+const UINT32 invalid_file_size32 = ~ (UINT32) 0;
+UINT32 get_file_size32(FILE *f);
+const UINT64 invalid_file_size64 = ~ (UINT64) 0;
+BYTE* alloc_and_read_file(FILE *f, unsigned long &size);
+BYTE* alloc_and_read_file(const TCHAR *filepath, unsigned long &size);
+
+typedef struct { char*base; size_t internal; } FILEVIEW;
+void close_file_view(FILEVIEW&mmfv);
+char* create_file_view_readonly(const TCHAR *filepath, FILEVIEW&mmfv);
 
 // round a value up to be a multiple of 512
 // assumption: T is an int type

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ enum
   TOK_XPSTYLE,
   TOK_REQEXECLEVEL,
   TOK_MANIFEST_DPIAWARE,
+  TOK_MANIFEST_DPIAWARENESS,
   TOK_MANIFEST_SUPPORTEDOS,
   TOK_CHANGEUI,
   TOK_ADDBRANDINGIMAGE,
@@ -133,6 +134,7 @@ enum
   TOK_P_DELFILE,
   TOK_P_APPENDFILE,
   TOK_P_GETDLLVERSION,
+  TOK_P_GETTLBVERSION,
 
   TOK_P_SEARCHPARSESTRING,
   TOK_P_SEARCHREPLACESTRING,
@@ -236,9 +238,15 @@ enum
   TOK_GETFILETIMELOCAL,
   TOK_STRLEN,
   TOK_INTOP,
+  TOK_INTPTROP,
   TOK_INTCMP,
   TOK_INTCMPU,
+  TOK_INT64CMP,
+  TOK_INT64CMPU,
+  TOK_INTPTRCMP,
+  TOK_INTPTRCMPU,
   TOK_INTFMT,
+  TOK_INT64FMT,
   TOK_ENUMREGKEY,
   TOK_ENUMREGVAL,
   TOK_PUSH,

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft, Jeff Doozan and Contributors
+ * Copyright (C) 1999-2018 Nullsoft, Jeff Doozan and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,6 +126,13 @@ static void NSISCALL NotifyCurWnd(UINT uNotifyCode)
 #define GetUIItem(it) GetDlgItem(hwndDlg,it)
 
 #ifdef NSIS_CONFIG_ENHANCEDUI_SUPPORT
+// "Link Window"/"SysLink" stores a pointer in GWLP_USERDATA on 2000/XP/2003 and it crashes if we clobber it (forums.winamp.com/showthread.php?t=333379).
+// Checking for ROLE_SYSTEM_LINK is probably more reliable but requires more code.
+#define IsNSISCtlColor(p) ( ( ((p)->lbStyle) <= 1 ) /* BS_SOLID||BS_HOLLOW */ \
+  && ( (UINT)((p)->bkmode) <= 2 ) /* TRANSPARENT||OPAQUE */ \
+  && ( ((p)->flags >> CC_FLAGSSHIFTFORZERO) == 0 ) /* CC_* flags */ \
+  )
+
 #define HandleStaticBkColor() _HandleStaticBkColor(uMsg, wParam, lParam)
 static INT_PTR NSISCALL _HandleStaticBkColor(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -133,7 +140,7 @@ static INT_PTR NSISCALL _HandleStaticBkColor(UINT uMsg, WPARAM wParam, LPARAM lP
   {
     ctlcolors *c = (ctlcolors *)GetWindowLongPtr((HWND)lParam, GWLP_USERDATA);
 
-    if (c) {
+    if (c && IsNSISCtlColor(c)) {
       COLORREF text;
       LOGBRUSH lh;
 
@@ -156,7 +163,7 @@ static INT_PTR NSISCALL _HandleStaticBkColor(UINT uMsg, WPARAM wParam, LPARAM lP
         lh.lbStyle = c->lbStyle;
         if (c->bkb)
           DeleteObject(c->bkb);
-        c->bkb = CreateBrushIndirect(&lh);
+        c->bkb = CreateBrushIndirect(&lh); // LOGBRUSH::lbHatch is ignored by BS_SOLID and BS_HOLLOW
       }
 
       return (INT_PTR)c->bkb;
@@ -166,7 +173,7 @@ static INT_PTR NSISCALL _HandleStaticBkColor(UINT uMsg, WPARAM wParam, LPARAM lP
 }
 #else
 #define HandleStaticBkColor() 0
-#endif//!NSIS_CONFIG_ENHANCEDUI_SUPPORT
+#endif//~ NSIS_CONFIG_ENHANCEDUI_SUPPORT
 
 #ifdef NSIS_CONFIG_LOG
 #if !defined(NSIS_CONFIG_LOG_ODS) && !defined(NSIS_CONFIG_LOG_STDOUT)
@@ -402,20 +409,20 @@ FORCE_INLINE int NSISCALL ui_doinstall(void)
 
 #ifdef NSIS_CONFIG_LICENSEPAGE
     { // load richedit DLL
-      static const CHAR riched20[]=("RichEd20");
-      static const CHAR riched32[]=("RichEd32");
+      static const CHAR riched20[]=("RichEd20"); // v2..3 DLL
+      static const CHAR riched32[]=("RichEd32"); // v1 DLL
 #ifdef UNICODE
       static const TCHAR richedit20t[]=_T("RichEdit20W");
 #else
       static const TCHAR richedit20t[]=_T("RichEdit20A");
 #endif
-      static const TCHAR richedit[]=_T("RichEdit");
+      static const TCHAR richedit[]=_T("RichEdit"); // v1 class
       if (!LoadSystemLibrary(riched20))
       {
         LoadSystemLibrary(riched32); // Win95 only ships with v1.0, NT4 has v2.0: web.archive.org/web/20030607222419/http://msdn.microsoft.com/library/en-us/shellcc/platform/commctls/richedit/richeditcontrols/aboutricheditcontrols.asp
       }
 
-      // make richedit20a/w point to RICHEDIT
+      // Register RichEdit20A/W as a RICHEDIT clone (for Win95)
       if (!GetClassInfo(NULL,richedit20t,&wc))
       {
         GetClassInfo(NULL,richedit,&wc);

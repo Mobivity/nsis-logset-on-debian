@@ -1,3 +1,655 @@
+2018-01-30 03:53  kichik
+
+	* /NSIS/tags/v303: Tagging for release 3.03
+
+2018-01-30 03:52  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.03
+
+2018-01-30 03:51  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Tatar.nsh: need eol
+
+2018-01-30 03:40  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Tatar.nlf: fix line endings
+
+2018-01-30 03:37  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: this time for real :)
+
+2018-01-30 00:45  anders_k
+
+	* /NSIS/trunk/Source/build.h: VC6 can't handle typename here but
+	  GCC requires it
+
+2018-01-29 14:42  anders_k
+
+	* /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/util.cpp: Attempt
+	  to fix VC6
+
+2018-01-29 02:46  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: prepare for release
+
+2018-01-25 18:37  anders_k
+
+	* /NSIS/trunk/Include/WinVer.nsh: Only include WinVer Win9x code in
+	  32-bit ANSI installers
+
+2018-01-25 17:43  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Include/WinVer.nsh:
+	  Added WinVer.nsh IsDomainController (patch #286)
+
+2018-01-22 19:08  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/SConscript,
+	  /NSIS/trunk/Contrib/Language files/Tatar.nlf,
+	  /NSIS/trunk/Contrib/Language files/Tatar.nsh,
+	  /NSIS/trunk/Docs/src/credits.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Examples/Modern
+	  UI/MultiLanguage.nsi: Added Tatar translation (patch #281)
+
+2018-01-12 02:01  anders_k
+
+	* /NSIS/trunk/Contrib/nsExec/nsExec.txt: Added required Pop's to
+	  nsExec example usage
+
+2018-01-06 17:51  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c: Fixed "text in
+	  struct" bug introduced by a silly typo
+
+2018-01-05 19:10  kichik
+
+	* /NSIS/trunk/.travis.yml: fix slack
+
+2018-01-05 12:53  anders_k
+
+	* /NSIS/trunk/Source/exehead/exec.c: Don't allow scripts to delete
+	  a HKEY root
+
+2018-01-03 01:44  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Afrikaans.nlf,
+	  /NSIS/trunk/Contrib/Language files/Albanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Arabic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Breton.nlf,
+	  /NSIS/trunk/Contrib/Language files/Catalan.nlf,
+	  /NSIS/trunk/Contrib/Language files/Corsican.nlf,
+	  /NSIS/trunk/Contrib/Language files/Esperanto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Farsi.nlf,
+	  /NSIS/trunk/Contrib/Language files/Finnish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Galician.nlf,
+	  /NSIS/trunk/Contrib/Language files/German.nlf,
+	  /NSIS/trunk/Contrib/Language files/Hungarian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Irish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Italian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Korean.nlf,
+	  /NSIS/trunk/Contrib/Language files/Kurdish.nlf,
+	  /NSIS/trunk/Contrib/Language files/Lithuanian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Pashto.nlf,
+	  /NSIS/trunk/Contrib/Language files/Portuguese.nlf,
+	  /NSIS/trunk/Contrib/Language files/PortugueseBR.nlf,
+	  /NSIS/trunk/Contrib/Language files/ScotsGaelic.nlf,
+	  /NSIS/trunk/Contrib/Language files/Slovenian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Turkish.nlf: Unify branding
+	  langstring
+
+2018-01-02 01:51  anders_k
+
+	* /NSIS/trunk/Contrib/ExDLL/nsis_tchar.h,
+	  /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI 2/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI 2/MUI2.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/License.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/SubStart/substart.c,
+	  /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/Call-amd64.S,
+	  /NSIS/trunk/Contrib/System/System.html, /NSIS/trunk/COPYING,
+	  /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/LangFile.nsh,
+	  /NSIS/trunk/Include/VB6RunTime.nsh,
+	  /NSIS/trunk/Source/7zip/7zGuids.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/InBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/OutBuffer.h,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Common/StreamUtils.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree2.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3Z.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree3ZMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTree4b.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMF.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/BinTree/BinTreeMFMain.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/IMatchFinder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZInWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZ/LZOutWindow.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMA.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/LZMA/LZMAEncoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.cpp,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBit.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderBitTree.h,
+	  /NSIS/trunk/Source/7zip/7zip/Compress/RangeCoder/RangeCoderOpt.h,
+	  /NSIS/trunk/Source/7zip/7zip/ICoder.h,
+	  /NSIS/trunk/Source/7zip/7zip/IStream.h,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.cpp,
+	  /NSIS/trunk/Source/7zip/Common/Alloc.h,
+	  /NSIS/trunk/Source/7zip/Common/CRC.cpp,
+	  /NSIS/trunk/Source/7zip/Common/CRC.h,
+	  /NSIS/trunk/Source/7zip/Common/Defs.h,
+	  /NSIS/trunk/Source/7zip/Common/MyCom.h,
+	  /NSIS/trunk/Source/7zip/Common/MyGuidDef.h,
+	  /NSIS/trunk/Source/7zip/Common/MyUnknown.h,
+	  /NSIS/trunk/Source/7zip/Common/MyWindows.h,
+	  /NSIS/trunk/Source/7zip/Common/StdAfx.h,
+	  /NSIS/trunk/Source/7zip/Common/Types.h,
+	  /NSIS/trunk/Source/7zip/LZMADecode.c,
+	  /NSIS/trunk/Source/7zip/LZMADecode.h,
+	  /NSIS/trunk/Source/afxres.h, /NSIS/trunk/Source/BinInterop.cpp,
+	  /NSIS/trunk/Source/BinInterop.h, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/bzip2/blocksort.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.c,
+	  /NSIS/trunk/Source/bzip2/bzlib.h,
+	  /NSIS/trunk/Source/bzip2/compress.c,
+	  /NSIS/trunk/Source/bzip2/decompress.c,
+	  /NSIS/trunk/Source/bzip2/huffman.c, /NSIS/trunk/Source/cbzip2.h,
+	  /NSIS/trunk/Source/clzma.cpp, /NSIS/trunk/Source/clzma.h,
+	  /NSIS/trunk/Source/compressor.h, /NSIS/trunk/Source/crc32.c,
+	  /NSIS/trunk/Source/crc32.h, /NSIS/trunk/Source/czlib.h,
+	  /NSIS/trunk/Source/DialogTemplate.cpp,
+	  /NSIS/trunk/Source/DialogTemplate.h,
+	  /NSIS/trunk/Source/dirreader.cpp, /NSIS/trunk/Source/dirreader.h,
+	  /NSIS/trunk/Source/exehead/afxres.h,
+	  /NSIS/trunk/Source/exehead/api.h,
+	  /NSIS/trunk/Source/exehead/bgbg.c,
+	  /NSIS/trunk/Source/exehead/components.c,
+	  /NSIS/trunk/Source/exehead/components.h,
+	  /NSIS/trunk/Source/exehead/config.h,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/exec.h,
+	  /NSIS/trunk/Source/exehead/fileform.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/lang.h,
+	  /NSIS/trunk/Source/exehead/Main.c,
+	  /NSIS/trunk/Source/exehead/plugin.c,
+	  /NSIS/trunk/Source/exehead/plugin.h,
+	  /NSIS/trunk/Source/exehead/state.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/exehead/ui.h,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/exehead/util.h,
+	  /NSIS/trunk/Source/fileform.cpp, /NSIS/trunk/Source/fileform.h,
+	  /NSIS/trunk/Source/growbuf.cpp, /NSIS/trunk/Source/growbuf.h,
+	  /NSIS/trunk/Source/icon.cpp, /NSIS/trunk/Source/icon.h,
+	  /NSIS/trunk/Source/lang.cpp, /NSIS/trunk/Source/lang.h,
+	  /NSIS/trunk/Source/lineparse.cpp, /NSIS/trunk/Source/lineparse.h,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/manifest.cpp,
+	  /NSIS/trunk/Source/manifest.h, /NSIS/trunk/Source/mmap.cpp,
+	  /NSIS/trunk/Source/mmap.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/Plugins.cpp, /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/ResourceVersionInfo.cpp,
+	  /NSIS/trunk/Source/ResourceVersionInfo.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/scriptpp.cpp,
+	  /NSIS/trunk/Source/ShConstants.cpp,
+	  /NSIS/trunk/Source/ShConstants.h, /NSIS/trunk/Source/strlist.cpp,
+	  /NSIS/trunk/Source/strlist.h, /NSIS/trunk/Source/tchar.h,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h,
+	  /NSIS/trunk/Source/tstring.cpp, /NSIS/trunk/Source/tstring.h,
+	  /NSIS/trunk/Source/uservars.h, /NSIS/trunk/Source/utf.cpp,
+	  /NSIS/trunk/Source/utf.h, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h,
+	  /NSIS/trunk/Source/validateunicode.cpp,
+	  /NSIS/trunk/Source/validateunicode.h,
+	  /NSIS/trunk/Source/winchar.cpp, /NSIS/trunk/Source/winchar.h,
+	  /NSIS/trunk/Source/writer.cpp, /NSIS/trunk/Source/writer.h,
+	  /NSIS/trunk/Source/zlib/INFBLOCK.C,
+	  /NSIS/trunk/Source/zlib/ZCONF.H, /NSIS/trunk/Source/zlib/ZLIB.H,
+	  /NSIS/trunk/Source/zlib/ZUTIL.H: (C) 2018
+
+2017-12-22 15:33  anders_k
+
+	* /NSIS/trunk/Include/WinMessages.nsh: Added LVM_GETITEMTEXT to fix
+	  the 3rd-party CommCtrl.nsh header
+
+2017-12-18 19:19  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/ScotsGaelic.nlf: The new
+	  Windows 10 guidelines for Scottish Gaelic supposedly say that you
+	  must use U+2026 and not dot dot dot
+
+2017-12-18 00:52  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/ScotsGaelic.nlf,
+	  /NSIS/trunk/Contrib/Language files/ScotsGaelic.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updated ScotsGaelic (bug #1197)
+
+2017-12-10 15:44  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html: HTML-entify special
+	  characters in example code
+
+2017-12-03 18:10  anders_k
+
+	* /NSIS/trunk/Source/BinInterop.cpp: Fixed silly 64-bit trunction
+	  warning
+
+2017-12-03 18:06  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html: Don't lock $PluginsDir
+	  with SetOutPath even if it is just an example
+
+2017-12-03 18:04  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/Source/System.h,
+	  /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Docs/src/history.but: Added experimental System
+	  plug-in v2 syntax option
+
+2017-11-30 21:38  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/Source/System.h,
+	  /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Docs/src/history.but: Added System plug-in B and H
+	  types
+
+2017-11-28 18:15  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/Platform.h:
+	  Force HEASLR DllCharacteristics when ASLR bit is set for 64-bit
+	  targets
+
+2017-11-16 22:55  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Finnish.nsh,
+	  /NSIS/trunk/Contrib/Language files/Pashto.nsh,
+	  /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi: Fixed rarely
+	  used Finnish and Pashto uninstall MUI pages
+
+2017-11-15 18:50  anders_k
+
+	* /NSIS/trunk/Examples/Modern UI/MultiLanguage.nsi: Use additional
+	  uninstall pages to catch more translation issues
+
+2017-11-15 18:23  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/ScotsGaelic.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Fixed Scottish Gaelic
+	  MUI_UNPAGE_FINISH quote issue (patch #285)
+
+2017-11-05 18:36  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Source/BinInterop.cpp,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/Ui.c, /NSIS/trunk/Source/fileform.cpp:
+	  Try to avoid clobbering SysLink GWLP_USERDATA
+
+2017-11-04 17:59  anders_k
+
+	* /NSIS/trunk/Docs/src/defines.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/scriptpp.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  Added ~, !, && and || !define /math operators
+
+2017-10-30 17:18  anders_k
+
+	* /NSIS/trunk/Source/boost/scoped_ptr.hpp: A quick hack for our
+	  outdated boost library because std::auto_ptr was deprecated in
+	  C++11 and removed in C++17
+
+2017-10-29 22:36  anders_k
+
+	* /NSIS/trunk/SCons/utils.py: Handle case where
+	  MSPE.ReadCharacteristics is None
+
+2017-10-26 16:37  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/SCons/utils.py,
+	  /NSIS/trunk/SConstruct: Only print the PE flags string for actual
+	  PE executable files. Now also zeros the checksum just in case.
+
+2017-10-25 23:11  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/SCons/utils.py,
+	  /NSIS/trunk/SConstruct: Plug-ins now set the ASLR, DEP, LAA and
+	  NOSEH flags (bug #1188)
+
+2017-10-24 21:23  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/utils.cpp: Handle newline when
+	  parsing /version
+
+2017-10-24 13:19  anders_k
+
+	* /NSIS/trunk/Source/util.cpp: Make sure !system outputs whatever
+	  is left in the pipe even if there is no newline
+
+2017-10-23 17:55  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/makenssi.cpp: MakeNSIS now returns 0 for
+	  various successful information commands (bug #1193)
+
+2017-10-23 16:08  anders_k
+
+	* /NSIS/trunk/Contrib/VPatch/Source/GenPat/main.cpp,
+	  /NSIS/trunk/Contrib/VPatch/Source/GenPat/PatchGenerator.cpp:
+	  Improved VPatch GenPat error handling
+
+2017-10-21 18:56  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Italian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Italian.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updated Italian translation
+	  (bug #1194)
+
+2017-10-21 01:41  anders_k
+
+	* /NSIS/trunk/Source/util.cpp: Cast away pointless warning because
+	  A) 0xffffffffUL will fit in a 64-bit off_t, or B) LONG_MAX is
+	  used
+
+2017-10-21 01:29  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/util.cpp:
+	  Added POSIX mmap helper function used by VxD parser (patch #284)
+
+2017-10-19 14:16  anders_k
+
+	* /NSIS/trunk/Source/BinInterop.cpp, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: Support named version resource in VxD
+	  files so we can handle MSGame.VxD
+
+2017-10-16 22:08  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Localization.nsh,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh: Allow compilation of
+	  MUI "applications" that only use custom pages without triggering
+	  a helper warning
+
+2017-10-16 12:14  anders_k
+
+	* /NSIS/trunk/Contrib/System/System.html: Fixed a broken MSDN link
+	  in the docs
+
+2017-10-15 16:57  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/int.but,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/exehead/util.c, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h: Added
+	  Int64Fmt
+
+2017-10-14 16:49  anders_k
+
+	* /NSIS/trunk/Docs/src/config.but,
+	  /NSIS/trunk/Docs/src/flowcontrol.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Include/Util.nsh,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/Source/tokens.h: Added IntPtrCmp, IntPtrCmpU,
+	  Int64Cmp and Int64CmpU
+
+2017-10-13 21:23  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/int.but,
+	  /NSIS/trunk/Include/Util.nsh, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/exehead/exec.c, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/tokens.cpp, /NSIS/trunk/Source/tokens.h: Added
+	  IntPtrOp alias
+
+2017-10-09 17:59  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html: Expand most MUI doc.
+	  sections by default
+
+2017-10-09 13:45  anders_k
+
+	* /NSIS/trunk/Contrib/InstallOptions/Readme.html: Added HTML
+	  section anchors
+
+2017-10-08 15:26  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/System.html,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/int.but,
+	  /NSIS/trunk/Include/Win/WinDef.nsh,
+	  /NSIS/trunk/Source/exehead/exec.c,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  Added IntOp and System::Int64Op >>> SHR operator
+
+2017-10-07 19:16  kichik
+
+	* /NSIS/trunk/Docs/src/build.but: use same terms for both scons and
+	  python
+
+2017-10-07 18:56  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/System.c: Minor 64-bit System
+	  fix
+
+2017-10-07 12:37  anders_k
+
+	* /NSIS/trunk/Docs/src/build.but, /NSIS/trunk/INSTALL: Updated
+	  minimum Python version in build docs
+
+2017-10-06 19:30  kichik
+
+	* /NSIS/trunk/SCons/Config/default, /NSIS/trunk/SCons/Config/gnu,
+	  /NSIS/trunk/SCons/Config/hpc++, /NSIS/trunk/SCons/Config/ms: more
+
+2017-10-06 18:23  kichik
+
+	* /NSIS/trunk/Contrib/NSIS Menu/SConscript,
+	  /NSIS/trunk/Contrib/System/SConscript,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/SCons/Tools/mstoolkit.py, /NSIS/trunk/SCons/utils.py,
+	  /NSIS/trunk/Source/Tests/icons.py,
+	  /NSIS/trunk/Source/Tests/SConscript: support python 3 for
+	  building
+	  python 2.6 is no longer supported
+
+2017-10-06 17:47  anders_k
+
+	* /NSIS/trunk/Source/exehead/util.c: Save a couple of bytes by
+	  comparing the UTF16LE BOM as a 16-bit number
+
+2017-10-06 14:30  anders_k
+
+	* /NSIS/trunk/Source/lineparse.cpp, /NSIS/trunk/Source/lineparse.h,
+	  /NSIS/trunk/Source/script.cpp: VIAddVersionKey and SetFont now
+	  supports hex numbers in the /LANG= parameter
+
+2017-10-06 13:21  anders_k
+
+	* /NSIS/trunk/Contrib/Library/RegTool/RegTool.cpp,
+	  /NSIS/trunk/Source/exehead/Main.c: Optimize away more calls to
+	  GetModuleHandle(0) with __ImageBase under MSVC
+
+2017-10-05 18:11  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h: Avoid
+	  using SEEK_END when possible
+
+2017-10-04 23:40  anders_k
+
+	* /NSIS/trunk/Source/BinInterop.cpp,
+	  /NSIS/trunk/Source/BinInterop.h, /NSIS/trunk/Source/Plugins.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/scriptpp.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h:
+	  Refactored GetDLLVersion
+
+2017-10-04 18:20  anders_k
+
+	* /NSIS/trunk/Source/BinInterop.cpp: Removed optional TLB parser
+	  debug output
+
+2017-10-04 12:25  anders_k
+
+	* /NSIS/trunk/Source/BinInterop.cpp,
+	  /NSIS/trunk/Source/BinInterop.h: Added POSIX TLB reader functions
+
+2017-10-03 20:48  anders_k
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal/LibraryLocal.cpp,
+	  /NSIS/trunk/Contrib/Library/LibraryLocal/SConscript,
+	  /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Examples/Library.nsi,
+	  /NSIS/trunk/Include/Library.nsh, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/ResourceEditor.cpp,
+	  /NSIS/trunk/Source/ResourceEditor.h,
+	  /NSIS/trunk/Source/SConscript, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/scriptpp.cpp, /NSIS/trunk/Source/strlist.cpp,
+	  /NSIS/trunk/Source/strlist.h, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/Source/tokens.h, /NSIS/trunk/Source/util.cpp,
+	  /NSIS/trunk/Source/util.h: Added !gettlbversion and TLB reading
+	  support on POSIX
+
+2017-09-29 18:56  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added more RichEdit NSD
+	  macros and a WM_NOTIFY example
+
+2017-09-29 17:41  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Docs/src/history.but: Removed unused NSD_LB_Clear
+	  macro parameter
+
+2017-09-29 14:34  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added RichEdit NSD control
+
+2017-09-28 12:11  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added more NSD editbox
+	  macros
+
+2017-09-27 12:34  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/Readme.html: Simplified initial NSD
+	  tutorial steps
+
+2017-09-26 12:01  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added UpDown NSD control
+
+2017-09-25 16:37  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: Added more example
+	  controls and pages in NSD example.nsi
+
+2017-09-25 11:57  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: Added NSD
+	  Prepend/Append CB/LB helper macros
+
+2017-09-18 14:04  anders_k
+
+	* /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp: Optimize away call
+	  to GetModuleHandle(NULL) under MS toolchain
+
+2017-09-17 21:48  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Belarusian.nsh: Update
+	  Belarusian native ASCII name from BORNAME fork
+
+2017-09-16 17:59  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added HotKey and IPAddress
+	  NSD controls
+
+2017-09-16 14:01  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/WinMessages.nsh: Added Animation and TrackBar
+	  NSD controls
+
+2017-09-15 17:50  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Docs/src/history.but: Added more NSD ListBox macros
+	  (RFE #543)
+
+2017-09-14 17:10  anders_k
+
+	* /NSIS/trunk/Docs/src/attributes.but,
+	  /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/exehead/Ui.c,
+	  /NSIS/trunk/Source/exehead/util.c,
+	  /NSIS/trunk/Source/manifest.cpp, /NSIS/trunk/Source/manifest.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/Source/tokens.h: Added experimental
+	  ManifestDPIAwareness attribute so we can declare PerMonitorV2
+	  awareness
+
+2017-09-01 23:06  anders_k
+
+	* /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Examples/languages.nsi,
+	  /NSIS/trunk/Examples/makensis.nsi, /NSIS/trunk/Examples/Modern
+	  UI/MultiLanguage.nsi, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/makenssi.cpp,
+	  /NSIS/trunk/Source/Tests/preprocessor.nsi: Added !pragma warning
+	  error <#|all>, warning #, disable all, enable all, default all
+
 2017-08-01 00:29  kichik
 
 	* /NSIS/tags/v3021: Tagging for release 3.02.1

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -477,7 +477,9 @@ class DefineList : public SortedStringList<struct define>
      */
     int add(const TCHAR *name, const TCHAR *value=_T(""));
     int addn(const TCHAR *name, size_t maxvallen, const TCHAR *value); // maxvallen does not include \0
-    void set(const TCHAR *name, const TCHAR *value=_T(""));
+    int set(const TCHAR *name, const TCHAR *value=_T(""));
+    int set_si32(const TCHAR *name, long value);
+    int set_ui32(const TCHAR *name, unsigned long value);
 
     /**
      * This function returns the pointer to the .value TCHAR* that corresponds

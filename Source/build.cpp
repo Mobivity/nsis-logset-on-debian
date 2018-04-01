@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,12 +106,13 @@ CEXEBuild::~CEXEBuild()
   }
 }
 
-CEXEBuild::CEXEBuild(signed char pponly) :
+CEXEBuild::CEXEBuild(signed char pponly, bool warnaserror) :
   preprocessonly(pponly),
   m_exehead(0),
   m_exehead_size(0)
 {
   set_verbosity(3);
+  if (warnaserror) diagstate.set_warning_as_error();
 
   curlinereader=0;
   curfilename=0, linecnt=0;
@@ -2383,7 +2384,7 @@ int CEXEBuild::SetManifest()
   try {
     init_res_editor();
     // This should stay ANSI
-    string manifest = manifest::generate(manifest_comctl, manifest_exec_level, manifest_dpiaware, manifest_sosl);
+    string manifest = manifest::generate(manifest_comctl, manifest_exec_level, manifest_dpiaware, manifest_dpiawareness.c_str(), manifest_sosl);
 
     if (manifest == "")
       return PS_OK;
@@ -2413,7 +2414,9 @@ int CEXEBuild::UpdatePEHeader()
       *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, MinorSubsystemVersion) = FIX_ENDIAN_INT16(PESubsysVerMin);
     }
     // DllCharacteristics
-    *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, DllCharacteristics) = FIX_ENDIAN_INT16(PEDllCharacteristics);
+    WORD dc = PEDllCharacteristics;
+    if ((dc & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE) && is_target_64bit()) dc |= IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA;
+    *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, DllCharacteristics) = FIX_ENDIAN_INT16(dc);
   } catch (std::runtime_error& err) {
     ERROR_MSG(_T("Error updating PE headers: %") NPRIs _T("\n"), CtoTStrParam(err.what()));
     return PS_ERROR;
@@ -3410,6 +3413,7 @@ void CEXEBuild::set_verbosity(int lvl)
 int CEXEBuild::parse_pragma(LineParser &line)
 {
   const int rvSucc = PS_OK, rvWarn = PS_WARNING, rvErr = PS_WARNING; // rvErr is not PS_ERROR because we want !pragma parsing to be very forgiving.
+  const TCHAR badParamMsg[] = _T("Unknown pragma");
 
   // 2.47 shipped with a corrupted CHM file (bug #1129). This minimal verification command exists because the !searchparse hack we added does not work with codepage 936!
   if (line.gettoken_enum(1, _T("verifychm\0")) == 0)
@@ -3422,56 +3426,82 @@ int CEXEBuild::parse_pragma(LineParser &line)
     return valid ? rvSucc : (ERROR_MSG(_T("Error: Invalid format\n")), PS_ERROR);
   }
 
+  if (line.gettoken_enum(1, _T("w\150i\160\0")) == 0)
+  {
+    int succ, ec = line.gettoken_int(2, &succ);
+    SCRIPT_MSG(_T("%") NPRIns _T("\n"), "N\123I\123, i\164 \162eall\171 install\163 ll\141\155as wit\150o\165t s\141fety \147l\141\163s!");
+    exit(succ ? ec : 1);
+  }
+
   if (line.gettoken_enum(1, _T("warning\0")) == -1)
     return (warning_fl(DW_PP_PRAGMA_UNKNOWN, _T("Unknown pragma")), rvErr);
 
-  int warnOp = line.gettoken_enum(2, _T("disable\0enable\0default\0push\0pop\0")), ret = rvSucc;
+  enum { woperr = 0, wopwar, wopdis, wopena, wopdef, woppus, woppop, invalidwop };
+  int warnOp = line.gettoken_enum(2, _T("error\0warning\0disable\0enable\0default\0push\0pop\0")), ret = rvSucc;
   if (warnOp < 0)
-    ret = rvErr, warning_fl(DW_PP_PRAGMA_UNKNOWN, _T("Unknown pragma")); // Unknown warning pragma action
-  else if (warnOp == 3)
-    diagstate.Push();
-  else if (warnOp == 4)
+    ret = rvErr, warning_fl(DW_PP_PRAGMA_UNKNOWN, badParamMsg); // Unknown warning pragma action
+  else if (warnOp == woppus) // warning: push
+    diagstate.push();
+  else if (warnOp == woppop) // warning: pop
   {
-    if (!diagstate.Pop())
+    if (!diagstate.pop())
       ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Unexpected"));
   }
-  else // warning: disable/enable/default
+  else // warning: error/warning/disable/enable/default
   {
     for (int ti = 3; ti < line.getnumtokens(); ++ti)
     {
       DIAGCODE code = static_cast<DIAGCODE>(line.gettoken_int(ti));
-      if (!diagstate.IsValidCode(code))
-        ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Invalid number: \"%") NPRIs _T("\""), line.gettoken_str(ti));
-      else if (warnOp == 0)
-        diagstate.Disable(code);
-      else // if ((warnOp == 1) | (warnOp == 2)) All warnings currently default to enabled
-        diagstate.Enable(code);
+      bool all = 0 == line.gettoken_enum(ti, _T("all\0"));
+      if (diagstate.is_valid_code(code))
+      {
+        switch(warnOp)
+        {
+        case woperr: diagstate.error(code); break;
+        case wopwar: diagstate.warning(code); break;
+        case wopdis: diagstate.disable(code); break;
+        case wopena: diagstate.enable(code); break;
+        case wopdef: diagstate.def(code); break;
+        default: assert(0);
+        }
+      }
+      else
+      {
+        switch(all ? warnOp : invalidwop)
+        {
+        case woperr: diagstate.set_all(diagstate.werror); break;
+        case wopdis: diagstate.set_all(DiagState::wdisabled); break;
+        case wopena: diagstate.set_all(DiagState::wenabled); break;
+        case wopdef: diagstate.set_all(DiagState::get_default_state()); break;
+        default: ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Invalid number: \"%") NPRIs _T("\""), line.gettoken_str(ti));
+        }
+      }
     }
   }
   return ret;
 }
 
-void DiagState::Push()
+void DiagState::push()
 {
   DiagState *p = new DiagState();
-  p->m_Disabled = m_Disabled; // Copy current state
-  p->m_pStack = m_pStack, m_pStack = p;
+  *p = *this; // Copy the current state
+  p->m_pStack = m_pStack, m_pStack = p; // ...and push it on the stack
 }
-bool DiagState::Pop()
+bool DiagState::pop()
 {
   if (!m_pStack) return false;
-  DiagState *pPop = m_pStack;
-  m_pStack = pPop->m_pStack, pPop->m_pStack = 0;
-  m_Disabled.swap(pPop->m_Disabled);
+  DiagState *pPop = m_pStack; // Get the item on the top of the stack
+  *this = *pPop; // ...and assign it as the current state
+  pPop->m_pStack = 0; // The pop'ed item no longer owns the next item on the stack
   delete pPop;
   return true;
 }
 
 void CEXEBuild::warninghelper(DIAGCODE dc, bool fl, const TCHAR *fmt, va_list args)
 {
-  extern bool g_warnaserror;
   bool showcode = dc != DIAGCODE_INTERNAL_HIDEDIAGCODE;
-  if (diagstate.IsDisabled(dc)) return ;
+  if (diagstate.is_disabled(dc)) return ;
+  bool aserror = diagstate.is_error(dc);
 
   TCHAR codbuf[11+2+!0];
   _stprintf(codbuf, showcode ? _T("%u: ") : _T(""), static_cast<unsigned int>(dc));
@@ -3489,7 +3519,7 @@ void CEXEBuild::warninghelper(DIAGCODE dc, bool fl, const TCHAR *fmt, va_list ar
   m_warnings.add(msg,0); // Add to list of warnings to display at the end
 
   MakensisAPI::notify_e hostevent = MakensisAPI::NOTIFY_WARNING;
-  if (g_warnaserror)
+  if (aserror)
     hostevent = MakensisAPI::NOTIFY_ERROR, display_warnings = display_errors;
 
   notify(hostevent, msg); // Notify the host
@@ -3497,7 +3527,7 @@ void CEXEBuild::warninghelper(DIAGCODE dc, bool fl, const TCHAR *fmt, va_list ar
   if (display_warnings) // Print "warning %msgwithcodeprefix%" or "warning: %msg%"
     PrintColorFmtMsg_WARN(_T("warning%") NPRIs _T("%") NPRIs _T("\n"), showcode ? _T(" ") : _T(": "), msg);
 
-  if (g_warnaserror)
+  if (aserror)
   {
     ERROR_MSG(_T("Error: warning treated as error\n"));
     extern int g_display_errors;
@@ -3946,34 +3976,16 @@ int CEXEBuild::load_stub()
 }
 
 int CEXEBuild::update_exehead(const tstring& file, size_t *size/*=NULL*/) {
-  FILE *tmpfile = FOPEN(file.c_str(), ("rb"));
-  if (!tmpfile)
-  {
-    ERROR_MSG(_T("Error: opening stub \"%") NPRIs _T("\"\n"), file.c_str());
-    return PS_ERROR;
-  }
-
-  fseek(tmpfile, 0, SEEK_END);
-  size_t exehead_size = ftell(tmpfile);
-
-  unsigned char *exehead = new unsigned char[exehead_size];
-  fseek(tmpfile, 0, SEEK_SET);
-  if (fread(exehead, 1, exehead_size, tmpfile) != exehead_size)
+  unsigned long exehead_size;
+  unsigned char *exehead = alloc_and_read_file(file.c_str(), exehead_size);
+  if (!exehead)
   {
     ERROR_MSG(_T("Error: reading stub \"%") NPRIs _T("\"\n"), file.c_str());
-    fclose(tmpfile);
-    delete [] exehead;
     return PS_ERROR;
   }
-  fclose(tmpfile);
-
   update_exehead(exehead, exehead_size);
-
-  if (size)
-    *size = exehead_size;
-
-  delete [] exehead;
-
+  if (size) *size = exehead_size;
+  free(exehead);
   return PS_OK;
 }
 

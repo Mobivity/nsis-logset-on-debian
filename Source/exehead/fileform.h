@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,9 +96,9 @@ enum
   EW_READENVSTR,        // ReadEnvStr/ExpandEnvStrings: 3 [output, string_with_env_variables, IsRead]
 #endif
 #ifdef NSIS_SUPPORT_INTOPTS
-  EW_INTCMP,            // IntCmp: 6 [val1, val2, equal, val1<val2, val1>val2, unsigned?]
-  EW_INTOP,             // IntOp: 4 [output, input1, input2, op] where op: 0=add, 1=sub, 2=mul, 3=div, 4=bor, 5=band, 6=bxor, 7=bnot input1, 8=lnot input1, 9=lor, 10=land], 11=1%2
-  EW_INTFMT,            // IntFmt: [output, format, input]
+  EW_INTCMP,            // IntCmp: 6 [val1, val2, equal, val1<val2, val1>val2, flags] where flags: bit 0x01 is set for unsigned operations and bit 0x8000 is set for 64-bit operations
+  EW_INTOP,             // IntOp: 4 [output, input1, input2, op] where op: 0=add, 1=sub, 2=mul, 3=div, 4=bor, 5=band, 6=bxor, 7=bnot input1, 8=lor, 9=land 10=mod, 11=shl, 12=sar, 13=shr (bneg is implemented with bxor in compiler)
+  EW_INTFMT,            // IntFmt: 4 [output, format, input, 64-bit]
 #endif
 #ifdef NSIS_SUPPORT_STACK
   EW_PUSHPOP,           // Push/Pop/Exchange: 3 [variable/string, ?pop:push, ?exch]
@@ -467,12 +467,14 @@ typedef struct
   int parms[5];
 } page;
 
-// text/bg color
+// ctlcolors text/bg color flags
 #define CC_TEXT 1
 #define CC_TEXT_SYS 2
 #define CC_BK 4
 #define CC_BK_SYS 8
 #define CC_BKB 16
+#define CC_FLAGSMASK 0x1f
+#define CC_FLAGSSHIFTFORZERO 5
 
 typedef struct {
   COLORREF text;

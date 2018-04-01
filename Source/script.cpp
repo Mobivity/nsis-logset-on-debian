@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include "winchar.h"
 #include "ResourceEditor.h"
 #include "DialogTemplate.h"
+#include "BinInterop.h"
 #include "lang.h"
 #include "dirreader.h"
 #include <nsis-version.h>
@@ -78,6 +79,22 @@ static UINT ParseCtlColor(const TCHAR*Str, int&CCFlags, int CCFlagmask)
   return clr;
 }
 #endif //~ NSIS_CONFIG_ENHANCEDUI_SUPPORT
+
+static LANGID ParseLangId(const TCHAR*Str)
+{
+  const TCHAR *p = Str;
+  if (_T('+') == *p || _T('-') == *p) ++p;
+  return _T('0') == p[0] && _T('x') == (p[1]|32) ? LineParser::parse_int(Str) : _ttoi(Str);
+}
+
+LANGID CEXEBuild::ParseLangIdParameter(const LineParser&line, int token)
+{
+  int succ, lid = line.gettoken_int(token, &succ);
+  if (!lid) lid = last_used_lang;
+  if (!succ)
+    warning_fl(DW_BAD_LANGID, _T("\"%") NPRIs _T("\" is not a valid language id, using language id %u!"), line.gettoken_str(token), lid);
+  return lid;
+}
 
 int CEXEBuild::process_script(NIStream&Strm, const TCHAR *filename)
 {
@@ -151,6 +168,20 @@ void CEXEBuild::end_ifblock()
 int CEXEBuild::num_ifblock()
 {
   return build_preprocessor_data.getlen() / sizeof(ifblock);
+}
+
+int CEXEBuild::doParse(int verbosity, const TCHAR *fmt, ...)
+{
+  ExpandoString<TCHAR, NSIS_MAX_STRLEN> buf;
+  int orgv = get_verbosity(), res;
+  va_list val;
+  va_start(val, fmt);
+  buf.StrVFmt(fmt, val);
+  va_end(val);
+  if (verbosity >= 0) set_verbosity(verbosity);
+  res = doParse(buf.GetPtr());
+  set_verbosity(orgv);
+  return res;
 }
 
 int CEXEBuild::doParse(const TCHAR *str)
@@ -269,7 +300,7 @@ parse_again:
         ERROR_MSG(_T("Plugin%") NPRIs _T(" not found, cannot call %") NPRIs _T("\n"),m_pPlugins && m_pPlugins->IsKnownPlugin(tokstr0) ? _T(" function") : _T(""),tokstr0);
       else
 #endif
-        ERROR_MSG(_T("Invalid command: %") NPRIs _T("\n"),tokstr0);
+        ERROR_MSG(_T("Invalid command: \"%") NPRIs _T("\"\n"),tokstr0);
       return PS_ERROR;
     }
   }
@@ -720,9 +751,8 @@ int CEXEBuild::LoadLicenseFile(const TCHAR *file, TCHAR** pdata, const TCHAR *cm
   }
   FILE *f=strm.GetHandle();
   UINT cbBOMOffset=ftell(f); // We might be positioned after a BOM
-  fseek(f,0,SEEK_END);
-  UINT cbFileData=ftell(f)-cbBOMOffset; // Size of file in bytes!
-
+  UINT32 cbFileSize=get_file_size32(f);
+  UINT cbFileData=(invalid_file_size32 == cbFileSize) ? 0 : cbFileSize - cbBOMOffset;
   if (!cbFileData)
   {
     warning_fl(DW_LICENSE_EMPTY, _T("%") NPRIs _T(": empty license file \"%") NPRIs _T("\"\n"),cmdname,file);
@@ -891,7 +921,8 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     case TOK_P_APPENDFILE:
     return pp_appendfile(line);
     case TOK_P_GETDLLVERSION:
-    return pp_getdllversion(line);
+    case TOK_P_GETTLBVERSION:
+    return pp_getversion(which_token, line);
 
     // page ordering stuff
     ///////////////////////////////////////////////////////////////////////////////
@@ -1970,33 +2001,20 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         int k=line.gettoken_enum(1, _T("all\0IDD_LICENSE\0IDD_DIR\0IDD_SELCOM\0IDD_INST\0IDD_INSTFILES\0IDD_UNINST\0IDD_VERIFY\0IDD_LICENSE_FSRB\0IDD_LICENSE_FSCB\0"));
         if (k<0) PRINTHELP();
 
-        FILE *fui = FOPEN(line.gettoken_str(2), ("rb"));
-        if (!fui) {
-          ERROR_MSG(_T("Error: Can't open \"%") NPRIs _T("\"!\n"), line.gettoken_str(2));
-          return PS_ERROR;
-        }
-        MANAGE_WITH(fui, fclose);
-
-        fseek(fui, 0, SEEK_END);
-        unsigned int len = ftell(fui);
-        fseek(fui, 0, SEEK_SET);
-        LPBYTE ui = (LPBYTE) malloc(len);
-        if (!ui) {
-          ERROR_MSG(_T("Internal compiler error #12345: malloc(%d) failed\n"), len);
-          extern void quit(); quit();
-        }
-        MANAGE_WITH(ui, free);
-        if (fread(ui, 1, len, fui) != len) {
+        unsigned long uifilesize;
+        BYTE *uifiledata = alloc_and_read_file(line.gettoken_str(2), uifilesize);
+        if (!uifiledata) {
           ERROR_MSG(_T("Error: Can't read \"%") NPRIs _T("\"!\n"), line.gettoken_str(2));
           return PS_ERROR;
         }
+        MANAGE_WITH(uifiledata, free);
 
-        CResourceEditor *uire = new CResourceEditor(ui, len);
+        CResourceEditor *uire = new CResourceEditor(uifiledata, uifilesize);
         init_res_editor();
 
         // Search for required items
         #define CUISEARCHERR(n,v) ERROR_MSG(_T("Error: Can't find %") NPRIs _T(" (%u) in the custom UI!\n"), n, v);
-        #define GET(x) if (!(dlg = uire->GetResource(RT_DIALOG, x, 0))) { CUISEARCHERR(_T(#x), x); return PS_ERROR; } CDialogTemplate UIDlg(dlg, build_unicode, uDefCodePage);
+        #define GET(x) if (!(dlg = uire->GetResource(RT_DIALOG, x, uire->ANYLANGID))) { CUISEARCHERR(_T(#x), x); return PS_ERROR; } CDialogTemplate UIDlg(dlg, build_unicode, uDefCodePage);
         #define SEARCH(x) if (!UIDlg.GetItem(x)) { CUISEARCHERR(_T(#x), x); uire->FreeResource(dlg); delete uire; return PS_ERROR; }
         #define SAVE(x) uire->FreeResource(dlg); dlg = UIDlg.Save(dwSize); res_editor->UpdateResource(RT_DIALOG, x, NSIS_DEFAULT_LANG, dlg, dwSize); UIDlg.FreeSavedTemplate(dlg);
 
@@ -2174,7 +2192,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       unsigned char failed = 0;
       if (!_tcsnicmp(line.gettoken_str(1), _T("/LANG="), 6))
       {
-        LANGID lang_id = _ttoi(line.gettoken_str(1) + 6);
+        LANGID lang_id = ParseLangId(line.gettoken_str(1) + 6);
         LanguageTable *table = GetLangTable(lang_id);
         const TCHAR*facename = line.gettoken_str(2);
         table->nlf.m_szFont = _tcsdup(facename);
@@ -2242,14 +2260,19 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       return PS_OK;
 
     case TOK_MANIFEST_DPIAWARE:
-      switch(line.gettoken_enum(1,_T("none\0notset\0true\0false\0")))
+      switch(line.gettoken_enum(1,_T("none\0notset\0false\0true\0system\0permonitor\0")))
       {
       case 0: // A lot of attributes use "none" so we support that along with the documented value
       case 1: manifest_dpiaware = manifest::dpiaware_notset; break;
-      case 2: manifest_dpiaware = manifest::dpiaware_true; break;
-      case 3: manifest_dpiaware = manifest::dpiaware_false; break;
+      case 2: manifest_dpiaware = manifest::dpiaware_false; break;
+      case 3: // "True" == "System DPI"
+      case 4: manifest_dpiaware = manifest::dpiaware_true; break;
+      case 5: manifest_dpiaware = manifest::dpiaware_permonitor; break;
       default: PRINTHELP();
       }
+      return PS_OK;
+    case TOK_MANIFEST_DPIAWARENESS:
+      manifest_dpiawareness = line.gettoken_str(1);
       return PS_OK;
 
     case TOK_MANIFEST_SUPPORTEDOS:
@@ -4122,46 +4145,59 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       return PS_ERROR;
 #endif //~ NSIS_SUPPORT_GETFILETIME
 #ifdef NSIS_SUPPORT_INTOPTS
-    case TOK_INTOP:
-      ent.which=EW_INTOP;
-      ent.offsets[0]=GetUserVarIndex(line, 1);
-      ent.offsets[3]=line.gettoken_enum(3,_T("+\0-\0*\0/\0|\0&\0^\0!\0||\0&&\0%\0<<\0>>\0~\0"));
-      if (ent.offsets[0] < 0 || ent.offsets[3] < 0 ||
-        ((ent.offsets[3] == 7 || ent.offsets[3] == 13) && line.getnumtokens() > 4))
-        PRINTHELP()
-      ent.offsets[1]=add_string(line.gettoken_str(2));
-      if (ent.offsets[3] != 7 && ent.offsets[3] != 13) ent.offsets[2]=add_string(line.gettoken_str(4));
-      if (ent.offsets[3] == 13) {
-        ent.offsets[3]=6;
-        ent.offsets[2]=add_asciistring(_T("0xFFFFFFFF"));
+    case TOK_INTOP: case TOK_INTPTROP:
+      {
+        const TCHAR *val1=line.gettoken_str(2), *opstr=0, *val2=0, *cmdname=get_commandtoken_name(which_token);
+        int t64 = is_target_64bit(), res;
+        ent.which=EW_INTOP;
+        ent.offsets[0]=GetUserVarIndex(line, 1);
+        ent.offsets[3]=line.gettoken_enum(3,_T("+\0-\0*\0/\0|\0&\0^\0!\0||\0&&\0%\0<<\0>>\0>>>\0~\0"));
+        if (ent.offsets[0] < 0 || ent.offsets[3] < 0 || ((ent.offsets[3] == 7 || ent.offsets[3] == 14) && line.getnumtokens() > 4))
+          PRINTHELP()
+        if (ent.offsets[3] != 7 && ent.offsets[3] != 14) val2=line.gettoken_str(4);
+        if (ent.offsets[3] == 14) val2=t64?_T("0xFFFFFFFFFFFFFFFF"):_T("0xFFFFFFFF"), ent.offsets[3]=6, opstr = _T("^"); // ~ using ^
+        if (TOK_INTPTROP == which_token && t64)
+        {
+          res = doParse(2, _T("System::Int64Op %") NPRIs _T(" %") NPRIs _T(" %") NPRIs _T("\n"), val1, opstr ? opstr : line.gettoken_str(3), val2 ? val2 : _T(""));
+          if (res != PS_OK) return res;
+          ent.which=EW_PUSHPOP, ent.offsets[1]=1, ent.offsets[3]=0; // Pop $result
+        }
+        else
+        {
+          ent.offsets[1]=add_string(val1);
+          if (val2) ent.offsets[2]=add_string(val2);
+        }
+        SCRIPT_MSG(_T("%") NPRIs _T(": %") NPRIs _T("=%") NPRIs _T("%") NPRIs _T("%") NPRIs _T("\n"),cmdname,line.gettoken_str(1),line.gettoken_str(2),line.gettoken_str(3),line.gettoken_str(4));
       }
-      SCRIPT_MSG(_T("IntOp: %") NPRIs _T("=%") NPRIs _T("%") NPRIs _T("%") NPRIs _T("\n"),line.gettoken_str(1),line.gettoken_str(2),line.gettoken_str(3),line.gettoken_str(4));
     return add_entry(&ent);
-    case TOK_INTFMT:
+    case TOK_INTFMT: case TOK_INT64FMT:
       ent.which=EW_INTFMT;
       ent.offsets[0]=GetUserVarIndex(line, 1);
       if (ent.offsets[0]<0) PRINTHELP()
       ent.offsets[1]=add_string(line.gettoken_str(2));
       ent.offsets[2]=add_string(line.gettoken_str(3));
+      ent.offsets[3]=which_token == TOK_INT64FMT;
+      if (ent.offsets[3] && !is_target_64bit()) return (ERROR_MSG(_T("%") NPRIns _T("\n"), "Instruction only supported by 64-bit targets!"), PS_ERROR);
       SCRIPT_MSG(_T("IntFmt: %") NPRIs _T("->%") NPRIs _T(" (fmt:%") NPRIs _T(")\n"),line.gettoken_str(3),line.gettoken_str(1),line.gettoken_str(2));
     return add_entry(&ent);
-    case TOK_INTCMP:
-    case TOK_INTCMPU:
-      ent.which=EW_INTCMP;
-      ent.offsets[0]=add_string(line.gettoken_str(1));
-      ent.offsets[1]=add_string(line.gettoken_str(2));
-      ent.offsets[5]=which_token == TOK_INTCMPU;
-      if (process_jump(line,3,&ent.offsets[2]) ||
-          process_jump(line,4,&ent.offsets[3]) ||
-          process_jump(line,5,&ent.offsets[4]))  PRINTHELP()
-      SCRIPT_MSG(_T("%") NPRIs _T(" %") NPRIs _T(":%") NPRIs _T(" equal=%") NPRIs _T(", < %") NPRIs _T(", > %") NPRIs _T("\n"),line.gettoken_str(0),
-        line.gettoken_str(1),line.gettoken_str(2), line.gettoken_str(3),line.gettoken_str(4),line.gettoken_str(5));
-    return add_entry(&ent);
+    case TOK_INTCMP: case TOK_INTCMPU: case TOK_INT64CMP: case TOK_INT64CMPU: case TOK_INTPTRCMP: case TOK_INTPTRCMPU:
+      {
+        int t64 = is_target_64bit(), o32 = TOK_INTCMP == which_token || TOK_INTCMPU == which_token, o64 = TOK_INT64CMP == which_token || TOK_INT64CMPU == which_token;
+        if (!t64 && o64) return (ERROR_MSG(_T("%") NPRIns _T("\n"), "Instruction only supported by 64-bit targets!"), PS_ERROR);
+        ent.which=EW_INTCMP;
+        ent.offsets[0]=add_string(line.gettoken_str(1));
+        ent.offsets[1]=add_string(line.gettoken_str(2));
+        ent.offsets[5]=(which_token == TOK_INTCMPU || which_token == TOK_INT64CMPU || which_token == TOK_INTPTRCMPU) | (t64 && !o32 ? 0x8000 : 0);
+        if (process_jump(line,3,&ent.offsets[2]) | process_jump(line,4,&ent.offsets[3]) | process_jump(line,5,&ent.offsets[4]))
+          PRINTHELP()
+        SCRIPT_MSG(_T("%") NPRIs _T(" %") NPRIs _T(":%") NPRIs _T(" equal=%") NPRIs _T(", < %") NPRIs _T(", > %") NPRIs _T("\n"),line.gettoken_str(0),
+          line.gettoken_str(1),line.gettoken_str(2), line.gettoken_str(3),line.gettoken_str(4),line.gettoken_str(5));
+        return add_entry(&ent);
+      }
 #else
-    case TOK_INTOP:
-    case TOK_INTCMP:
-    case TOK_INTFMT:
-    case TOK_INTCMPU:
+    case TOK_INTOP: case TOK_INTPTROP:
+    case TOK_INTFMT: case TOK_INT64FMT:
+    case TOK_INTCMP: case TOK_INTCMPU: case TOK_INT64CMP: case TOK_INT64CMPU: case TOK_INTPTRCMP: case TOK_INTPTRCMPU:
       ERROR_MSG(_T("Error: %") NPRIs _T(" specified, NSIS_SUPPORT_INTOPTS not defined.\n"),  line.gettoken_str(0));
       return PS_ERROR;
 #endif //~ NSIS_SUPPORT_INTOPTS
@@ -4822,7 +4858,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       const bool forceneutrallang = !_tcsicmp(line.gettoken_str(a),_T("/LANG=0"));
 
       if (!_tcsnicmp(line.gettoken_str(a),_T("/LANG="),6))
-        LangID=_ttoi(line.gettoken_str(a++)+6);
+        LangID=ParseLangId(line.gettoken_str(a++)+6);
       if (line.getnumtokens()!=a+2) PRINTHELP();
       TCHAR *pKey = line.gettoken_str(a);
       TCHAR *pValue = line.gettoken_str(a+1);
@@ -5013,7 +5049,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
 
       // Call the DLL
       tstring funcname = get_string_suffix(command, _T("::"));
-      SCRIPT_MSG(_T("Plugin Command: %") NPRIs,funcname.c_str());
+      SCRIPT_MSG(_T("Plugin command: %") NPRIs,funcname.c_str());
 
       int i = 1;
       int nounload = 0;
@@ -5079,7 +5115,7 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     default:
       break;
   }
-  ERROR_MSG(_T("Error: doCommand: Invalid token \"%") NPRIs _T("\".\n"),line.gettoken_str(0));
+  ERROR_MSG(_T("Invalid command \"%") NPRIs _T("\"\n"),line.gettoken_str(0));
   return PS_ERROR;
 }
 
@@ -5403,12 +5439,3 @@ int CEXEBuild::do_add_file_create_dir(const tstring& local_dir, const tstring& d
   return PS_OK;
 }
 #endif
-
-LANGID CEXEBuild::ParseLangIdParameter(const LineParser&line, int token)
-{
-  int succ, lid = line.gettoken_int(token, &succ);
-  if (!lid) lid = last_used_lang;
-  if (!succ)
-    warning_fl(DW_BAD_LANGID, _T("\"%") NPRIs _T("\" is not a valid language id, using language id %u!"), line.gettoken_str(token), lid);
-  return lid;
-}

@@ -3,7 +3,7 @@
  * 
  * This file is a part of NSIS.
  * 
- * Copyright (C) 1999-2017 Nullsoft and Contributors
+ * Copyright (C) 1999-2018 Nullsoft and Contributors
  * 
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,14 @@
 #endif
 #ifndef SHUTDOWN_GRACE_OVERRIDE
 #define SHUTDOWN_GRACE_OVERRIDE 0x00000020
+#endif
+
+#if defined(_MSC_VER) && _MSC_VER >= 1200
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+#define HINST_THISCOMPONENT ( (HINSTANCE) &__ImageBase )
+#define HINST_APPLICATION HINST_THISCOMPONENT
+#else
+#define HINST_APPLICATION ( (HINSTANCE) GetModuleHandle(NULL) )
 #endif
 
 #if !defined(NSIS_CONFIG_VISIBLE_SUPPORT) && !defined(NSIS_CONFIG_SILENT_SUPPORT)
@@ -146,7 +154,7 @@ EXTERN_C void NSISWinMainNOCRT()
 
 #ifndef _WIN64
   {
-    // KEY_WOW64_xxKEY causes registry functions to fail on WinNT4 & Win2000.
+    // KEY_WOW64_xxKEY flags causes registry functions to fail on WinNT4 & Win2000.
     // We don't filter them out because all registry instructions are supposed to fail when 
     // accessing a unsupported view and RegKey* takes care of that by looking at the WOW64 flag.
     FARPROC fp = myGetProcAddress(MGA_IsOS);
@@ -191,7 +199,7 @@ EXTERN_C void NSISWinMainNOCRT()
   mystrcpy(state_command_line, GetCommandLine());
 
 #ifdef NSIS_CONFIG_VISIBLE_SUPPORT
-  g_hInstance = GetModuleHandle(NULL);
+  g_hInstance = HINST_APPLICATION;
 #endif//NSIS_CONFIG_VISIBLE_SUPPORT
 
   cmdline = state_command_line;

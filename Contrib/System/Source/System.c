@@ -42,14 +42,14 @@ const int ParamSizeByType[8] = {
     0 // PAT_REGMEM //BUGBUG64?
 };
 
-// Thomas needs to look at this.
+// The size of the base type when used in a struct with the '&' syntax (multiply by (Option - PAO_ARRBASE) to get the real size)
 static const int ByteSizeByType[8] = {
     1, // PAT_VOID
     1, // PAT_INT
     1, // PAT_LONG
     1, // PAT_STRING
-    2, // PAT_WSTRING (special case for &wN notation: N is a number of WCHAR, not a number of bytes)
-    1, // PAT_GUID
+    2, // PAT_WSTRING (Special case for &wN notation: N is a number of WCHAR, not a number of bytes)
+    1, // PAT_GUID (Must stay 1 for compatibility with the old '*(&g16,i)i.s' syntax)
     1, // PAT_CALLBACK
     1 // PAT_REGMEM
 };
@@ -66,13 +66,27 @@ HINSTANCE g_hInstance;
 char retexpr[4]; //BUGBUG64?
 HANDLE retaddr;
 
-TCHAR *GetResultStr(SystemProc *proc)
+static TCHAR *MakeResultStr(SystemProc *proc, TCHAR *buf)
 {
-    TCHAR *buf = AllocString();
-    if (proc->ProcResult == PR_OK) lstrcpy(buf, _T("ok"));
-    else if (proc->ProcResult == PR_ERROR) lstrcpy(buf, _T("error"));
-    else if (proc->ProcResult == PR_CALLBACK) wsprintf(buf, _T("callback%d"), proc->CallbackIndex);
+    if (proc->ProcResult == PR_OK)
+        lstrcpy(buf, _T("ok"));
+    else if (proc->ProcResult == PR_ERROR)
+        lstrcpy(buf, _T("error"));
+    else if (proc->ProcResult == PR_CALLBACK)
+    {
+        INT_PTR id = proc->CallbackIndex;
+#ifdef POPT_SYNTAX2
+        if (proc->Options & POPT_SYNTAX2)
+            id = (INT_PTR) GetAssociatedSysProcFromCallbackThunkPtr(proc->Proc);
+#endif
+        wsprintf(buf, sizeof(void*) > 4 ? _T("callback%Id") : _T("callback%d"), id); // "%d" must match format used by system_pushintptr() in Get() because script will StrCmp!
+    }
     return buf;
+}
+
+TCHAR *AllocResultStr(SystemProc *proc)
+{
+    return MakeResultStr(proc, AllocString());
 }
 
 #ifdef SYSTEM_LOG_DEBUG
@@ -253,19 +267,20 @@ PLUGINFUNCTION(Get)
     SYSTEM_LOG_ADD(proc->ProcName);
     //SYSTEM_LOG_ADD(_T("\n"));
     SYSTEM_LOG_POST;
-    if ((proc->Options & POPT_ALWRETURN) != 0)
+    if (proc->Options & POPT_ALWRETURN)
     {
         // Always return flag set -> return separate proc and result
         system_pushintptr((INT_PTR) proc);
-        GlobalFree(system_pushstring(GetResultStr(proc)));
-    } else
+        GlobalFree(system_pushstring(AllocResultStr(proc)));
+    }
+    else
     {
         if (proc->ProcResult != PR_OK)
         {
             // No always return flag and error result - return result
-            GlobalFree(system_pushstring(GetResultStr(proc)));
+            GlobalFree(system_pushstring(AllocResultStr(proc)));
             // If proc is permanent?
-            if ((proc->Options & POPT_PERMANENT) == 0)
+            if (!(proc->Options & POPT_PERMANENT))
                 GlobalFree((HGLOBAL) proc); // No, free it
         }
         else // Ok result, return proc
@@ -283,7 +298,7 @@ SystemProc* CallBack(SystemProc *proc)
     proc->ProcResult = PR_ERROR;
     return proc;
 }
-#endif // ~_WIN64
+#endif //~ _WIN64
 
 
 PLUGINFUNCTION(Call)
@@ -319,11 +334,11 @@ PLUGINFUNCTION(Call)
     }
 
     // Process output
-    if ((proc->Options & POPT_ALWRETURN) != 0)
+    if (proc->Options & POPT_ALWRETURN)
     {
         // Always return flag set - return separate return and result
         ParamsOut(proc);
-        GlobalFree(system_pushstring(GetResultStr(proc)));
+        GlobalFree(system_pushstring(AllocResultStr(proc)));
     }
     else
     {
@@ -332,8 +347,10 @@ PLUGINFUNCTION(Call)
             ProcParameter pp = proc->Params[0]; // Save old return param
 
             // Return result instead of return value
-            proc->Params[0].Value = (INT_PTR) GetResultStr(proc);
+            TCHAR resstr[50];
+            proc->Params[0].Value = (INT_PTR) MakeResultStr(proc, resstr);
             proc->Params[0].Type = PAT_TSTRING;
+            proc->Params[0].allocatedBlock = NULL;
 
             ParamsOut(proc); // Return all params
             proc->Params[0] = pp; // Restore old return param
@@ -355,7 +372,7 @@ PLUGINFUNCTION(Call)
     }    
 
     // If proc is permanent?
-    if ((proc->Options & POPT_PERMANENT) == 0) GlobalFree((HGLOBAL) proc); // No, free it
+    if (!(proc->Options & POPT_PERMANENT)) GlobalFree((HGLOBAL) proc); // No, free it
 } PLUGINFUNCTIONEND
 
 PLUGINFUNCTIONSHORT(Int64Op)
@@ -402,7 +419,7 @@ PLUGINFUNCTIONSHORT(Int64Op)
     case _T('~'): i1 = ~i1; break;
     case _T('!'): i1 = !i1; break;
     case _T('<'): if (op[1] == _T('<')) i1 = i1 << i2; else i1 = i1 < i2; break;
-    case _T('>'): if (op[1] == _T('>')) i1 = i1 >> i2; else i1 = i1 > i2; break;
+    case _T('>'): if (op[1] == _T('>')) i1 = op[2] == _T('>') ? (UINT64)i1 >> (UINT64)i2 : i1 >> i2; else i1 = i1 > i2; break;
     case _T('='): i1 = (i1 == i2); break;
     }
     
@@ -436,7 +453,12 @@ SystemProc *PrepareProc(BOOL NeedForCall)
     BOOL param_defined = FALSE;
     SystemProc *proc = NULL;
     TCHAR *ibuf, *ib, *sbuf, *cbuf, *cb;
-    unsigned int UsedTString = 0;
+    unsigned int UsedTString = 0, aligntype;
+#ifdef POPT_SYNTAX2
+    const UINT alignflag = PAT_ALIGNFLAG;
+#else
+    const UINT alignflag = 0;
+#endif
 
 #ifdef __GNUC__
     temp3 = 0; // "warning: 'temp3' may be used uninitialized in this function": temp3 is set to 0 when we start parsing a new parameter
@@ -472,7 +494,7 @@ SystemProc *PrepareProc(BOOL NeedForCall)
         case _T('('): 
             SectionType = PST_PARAMS; 
             // fake-real parameter: for COM interfaces first param is Interface Pointer
-            ParamIndex = ((ProcType == PT_VTABLEPROC)?(2):(1)); 
+            ParamIndex = ((ProcType == PT_VTABLEPROC)?(2):(1));
             temp3 = temp = 0;
             param_defined = FALSE;
             break;
@@ -526,13 +548,13 @@ SystemProc *PrepareProc(BOOL NeedForCall)
                         if (pr != NULL) pr->Clone = NULL;
 
                         // Never Redefine?
-                        if ((proc->Options & POPT_NEVERREDEF) != 0)
+                        if (proc->Options & POPT_NEVERREDEF)
                         {
-                            // Create new proc as copy
-                            proc = GlobalCopy(proc);
-                            // NeverRedef options is never inherited
-                            proc->Options &= (~POPT_NEVERREDEF) & (~POPT_PERMANENT);
-                        } else proc->Options |= POPT_PERMANENT; // Proc is old -> permanent
+                            proc = GlobalCopy(proc); // Create new proc as copy
+                            proc->Options &= ~(POPT_NEVERREDEF|POPT_PERMANENT); // NeverRedef options is never inherited
+                        }
+                        else
+                            proc->Options |= POPT_PERMANENT; // Proc is old -> permanent
                     }
                     break;
                 case PT_PROC:
@@ -571,7 +593,7 @@ SystemProc *PrepareProc(BOOL NeedForCall)
                 // Is it '::'
                 if ((*(ib) == _T('-')) && (*(ib+1) == _T('>')))
                 {
-                    ProcType = PT_VTABLEPROC;    
+                    ProcType = PT_VTABLEPROC;
                 } else
                 {
                     if ((*(ib+1) != _T(':')) || (*(ib) == _T('-'))) break;
@@ -601,6 +623,7 @@ SystemProc *PrepareProc(BOOL NeedForCall)
             ParamIndex = 0; // Uses the same logic as PST_PARAMS section
         case PST_PARAMS:
             temp2 = -1; temp4 = 0; // Our type placeholder
+            aligntype = FALSE;
             switch (*ib)
             {
             case _T(' '):
@@ -623,38 +646,44 @@ SystemProc *PrepareProc(BOOL NeedForCall)
                 param_defined = TRUE;
                 break;
             case _T('&'):
-                temp = 1; break; // Special parameter option
+                temp = PAO_ARRBASE; break; // Special parameter option
             case _T('*'):
-                temp = -1; break; // Pointer parameter option
+                temp = PAO_PTRFLAG; break; // Pointer parameter option
 
             // Types
             case _T('@'): temp2 = PAT_REGMEM; break;
-            case _T('v'):
-            case _T('V'): temp2 = PAT_VOID; break;
-
+            case _T('V'): // No extra alignment for void padding
+            case _T('v'): temp2 = PAT_VOID; break;
+            case 'B': aligntype += alignflag ? 1 : 0;
+            case 'b': temp2 = PAT_INT, temp = sizeof(BYTE) + 1; break; // INT8/BYTE/BOOLEAN alias for &1
+            case 'H': aligntype += alignflag ? 1 : 0;
+            case 'h': temp2 = PAT_INT, temp = sizeof(WORD) + 1; break; // INT16/WORD/SHORT alias for &2 with 'h' AKA printf type length specifier
+#ifndef _WIN64
+            case _T('P'):
+#endif
+            case _T('I'): aligntype += alignflag ? 1 : 0;
 #ifndef _WIN64
             case _T('p'):
 #endif
-            case _T('i'):
-            case _T('I'): temp2 = PAT_INT; break;
+            case _T('i'): temp2 = PAT_INT; break; // INT32
+#ifdef _WIN64
+            case _T('P'):
+#endif
+            case _T('L'): aligntype += alignflag ? 1 : 0;
 #ifdef _WIN64
             case _T('p'):
 #endif
-            case _T('l'):
-            case _T('L'): temp2 = PAT_LONG; break;
-            case _T('m'):
-            case _T('M'): temp2 = PAT_STRING; break;
-            case _T('t'):
-            case _T('T'):
-                temp2 = PAT_TSTRING;
-                ++UsedTString;
-                break;
-            case _T('g'):
-            case _T('G'): temp2 = PAT_GUID; break;
-            case _T('w'):
-            case _T('W'): temp2 = PAT_WSTRING; break;
-            case _T('k'):
-            case _T('K'): temp2 = PAT_CALLBACK; break;
+            case _T('l'): temp2 = PAT_LONG; break; // INT64
+            case _T('M'): // 1 byte, no extra alignment
+            case _T('m'): temp2 = PAT_STRING; break;
+            case _T('T'): aligntype += (alignflag && sizeof(TCHAR) > 1) ? 1 : 0;
+            case _T('t'): temp2 = PAT_TSTRING, ++UsedTString; break;
+            case _T('G'): aligntype += alignflag ? 1 : 0;
+            case _T('g'): temp2 = PAT_GUID; break;
+            case _T('W'): aligntype += alignflag ? 1 : 0;
+            case _T('w'): temp2 = PAT_WSTRING; break;
+            case _T('K'): aligntype += alignflag ? 1 : 0;
+            case _T('k'): temp2 = PAT_CALLBACK; break;
 
             // Input output specifiers
             case _T('.'): temp3++; break; // skip specifier
@@ -695,7 +724,7 @@ SystemProc *PrepareProc(BOOL NeedForCall)
                 break;
 
             case _T('s'):
-            case _T('S'): temp4 = -1; break;    // Stack
+            case _T('S'): temp4 = -1; break; // Stack
             case _T('c'):
             case _T('C'): temp4 = INST_CMDLINE+1; break;
             case _T('d'):
@@ -713,11 +742,11 @@ SystemProc *PrepareProc(BOOL NeedForCall)
             {
                 const int psbt = ParamSizeByType[temp2];
                 param_defined = TRUE;
-                proc->Params[ParamIndex].Type = temp2;
+                proc->Params[ParamIndex].Type = temp2 | (alignflag && aligntype ? alignflag : 0);
                 proc->Params[ParamIndex].Size = // Pointer sized or from type
-                    (temp == -1)?(PARAMSIZEBYTYPE_PTR):((psbt>0)?(psbt):(1)); //BUGBUG64: Is it safe to fallback to 1 for CALLBACK?
-                // Get the parameter real special option value
-                if (temp == 1) temp = ((int) GetIntFromString(&ib)) + 1;
+                    ParamOptionIsPointer(temp) ? (PARAMSIZEBYTYPE_PTR) : ((psbt>0) ? (psbt) : (1)); //BUGBUG64: Is it safe to fallback to 1 for CALLBACK?
+                if (temp == PAO_ARRBASE) temp =
+                    PAO_ARRBASE + ((int) GetIntFromString(&ib)); // Read '&' array count specification
                 proc->Params[ParamIndex].Option = temp;
                 proc->Params[ParamIndex].Value = 0;
                 proc->Params[ParamIndex].Input = IOT_NONE;
@@ -749,36 +778,27 @@ SystemProc *PrepareProc(BOOL NeedForCall)
             temp2 = 0;
             switch (*ib)
             {
-            case _T(' '):
-                break;
+            case _T(' '): break;
             case _T('!'): temp = -temp; break;
             case _T('c'):
 #ifndef _WIN64
-                temp2 = POPT_CDECL;
+                temp2 = POPT_CDECL; // Only x86 cares, just eat the option for everything else
 #endif
                 break;
-            case _T('r'):
-                temp2 = POPT_ALWRETURN;
-                break;
-            case _T('n'):
-                temp2 = POPT_NEVERREDEF;
-                break;
-            case _T('s'):
-                temp2 = POPT_GENSTACK;
-                break;
-            case _T('e'):
-                temp2 = POPT_ERROR;
-                break;
-            case _T('u'):
-                temp2 = POPT_UNLOAD;
-                break;
+            case _T('r'): temp2 = POPT_ALWRETURN; break;
+            case _T('n'): temp2 = POPT_NEVERREDEF; break;
+            case _T('s'): temp2 = POPT_GENSTACK; break;
+            case _T('e'): temp2 = POPT_ERROR; break;
+            case _T('u'): temp2 = POPT_UNLOAD; break;
+#ifdef POPT_SYNTAX2
+            case _T('2'): temp2 = POPT_SYNTAX2; break;
+#endif
             }
 
             // New Options
             if (temp2 != 0)
             {
-                if (temp == 1) proc->Options |= temp2;
-                else proc->Options &= ~temp2;
+                if (temp == 1) proc->Options |= temp2; else proc->Options &= ~temp2;
                 // Back to default (turn on nothing) state
                 temp = 1; temp2 = 0;
             }
@@ -889,10 +909,10 @@ SystemProc *PrepareProc(BOOL NeedForCall)
 
 void ParamAllocate(SystemProc *proc)
 {
-    int i;
-    for (i = 0; i <= proc->ParamCount; i++)
-        if (!proc->Params[i].Value && proc->Params[i].Option == -1)
-            proc->Params[i].Value = (INT_PTR) GlobalAlloc(GPTR, 4*ParamSizeByType[proc->Params[i].Type]);
+    UINT i, c;
+    for (i = 0, c = proc->ParamCount; i <= c; i++)
+        if (!proc->Params[i].Value && ParamIsPointer(proc->Params[i]))
+            proc->Params[i].Value = (INT_PTR) GlobalAlloc(GPTR, ParamSizeByType[GetParamType(proc->Params[i])] * 4);
 }
 
 void ParamsIn(SystemProc *proc)
@@ -903,11 +923,14 @@ void ParamsIn(SystemProc *proc)
 #ifndef _UNICODE
     LPWSTR wstr;
 #endif
-
+#if !defined(_WIN64) && defined(C_ASSERT)
+    C_ASSERT(FIELD_OFFSET(ProcParameter, Value) + sizeof(int) == FIELD_OFFSET(ProcParameter, _value)); // Make sure PAT_LONG writes to the correct places
+#endif
     i = (proc->ParamCount > 0)?(1):(0);
     while (TRUE)
     {
         ProcParameter *par = &proc->Params[i];
+        UINT partype;
         // Step 1: retrive value
         if ((par->Input == IOT_NONE) || (par->Input == IOT_INLINE)) 
             realbuf = AllocStr(_T(""));
@@ -922,14 +945,13 @@ void ParamsIn(SystemProc *proc)
         }
 
         // Retreive pointer to place
-        if (par->Option == -1) place = (HGLOBAL*) par->Value;
-        else place = (HGLOBAL*) &(par->Value);
+        place = ParamIsPointer(*par) ? (HGLOBAL*) par->Value : (HGLOBAL*) &(par->Value);
 
         // by default no blocks are allocated
         par->allocatedBlock = NULL;
 
         // Step 2: place it
-        switch (par->Type)
+        switch (partype = GetParamType(*par))
         {
         case PAT_VOID:
             par->Value = 0;
@@ -960,7 +982,7 @@ void ParamsIn(SystemProc *proc)
         case PAT_GUID:
             wstr = (LPWSTR) GlobalAlloc(GPTR, g_stringsize*sizeof(WCHAR));
             MultiByteToWideChar(CP_ACP, 0, realbuf, g_stringsize, wstr, g_stringsize);
-            if (par->Type == PAT_GUID)
+            if (partype == PAT_GUID)
             {
                 *place = par->allocatedBlock = GlobalAlloc(GPTR, 16);
                 CLSIDFromString(wstr, *(LPCLSID*)place);
@@ -992,7 +1014,7 @@ void ParamsIn(SystemProc *proc)
 #ifndef _WIN64
             hi32 = par->_value;
 #endif
-            wsprintf(buf, _T("\t\t\tParam In %d:\tType=%d Value=")SYSFMT_HEXPTR _T(" hi32=0x%08X"), i, 
+            wsprintf(buf, _T("\t\t\tParam In %d:\tType=%#x Value=") SYSFMT_HEXPTR _T(" hi32=0x%08X"), i, 
                 par->Type, par->Value, hi32);
             SYSTEM_LOG_ADD(buf);
             SYSTEM_LOG_POST;
@@ -1008,31 +1030,36 @@ void ParamsDeAllocate(SystemProc *proc)
 {
     int i;
     for (i = proc->ParamCount; i >= 0; i--)
-        if (proc->Params[i].Value && proc->Params[i].Option == -1)
+        if (proc->Params[i].Value && ParamIsPointer(proc->Params[i]))
         {
             GlobalFree((HGLOBAL) (proc->Params[i].Value));
             proc->Params[i].Value = 0;
         }
 }
 
+#define GetSpecialParamTypeSize(par) ( (((par).Option)-PAO_ARRBASE) * ByteSizeByType[GetParamType(par)] ) // Option must be > PAO_ARRBASE!
+static const int g_intmask[4] = { 0xFFFFFFFF, 0x000000FF, 0x0000FFFF, 0x00FFFFFF };
+#define GetMaskedInt32Value(val, size) ( (val) & g_intmask[((UINT)(size) < 4) ? (size) : (0)] )
+#define GetSpecialParamInt32Value(par, size) GetMaskedInt32Value((par).Value, (size))
+
 void ParamsOut(SystemProc *proc)
 {
     INT_PTR *place;
     LPWSTR wstr;
-    int i;
+    int i, partype, intval, typsiz;
     TCHAR *realbuf = AllocString();
 
     i = proc->ParamCount;
     do
     {
         // Retreive pointer to place
-        if (proc->Params[i].Option == -1)
+        if (ParamIsPointer(proc->Params[i]))
             place = (INT_PTR*) proc->Params[i].Value;
         else 
             place = (INT_PTR*) &(proc->Params[i].Value);
 
         // Step 1: retrive value
-        switch (proc->Params[i].Type)
+        switch (partype = GetParamType(proc->Params[i]))
         {
         case PAT_VOID:
             *realbuf = _T('\0');
@@ -1041,7 +1068,13 @@ void ParamsOut(SystemProc *proc)
         case PAT_REGMEM:
 #endif
         case PAT_INT:
-            wsprintf(realbuf, _T("%d"), (int)(*((INT_PTR*) place)));
+            intval = (int)(*((INT_PTR*) place));
+            if (proc->Params[i].Option > 0) // Note: We don't handle '*' pointers, "*h" and "*b" are not supported, use "*i" even on smaller types
+            {
+                typsiz = GetSpecialParamTypeSize(proc->Params[i]);
+                intval = GetMaskedInt32Value(intval, typsiz);
+            }
+            wsprintf(realbuf, _T("%d"), intval);
             break;
 #ifdef _WIN64
         case PAT_REGMEM:
@@ -1054,7 +1087,7 @@ void ParamsOut(SystemProc *proc)
             MultiByteToWideChar(CP_ACP, 0, *((char**) place), g_stringsize, realbuf, g_stringsize-1);
             realbuf[g_stringsize-1] = _T('\0'); // make sure we have a null terminator
 #else
-            lstrcpyn(realbuf,*((TCHAR**) place), g_stringsize); // note: lstrcpyn always include a null terminator (unlike strncpy)
+            lstrcpyn(realbuf,*((TCHAR**) place), g_stringsize); // note: lstrcpyn always includes a null terminator (unlike strncpy)
 #endif
             break;
         case PAT_GUID:
@@ -1078,13 +1111,14 @@ void ParamsOut(SystemProc *proc)
 #endif
             break;
         case PAT_CALLBACK:
-            wsprintf(realbuf, _T("%d"), BUGBUG64(proc->Params[i].Value));
+            wsprintf(realbuf, sizeof(void*) > 4 ? _T("%Id") : _T("%d"), proc->Params[i].Value);
             break;
         }
 
         // memory cleanup
-        if ((proc->Params[i].allocatedBlock != NULL) && ((proc->ProcType != PT_STRUCT)
-            || (proc->Params[i].Option > 0)))
+        if ((proc->Params[i].allocatedBlock != NULL)
+        && ((proc->ProcType != PT_STRUCT) || ParamIsArray(proc->Params[i]))
+        )
             GlobalFree(proc->Params[i].allocatedBlock);
 
         SYSTEM_LOG_ADD(_T("\t\t\tParam Out("));
@@ -1107,7 +1141,7 @@ void ParamsOut(SystemProc *proc)
 #ifdef SYSTEM_LOG_DEBUG
         {
             TCHAR dbgbuf[99];
-            wsprintf(dbgbuf, _T(")\t%d:\tType=%d Optn=%d Size=%d Data="),
+            wsprintf(dbgbuf, _T(")\t%d:\tType=%#x Optn=%d Size=%d Data="),
                 i, proc->Params[i].Type, proc->Params[i].Option, proc->Params[i].Size);
             SYSTEM_LOG_ADD(dbgbuf);
             SYSTEM_LOG_ADD(realbuf);
@@ -1158,36 +1192,60 @@ HANDLE CreateCallback(SystemProc *cbproc)
 #endif
 }
 
+#ifdef POPT_SYNTAX2
+static UINT GetStructParamAlignment(const ProcParameter *par)
+{
+    int partype = GetParamType(*par), isarr = ParamIsArray(*par);
+// &l is used to get the final struct size "*(p, &l.r0)"
+// but it also allows you to write the struct size to the struct as a int<8|16|32|64> "*(p, &l4)"
+// so we can't stop that with: "if ((par->Type & PAT_ALIGNFLAG) && (!isarr || partype != PAT_LONG))"
+    if (par->Type & PAT_ALIGNFLAG)
+    {
+        if ((partype == PAT_STRING) | (partype == PAT_WSTRING)) return ByteSizeByType[partype];
+        if (partype == PAT_GUID) return 16;
+        return !isarr ? (par->Size * 4) : GetSpecialParamTypeSize(*par);
+    }
+    return 0;
+}
+#endif
+
 void CallStruct(SystemProc *proc)
 {
-    BOOL ssflag;
-    int i, structsize = 0, size = 0;
+    BOOL ssflag; // "&l" struct size syntax
+    UINT i, paramcount = proc->ParamCount, structsize = 0, size = 0, partype;
     char *st, *ptr;
+#ifdef POPT_SYNTAX2
+    BOOL tryalign = proc->Options & POPT_SYNTAX2;
+#endif
 
     SYSTEM_LOG_ADD(_T("\t\tStruct..."));
 
     // Calculate the structure size 
-    for (i = 1; i <= proc->ParamCount; i++)
+    for (i = 1; i <= paramcount; i++)
     {
+        partype = GetParamType(proc->Params[i]);
         // Emulate g as &g16
         // (Changing ByteSizeByType would break compatibility with '*(&g16,i)i.s')
-        if (PAT_GUID==proc->Params[i].Type && 0==proc->Params[i].Option)
-        {
-            proc->Params[i].Option = 1 + 16;
-        }
+        if (PAT_GUID==partype && ParamIsSimple(proc->Params[i]))
+            proc->Params[i].Option = PAO_ARRBASE + 16;
 
-        if (proc->Params[i].Option < 1)
-            structsize += proc->Params[i].Size * 4;
+        if (!ParamIsArray(proc->Params[i]))
+            size = proc->Params[i].Size * 4;
         else
-            structsize += ByteSizeByType[proc->Params[i].Type] * (proc->Params[i].Option - 1);
+            size = GetParamArrayTypeSize(proc->Params[i]);
+
+#ifdef POPT_SYNTAX2
+        if (tryalign)
+            structsize = SYS_ALIGNON(structsize, GetStructParamAlignment(&proc->Params[i]));
+#endif
+        structsize += size;
     }
-    
+
     // Struct exists?
-    if (proc->Proc == NULL)
-        // No. Allocate struct memory
+    if (proc->Proc == NULL) // No. Allocate struct memory
         proc->Proc = (HANDLE) GlobalAlloc(GPTR, structsize);
-    else  // In case of zero size defined structure use mapped size 
-        if (structsize == 0) structsize = (int) GlobalSize((HGLOBAL) proc->Proc);
+    else if (structsize == 0) // In case of zero size defined structure use mapped size 
+        structsize = (int) GlobalSize((HGLOBAL) proc->Proc);
 
     #ifdef SYSTEM_LOG_DEBUG
     {
@@ -1200,52 +1258,58 @@ void CallStruct(SystemProc *proc)
     // Pointer to current data
     st = (char*) proc->Proc;
 
-    for (i = 1; i <= proc->ParamCount; i++)
+    for (i = 1; i <= paramcount; i++)
     {
         ssflag = FALSE;
+        partype = GetParamType(proc->Params[i]);
 
         // Normal or special block?
-        if (proc->Params[i].Option < 1)
+        if (!ParamIsArray(proc->Params[i]))
         {
             // Normal
-            size = proc->Params[i].Size*4;
+            size = proc->Params[i].Size * 4;
             ptr = (char*) &(proc->Params[i].Value);
         }
         else
         {
-            const int intmask[4] = {0xFFFFFFFF, 0x000000FF, 0x0000FFFF, 0x00FFFFFF};
-
             // Special
-            size = (proc->Params[i].Option-1) * ByteSizeByType[proc->Params[i].Type];
+            size = GetParamArrayTypeSize(proc->Params[i]);
             ptr = NULL;
-            switch (proc->Params[i].Type)
+            switch (partype)
             {
-            case PAT_VOID: break;
-            case PAT_LONG: 
+            case PAT_VOID:
+                break;
+            case PAT_LONG:
                 // real structure size
                 proc->Params[i].Value = structsize;
 #ifndef _WIN64
                 proc->Params[i]._value = 0;
 #endif
                 ssflag = TRUE; // System::Call '*(...,&l.r0)'
+                // [[fallthrough]]
             case PAT_INT: 
-                // clear unused value bits
-                proc->Params[i].Value &= intmask[((size >= 0) && (size < 4))?(size):(0)];
+                proc->Params[i].Value = GetSpecialParamInt32Value(proc->Params[i], size); // clears unused value bits
                 // pointer
                 ptr = (char*) &(proc->Params[i].Value); 
                 break;
 
-            case PAT_STRING: 
-            case PAT_GUID: 
-            case PAT_WSTRING: 
+            case PAT_STRING:
+            case PAT_WSTRING:
+            case PAT_GUID:
                 // Jim Park: Pointer for memcopy, so keep as char*
-                ptr = (char*) proc->Params[i].Value; break;
+                ptr = (char*) proc->Params[i].Value;
+                break;
             }
         }
 
         // Process them!
         if (ptr != NULL)
         {
+#ifdef POPT_SYNTAX2
+            if (tryalign)
+                st = (char*) SYS_ALIGNON((INT_PTR) st, GetStructParamAlignment(&proc->Params[i]));
+#endif
+
             // Input
             if ((proc->Params[i].Input != IOT_NONE) || (ssflag))
                 copymem(st, ptr, size);

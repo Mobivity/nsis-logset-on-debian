@@ -2,7 +2,7 @@
 \#{* Common config shared by all output formats *}
 \#{**********************************************}
 
-\define{NsisCopyright} Copyright (C) 1999-2017 Contributors
+\define{NsisCopyright} Copyright (C) 1999-2018 Contributors
 
 \copyright \NsisCopyright
 
@@ -11,6 +11,8 @@
 \preamble Quick links:\\<br\\>\W{http://nsis.sourceforge.net/support/faq/}{FAQ} - A list of frequently asked questions\\<br\\>\W{http://nsis.sourceforge.net/wiki/}{NSIS Wiki} - Examples, functions, tutorials, plug-ins, software and more\\<br\\>\W{http://forums.winamp.com/forumdisplay.php?forumid=65}{Forum} - Post questions or discuss NSIS features
 
 \define{NsisFuncReqU} This function is only available when building a \R{intro-unicode}{Unicode installer}.
+
+\define{NsisFuncReq64} This function is only available when building a 64-bit installer.
 
 \define{NsisACPcp} system default ANSI codepage (ACP)
 
