@@ -1,3 +1,9 @@
+nsis (3.03-3) UNRELEASED; urgency=medium
+
+  * d/changelog: Remove trailing whitespaces
+
+ -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:18:50 +0200
+
 nsis (3.03-2) unstable; urgency=low
 
   * Migrate NSIS 3 to unstable
@@ -166,8 +172,8 @@ nsis (2.46-9) unstable; urgency=medium
   [ Thomas Gaugler ]
   * Fix of GCC stdcall attribute warnings occurring for targets other
     than Windows.
-  * Overwrite lintian warning about missing Large File Support (LFS). 
-  * Replace duplicate image files of Modern UI with symbolic links. 
+  * Overwrite lintian warning about missing Large File Support (LFS).
+  * Replace duplicate image files of Modern UI with symbolic links.
   * Probe for built makensis instead of using wildcard function.
   * Use correct syntax for invoking shell function from make.
   * Rely on PATH environment for finding mingw-w64 rather than
@@ -192,7 +198,7 @@ nsis (2.46-8) unstable; urgency=low
   * Upgraded to debhelper version 9.
   * Defined override targets for arch and indep packages.
   * Introduced variables for build directory and type in debian/rules.
-  * Retain same flags for build and installation to avoid rebuilding. 
+  * Retain same flags for build and installation to avoid rebuilding.
 
  -- Thomas Gaugler <thomas@dadie.net>  Sun, 25 May 2014 11:35:48 +0200
 
@@ -207,7 +213,7 @@ nsis (2.46-7) unstable; urgency=low
 nsis (2.46-6) unstable; urgency=low
 
   * Corrected command line options passed to scons for build/NEWS target.
-  * Use zmemcpy function of the same calling convention. 
+  * Use zmemcpy function of the same calling convention.
 
  -- Thomas Gaugler <thomas@dadie.net>  Fri, 07 Oct 2011 10:28:21 +0200
 
@@ -228,7 +234,7 @@ nsis (2.46-4) unstable; urgency=low
     - examples and HTML documentation (architecture independent)
   * Updated to Standards-Version 3.9.2
   * Support building with mingw-w64 (Closes: #620099)
-  * Support parallel build 
+  * Support parallel build
 
   [ Didier Raboud ]
   * Don't hide output from scons in clean.
@@ -275,7 +281,7 @@ nsis (2.45-1) unstable; urgency=low
   * New upstream release
   * Adopted package from Paul Wise with his permission
   * Allow building with either gcc-mingw32 (>= 4.4.0-3) or mingw32
-  * Fixed occurring access violation in Math plugin once the 
+  * Fixed occurring access violation in Math plugin once the
     installer window is closed.
 
  -- Thomas Gaugler <thomas@dadie.net>  Mon, 17 Aug 2009 19:04:01 +0000
@@ -678,7 +684,7 @@ nsis (2.09-1) experimental; urgency=low
       - 07_fix_ndata_rsrc_order
       - 08_extern_c_c++_plugins
       - parts of 05_examples_fixes
-  * debian/watch: use uupdate when new releases are found 
+  * debian/watch: use uupdate when new releases are found
   * 03_docs_fixes: remove reference to NSIS dir in tutorial.but
 
  -- Paul Wise <pabs3@bonedaddy.net>  Mon, 29 Aug 2005 08:48:23 +0800
