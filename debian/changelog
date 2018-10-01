@@ -2,6 +2,7 @@ nsis (3.03-3) UNRELEASED; urgency=medium
 
   * d/changelog: Remove trailing whitespaces
   * d/rules: Remove trailing whitespaces
+  * d/watch: Use https protocol
 
  -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:18:50 +0200
 
