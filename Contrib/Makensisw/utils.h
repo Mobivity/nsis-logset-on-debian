@@ -36,14 +36,22 @@
 #define MRU_DISPLAY_LENGTH 40
 #define SYMSETNAME_MAXLEN 40
 
+template<class T> inline T API_cast(INT_PTR(CALLBACK*p1)(HWND,UINT,WPARAM,LPARAM)) { return (DLGPROC) p1; } // DLGPROC in really old SDKs return BOOL
+
 void* MemAllocZI(SIZE_T cb);
 void MemSafeFree(void*mem);
 #define MemAlloc MemAllocZI
 #define MemFree MemSafeFree
+HMODULE LoadSysLibrary(LPCSTR Mod);
+FARPROC GetSysProcAddr(LPCSTR Mod, LPCSTR FuncName);
 bool WriteUTF16LEBOM(HANDLE hFile);
 
 void FreeSpawn(PROCESS_INFORMATION *pPI, HANDLE hRd, HANDLE hWr);
 BOOL InitSpawn(STARTUPINFO &si, HANDLE &hRd, HANDLE &hWr);
+
+typedef BYTE PACKEDCMDID_T;
+#define PACKCMDID(id) ( PACKEDCMDID_T((id) - IDM_CMDBASE) )
+#define UNPACKCMDID(id) ( IDM_CMDBASE + (id) )
 
 int SetArgv(const TCHAR *cmdLine, TCHAR ***argv);
 void SetTitle(HWND hwnd,const TCHAR *substr);
@@ -51,7 +59,9 @@ void CopyToClipboard(HWND hwnd);
 void ClearLog(HWND hwnd);
 void LogMessage(HWND hwnd,const TCHAR *str);
 void ErrorMessage(HWND hwnd,const TCHAR *str);
+void CenterOnParent(HWND hwnd);
 void SetDialogFocus(HWND hDlg, HWND hCtl); // Use this and not SetFocus()!
+HWND GetComboEdit(HWND hCB);
 #define DisableItems(hwnd) EnableDisableItems(hwnd, 0)
 #define EnableItems(hwnd) EnableDisableItems(hwnd, 1)
 void EnableDisableItems(HWND hwnd, int on);
@@ -81,12 +91,36 @@ bool FileExists(const TCHAR *fname);
 bool OpenUrlInDefaultBrowser(HWND hwnd, LPCSTR Url);
 
 HMENU FindSubMenu(HMENU hMenu, UINT uId);
-HFONT CreateFont(int Height, int Weight, DWORD PitchAndFamily, LPCTSTR Face);
 
-inline void GetGripperPos(HWND hwnd, RECT&r)
+typedef enum { CFF_RAWSIZE = 0x00, CFF_DPIPT = 0x01, CFF_DPIFROMHWND = 0x02 } CREATEFONTFLAGS;
+HFONT CreateFontHelper(INT_PTR Data, int Height, DWORD p1, LPCTSTR Face);
+inline HFONT CreateFont(INT_PTR Data, WORD Flags, int Height, WORD Weight, BYTE PitchAndFamily, BYTE CharSet, LPCTSTR Face)
+{
+  DWORD packed = MAKELONG(MAKEWORD(Weight>>2, Flags), MAKEWORD(CharSet, PitchAndFamily));
+  return CreateFontHelper(Data, Height, packed, Face);
+}
+inline HFONT CreateFontPt(HWND hWndDPI, int Height, WORD Weight, BYTE PitchAndFamily, BYTE CharSet, LPCTSTR Face)
+{
+  return CreateFont((INT_PTR) hWndDPI, CFF_DPIFROMHWND|CFF_DPIPT, Height, Weight, PitchAndFamily, CharSet, Face);
+}
+BOOL DrawHorzGradient(HDC hDC, LONG l, LONG t, LONG r, LONG b, COLORREF c1, COLORREF c2);
+inline long RectW(const RECT&r) { return r.right - r.left; }
+inline long RectH(const RECT&r) { return r.bottom - r.top; }
+long DlgUnitToPixelX(HWND hDlg, long x);
+long DlgUnitToPixelY(HWND hDlg, long y);
+UINT DpiGetForWindow(HWND hWnd);
+int DpiScaleY(HWND hWnd, int Val);
+
+void DrawGripper(HWND hWnd, HDC hDC, const RECT&r);
+static inline void GetGripperPos(HWND hwnd, RECT&r)
 {
   GetClientRect(hwnd, &r);
   r.left = r.right - GetSystemMetrics(SM_CXVSCROLL);
   r.top = r.bottom - GetSystemMetrics(SM_CYVSCROLL);
 }
+
+bool RicheditHasSelection(HWND hRE);
+
+void EnableUICommand(UINT Id, INT_PTR Enabled);
+
 #endif

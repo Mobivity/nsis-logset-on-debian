@@ -1,5 +1,47 @@
 \A{history} Changelog and Release Notes
 
+\H{v3.04} 3.04
+
+Released on December 15th, 2018
+
+\S1{v3.04-cl} Changelog
+
+\S2{} Major Changes
+
+\b Added IsNativeMachineArchitecture helper macros to x64.nsh
+
+\b Added experimental WinVer "Windows as a Service" detection macros
+
+\b Added MakeNSISW window info "spy" tool
+
+\S2{} Minor Changes
+
+\b Added MUI_TEXTCOLOR setting
+
+\b nsDialogs::OnNotify can now return values back to Windows
+
+\b Added LIBRARY_INSTALL_EQUAL_VERSION \R{library_install}{InstallLib} option
+
+\b Added NTMARTA to preload list to fix rare Windows 7 security issue (\W{http://sf.net/p/nsis/bugs/1204}{bug #1204})
+
+\b AddBrandingImage now supports dialog units
+
+\b Fixed !macroundef of last defined macro bug
+
+\b Fixed MultiUser caption string bug (\W{http://sf.net/p/nsis/bugs/1012}{bug #1012})
+
+\b !undef issues warnings instead of errors
+
+\b MakeNSIS prints -CMDHELP to stdout (\W{http://sf.net/p/nsis/bugs/1203}{bug #1203})
+
+\b Removed LibraryLocal utility
+
+\S2{} Translations
+
+\b Added Hind\u012b{i} (\W{http://sf.net/p/nsis/patches/289}{patch #289})
+
+\b Updated Belarusian, German (\W{http://sf.net/p/nsis/bugs/1023}{bug #1023}), Mongolian and Spanish (\W{http://sf.net/p/nsis/bugs/1205}{bug #1205})
+
 \H{v3.03} 3.03
 
 Released on January 29th, 2018
@@ -37,6 +79,8 @@ Released on January 29th, 2018
 \b Plug-ins now set the ASLR, DEP, LAA, NOSEH and TS PE flags (\W{http://sf.net/p/nsis/bugs/1188}{bug #1188})
 
 \b MakeNSIS exits with code 0 for various information commands (\W{http://sf.net/p/nsis/bugs/1193}{bug #1193})
+
+\b Added error and warning states to !pragma warning
 
 \b Removed unused NSD_LB_Clear macro parameter
 
@@ -1716,7 +1760,7 @@ Released on November 27th, 2006
 
 \S2{} Build System
 
-\b Added \W{http://msdn.microsoft.com/vstudio/express/visualc/}{Microsoft Visual C++ 2005 Express} support
+\b Added \W{https://web.archive.org/web/20060203051838/http://msdn.microsoft.com:80/vstudio/express/visualc/}{Microsoft Visual C++ 2005 Express} support
 
 \b SCons requirement upgraded to 0.96.93
 
@@ -2084,7 +2128,7 @@ Released on January 21st, 2006
 
 \S1{v2.13-rn} Release Notes
 
-\b Language detection has changed. The default language is now set to the user's user-interface language instead of the locale language, as suggested by \W{http://msdn.microsoft.com/library/default.asp?url=/library/en-us/intl/nls_0xrn.asp}{MSDN}. To restore the old behavior, use \c{System::Call "kernel32::GetUserDefaultLangID()i.a"} in \R{oninit}{.onInit}.
+\b Language detection has changed. The default language is now set to the user's user-interface language instead of the locale language, as suggested by \W{http://web.archive.org/web/20050913082611/http://msdn.microsoft.com/library/en-us/intl/nls_0xrn.asp}{MSDN}. To restore the old behavior, use \c{System::Call "kernel32::GetUserDefaultLangID()i.a"} in \R{oninit}{.onInit}.
 
 \S1{v2.13-cl} Changelog
 
@@ -2701,7 +2745,7 @@ Released on October 23rd, 2004
 
 \b Made the datablock optimizer much faster
 
-\b Made the installer deny reboots while running (\W{http://msdn.microsoft.com/library/en-us/sysinfo/base/wm_queryendsession.asp}{WM_QUERYENDSESSION})
+\b Made the installer deny reboots while running (\W{http://msdn.microsoft.com/en-us/library/aa376890}{WM_QUERYENDSESSION})
 
 \b Made the \R{reboot}{Reboot} command first quit and then reboot so everything is always cleaned-up
 
@@ -3347,7 +3391,7 @@ Released on December 6th, 2002
 
 \b Licence text receives initial focus (page up & down work immediately, return key still works)
 
-\b Made win9x move/delete on reboot support proper and function like on win2k
+\b Made Win9x move/delete on reboot support proper and function like on Win2k
 
 \b Now always loads RichEdit v2 if present (links work on Win9x)
 

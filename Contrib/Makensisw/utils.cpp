@@ -27,9 +27,17 @@
 #include "toolbar.h"
 #include <shlwapi.h>
 
-typedef BYTE PACKEDCMDID_T;
-#define PACKCMDID(id) ( PACKEDCMDID_T((id) - IDM_CMDBASE) )
-#define UNPACKCMDID(id) ( IDM_CMDBASE + (id) )
+#ifndef MONITOR_DEFAULTTONEAREST
+#define MONITOR_DEFAULTTONEAREST 2
+WINUSERAPI HMONITOR WINAPI MonitorFromWindow(HWND hwnd, DWORD dwFlags);
+#endif
+#ifndef GRADIENT_FILL_RECT_H
+#define GRADIENT_FILL_RECT_H 0
+#if !defined(_WIN32_WINNT) || _WIN32_WINNT-0 < 0x0410
+WINGDIAPI BOOL WINAPI GradientFill(HDC,TRIVERTEX*,ULONG,PVOID,ULONG,ULONG);
+#endif
+#endif
+
 
 NTOOLTIP g_tip;
 LRESULT CALLBACK TipHookProc(int nCode, WPARAM wParam, LPARAM lParam);
@@ -41,6 +49,21 @@ extern const TCHAR *compressor_names[];
 
 void MemSafeFree(void*mem) { if (mem) GlobalFree(mem); }
 void*MemAllocZI(SIZE_T cb) { return GlobalAlloc(GPTR, cb); }
+
+HMODULE LoadSysLibrary(LPCSTR Mod)
+{
+  TCHAR buf[MAX_PATH+20], *path;
+  UINT dirmax = MAX_PATH, cch;
+  if ((cch = GetSystemDirectory(buf, dirmax)) >= dirmax) cch = 0;
+  wsprintf(buf + cch, _T("\\%hs.dll"), Mod); // Note: We always append ".dll"
+  path = buf + !cch; // Full path or just the filename
+  return LoadLibrary(path);
+}
+
+FARPROC GetSysProcAddr(LPCSTR Mod, LPCSTR FuncName)
+{
+  return GetProcAddress(LoadSysLibrary(Mod), FuncName);
+}
 
 static bool WriteFile(HANDLE hFile, const void*pData, DWORD cb)
 {
@@ -164,6 +187,7 @@ void CopyToClipboard(HWND hwnd) {
 
 void ClearLog(HWND hwnd) {
   SetDlgItemText(hwnd, IDC_LOGWIN, _T(""));
+  SendMessage(g_sdata.hwnd, WM_MAKENSIS_UPDATEUISTATE, 0, 0);
 }
 
 void LogMessage(HWND hwnd,const TCHAR *str) {
@@ -180,10 +204,39 @@ void ErrorMessage(HWND hwnd,const TCHAR *str) {
   LogMessage(hwnd,buf);
 }
 
+static void CenterOnParent(HWND hwnd, HWND hParent)
+{
+  RECT r;
+  GetWindowRect(hwnd, &r);
+  UINT w = (r.right - r.left), h = (r.bottom - r.top), swp = SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE;
+  if (GetWindowRect(hParent, &r))
+    SetWindowPos(hwnd, 0, r.left + ((r.right - r.left)/2) - (w/2), r.top + ((r.bottom - r.top)/2) - (h/2), 0, 0, swp);
+}
+void CenterOnParent(HWND hwnd)
+{
+  CenterOnParent(hwnd, GetWindow(hwnd, GW_OWNER));
+}
+
 void SetDialogFocus(HWND hDlg, HWND hCtl)
 {
   //blogs.msdn.com/b/oldnewthing/archive/2004/08/02/205624.aspx
   SendMessage(hDlg, WM_NEXTDLGCTL, (WPARAM)hCtl, TRUE);
+}
+
+HWND GetComboEdit(HWND hCB)
+{
+  /* CB_GETCOMBOBOXINFO crashes on 64-bit NT 5.x (KB947841).
+  We are left with GetComboBoxInfo(), FindWindowEx()*2 and 
+  ChildWindowFromPoint(h,{1,1}) (docs.microsoft.com/en-us/windows/desktop/Controls/subclass-a-combo-box#). */
+  if (!SupportsWNT4() && !SupportsW95())
+  {
+    COMBOBOXINFO cbi;
+    cbi.cbSize = FIELD_OFFSET(COMBOBOXINFO, hwndList) + sizeof(HWND);
+    BOOL succ = GetComboBoxInfo(hCB, &cbi);
+    return succ ? cbi.hwndItem : (HWND)(INT_PTR) succ;
+  }
+  HWND hList = FindWindowEx(hCB, 0, 0, 0);
+  return FindWindowEx(hCB, hList, 0, 0);
 }
 
 void EnableDisableItems(HWND hwnd, int on) 
@@ -207,8 +260,7 @@ void EnableDisableItems(HWND hwnd, int on)
 
   static const PACKEDCMDID_T cmds [] = {
     PACKCMDID(IDM_EXIT), PACKCMDID(IDM_LOADSCRIPT), PACKCMDID(IDM_EDITSCRIPT), 
-    PACKCMDID(IDM_COPY), PACKCMDID(IDM_COPYSELECTED), PACKCMDID(IDM_SAVE), 
-    PACKCMDID(IDM_CLEARLOG), PACKCMDID(IDM_BROWSESCR), 
+    PACKCMDID(IDM_SAVE), PACKCMDID(IDM_CLEARLOG),
     PACKCMDID(IDM_COMPRESSOR), PACKCMDID(IDM_COMPRESSOR_SUBMENU),
     PACKCMDID(IDM_RECOMPILE), PACKCMDID(IDM_RECOMPILE_TEST)
   };
@@ -218,6 +270,10 @@ void EnableDisableItems(HWND hwnd, int on)
     if (IDM_COPYSELECTED != id && IDM_COMPRESSOR_SUBMENU != id)
       EnableToolBarButton(id, on);
   }
+
+  SendMessage(g_sdata.hwnd, WM_MAKENSIS_UPDATEUISTATE, 0 ,0);
+  EnableMenuItem(hMenu, IDM_FILE, mf); // Disable the whole File menu because of the MRU list
+  DrawMenuBar(g_sdata.hwnd);
 
   HWND hFocus = g_sdata.focused_hwnd, hOptimal = hTestBtn;
   if (on && hCloseBtn == hFocus) hFocus = hOptimal;
@@ -255,23 +311,25 @@ void SetCompressorStats()
   }
 }
 
+static void SetUIState_NoScript()
+{
+  static const PACKEDCMDID_T cmds [] = {
+    PACKCMDID(IDM_RECOMPILE),PACKCMDID(IDM_RECOMPILE_TEST),PACKCMDID(IDM_TEST), 
+    PACKCMDID(IDM_BROWSESCR),PACKCMDID(IDM_EDITSCRIPT)
+  };
+  for (UINT i = 0; i < COUNTOF(cmds); ++i)
+    EnableUICommand(UNPACKCMDID(cmds[i]), FALSE);
+  EnableWindow(GetDlgItem(g_sdata.hwnd, IDC_TEST), FALSE);
+}
+
 void CompileNSISScript() {
   DragAcceptFiles(g_sdata.hwnd,FALSE);
   ClearLog(g_sdata.hwnd);
   SetTitle(g_sdata.hwnd,NULL);
+  PostMessage(g_sdata.hwnd, WM_MAKENSIS_UPDATEUISTATE, 0, 0);
   if (lstrlen(g_sdata.script)==0) {
     LogMessage(g_sdata.hwnd,USAGE);
-
-    static const PACKEDCMDID_T cmds [] = {
-      PACKCMDID(IDM_RECOMPILE),PACKCMDID(IDM_RECOMPILE_TEST),PACKCMDID(IDM_TEST), 
-      PACKCMDID(IDM_BROWSESCR),PACKCMDID(IDM_EDITSCRIPT)
-    };
-    for (UINT i = 0; i < COUNTOF(cmds); ++i) {
-      int id = UNPACKCMDID(cmds[i]);
-      EnableMenuItem(g_sdata.menu,id,MF_GRAYED);
-      EnableToolBarButton(id,FALSE);
-    }
-    EnableWindow(GetDlgItem(g_sdata.hwnd,IDC_TEST),FALSE);
+    SetUIState_NoScript();
     DragAcceptFiles(g_sdata.hwnd,TRUE);
     return;
   }
@@ -956,7 +1014,7 @@ bool FileExists(const TCHAR *fname)
 
 bool OpenUrlInDefaultBrowser(HWND hwnd, LPCSTR Url)
 {
-  return (int)(INT_PTR) ShellExecuteA(hwnd, NULL , Url, NULL, NULL, SW_SHOWNORMAL) > 32;
+  return (int)(INT_PTR) ShellExecuteA(hwnd, NULL, Url, NULL, NULL, SW_SHOWNORMAL) > 32;
 }
 
 HMENU FindSubMenu(HMENU hMenu, UINT uId)
@@ -967,9 +1025,128 @@ HMENU FindSubMenu(HMENU hMenu, UINT uId)
   return GetMenuItemInfo(hMenu, uId, FALSE, &mii) ? mii.hSubMenu : 0;
 }
 
-HFONT CreateFont(int Height, int Weight, DWORD PitchAndFamily, LPCTSTR Face)
+static UINT DpiGetClassicSystemDpiY() { HDC hDC = GetDC(NULL); UINT dpi = GetDeviceCaps(hDC, LOGPIXELSY); ReleaseDC(NULL, hDC); return dpi; }
+static HRESULT WINAPI DpiFallbackGetDpiForMonitor(HMONITOR hMon, int MDT, UINT*pX, UINT*pY) { return (*pX = *pY = DpiGetClassicSystemDpiY(), S_OK); }
+static UINT WINAPI DpiFallbackGetDpiForWindow(HWND hWnd) { return 0; }
+
+static UINT DpiNativeGetForMonitor(HMONITOR hMon)
 {
-  return CreateFont(Height, 0, 0, 0, Weight, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-                    OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                    PitchAndFamily, Face);
+  static HRESULT(WINAPI*f)(HMONITOR, int, UINT*, UINT*);
+  if (!f && !((FARPROC&)f = GetSysProcAddr("SHCORE", "GetDpiForMonitor"))) f = DpiFallbackGetDpiForMonitor;
+  UINT x, y, mdt_effective_dpi = 0;
+  return SUCCEEDED(f(hMon, mdt_effective_dpi, &x, &y)) ? y : 0; 
+}
+static UINT DpiGetForMonitor(HWND hWnd)
+{
+  HMONITOR hMon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+  return hMon ? DpiNativeGetForMonitor(hMon) : (UINT)(UINT_PTR) hMon;
+}
+
+UINT DpiGetForWindow(HWND hWnd)
+{
+  UINT dpi;
+  if (DpiAwarePerMonitor() || DpiAwarePerMonitor2())
+  {
+    static UINT(WINAPI*f)(HWND);
+    if (!f && !((FARPROC&)f = GetSysProcAddr("USER32", "GetDpiForWindow"))) f = DpiFallbackGetDpiForWindow;
+    if ((dpi = f(hWnd))) return dpi;
+  }
+  if (DpiAwarePerMonitor() && (dpi = DpiGetForMonitor(hWnd))) return dpi;
+  return DpiGetClassicSystemDpiY();
+}
+
+int DpiScaleY(HWND hWnd, int Val)
+{
+  return MulDiv(Val, DpiGetForWindow(hWnd), 96);
+}
+
+HFONT CreateFontHelper(INT_PTR Data, int Height, DWORD p1, LPCTSTR Face)
+{
+  WORD w = LOBYTE(p1)<<2, flags = HIBYTE(p1), cs = HIWORD(LOBYTE(p1)), paf = HIWORD(HIBYTE(p1));
+  if (flags & CFF_DPIPT)
+  {
+    UINT dpi = (flags & CFF_DPIFROMHWND) ? DpiGetForWindow((HWND) Data) : (UINT) Data;
+    Height = -MulDiv(Height, dpi, 72);
+  }
+  return CreateFont(Height, 0, 0, 0, w, FALSE, FALSE, FALSE, cs, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, paf, Face);
+}
+
+static BOOL DrawHorzGradient(HDC hDC, const RECT&rect, COLOR16 r1, COLOR16 g1, COLOR16 b1, COLOR16 r2, COLOR16 g2, COLOR16 b2)
+{
+  TRIVERTEX v[2] = { {rect.left, rect.top, r1, g1, b1, 0xffff}, {rect.right, rect.bottom, r2, g2, b2, 0xffff} };
+  GRADIENT_RECT r = { 0, 1 };
+  BOOL(WINAPI*gf)(HDC,TRIVERTEX*,ULONG,VOID*,ULONG,ULONG);
+  if (SupportsWNT4() || SupportsW95())
+  {
+    if (!((FARPROC&)gf = GetSysProcAddr("MSIMG32", "GradientFill")))
+    {
+      COLORREF orgclr = SetBkColor(hDC, RGB((((UINT)r1+r2)/2)>>8, (((UINT)g1+g2)/2)>>8, (((UINT)b1+b2)/2)>>8));
+      ExtTextOut(hDC, rect.left, rect.top, ETO_OPAQUE, &rect, _T(""), 0, NULL); // TODO: Actually try to draw a gradient
+      return TRUE|SetBkColor(hDC, orgclr);
+    }
+  }
+  else
+    gf = GradientFill;
+  return gf(hDC, v, 2, &r, 1, GRADIENT_FILL_RECT_H);
+}
+
+BOOL DrawHorzGradient(HDC hDC, LONG l, LONG t, LONG r, LONG b, COLORREF c1, COLORREF c2)
+{
+  RECT rect = { l, t, r, b };
+  return DrawHorzGradient(hDC, rect, (WORD)GetRValue(c1)<<8, (WORD)GetGValue(c1)<<8, (WORD)GetBValue(c1)<<8, (WORD)GetRValue(c2)<<8, (WORD)GetGValue(c2)<<8, (WORD)GetBValue(c2)<<8);
+}
+
+long DlgUnitToPixelX(HWND hDlg, long x) { RECT r = { x, 0, 0, 0 }; MapDialogRect(hDlg, &r); return r.left; }
+long DlgUnitToPixelY(HWND hDlg, long y) { RECT r = { 0, y, 0, 0 }; MapDialogRect(hDlg, &r); return r.top; }
+
+#ifndef SP_GRIPPER
+#ifndef HTHEME
+#define HTHEME HTHEME_OLDSDK
+struct OLDSDK_TYPE_HTHEME {int unused;}; typedef struct OLDSDK_TYPE_HTHEME* HTHEME;
+#endif
+#define SP_GRIPPER 3
+#endif
+struct VisualStyles {
+  VisualStyles() : m_OpenThemeData(NULL) {}
+  static HTHEME WINAPI Compat_OpenThemeData(HWND hWnd, LPCWSTR Class) { return NULL; }
+  HTHEME OpenThemeData(HWND hWnd, LPCWSTR Class) { return (InitUXTheme(), m_OpenThemeData(hWnd, Class)); }
+  void InitUXTheme()
+  {
+    if (m_OpenThemeData) return ;
+    HMODULE hUXT = LoadSysLibrary("UXTHEME");
+    if (!((FARPROC&) m_OpenThemeData = GetProcAddress(hUXT, "OpenThemeData"))) m_OpenThemeData = Compat_OpenThemeData;
+    (FARPROC&) CloseThemeData = GetProcAddress(hUXT, "CloseThemeData");
+    (FARPROC&) DrawThemeBackground = GetProcAddress(hUXT, "DrawThemeBackground");
+  }
+
+  HTHEME(WINAPI*m_OpenThemeData)(HWND,LPCWSTR);
+  HRESULT(WINAPI*CloseThemeData)(HTHEME);
+  HRESULT(WINAPI*DrawThemeBackground)(HTHEME,HDC,int,int,LPCRECT,LPCRECT);
+} VS;
+
+void DrawGripper(HWND hWnd, HDC hDC, const RECT&r)
+{
+  HTHEME hTheme = VS.OpenThemeData(hWnd, L"STATUS");
+  if (hTheme)
+  {
+    VS.DrawThemeBackground(hTheme, hDC, SP_GRIPPER, 0, &r, NULL);
+    VS.CloseThemeData(hTheme);
+  }
+  else
+  {
+    DrawFrameControl(hDC, const_cast<LPRECT>(&r), DFC_SCROLL, DFCS_SCROLLSIZEGRIP);
+  }
+}
+
+bool RicheditHasSelection(HWND hRE)
+{
+  CHARRANGE tr;
+  SendMessage(hRE, EM_EXGETSEL, 0, (LPARAM) &tr);
+  return tr.cpMax - tr.cpMin <= 0 ? FALSE : TRUE;
+}
+
+void EnableUICommand(UINT Id, INT_PTR Enabled)
+{
+  EnableToolBarButton(Id, !!Enabled);
+  EnableMenuItem(g_sdata.menu, Id, Enabled ? MF_ENABLED : MF_GRAYED);
 }

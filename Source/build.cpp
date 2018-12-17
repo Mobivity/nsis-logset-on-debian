@@ -79,6 +79,8 @@ namespace MakensisAPI {
   const TCHAR* SigintEventNameLegacy = _T("makensis win32 signint event"); // "sigNint" typo is part of the API now and cannot be changed
 }
 
+const WORD DefaultPEDllCharacteristics = IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE|IMAGE_DLLCHARACTERISTICS_NO_SEH|IMAGE_DLLCHARACTERISTICS_NX_COMPAT|IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE; //forums.winamp.com/showthread.php?t=344755
+
 void CEXEBuild::define(const TCHAR *p, const TCHAR *v)
 {
   definedlist.add(p,v);
@@ -94,16 +96,11 @@ CEXEBuild::~CEXEBuild()
   int nlt = lang_tables.getlen() / sizeof(LanguageTable);
   LanguageTable *nla = (LanguageTable*)lang_tables.get();
 
-  for (int i = 0; i < nlt; i++) {
+  for (int i = 0; i < nlt; i++)
     DeleteLangTable(nla+i);
-  }
 
-  for (;postbuild_cmds;)
-  {
-    struct postbuild_cmd * tmp = postbuild_cmds;
-    postbuild_cmds = postbuild_cmds->next;
-    delete [] tmp;
-  }
+  if (postbuild_cmds)
+    postbuild_cmds->delete_all();
 }
 
 CEXEBuild::CEXEBuild(signed char pponly, bool warnaserror) :
@@ -129,13 +126,14 @@ CEXEBuild::CEXEBuild(signed char pponly, bool warnaserror) :
   ns_label.add(_T(""),0);
 
   definedlist.add(_T("NSIS_VERSION"), NSIS_VERSION);
-#ifdef NSIS_PACKEDVERSION
   definedlist.add(_T("NSIS_PACKEDVERSION"), NSIS_PACKEDVERSION);
-#endif
 
   m_target_type=TARGET_X86ANSI;
 #ifdef _WIN32
   if (sizeof(void*) > 4) m_target_type = TARGET_AMD64; // BUGBUG: scons 'TARGET_ARCH' should specify the default
+#endif
+#ifdef _M_ARM64
+  m_target_type = TARGET_ARM64; // BUGBUG: scons 'TARGET_ARCH' should specify the default
 #endif
   build_unicode=TARGET_X86ANSI != m_target_type;
   build_lockedunicodetarget=false;
@@ -279,8 +277,9 @@ CEXEBuild::CEXEBuild(signed char pponly, bool warnaserror) :
 
   res_editor=0;
 
-  PEDllCharacteristics = IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE|IMAGE_DLLCHARACTERISTICS_NO_SEH|IMAGE_DLLCHARACTERISTICS_NX_COMPAT|IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE; //forums.winamp.com/showthread.php?t=344755
+  PEDllCharacteristics = DefaultPEDllCharacteristics;
   PESubsysVerMaj = PESubsysVerMin = (WORD) -1;
+  manifest_flags = manifest::flags_default;
   manifest_comctl = manifest::comctl_old;
   manifest_exec_level = manifest::exec_level_admin;
   manifest_dpiaware = manifest::dpiaware_notset;
@@ -343,7 +342,7 @@ CEXEBuild::CEXEBuild(signed char pponly, bool warnaserror) :
   m_UserVarNames.add(_T("EXEFILE"),-1);      // 28
   m_UserVarNames.add(_T("HWNDPARENT"),-1);   // 29
   m_UserVarNames.add(_T("_CLICK"),-1);       // 30
-  m_UserVarNames.add(_T("_OUTDIR"),1);       // 31
+  m_UserVarNames.add(_T("_OUTDIR"),1);       // 31 Note: nsDialogs also uses this
 
   m_iBaseVarsNum = m_UserVarNames.getnum();
 
@@ -2384,7 +2383,7 @@ int CEXEBuild::SetManifest()
   try {
     init_res_editor();
     // This should stay ANSI
-    string manifest = manifest::generate(manifest_comctl, manifest_exec_level, manifest_dpiaware, manifest_dpiawareness.c_str(), manifest_sosl);
+    string manifest = manifest::generate((manifest::flags)manifest_flags, manifest_comctl, manifest_exec_level, manifest_dpiaware, manifest_dpiawareness.c_str(), manifest_sosl);
 
     if (manifest == "")
       return PS_OK;
@@ -2414,9 +2413,7 @@ int CEXEBuild::UpdatePEHeader()
       *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, MinorSubsystemVersion) = FIX_ENDIAN_INT16(PESubsysVerMin);
     }
     // DllCharacteristics
-    WORD dc = PEDllCharacteristics;
-    if ((dc & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE) && is_target_64bit()) dc |= IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA;
-    *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, DllCharacteristics) = FIX_ENDIAN_INT16(dc);
+    *GetCommonMemberFromPEOptHdr(headers->OptionalHeader, DllCharacteristics) = FIX_ENDIAN_INT16(PEDllCharacteristics);
   } catch (std::runtime_error& err) {
     ERROR_MSG(_T("Error updating PE headers: %") NPRIs _T("\n"), CtoTStrParam(err.what()));
     return PS_ERROR;
@@ -3002,40 +2999,7 @@ int CEXEBuild::write_output(void)
       fileend,total_usize,pc/10,pc%10);
   }
   fclose(fp);
-  if (postbuild_cmds)
-  {
-    for (struct postbuild_cmd *cmd=postbuild_cmds; cmd; cmd = cmd->next)
-    {
-      TCHAR *cmdstr = cmd->cmd, *cmdstrbuf = NULL;
-      TCHAR *arg = _tcsstr(cmdstr, _T("%1"));
-      if (arg)    // if found, replace %1 by build_output_filename
-      {
-        const size_t cchbldoutfile = _tcslen(build_output_filename);
-        cmdstrbuf = (TCHAR*) malloc( (_tcslen(cmdstr) + cchbldoutfile + 1)*sizeof(TCHAR) );
-        if (!cmdstrbuf)
-        {
-          ERROR_MSG(_T("Error: can't allocate memory for finalize command\n"));
-          return PS_ERROR;
-        }
-        arg -= ((UINT_PTR)cmdstr)/sizeof(TCHAR), arg += ((UINT_PTR)cmdstrbuf)/sizeof(TCHAR);
-        _tcscpy(cmdstrbuf,cmdstr);
-        cmdstr = cmdstrbuf;
-        memmove(arg+cchbldoutfile, arg+2, (_tcslen(arg+2)+1)*sizeof(TCHAR));
-        memmove(arg, build_output_filename, cchbldoutfile*sizeof(TCHAR));
-        //BUGBUG: Should we call PathConvertWinToPosix on build_output_filename?
-      }
-
-      SCRIPT_MSG(_T("\nFinalize command: %") NPRIs _T("\n"),cmdstr);
-      int ret = sane_system(cmdstr);
-      if (!check_external_exitcode(ret, cmd->cmpop, cmd->cmpval))
-      {
-        ERROR_MSG(_T("%") NPRIs _T(" %d, aborting\n"), _T("Finalize command returned"), ret);
-        return PS_ERROR;
-      }
-      if (ret != 0) INFO_MSG(_T("%") NPRIs _T(" %d\n"), _T("Finalize command returned"), ret);
-      free(cmdstrbuf);
-    }
-  }
+  RET_UNLESS_OK(run_postbuild_cmds(postbuild_cmds, build_output_filename, _T("Finalize")));
   print_warnings();
   return PS_OK;
 }
@@ -3447,34 +3411,20 @@ int CEXEBuild::parse_pragma(LineParser &line)
     if (!diagstate.pop())
       ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Unexpected"));
   }
-  else // warning: error/warning/disable/enable/default
+  else // warning: error/warning/disable/enable/default <%code%|all> [..]
   {
     for (int ti = 3; ti < line.getnumtokens(); ++ti)
     {
       DIAGCODE code = static_cast<DIAGCODE>(line.gettoken_int(ti));
-      bool all = 0 == line.gettoken_enum(ti, _T("all\0"));
-      if (diagstate.is_valid_code(code))
+      bool all = line.gettoken_enum(ti, _T("all\0")) == 0, isCode = diagstate.is_valid_code(code);
+      switch((isCode||all) ? warnOp : invalidwop)
       {
-        switch(warnOp)
-        {
-        case woperr: diagstate.error(code); break;
-        case wopwar: diagstate.warning(code); break;
-        case wopdis: diagstate.disable(code); break;
-        case wopena: diagstate.enable(code); break;
-        case wopdef: diagstate.def(code); break;
-        default: assert(0);
-        }
-      }
-      else
-      {
-        switch(all ? warnOp : invalidwop)
-        {
-        case woperr: diagstate.set_all(diagstate.werror); break;
-        case wopdis: diagstate.set_all(DiagState::wdisabled); break;
-        case wopena: diagstate.set_all(DiagState::wenabled); break;
-        case wopdef: diagstate.set_all(DiagState::get_default_state()); break;
-        default: ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Invalid number: \"%") NPRIs _T("\""), line.gettoken_str(ti));
-        }
+      case woperr: all ? diagstate.set_all(DiagState::werror) : diagstate.error(code); break;
+      case wopwar: all ? diagstate.set_all(DiagState::wwarning) : diagstate.warning(code); break;
+      case wopdis: all ? diagstate.set_all(DiagState::wdisabled) : diagstate.disable(code); break;
+      case wopena: all ? diagstate.set_all(DiagState::wenabled) : diagstate.enable(code); break;
+      case wopdef: all ? diagstate.set_all(DiagState::get_default_state()) : diagstate.def(code); break;
+      default: ret = rvWarn, warning_fl(DW_PP_PRAGMA_INVALID, _T("Invalid number: \"%") NPRIs _T("\""), line.gettoken_str(ti));
       }
     }
   }
@@ -3880,6 +3830,12 @@ bool CEXEBuild::IsIntOrUserVar(const LineParser &line, int token) const
 int CEXEBuild::set_target_architecture_data()
 {
   build_strlist.setunicode(build_unicode), ubuild_strlist.setunicode(build_unicode);
+  size_t t64 = is_target_64bit(), i;
+
+  WORD dc = DefaultPEDllCharacteristics;
+  if ((dc & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE) && t64) dc |= IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA;
+  if (m_target_type == TARGET_ARM64) dc &= ~IMAGE_DLLCHARACTERISTICS_NO_SEH; // ARM64 forces exception directory?
+  PEDllCharacteristics = dc;
 
   if (build_unicode)
   {
@@ -3891,19 +3847,36 @@ int CEXEBuild::set_target_architecture_data()
     definedlist.del(_T("NSIS_UNICODE"));
     definedlist.set(_T("NSIS_CHAR_SIZE"), _T("1"));
   }
-  definedlist.set(_T("NSIS_PTR_SIZE"), is_target_64bit() ? _T("8") : _T("4"));
+  definedlist.set(_T("NSIS_PTR_SIZE"), t64 ? _T("8") : _T("4"));
 
-  tstring cpu = get_string_prefix(get_target_suffix(m_target_type), _T("-"));
+  const TCHAR* tsuff = get_target_suffix(m_target_type, _T(""));
+  if (!*tsuff) return PS_ERROR;
+  tstring cpu = get_string_prefix(tsuff, _T("-"));
   definedlist.set(_T("NSIS_CPU"), cpu.c_str()); // Used by Library.nsh to pick the correct RegTool
 
-  definedlist.del(_T("NSIS_IX86"));
-  definedlist.del(_T("NSIS_AMD64"));
-  if (TARGET_AMD64 == m_target_type)
-    definedlist.set(_T("NSIS_AMD64"));
-  else
-    definedlist.set(_T("NSIS_IX86"), build_unicode ? _T("400") : _T("300"));
+  struct { TARGETTYPE tt; const TCHAR *def; const TCHAR *val; } static const tdef[] = {
+    { TARGET_X86ANSI,    _T("NSIS_IX86"),  _T("300") },
+    { TARGET_X86UNICODE, _T("NSIS_IX86"),  _T("400") },
+    { TARGET_AMD64,      _T("NSIS_AMD64"), _T("1")   },
+    { TARGET_ARM64,      _T("NSIS_ARM64"), _T("1")   }
+  };
+  for (i = 0; i < COUNTOF(tdef); ++i) definedlist.del(tdef[i].def);
+  unsigned int success = false;
+  for (i = 0; i < COUNTOF(tdef); ++i) if (tdef[i].tt == m_target_type) definedlist.set(tdef[i].def, tdef[i].val), ++success;
 
-  return PS_OK;
+  return success ? PS_OK : PS_ERROR;
+}
+
+const TCHAR* CEXEBuild::get_target_suffix(CEXEBuild::TARGETTYPE tt, const TCHAR*defval) const
+{
+  switch(tt)
+  {
+  case TARGET_X86ANSI   : return _T("x86-ansi");
+  case TARGET_X86UNICODE: return _T("x86-unicode");
+  case TARGET_AMD64     : return _T("amd64-unicode");
+  case TARGET_ARM64     : return _T("arm64-unicode");
+  default: return defval;
+  }
 }
 
 int CEXEBuild::change_target_architecture(TARGETTYPE tt)
@@ -3943,17 +3916,6 @@ CEXEBuild::TARGETTYPE CEXEBuild::get_target_type(const TCHAR*s) const
     if (!_tcsicmp(get_target_suffix(tt, _T("")),s) && *s) return tt;
   }
   return TARGET_UNKNOWN;
-}
-
-const TCHAR* CEXEBuild::get_target_suffix(CEXEBuild::TARGETTYPE tt, const TCHAR*defval) const
-{
-  switch(tt)
-  {
-  case TARGET_X86ANSI   : return _T("x86-ansi");
-  case TARGET_X86UNICODE: return _T("x86-unicode");
-  case TARGET_AMD64     : return _T("amd64-unicode");
-  default: return defval;
-  }
 }
 
 void CEXEBuild::print_bad_targettype_parameter(const TCHAR*cmdname, const TCHAR*prefix) const
@@ -4026,6 +3988,57 @@ void CEXEBuild::set_code_type_predefines(const TCHAR *value)
     default:
       definedlist.add(_T("__GLOBAL__"));
   }
+}
+
+void CEXEBuild::postbuild_cmd::delete_all()
+{
+  for (struct postbuild_cmd *p = this, *tmp; p;)
+  {
+    tmp = p, p = p->next;
+    delete [] tmp;
+  }
+}
+
+CEXEBuild::postbuild_cmd* CEXEBuild::postbuild_cmd::make(const TCHAR *cmdstr, int cmpop, int cmpval)
+{
+  postbuild_cmd *p = (postbuild_cmd*) (new BYTE[FIELD_OFFSET(postbuild_cmd, cmd[_tcsclen(cmdstr)+!0])]);
+  p->next = NULL, _tcscpy(p->cmd, cmdstr);
+  p->cmpop = cmpop, p->cmpval = cmpval;
+  return p;
+}
+
+int CEXEBuild::run_postbuild_cmds(const postbuild_cmd *cmds, const TCHAR *templatearg_pc1, const TCHAR* commandname)
+{
+  for (const postbuild_cmd *cmd = cmds; cmd; cmd = cmd->next)
+  {
+    const TCHAR *cmdstr = cmd->cmd;
+    TCHAR *arg = _tcsstr(const_cast<TCHAR*>(cmdstr), _T("%1")), *cmdstrbuf = NULL;
+    if (arg) // If found, replace %1 with templatearg_pc1
+    {
+      const size_t cchtpc1 = _tcslen(templatearg_pc1);
+      cmdstrbuf = (TCHAR*) malloc((_tcslen(cmdstr) + cchtpc1 + 1) * sizeof(TCHAR));
+      if (!cmdstrbuf)
+      {
+        ERROR_MSG(_T("Error: Can't allocate memory for %") NPRIs _T(" command\n"), commandname);
+        return PS_ERROR;
+      }
+      arg -= ((UINT_PTR)cmdstr)/sizeof(TCHAR), arg += ((UINT_PTR)cmdstrbuf)/sizeof(TCHAR);
+      _tcscpy(cmdstrbuf, cmdstr), cmdstr = cmdstrbuf;
+      memmove(arg+cchtpc1, arg+2, (_tcslen(arg+2)+1)*sizeof(TCHAR));
+      memmove(arg, templatearg_pc1, cchtpc1*sizeof(TCHAR));
+      //BUGBUG: Should we call PathConvertWinToPosix on templatearg_pc1?
+    }
+    SCRIPT_MSG(_T("\n%") NPRIs _T(" command: %") NPRIs _T("\n"), commandname, cmdstr);
+    int ret = sane_system(cmdstr);
+    if (!check_external_exitcode(ret, cmd->cmpop, cmd->cmpval))
+    {
+      ERROR_MSG(_T("%") NPRIs _T(" command returned %d, aborting\n"), commandname, ret);
+      return PS_ERROR;
+    }
+    if (ret != 0) INFO_MSG(_T("%") NPRIs _T(" command returned %d\n"), commandname, ret);
+    free(cmdstrbuf);
+  }
+  return PS_OK;
 }
 
 int CEXEBuild::check_external_exitcode(int exitcode, int op, int val)

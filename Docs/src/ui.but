@@ -10,7 +10,7 @@ Recent Windows versions restrict the setting of foreground windows. If the user 
 
 \c user_var(handle output) face_name [height] [weight] [/ITALIC] [/UNDERLINE] [/STRIKE]
 
-Creates a font and puts its handle into user_var. For more information about the different parameters have a look at \W{http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/fontext_8fp0.asp}{MSDN's page about the Win32 API function CreateFont()}.
+Creates a font and puts its handle into user_var. For more information about the different parameters have a look at \W{http://msdn.microsoft.com/en-us/library/dd183499}{MSDN's page about the Win32 API function CreateFont()}.
 
 You can get the current font used by NSIS using the ^Font and ^FontSize \R{langstring}{LangString}s.
 
@@ -112,7 +112,7 @@ Shows or hides the details, depending on which parameter you pass. Overrides the
 
 \c none|listonly|textonly|both|lastused
 
-Sets mode at which commands print their status. None has commands be quiet, listonly has status text only added to the listbox, textonly has status text only printed to the status bar, and both enables both (the default). For extracting many small files, textonly is recommended (especially on win9x with smooth scrolling enabled).
+Sets mode at which commands print their status. None has commands be quiet, listonly has status text only added to the listbox, textonly has status text only printed to the status bar, and both enables both (the default). For extracting many small files, textonly is recommended (especially on Win9x with smooth scrolling enabled).
 
 \c SetDetailsPrint none
 \c File "secret file.dat"
@@ -134,7 +134,7 @@ Sets the text and background color of a static control, edit control, button or 
 \c FunctionEnd
 
 \NsisWarnBlockContainerBegin
-\\<b\\>Warning:\\</b\\> Setting the background color of check boxes to \c{transparent} may not function properly when using \c{\R{axpstyle}{XPStyle} on}. The background may be completely black instead of transparent when using certain Windows themes.
+\\<b\\>Warning:\\</b\\> Setting the background color of check boxes to \c{transparent} may not function properly when using \c{\R{axpstyle}{XPStyle} on}. The background may be completely black instead of transparent when using certain Windows themes. The text color might also be ignored when Visual Styles are enabled.
 \NsisWarnBlockContainerEnd
 
 \S2{setsilent} SetSilent

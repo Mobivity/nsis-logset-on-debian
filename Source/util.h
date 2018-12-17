@@ -41,6 +41,7 @@ size_t my_strftime(TCHAR *s, size_t max, const TCHAR  *fmt, const struct tm *tm)
 // If width or height are specified it will also make sure the bitmap is in that size
 int update_bitmap(CResourceEditor* re, WORD id, const TCHAR* filename, int width=0, int height=0, int maxbpp=0);
 
+TCHAR* create_tempfile_path();
 tstring get_full_path(const tstring& path);
 tstring get_dir_name(const tstring& path);
 tstring get_file_name(const tstring& path);
@@ -237,6 +238,7 @@ BOOL IsValidCodePage(UINT CodePage);
 #else
 #define CharNext CharNextA
 #endif
+#define NSISRT_free_is_STDC_free() 1 // NSISRT_free == free
 #define NSISRT_free(p) ( free((void*)(p)) )
 wchar_t* NSISRT_mbtowc(const char *Str);
 char* NSISRT_wctomb(const wchar_t *Str);
@@ -306,7 +308,7 @@ template<class R, class T> inline R debugtruncate_cast(T t,const char*f,unsigned
 #ifdef MAKENSIS
   if (sizeof(T) > sizeof(R) && !( (t <= (T)(~((R)0))) )) {
     _tprintf(_T("unsafe truncate_cast: %") NPRIns _T(":%u\n"),f,l);
-    if (sizeof(T) <= sizeof(void*)) _tprintf(_T("\t0x%p > %0xp\n"),(void*)(UINT_PTR)(t),(void*)(UINT_PTR)(~((R)0)));
+    if (sizeof(T) <= sizeof(void*)) _tprintf(_T("\t%ph > %ph\n"),(void*)(UINT_PTR)(t),(void*)(UINT_PTR)(~((R)0)));
   }
 #endif
   return internaltruncate_cast<R>(t);

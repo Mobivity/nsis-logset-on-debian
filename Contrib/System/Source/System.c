@@ -68,11 +68,7 @@ HANDLE retaddr;
 
 static TCHAR *MakeResultStr(SystemProc *proc, TCHAR *buf)
 {
-    if (proc->ProcResult == PR_OK)
-        lstrcpy(buf, _T("ok"));
-    else if (proc->ProcResult == PR_ERROR)
-        lstrcpy(buf, _T("error"));
-    else if (proc->ProcResult == PR_CALLBACK)
+    if (proc->ProcResult == PR_CALLBACK)
     {
         INT_PTR id = proc->CallbackIndex;
 #ifdef POPT_SYNTAX2
@@ -80,6 +76,13 @@ static TCHAR *MakeResultStr(SystemProc *proc, TCHAR *buf)
             id = (INT_PTR) GetAssociatedSysProcFromCallbackThunkPtr(proc->Proc);
 #endif
         wsprintf(buf, sizeof(void*) > 4 ? _T("callback%Id") : _T("callback%d"), id); // "%d" must match format used by system_pushintptr() in Get() because script will StrCmp!
+    }
+    else
+    {
+        const TCHAR *resstr = _T("error");
+        if (proc->ProcResult == PR_OK)
+            resstr = _T("ok");
+        lstrcpy(buf, resstr);
     }
     return buf;
 }
@@ -289,6 +292,69 @@ PLUGINFUNCTION(Get)
 } PLUGINFUNCTIONEND
 
 
+#ifdef SYSTEM_ARM64
+/*
+TODO: CallProc not implemeted.
+Fake the behavior of the System plugin for the LoadImage API function etc. so MUI works.
+BUGBUG: MUI is leaking DeleteObject
+*/
+SystemProc* CallProc(SystemProc *proc)
+{
+    INT_PTR ret, *place;
+    if (!lstrcmp(proc->ProcName, sizeof(TCHAR) > 1 ? _T("LoadImageW") : _T("LoadImageA")))
+    {
+        ret = (INT_PTR) LoadImage((HINSTANCE)proc->Params[1].Value, (LPCTSTR)proc->Params[2].Value, (UINT)proc->Params[3].Value, (int)proc->Params[4].Value, (int)proc->Params[5].Value, (UINT)proc->Params[6].Value);
+        LastError = GetLastError();
+    }
+    else if (!lstrcmp(proc->ProcName, _T("GetClientRect")))
+        ret = GetClientRect((HWND)proc->Params[1].Value, (RECT*)proc->Params[2].Value);
+    else if (!lstrcmp(proc->ProcName, _T("GetWindowRect")))
+        ret = GetWindowRect((HWND)proc->Params[1].Value, (RECT*)proc->Params[2].Value);
+    else if (!lstrcmp(proc->ProcName, _T("MapWindowPoints")))
+        ret = MapWindowPoints((HWND)proc->Params[1].Value, (HWND)proc->Params[2].Value, (POINT*)proc->Params[3].Value, (UINT)proc->Params[4].Value);
+    else if (!lstrcmp(proc->ProcName, _T("SetWindowPos")))
+        ret = SetWindowPos((HWND)proc->Params[1].Value, (HWND)proc->Params[2].Value, (int)proc->Params[3].Value, (int)proc->Params[4].Value, (int)proc->Params[5].Value, (int)proc->Params[6].Value, (UINT)proc->Params[7].Value);
+    else if (!lstrcmp(proc->ProcName, _T("GetWindowLong")))
+        ret = GetWindowLong((HWND)proc->Params[1].Value, (int)proc->Params[2].Value);
+    else if (!lstrcmp(proc->ProcName, _T("SetWindowLong")))
+        ret = SetWindowLong((HWND)proc->Params[1].Value, (int)proc->Params[2].Value, (LONG)proc->Params[3].Value);
+    else if (!lstrcmp(proc->ProcName, _T("GetWindowText")))
+        ret = GetWindowText((HWND)proc->Params[1].Value, (LPTSTR)proc->Params[2].Value, (int)proc->Params[3].Value);
+    else if (!lstrcmp(proc->ProcName, _T("SendMessageA")))
+        ret = SendMessageA((HWND)proc->Params[1].Value, (UINT)proc->Params[2].Value, (WPARAM)proc->Params[3].Value, (LPARAM)proc->Params[4].Value);
+    else if (!lstrcmp(proc->ProcName, _T("SendMessage")) || !lstrcmp(proc->ProcName, _T("SendMessageW")))
+        ret = SendMessageW((HWND)proc->Params[1].Value, (UINT)proc->Params[2].Value, (WPARAM)proc->Params[3].Value, (LPARAM)proc->Params[4].Value);
+    else if (!lstrcmp(proc->ProcName, _T("GetVersionEx"))) // For winver
+        ret = GetVersionEx((OSVERSIONINFO*)proc->Params[1].Value), LastError = GetLastError();
+    else if (!lstrcmp(proc->ProcName, _T("GetNativeSystemInfo")))
+        GetNativeSystemInfo((SYSTEM_INFO*)(ret = proc->Params[1].Value));
+    else if (!lstrcmp(proc->ProcName, _T("CharNextW"))) // For x64
+        ret = (INT_PTR) CharNextW((LPWSTR)proc->Params[1].Value);
+    else if (!lstrcmp(proc->ProcName, _T("GetCurrentProcess"))) // For x64
+        ret = (INT_PTR) GetCurrentProcess();
+    else if (!lstrcmp(proc->ProcName, _T("IsWow64Process"))) // For x64
+    {
+        if (!(ret = (INT_PTR) GetProcAddress(LoadLibrary(_T("KERNEL32")), "IsWow64Process"))) goto fail;
+        ret = ((BOOL(WINAPI*)(HANDLE,BOOL*))ret)((HANDLE)proc->Params[1].Value, (BOOL*)proc->Params[2].Value);
+    }
+    else if (!lstrcmp(proc->ProcName, _T("IsWow64Process2"))) // For x64
+    {
+        if (!(ret = (INT_PTR) GetProcAddress(LoadLibrary(_T("KERNEL32")), "IsWow64Process2"))) goto fail;
+        ret = ((BOOL(WINAPI*)(HANDLE,USHORT*,USHORT*))ret)((HANDLE)proc->Params[1].Value, (USHORT*)proc->Params[2].Value, (USHORT*)proc->Params[3].Value);
+    }
+    else if (!lstrcmp(proc->ProcName, _T("Wow64EnableWow64FsRedirection"))) // For x64
+    {
+        if (!(ret = (INT_PTR) GetProcAddress(LoadLibrary(_T("KERNEL32")), "Wow64EnableWow64FsRedirection"))) goto fail;
+        ret = ((BYTE(WINAPI*)(BYTE))ret)((BYTE)proc->Params[1].Value);
+    }
+    else fail:
+        proc->ProcResult = PR_ERROR, ret = 0, LastError = ERROR_INVALID_FUNCTION;
+    place = (INT_PTR*) proc->Params[0].Value;
+    if (!ParamIsPointer(proc->Params[0])) place = (INT_PTR*) &(proc->Params[0].Value);
+    if (place) *place = ret;
+    return proc;
+}
+#endif //~ SYSTEM_ARM64
 #ifdef _WIN64
 /*
 BUGBUG: TODO: CallBack support not implemeted!
@@ -1000,7 +1066,7 @@ void ParamsIn(SystemProc *proc)
             {
               LPTSTR straddr = system_getuservariableptr(par->Input - 1);
               par->Value = (INT_PTR) straddr;
-              par->Value += sizeof(void*) > 4 ? sizeof(_T("-9223372036854775807")) : sizeof(_T("-2147483647"));
+              par->Value += sizeof(void*) > 4 ? sizeof(_T("-9223372036854775807###")) : sizeof(_T("-2147483647")); // "###" for sizeof(void*) alignment
               IntPtrToStr(par->Value, straddr);
             }
             break;
@@ -1158,7 +1224,7 @@ void ParamsOut(SystemProc *proc)
 
 HANDLE CreateCallback(SystemProc *cbproc)
 {
-#ifdef SYSTEM_AMD64
+#if defined(SYSTEM_AMD64) || defined(SYSTEM_ARM64)
     return BUGBUG64(HANDLE) NULL;
 #else
     char *mem;
@@ -1357,7 +1423,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID lpReserved)
 #ifdef SYSTEM_X86
         retexpr[0] = (char) 0xC2;
         retexpr[2] = 0x00;
-#elif defined(SYSTEM_AMD64)
+#elif defined(SYSTEM_AMD64) || defined(SYSTEM_ARM64)
         retexpr[0] = BUGBUG64(0);
 #else
 #error TODO
@@ -1393,7 +1459,7 @@ unsigned int GetCDeclOption(SystemProc *proc)
 /*
 Returns non-zero value if Error option is set
 */
-unsigned int GetErrorOption(SystemProc *proc)
+static unsigned int GetErrorOption(SystemProc *proc)
 {
     return (proc->Options & POPT_ERROR);
 }
@@ -1491,7 +1557,7 @@ void SetCloneOption(SystemProc *proc)
 /*
 Sets Result of procedure call to be "OK"
 */
-void SetProcResultOk(SystemProc *proc)
+static void SetProcResultOk(SystemProc *proc)
 {
     proc->ProcResult = PR_OK;
 }
@@ -1502,4 +1568,16 @@ Sets Result of procedure call to be "CALLBACK"
 void SetProcResultCallback(SystemProc *proc)
 {
     proc->ProcResult = PR_CALLBACK;
+}
+
+SystemProc* CALLBACK SetCallProcResultValues(SystemProc *proc, ULARGE_INTEGER retval)
+{
+    if (GetErrorOption(proc)) LastError = GetLastError();
+#ifdef _WIN64
+    proc->Params[0].Value = retval.QuadPart;
+#else
+    proc->Params[0].Value = retval.LowPart, proc->Params[0]._value = retval.HighPart;
+#endif
+    SetProcResultOk(proc);
+    return proc;
 }

@@ -36,24 +36,32 @@
 #define IDI_ASSOC_NSH                   113
 #define IDB_LOGO                        115
 #define DLG_SETTINGS                    116
-#define IDB_BITMAP1                     120
+#define DLG_WNDSPY                      117
 #define IDB_TOOLBAR                     122
 #define DLG_COMPRESSOR                  124
 #define DLG_SYMBOLSET                   125
-#define IDB_TOOLBAR24                   129
-#define IDB_TOOLBAR24D                  130
-#define IDB_BITMAP2                     131
-#define IDB_TOOLBAR24H                  132
+#define IDB_TOOLBAR16N24                129
+#define IDB_TOOLBAR16D24                130
+#define IDB_TOOLBAR16H24                131
+#define IDB_TOOLBAR24N24                132
+#define IDB_TOOLBAR24D24                133
+#define IDB_TOOLBAR24H24                134
+#define IDB_TOOLBAR32N24                135
+#define IDB_TOOLBAR32D24                136
+#define IDB_TOOLBAR32H24                137
 
 #define IDC_VERSION                     200
-#define IDC_LOGWIN                      201
-#define IDC_TEST                        202
+#define IDC_TOOLBAR                     201
+#define IDC_LOGWIN                      202
+#define IDC_TEST                        203
 #define IDC_ABOUTVERSION                220
 #define IDC_ABOUTCOPY                   221
 #define IDC_ABOUTPORTIONS               222
 #define IDC_CONTRIB                     223
 #define IDC_NSISVER                     224
 #define IDC_OTHERCONTRIB                225
+#define IDC_ABOUTHEADER                 226
+#define IDC_ABOUTDONATE                 227
 #define IDC_RIGHT                       230
 #define IDC_LEFT                        231
 #define IDC_CLEAR                       232
@@ -65,6 +73,15 @@
 #define IDC_VALUE                       238
 #define IDC_COMPRESSOR                  239
 #define IDC_NAMES                       240
+#define IDC_SPYDRAG                     220
+#define IDC_HWND                        221
+#define IDC_WNDID                       222
+#define IDC_WNDCLASS                    223
+#define IDC_WNDUSERDATA                 224
+#define IDC_WNDSTYLE                    225
+#define IDC_WNDSIZE                     226
+#define IDC_WNDINFO                     227
+#define IDC_WNDDPI                      228
 
 #define IDM_MRU_FILE                    6000
 #define IDM_CMDBASE                     500
@@ -78,7 +95,7 @@
 #define IDM_LOADSCRIPT                  507
 #define IDM_EDITSCRIPT                  508
 #define IDM_SAVE                        509
-#define IDM_COPY                        510
+#define IDM_COPYALL                     510
 #define IDM_COPYSELECTED                511
 #define IDM_FIND                        512
 #define IDM_CLEARLOG                    513
@@ -104,13 +121,15 @@
 #define IDM_RECOMPILE_TEST              533
 #define IDM_CANCEL                      534
 #define IDM_SETTINGS                    535
+#define IDM_WNDSPY                      536
+#define IDM_COPY                        537
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
-#define _APS_NEXT_COMMAND_VALUE         536
+#define _APS_NEXT_RESOURCE_VALUE        138
+#define _APS_NEXT_COMMAND_VALUE         538
 #define _APS_NEXT_CONTROL_VALUE         241
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

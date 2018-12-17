@@ -1,3 +1,589 @@
+2018-12-15 22:14  kichik
+
+	* /NSIS/tags/v304: Tagging for release 3.04
+
+2018-12-15 22:11  kichik
+
+	* /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Scripts/release.py: fix release scons/inst diff
+
+2018-12-15 22:00  kichik
+
+	* /NSIS/trunk/Menu/images/header.gif: 3.04
+
+2018-12-15 21:59  kichik
+
+	* /NSIS/trunk/Examples/NSISMenu.nsi: fix eol
+
+2018-12-15 21:57  kichik
+
+	* /NSIS/trunk/Contrib/Language files/Hindi.nsh: fix eol
+
+2018-12-15 21:48  kichik
+
+	* /NSIS/trunk/Docs/src/history.but: release date
+
+2018-12-07 22:56  anders_k
+
+	* /NSIS/trunk/Include/WinVer.nsh: Removed WinVer WaaS diagnostic
+	  warning
+
+2018-12-07 22:53  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Include/WinVer.nsh:
+	  Added WinVer "Windows as a Service" detection macros
+
+2018-12-07 22:06  anders_k
+
+	* /NSIS/trunk/Contrib/Library/LibraryLocal,
+	  /NSIS/trunk/Docs/src/build.but, /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Include/Library.nsh, /NSIS/trunk/SConstruct: Removed
+	  LibraryLocal utility
+
+2018-12-07 21:04  anders_k
+
+	* /NSIS/trunk/Contrib/MultiUser/MultiUser.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Fixed MultiUser caption
+	  langstring bug (bug #1012)
+
+2018-12-06 23:00  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/German.nlf,
+	  /NSIS/trunk/Docs/src/history.but: Minor German translation fixes
+	  (bug #1023)
+
+2018-12-06 01:12  anders_k
+
+	* /NSIS/trunk/SConstruct, /NSIS/trunk/Source/build.cpp:
+	  NSIS_PACKEDVERSION no longer optional. Tries to find a usable
+	  fallback value if not specified.
+
+2018-12-03 19:20  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Belarusian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Belarusian.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updated Belarusian (Bug #1217)
+
+2018-11-30 16:49  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Include/WinVer.nsh: Added WinVer AtLeastBuild and
+	  AtMostBuild
+
+2018-11-27 22:36  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/defs.h,
+	  /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Source/build.cpp: Use a undocumented variable as the
+	  nsDialogs::OnNotify return value so we don't have to worry about
+	  restoring it
+
+2018-11-27 22:15  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/defs.h,
+	  /NSIS/trunk/Contrib/nsDialogs/example.nsi,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.c,
+	  /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html,
+	  /NSIS/trunk/Docs/src/history.but: nsDialogs::OnNotify can now
+	  return values back to Windows, also fixes bug #1216
+
+2018-11-11 22:05  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/afxres.h,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h,
+	  /NSIS/trunk/Contrib/Makensisw/wndspy.cpp,
+	  /nsisweb/trunk/.htaccess,
+	  /nsisweb/trunk/mediawiki/extensions/NSISDonate.php,
+	  /nsisweb/trunk/mediawiki/LocalSettings.php,
+	  /nsisweb/trunk/r/.htaccess: Added MakeNSISW donate link to
+	  permalink redirected donate page
+
+2018-11-10 22:31  anders_k
+
+	* /NSIS/trunk/Examples/NSISMenu.nsi, /nsisweb/trunk/r,
+	  /nsisweb/trunk/r/.htaccess: Added permalink redirects for NSIS
+	  Menu
+
+2018-11-07 16:58  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/UserInfo/UserInfo.c,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/Platform.h,
+	  /NSIS/trunk/Source/Plugins.cpp, /NSIS/trunk/Source/Plugins.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/scriptpp.cpp:
+	  VC6 cannot handle template class typedef of a template class with
+	  the same name (in a different namespace)
+
+2018-11-07 02:39  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/utils.cpp: Actually remove the
+	  problematic type
+
+2018-11-07 02:36  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: Old MinGW somehow has the
+	  TRIVERTEX struct unprotected but GRADIENT_FILL_* behind WINVER >=
+	  0x0500 and GradientFill behind WINVER >= 0x0410
+
+2018-11-07 01:28  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: Moved RichEdit helper
+	  function to .cpp
+
+2018-11-07 00:26  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: Improved MakeNSISW UI
+	  command state handling
+
+2018-11-06 21:04  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/logo.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/logo.psp,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.xml,
+	  /NSIS/trunk/Contrib/Makensisw/Readme.txt,
+	  /NSIS/trunk/Contrib/Makensisw/resource.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/SConscript,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.h,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar16d24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar16h24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar16n24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24d.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24d24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24h.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24h24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar24n24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar32d24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar32h24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar32n24.bmp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: MakeNSISW is now System
+	  DPI aware (16x16, 24x24 and 32x32 toolbar images)
+
+2018-11-04 21:25  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.h,
+	  /NSIS/trunk/Contrib/Makensisw/makensisw.xml,
+	  /NSIS/trunk/Contrib/Makensisw/resource.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/SConscript,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: Added About dialog DPI
+	  aware support and intro animation
+
+2018-11-02 20:15  anders_k
+
+	* /NSIS/trunk/SConstruct, /NSIS/trunk/Source/tokens.cpp: Only
+	  ignore makensis.nsi test on non-Win32 platforms
+
+2018-11-02 19:51  anders_k
+
+	* /NSIS/trunk/Docs/src/defines.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/scriptpp.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  !undef now issues warnings instead of errors
+
+2018-11-02 19:16  anders_k
+
+	* /NSIS/trunk/Examples/NSISMenu.nsi: Added shadow under header text
+	  and fixed plug-in links
+
+2018-11-01 23:38  anders_k
+
+	* /NSIS/trunk/Source/DialogTemplate.cpp,
+	  /NSIS/trunk/Source/DialogTemplate.h: POSIX does not have SIZE
+	  type but that is OK because we never call that overload
+
+2018-11-01 23:09  anders_k
+
+	* /NSIS/trunk/Source/DialogTemplate.cpp,
+	  /NSIS/trunk/Source/DialogTemplate.h: Moved POSIX dialog unit
+	  calcilation function stubs
+
+2018-11-01 22:47  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/update.cpp,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/ui.but:
+	  Fix broken MSDN links
+
+2018-11-01 21:33  anders_k
+
+	* /NSIS/trunk/Docs/style.css: Added HTML documentation code tag
+	  font size hack for non-IE browsers
+
+2018-11-01 21:20  anders_k
+
+	* /NSIS/trunk/Docs/src/attributes.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Examples/gfx.nsi,
+	  /NSIS/trunk/SConstruct, /NSIS/trunk/Source/DialogTemplate.h,
+	  /NSIS/trunk/Source/script.cpp: AddBrandingImage now supports
+	  dialog units, even on POSIX
+
+2018-10-31 20:07  anders_k
+
+	* /NSIS/trunk/Contrib/Library/RegTool/RegTool.cpp,
+	  /NSIS/trunk/Contrib/MakeLangId/MakeLangId.cpp: Added dummy CRT
+	  stubs for VS 2010-15 (bug #1159)
+
+2018-10-30 23:22  anders_k
+
+	* /NSIS/trunk/SConstruct: Must still ignore makensis.nsi errors on
+	  POSIX because of missing MakeNSISW
+
+2018-10-30 23:22  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/Readme.txt,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/SConscript,
+	  /NSIS/trunk/Contrib/Makensisw/version.cpp: Reduce confusion by
+	  hiding MakeNSISW version.
+
+2018-10-30 22:33  anders_k
+
+	* /NSIS/trunk/Contrib/Graphics/Icons/nsis-menu.ico,
+	  /NSIS/trunk/Contrib/Graphics/SConscript,
+	  /NSIS/trunk/Examples/makensis.nsi,
+	  /NSIS/trunk/Examples/NSISMenu.nsi,
+	  /NSIS/trunk/Examples/SConscript, /NSIS/trunk/SConstruct: Use .nsi
+	  NSIS Menu if wxWidgets version is not found.
+
+2018-10-26 20:59  anders_k
+
+	* /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Examples/example2.nsi, /NSIS/trunk/Examples/gfx.nsi:
+	  Call WriteUninstaller with full paths
+
+2018-10-25 18:54  anders_k
+
+	* /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but: Update changelog
+
+2018-10-25 18:40  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Source/build.cpp: Make sure the architecture define
+	  is always set
+
+2018-10-24 19:01  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/scriptpp.cpp, /NSIS/trunk/Source/tstring.cpp,
+	  /NSIS/trunk/Source/util.cpp, /NSIS/trunk/Source/util.h:
+	  Refactored postbuild_cmd and !tempfile handling to help patch
+	  #280
+
+2018-10-21 12:28  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.h: Dynamically recalculate
+	  the toolbar dropdown position
+
+2018-10-18 17:45  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/toolbar.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h: Draw themed size gripper
+
+2018-10-17 01:23  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/wndspy.cpp: 'cause a MinGW party
+	  don't stop
+
+2018-10-17 01:13  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/wndspy.cpp: Ain't no party like a
+	  MinGW #ifdef party
+
+2018-10-16 20:58  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/wndspy.cpp,
+	  /NSIS/trunk/Source/util.h: Fix MinGW/GCC issues
+
+2018-10-16 16:55  anders_k
+
+	* /NSIS/trunk/Contrib/Makensisw/makensisw.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/resource.h,
+	  /NSIS/trunk/Contrib/Makensisw/resource.rc,
+	  /NSIS/trunk/Contrib/Makensisw/SConscript,
+	  /NSIS/trunk/Contrib/Makensisw/utils.cpp,
+	  /NSIS/trunk/Contrib/Makensisw/utils.h,
+	  /NSIS/trunk/Contrib/Makensisw/wndspy.cpp: Created Window Spy/Info
+	  feature
+
+2018-10-13 20:15  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c: Added more
+	  System::Call emulation functions for x64.nsh on ARM[64]
+
+2018-10-13 13:19  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/System.html: Align @ direct register
+	  buffer
+
+2018-10-12 20:51  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Include/Win/WinNT.nsh, /NSIS/trunk/Include/x64.nsh:
+	  Use Win10 WoW64 API to work around ARM64 lies.
+
+2018-10-08 13:04  anders_k
+
+	* /NSIS/trunk/Include/LogicLib.nsh: Optimize away LL jump when
+	  possible
+
+2018-10-08 12:50  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Docs/src/library.but,
+	  /NSIS/trunk/Include/Library.nsh: Added
+	  LIBRARY_INSTALL_EQUAL_VERSION option
+
+2018-09-13 13:35  anders_k
+
+	* /NSIS/trunk/Contrib/Modern UI 2/Interface.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Directory.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Finish.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/License.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/StartMenu.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Pages/Welcome.nsh,
+	  /NSIS/trunk/Contrib/Modern UI 2/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/Changelog.txt,
+	  /NSIS/trunk/Contrib/Modern UI/Readme.html,
+	  /NSIS/trunk/Contrib/Modern UI/System.nsh,
+	  /NSIS/trunk/Contrib/nsDialogs/welcome.nsi,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Docs/src/ui.but,
+	  /NSIS/trunk/Include/Util.nsh: Added MUI_TEXTCOLOR setting.
+	  Check/Radio control themes are disabled when high contrast mode
+	  is on as a band-aid for SetCtlColors issues.
+
+2018-07-12 15:59  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Czech.nsh,
+	  /NSIS/trunk/Contrib/Language files/English.nsh,
+	  /NSIS/trunk/Include/LangFile.nsh: Minor language file fixes
+
+2018-06-25 21:33  anders_k
+
+	* /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/exehead/fileform.h,
+	  /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/Plugins.cpp,
+	  /NSIS/trunk/Source/Plugins.h, /NSIS/trunk/Source/script.cpp,
+	  /NSIS/trunk/Source/util.cpp: List plug-in directories when
+	  plug-in call fails
+
+2018-06-17 21:20  anders_k
+
+	* /NSIS/trunk/Contrib/InstallOptions/Readme.html,
+	  /NSIS/trunk/Contrib/nsDialogs/Readme.html: Fixed minor
+	  documentation typos
+
+2018-06-15 23:12  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/Call.S,
+	  /NSIS/trunk/Contrib/System/Source/Call-amd64.S,
+	  /NSIS/trunk/Contrib/System/Source/System.c: Use a common helper
+	  function to set the CallProc result
+
+2018-06-14 22:13  anders_k
+
+	* /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/scriptpp.cpp:
+	  Stricter !delfile error/warning handling
+
+2018-06-14 20:46  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Hindi.nlf,
+	  /NSIS/trunk/Contrib/Language files/Hindi.nsh,
+	  /NSIS/trunk/Contrib/Language files/SConscript,
+	  /NSIS/trunk/Docs/src/credits.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Examples/Modern
+	  UI/MultiLanguage.nsi: Added Hindi translation (patch #289)
+
+2018-06-11 19:57  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c: Better error
+	  reporting for GetVersionEx shim on ARM64
+
+2018-06-04 23:10  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c: Fake GetVersionEx on
+	  ARM64 for WinVer.nsh
+
+2018-06-04 14:49  anders_k
+
+	* /NSIS/trunk/Source/build.cpp: Reset default PEDllCharacteristics
+	  when target CPU changes
+
+2018-06-04 14:31  anders_k
+
+	* /NSIS/trunk/Contrib/System/Source/System.c: Fake more
+	  System::Call functions under ARM64
+
+2018-06-03 23:53  anders_k
+
+	* /NSIS/trunk/SCons/Config/ms: Don't store coffgrp LTCG/POGO debug
+	  data in VS2015+ release builds
+
+2018-06-03 21:00  anders_k
+
+	* /NSIS/trunk/Contrib/NSISdl/nsisdl.cpp,
+	  /NSIS/trunk/Contrib/NSISdl/util.cpp,
+	  /NSIS/trunk/Contrib/System/Source/System.c,
+	  /NSIS/trunk/Contrib/System/Source/System.h,
+	  /NSIS/trunk/SCons/Config/ms,
+	  /NSIS/trunk/SCons/Tools/mstoolkit.py, /NSIS/trunk/SCons/utils.py,
+	  /NSIS/trunk/SConstruct, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/build.h, /NSIS/trunk/Source/script.cpp:
+	  Initial groundwork for ARM64 support
+
+2018-06-02 00:38  anders_k
+
+	* /NSIS/trunk/Source/Platform.h, /NSIS/trunk/Source/scriptpp.cpp,
+	  /NSIS/trunk/Source/util.cpp: throw() is deprecated in C++17
+
+2018-06-01 22:08  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi: Added Publisher ARP value to
+	  pass Windows App Certification Kit tests
+
+2018-06-01 17:28  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/scriptpp.cpp,
+	  /NSIS/trunk/Source/Tests/preprocessor.nsi: Fixed !macroundef of
+	  last defined macro bug
+
+2018-06-01 16:33  anders_k
+
+	* /NSIS/trunk/Examples/bigtest.nsi,
+	  /NSIS/trunk/Source/Tests/preprocessor.nsi: Added some integer
+	  tests
+
+2018-05-31 20:54  anders_k
+
+	* /NSIS/trunk/Source/Tests/preprocessor.nsi: Test !searchparse and
+	  !searchreplace
+
+2018-05-30 21:31  anders_k
+
+	* /NSIS/trunk/Examples/makensis.nsi, /NSIS/trunk/Include/Util.nsh:
+	  Added MakeARPInstallDate macro to help create the Add/Remove
+	  Programs InstallDate property
+
+2018-05-14 19:07  anders_k
+
+	* /NSIS/trunk/Source/build.cpp, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/manifest.cpp, /NSIS/trunk/Source/manifest.h,
+	  /NSIS/trunk/Source/script.cpp, /NSIS/trunk/Source/tokens.cpp,
+	  /NSIS/trunk/Source/tokens.h: Preliminary support for
+	  disableWindowFiltering and gdiScaling manifest elements
+
+2018-05-03 21:26  anders_k
+
+	* /NSIS/trunk/Docs/src/basic.but: Changed ExecShell example to show
+	  how to use SW_ mode without parameters
+
+2018-04-09 22:23  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Mongolian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Mongolian.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Updated Mongolian
+
+2018-04-09 21:34  anders_k
+
+	* /NSIS/trunk/Include/x64.nsh: Renamed
+	  IsNativeProcessorArchitecture helpers
+
+2018-04-08 21:58  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Include/x64.nsh:
+	  Added IsNativeProcessorArchitecture helper macros to x64.nsh
+
+2018-04-05 21:42  anders_k
+
+	* /NSIS/trunk/Docs/src/library.but: Document that InstallLib also
+	  resets the registry view
+
+2018-03-29 23:36  anders_k
+
+	* /NSIS/trunk/Contrib/nsDialogs/nsDialogs.nsh: Fixed broken
+	  NSD_CB_GetCount command
+
+2018-03-14 19:02  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Russian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Russian.nsh: Minor fixes for
+	  Russian translation (patch #226)
+
+2018-03-14 18:51  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Ukrainian.nlf,
+	  /NSIS/trunk/Contrib/Language files/Ukrainian.nsh: Cherry-picked a
+	  couple of Ukrainian fixes from patch #225
+
+2018-03-13 19:35  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Source/exehead/Main.c: Preload NTMARTA.DLL for
+	  Windows 7
+
+2018-03-12 22:36  anders_k
+
+	* /NSIS/trunk/Contrib/Language files/Spanish.nsh,
+	  /NSIS/trunk/Contrib/Language files/SpanishInternational.nsh,
+	  /NSIS/trunk/Docs/src/history.but: Fixed minor Spanish bug (bug
+	  #1205)
+
+2018-02-04 21:19  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.h,
+	  /NSIS/trunk/Source/makenssi.cpp, /NSIS/trunk/Source/tokens.cpp:
+	  Fixed bug #1203, -CMDHELP should be printed to stdout
+
+2018-02-01 21:34  anders_k
+
+	* /NSIS/trunk/Docs/src/history.but,
+	  /NSIS/trunk/Include/Win/WinNT.nsh, /NSIS/trunk/Include/x64.nsh:
+	  Added the GetNativeProcessorArchitecture helper macro in case you
+	  really really need to know the true native CPU type
+
+2018-01-31 15:31  anders_k
+
+	* /NSIS/trunk/Docs/src/compiler.but,
+	  /NSIS/trunk/Docs/src/history.but, /NSIS/trunk/Source/build.cpp,
+	  /NSIS/trunk/Source/tokens.cpp: Refactor and document !pragma
+	  warning error and warning states
+
 2018-01-30 03:53  kichik
 
 	* /NSIS/tags/v303: Tagging for release 3.03
