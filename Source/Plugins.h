@@ -22,7 +22,7 @@
 #include <set>
 #include "tstring.h"
 
-namespace STLHelpers 
+namespace STL 
 {
   template<class S, class C>
   struct string_nocasecmpless : std::binary_function<S, S, bool> 
@@ -44,7 +44,7 @@ namespace STLHelpers
 class Plugins
 {
   public:
-    typedef STLHelpers::string_nocasecmpless<tstring, tstring::value_type> strnocasecmp;
+    typedef STL::string_nocasecmpless<tstring, tstring::value_type> strnocasecmp;
 
     Plugins() : m_initialized(false) {}
 
@@ -57,6 +57,7 @@ class Plugins
     int GetDllDataHandle(bool uninst, const tstring& command) const;
     void SetDllDataHandle(bool uninst, tstring&canoniccmd, int dataHandle);
     static bool IsPluginCallSyntax(const tstring& token);
+    void PrintPluginDirs();
 
   private: // methods
     void GetExports(const tstring &pathToDll, bool pe64, bool displayInfo);

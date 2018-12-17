@@ -32,6 +32,12 @@
 #include <richedit.h>
 #undef _RICHEDIT_VER
 
+#define DpiAwarePerMonitor2() ( FALSE ) // Not yet
+#define DpiAwarePerMonitor() ( FALSE )
+#define SupportsWNT4() ( sizeof(void*) == 4 && !DpiAwarePerMonitor() ) // NT4 does not support the MultiMon API
+#define SupportsW9X() ( sizeof(TCHAR) == 1 )
+#define SupportsW95() ( FALSE && SupportsW9X() && !DpiAwarePerMonitor() )
+
 // Defines
 #define NSIS_URL     "http://nsis.sourceforge.net/"
 #define NSIS_FORUM_URL "http://forums.winamp.com/forumdisplay.php?forumid=65"
@@ -40,6 +46,8 @@
 #define USAGE        _T("Usage:\r\n\r\n - File | Load Script...\r\n - Drag the .nsi file into this window\r\n - Right click the .nsi file and choose \"Compile NSIS Script\"")
 #define COPYRIGHT    _T("Copyright (C) 2002 Robert Rainwater")
 #define CONTRIB      _T("Fritz Elfert, Justin Frankel, Amir Szekely, Sunil Kamath, Joost Verburg, Anders Kjersem")
+#define DONATE       _T("<A ID=\"D\">Donate</A> to support NSIS development.")
+#define DONATEURL    { 'h'|x,'t','t'|x,'p',':'|x,'/'|x,'/'|x,'n'|x,'s'|x,'i'|x,'s'|x,'.'|x,'s'|x,'f'|x,'.','n'|x,'e'|x,'t'|x,'/'|x,'r','/'|x,'D'|x,'o'|x,'n'|x,'a'|x,'t'|x,'e'|x,'\0' } // "Encrypted"
 #define DOCPATH      "http://nsis.sourceforge.net/Docs/"
 #define LOCALDOCS    _T("\\NSIS.chm")
 #define ERRBOXTITLE  0 //_T("Error")
@@ -59,8 +67,8 @@
 #define EXENAME      _T("makensis.exe")
 #define MAX_STRING   256
 #define TIMEOUT      100
-#define MINWIDTH     350
-#define MINHEIGHT    180
+#define MINWIDTH     400
+#define MINHEIGHT    220
 #define COMPRESSOR_MESSAGE _T("\n\nThe %s compressor created the smallest installer (%d bytes).")
 #define RESTORED_COMPRESSOR_MESSAGE _T("\n\nThe %s compressor created the smallest installer (%d bytes).")
 #define EXE_HEADER_COMPRESSOR_STAT _T("EXE header size:")
@@ -75,6 +83,7 @@
 #define WM_MAKENSIS_PROCESSCOMPLETE (WM_USER+1001)
 #define WM_MAKENSIS_LOADSYMBOLSET (WM_USER+1002)
 #define WM_MAKENSIS_SAVESYMBOLSET (WM_USER+1003)
+#define WM_MAKENSIS_UPDATEUISTATE (WM_USER+1004)
 
 namespace MakensisAPI {
   extern const TCHAR* SigintEventNameFmt;
@@ -155,13 +164,24 @@ int compressor_strings[] = {IDS_SCRIPT,
 // Extern Variables
 
 extern const TCHAR* NSISW_VERSION;
+extern void* g_ModalDlgData;
 
 DWORD WINAPI MakeNSISProc(LPVOID TreadParam);
 INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK DialogResize(HWND hWnd, LPARAM /* unused*/);
-INT_PTR CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+
+typedef struct {
+  enum { TID_HEADER = 1 };
+  HFONT hHeaderFont, hFont, hBoldFont;
+  INT AnimPos, AnimDir;
+  UINT AnimSpeed, FinalHeaderPos;
+} ABOUTDLGDATA;
+INT_PTR ShowAboutDialog(HWND hwndOwner);
 INT_PTR CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+typedef struct {
+  void*pOldMDD;
+  BOOL LoadingMode;
+} SYMSETDLGDATA;
+INT_PTR ShowSymbolSetDialog(HWND hwndOwner, BOOL LoadingSet);
 INT_PTR CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 void           SetScript(const TCHAR *script, bool clearArgs = true);
 void           CompileNSISScript();
@@ -200,7 +220,6 @@ typedef struct NSISScriptData {
   HANDLE sigint_event;
   HANDLE sigint_event_legacy;
   HWND focused_hwnd;
-  CHARRANGE textrange;
   NCOMPRESSOR default_compressor;
   NCOMPRESSOR compressor;
   LPCTSTR compressor_name;

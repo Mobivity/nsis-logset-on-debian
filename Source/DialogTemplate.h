@@ -123,14 +123,17 @@ public:
 #endif
   void  MoveAll(short x, short y);
   void  Resize(short x, short y);
-#ifdef _WIN32
   void  PixelsToDlgUnits(short& x, short& y);
-  void  PixelsToDlgUnits(SIZE& siz);
   void  DlgUnitsToPixels(short& x, short& y);
+#ifdef _WIN32
+  static inline bool SupportsDialogUnitComputation() { return true; }
+  void  PixelsToDlgUnits(SIZE& siz);
   SIZE  GetStringSize(WORD id, TCHAR *str);
   void  RTrimToString(WORD id, TCHAR *str, int margins);
   void  LTrimToString(WORD id, TCHAR *str, int margins);
   void  CTrimToString(WORD id, TCHAR *str, int margins);
+#else
+  static inline bool SupportsDialogUnitComputation() { return false; }
 #endif
   void  ConvertToRTL();
   BYTE* Save(DWORD& dwSize);

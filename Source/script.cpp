@@ -50,6 +50,24 @@ using namespace std;
 #define REGROOTKEYTOINT(hk) ( (INT) (((INT_PTR)(hk)) & 0xffffffff) ) // Masking off non-existing top bits to make GCC happy
 #define REGROOTKEYTOINTEX(hk, removeviewbits) ( REGROOTKEYTOINT(hk) & ~(removeviewbits ? (REGROOTVIEW32|REGROOTVIEW64) : 0) )
 
+#ifdef NSIS_CONFIG_VISIBLE_SUPPORT
+typedef enum { LU_INVALID = -1, LU_PIXEL = 0, LU_DIALOG } LAYOUTUNIT;
+static int ParseLayoutUnit(const TCHAR*Str, LAYOUTUNIT&LU)
+{
+  TCHAR buf[200];
+  int succ, val = LineParser::parse_int(Str, &succ);
+  if (succ) return (LU = LU_PIXEL, val);
+  size_t cch = my_strncpy(buf, Str, COUNTOF(buf));
+  if (cch > 1 && S7IsChEqualI('u', buf[cch-1])) // Something with a 'u' suffix?
+  {
+    buf[cch-1] = _T('\0');
+    val = LineParser::parse_int(buf, &succ);
+    if (succ) return (LU = LU_DIALOG, val);
+  }
+  return (LU = LU_INVALID, -1);
+}
+#endif
+
 #ifdef NSIS_CONFIG_ENHANCEDUI_SUPPORT
 static bool LookupWinSysColorId(const TCHAR*Str, UINT&Clr)
 {
@@ -297,7 +315,10 @@ parse_again:
     {
 #ifdef NSIS_CONFIG_PLUGIN_SUPPORT
       if (Plugins::IsPluginCallSyntax(tokstr0))
+      {
+        if (m_pPlugins && display_warnings) m_pPlugins->PrintPluginDirs();
         ERROR_MSG(_T("Plugin%") NPRIs _T(" not found, cannot call %") NPRIs _T("\n"),m_pPlugins && m_pPlugins->IsKnownPlugin(tokstr0) ? _T(" function") : _T(""),tokstr0);
+      }
       else
 #endif
         ERROR_MSG(_T("Invalid command: \"%") NPRIs _T("\"\n"),tokstr0);
@@ -876,7 +897,7 @@ int CEXEBuild::process_jump(LineParser &line, int wt, int *offs)
 #define SECTION_FIELD_GET(field) (FIELD_OFFSET(section, field)/sizeof(int))
 #define SECTION_FIELD_SET(field) (-1 - (int)(FIELD_OFFSET(section, field)/sizeof(int)))
 
-#define INVALIDREGROOT ( (HKEY) 0x8000baad )
+#define INVALIDREGROOT ( (HKEY) (UINT_PTR) 0x8000baad )
 static HKEY ParseRegRootKey(LineParser &line, int tok)
 {
   static const TCHAR *rootkeys[2] = {
@@ -2118,19 +2139,20 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
       }
     return PS_OK;
     case TOK_ADDBRANDINGIMAGE:
-#ifdef _WIN32
       try {
-        int k=line.gettoken_enum(1,_T("top\0left\0bottom\0right\0"));
-        int wh=line.gettoken_int(2);
+        LAYOUTUNIT whtype, padtype;
+        int k = line.gettoken_enum(1,_T("top\0left\0bottom\0right\0")), defpadding = 2;
+        int wh = ParseLayoutUnit(line.gettoken_str(2), whtype);
         if (k == -1) PRINTHELP();
-        int padding = 2;
-        if (line.getnumtokens() == 4)
-          padding = line.gettoken_int(3);
-
+        int padding = (line.getnumtokens() >= 4) ? ParseLayoutUnit(line.gettoken_str(3), padtype) : (padtype = whtype, defpadding);
+        if (whtype == LU_INVALID || whtype != padtype)
+          throw runtime_error("Invalid number!");
         init_res_editor();
         BYTE* dlg = res_editor->GetResource(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG);
         CDialogTemplate dt(dlg, build_unicode, uDefCodePage);
         res_editor->FreeResource(dlg);
+        if (whtype != LU_DIALOG && !CDialogTemplate::SupportsDialogUnitComputation())
+          throw runtime_error("Must use dialog units on non-Win32 platforms!");
 
         DialogItemTemplate brandingCtl = {0,};
         brandingCtl.dwStyle = SS_BITMAP | WS_CHILD | WS_VISIBLE;
@@ -2139,32 +2161,25 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         brandingCtl.szTitle = NULL;
         brandingCtl.wId = IDC_BRANDIMAGE;
         brandingCtl.sHeight = brandingCtl.sWidth = wh;
-        dt.PixelsToDlgUnits(brandingCtl.sWidth, brandingCtl.sHeight);
-        if (k%2) {
-          // left (1) / right (3)
-
+        if (whtype == LU_PIXEL) dt.PixelsToDlgUnits(brandingCtl.sWidth, brandingCtl.sHeight);
+        if (k%2) { // left (1) / right (3)
           if (k & 2) // right
             brandingCtl.sX += dt.GetWidth();
           else // left
             dt.MoveAll(brandingCtl.sWidth + (padding * 2), 0);
 
           dt.Resize(brandingCtl.sWidth + (padding * 2), 0);
-
           brandingCtl.sHeight = dt.GetHeight() - (padding * 2);
         }
-        else {
-          // top (0) / bottom (2)
-
+        else { // top (0) / bottom (2)
           if (k & 2) // bottom
             brandingCtl.sY += dt.GetHeight();
           else // top
             dt.MoveAll(0, brandingCtl.sHeight + (padding * 2));
 
           dt.Resize(0, brandingCtl.sHeight + (padding * 2));
-
           brandingCtl.sWidth = dt.GetWidth() - (padding * 2);
         }
-
         dt.AddItem(brandingCtl);
 
         DWORD dwDlgSize;
@@ -2172,8 +2187,9 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         res_editor->UpdateResource(RT_DIALOG, IDD_INST, NSIS_DEFAULT_LANG, dlg, dwDlgSize);
         dt.FreeSavedTemplate(dlg);
 
-        dt.DlgUnitsToPixels(brandingCtl.sWidth, brandingCtl.sHeight);
-        SCRIPT_MSG(_T("AddBrandingImage: %") NPRIs _T(" %ux%u\n"), line.gettoken_str(1), brandingCtl.sWidth, brandingCtl.sHeight);
+        if (whtype == LU_PIXEL) dt.DlgUnitsToPixels(brandingCtl.sWidth, brandingCtl.sHeight);
+        const char* unitstr = whtype == LU_PIXEL ? "pixels" : "dialog units";
+        SCRIPT_MSG(_T("AddBrandingImage: %") NPRIs _T(" %ux%u %") NPRIns _T("\n"), line.gettoken_str(1), brandingCtl.sWidth, brandingCtl.sHeight, unitstr);
 
         branding_image_found = true;
         branding_image_id = IDC_BRANDIMAGE;
@@ -2183,10 +2199,6 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
         return PS_ERROR;
       }
     return PS_OK;
-#else
-      ERROR_MSG(_T("Error: AddBrandingImage is disabled for non Win32 platforms.\n"));
-    return PS_ERROR;
-#endif //~ _WIN32
     case TOK_SETFONT:
     {
       unsigned char failed = 0;
@@ -2279,20 +2291,34 @@ int CEXEBuild::doCommand(int which_token, LineParser &line)
     {
       manifest_sosl.deleteall();
       if (2 == line.getnumtokens())
-      {
         switch(line.gettoken_enum(1,_T("none\0all\0")))
         {
         case 0: return PS_OK;
         case 1: return manifest_sosl.addall() ? PS_OK : PS_ERROR;
         }
-      }
       for(int argi = 1; argi < line.getnumtokens(); ++argi)
-      {
         if (!manifest_sosl.append(line.gettoken_str(argi)))
           PRINTHELP();
-      }
     }
     return PS_OK;
+    case TOK_MANIFEST_DISABLEWINDOWFILTERING:
+      switch(line.gettoken_enum(1,_T("notset\0false\0true")))
+      {
+      case 0: 
+      case 1: manifest_flags &= ~manifest::disablewindowfiltering; break;
+      case 2: manifest_flags |= manifest::disablewindowfiltering; break;
+      default: PRINTHELP();
+      }
+      return PS_OK;
+    case TOK_MANIFEST_GDISCALING:
+      switch(line.gettoken_enum(1,_T("notset\0false\0true")))
+      {
+      case 0: 
+      case 1: manifest_flags &= ~manifest::gdiscaling; break;
+      case 2: manifest_flags |= manifest::gdiscaling; break;
+      default: PRINTHELP();
+      }
+      return PS_OK;
 
 #ifdef _UNICODE
     case TOK_TARGET:

@@ -235,15 +235,17 @@ void CEXEBuild::del_date_time_predefines()
 TCHAR* CEXEBuild::GetMacro(const TCHAR *macroname, TCHAR**macroend /*= 0*/)
 {
   TCHAR *t = (TCHAR*)m_macros.get(), *mbeg, *mbufbeg = t;
+  size_t cbAll = m_macros.getlen();
   for (; t && *t; ++t)
   {
     mbeg = t;
+    if ((size_t)t - (size_t)mbufbeg >= cbAll) break;
     const bool foundit = !_tcsicmp(mbeg, macroname);
     t += _tcslen(t) + 1; // advance over macro name
 
     // advance over parameters
     while (*t) t += _tcslen(t) + 1;
-    t++;
+    t++; // Separator between parameters and data
 
     // advance over data
     while (*t) t += _tcslen(t) + 1;
@@ -253,15 +255,13 @@ TCHAR* CEXEBuild::GetMacro(const TCHAR *macroname, TCHAR**macroend /*= 0*/)
       if (macroend) *macroend = ++t;
       return mbeg;
     }
-    
-    if (t-mbufbeg >= m_macros.getlen()-1) break;
   }
   return 0;
 }
 
 int CEXEBuild::pp_macro(LineParser&line)
 {
-  const TCHAR*const macroname = line.gettoken_str(1);
+  const TCHAR*const macroname = line.gettoken_str(1), *tokstr;
   if (!macroname[0]) PRINTHELP()
   if (MacroExists(macroname))
   {
@@ -272,22 +272,22 @@ int CEXEBuild::pp_macro(LineParser&line)
 
   for (int pc=2; pc < line.getnumtokens(); pc++)
   {
-    if (!line.gettoken_str(pc)[0])
+    if (!(tokstr = line.gettoken_str(pc))[0])
     {
       ERROR_MSG(_T("!macro: macro parameter %d is empty, not valid!\n"), pc-1);
       return PS_ERROR;
     }
     for (int a = 2; a < pc; a++)
     {
-      if (!_tcsicmp(line.gettoken_str(pc), line.gettoken_str(a)))
+      if (!_tcsicmp(tokstr, line.gettoken_str(a)))
       {
-        ERROR_MSG(_T("!macro: macro parameter named %") NPRIs _T(" is used multiple times!\n"), line.gettoken_str(pc));
+        ERROR_MSG(_T("!macro: macro parameter named %") NPRIs _T(" is used multiple times!\n"), tokstr);
         return PS_ERROR;
       }
     }
-    m_macros.add(line.gettoken_str(pc), (int)(_tcslen(line.gettoken_str(pc))+1)*sizeof(TCHAR));
+    m_macros.add(tokstr, (int)(_tcslen(tokstr)+1)*sizeof(TCHAR));
   }
-  m_macros.add(_T(""), sizeof(_T("")));
+  m_macros.add(_T(""), sizeof(_T(""))); // Separator between parameters and data
 
   for (;;)
   {
@@ -333,7 +333,7 @@ int CEXEBuild::pp_macro(LineParser&line)
     else m_macros.add(_T(" "), sizeof(_T(" ")));
     linecnt++;
   }
-  m_macros.add(_T(""), sizeof(_T("")));
+  m_macros.add(_T(""), sizeof(_T(""))); // End of data
   return PS_OK;
 }
 
@@ -449,51 +449,26 @@ int CEXEBuild::pp_insertmacro(LineParser&line)
 int CEXEBuild::pp_tempfile(LineParser&line)
 {
   TCHAR *symbol = line.gettoken_str(1);
-  const TCHAR *fpath;
-#ifdef _WIN32
-  TCHAR buf[MAX_PATH], buf2[MAX_PATH];
-  GetTempPath(MAX_PATH, buf);
-  if (!GetTempFileName(buf, _T("nst"), 0, buf2))
+  TCHAR *tfpath = create_tempfile_path();
+  if (!tfpath)
   {
-    ERROR_MSG(_T("!tempfile: unable to create temporary file.\n"));
+    ERROR_MSG(_T("!tempfile: Unable to create temporary file!\n"));
     return PS_ERROR;
   }
-  fpath = buf2;
-#else // !_WIN32
-  char t[] = ("/tmp/makensisXXXXXX");
-  const mode_t old_umask = umask(0077);
-  int fd = mkstemp(t);
-  umask(old_umask);
-  if (fd == -1)
-  { L_tok_p_tempfile_oom:
-    ERROR_MSG(_T("!tempfile: unable to create temporary file.\n"));
-    return PS_ERROR;
-  }
-  close(fd);
-#ifdef _UNICODE
-  if (!(fpath = NSISRT_mbtowc(t))) goto L_tok_p_tempfile_oom;
-#else
-  fpath = t;
-#endif
-#endif // ~_WIN32
-
-  if (definedlist.add(symbol, fpath))
+  int symexisted = definedlist.add(symbol, tfpath);
+  free(tfpath);
+  if (symexisted)
   {
     ERROR_MSG(_T("!tempfile: \"%") NPRIs _T("\" already defined!\n"), symbol);
     return PS_ERROR;
   }
-  SCRIPT_MSG(_T("!tempfile: \"%") NPRIs _T("\"=\"%") NPRIs _T("\"\n"), symbol, fpath);
-#if !defined(_WIN32) && defined(_UNICODE)
-  NSISRT_free(fpath);
-#endif
   return PS_OK;
 }
 
 int CEXEBuild::pp_delfile(LineParser&line)
 {
-  int fatal = 1;
-  int a = 1;
-  TCHAR *fc = line.gettoken_str(a);
+  UINT fatal = true, a = 1, matchcount = 0;
+  const TCHAR *fc = line.gettoken_str(a);
   if (line.getnumtokens()==3)
   {
     if (!_tcsicmp(fc,_T("/nonfatal")))
@@ -502,7 +477,8 @@ int CEXEBuild::pp_delfile(LineParser&line)
       PRINTHELP();
   }
 
-  SCRIPT_MSG(_T("!delfile: \"%") NPRIs _T("\"\n"), line.gettoken_str(a));
+  SCRIPT_MSG(_T("!delfile: \"%") NPRIs _T("\"\n"), fc);
+  const TCHAR *fmt = _T("!delfile: \"%") NPRIs _T("\" couldn't be deleted.\n");
 
   tstring dir = get_dir_name(fc), spec = get_file_name(fc);
   tstring basedir = dir + PLATFORM_PATH_SEPARATOR_STR;
@@ -510,24 +486,32 @@ int CEXEBuild::pp_delfile(LineParser&line)
 
   boost::scoped_ptr<dir_reader> dr( new_dir_reader() );
   dr->read(dir); // BUGBUG: PATH_CONVERT?
-
-  for (dir_reader::iterator files_itr = dr->files().begin();
-       files_itr != dr->files().end();
-       files_itr++)
+  dir_reader::iterator files_itr = dr->files().begin();
+  for (; files_itr != dr->files().end(); files_itr++)
   {
     if (!dir_reader::matches(*files_itr, spec))
       continue;
 
+    ++matchcount;
     tstring file = basedir + *files_itr; // BUGBUG: PATH_CONVERT?
-
-    int result = _tunlink(file.c_str());
-    if (result == -1)
+    fc = file.c_str();
+    if (-1 == _tunlink(fc))
     {
-      ERROR_MSG(_T("!delfile: \"%") NPRIs _T("\" couldn't be deleted.\n"), file.c_str());
-      if (fatal) return PS_ERROR;
+      if (fatal)
+        return (ERROR_MSG(fmt, fc), PS_ERROR);
+      else
+        warning_fl(DW_PP_DELFILE_DELERROR, fmt, fc);
     }
     else
-      SCRIPT_MSG(_T("!delfile: deleted \"%") NPRIs _T("\"\n"), file.c_str());
+      SCRIPT_MSG(_T("!delfile: deleted \"%") NPRIs _T("\"\n"), fc);
+  }
+
+  if (!matchcount)
+  {
+    if (fatal)
+      return (ERROR_MSG(fmt, fc), PS_ERROR);
+    else
+      warning_fl(DW_PP_DELFILE_NOMATCH, fmt, fc);
   }
   return PS_OK;
 }
@@ -1026,12 +1010,26 @@ int CEXEBuild::pp_define(LineParser&line)
 
 int CEXEBuild::pp_undef(LineParser&line)
 {
-  if (definedlist.del(line.gettoken_str(1)))
+  UINT noerr = false, stopswitch = false, handled = 0;
+  for (int ti = 1; ti < line.getnumtokens(); ++ti)
   {
-    ERROR_MSG(_T("!undef: \"%") NPRIs _T("\" not defined!\n"), line.gettoken_str(1));
-    return PS_ERROR; // Should this be a warning?
+    const TCHAR *name = line.gettoken_str(ti);
+    if (!stopswitch && !_tcsicmp(name, _T("/noerrors")))
+    {
+      ++noerr;
+      continue;
+    }
+    stopswitch = ++handled;
+    if (definedlist.del(name) && !noerr)
+      warning_fl(DW_PP_UNDEF_UNDEFINED, _T("!undef: \"%") NPRIs _T("\" not defined!"), name);
+    else
+      SCRIPT_MSG(_T("!undef: \"%") NPRIs _T("\"\n"), name);
   }
-  SCRIPT_MSG(_T("!undef: \"%") NPRIs _T("\"\n"), line.gettoken_str(1));
+  if (!handled)
+  {
+    PRINTHELP();
+    return PS_ERROR;
+  }
   return PS_OK;
 }
 
@@ -1046,21 +1044,24 @@ int CEXEBuild::pp_packhdr(LineParser&line)
   return bufOf ? PS_ERROR : PS_OK;
 }
 
+template<class T> void slist_append(T&list, T&item)
+{
+  T prev;
+  for (prev = list; prev && prev->next;)
+    prev = prev->next;
+  (prev ? prev->next : list) = item;
+}
+
 int CEXEBuild::pp_finalize(LineParser&line)
 {
   TCHAR* cmdstr = line.gettoken_str(1);
   int validparams = false;
-  struct postbuild_cmd *newcmd, *prevcmd;
-  newcmd = (struct postbuild_cmd*) (new BYTE[FIELD_OFFSET(struct postbuild_cmd, cmd[_tcsclen(cmdstr)+1])]);
-  newcmd->next = NULL, _tcscpy(newcmd->cmd, cmdstr);
-  newcmd->cmpop = line.gettoken_enum(2, _T("<\0>\0<>\0=\0ignore\0")), newcmd->cmpval = line.gettoken_int(3, &validparams);
+  postbuild_cmd *newcmd = postbuild_cmd::make(cmdstr, line.gettoken_enum(2, _T("<\0>\0<>\0=\0ignore\0")), line.gettoken_int(3, &validparams));
   if (line.getnumtokens() == 1+1)
-    newcmd->cmpop = 4, validparams = true; // just a command, ignore the exit code
+    newcmd->cmpop = 4, validparams = true; // Just a command, ignore the exit code
   if (newcmd->cmpop == -1 || !validparams)
     PRINTHELP();
-  for (prevcmd = postbuild_cmds; prevcmd && prevcmd->next;)
-    prevcmd = prevcmd->next;
-  if (prevcmd) prevcmd->next = newcmd; else postbuild_cmds = newcmd;
+  slist_append(postbuild_cmds, newcmd);
   SCRIPT_MSG(_T("!finalize: \"%") NPRIs _T("\"\n"), cmdstr);
   return PS_OK;
 }

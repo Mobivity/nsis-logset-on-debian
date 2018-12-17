@@ -256,6 +256,8 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_MANIFEST_DPIAWARE,_T("ManifestDPIAware"),1,0,_T("notset|true|false"),TP_GLOBAL},
 {TOK_MANIFEST_DPIAWARENESS,_T("ManifestDPIAwareness"),1,0,_T("comma_separated_string"),TP_GLOBAL},
 {TOK_MANIFEST_SUPPORTEDOS,_T("ManifestSupportedOS"),1,-1,_T("none|all|WinVista|Win7|Win8|Win8.1|Win10|{GUID} [...]"),TP_GLOBAL},
+{TOK_MANIFEST_DISABLEWINDOWFILTERING,_T("ManifestDisableWindowFiltering"),1,0,_T("notset|true"),TP_GLOBAL},
+{TOK_MANIFEST_GDISCALING,_T("ManifestGdiScaling"),1,0,_T("notset|true"),TP_GLOBAL},
 {TOK_P_PACKEXEHEADER,_T("!packhdr"),2,0,_T("temp_file_name command_line_to_compress_that_temp_file"),TP_ALL},
 {TOK_P_FINALIZE,_T("!finalize"),1,2,_T("command_with_%1 [<OP retval>]"),TP_ALL},
 {TOK_P_SYSTEMEXEC,_T("!system"),1,2,_T("command [<OP retval> | <retvalsymbol>]\n    OP=(< > <> =)"),TP_ALL},
@@ -269,14 +271,14 @@ static tokenType tokenlist[TOK__LAST] =
 {TOK_P_IFNDEF,_T("!ifndef"),1,-1,_T("symbol [| symbol2 [& symbol3 [...]]]"),TP_ALL},
 {TOK_P_ENDIF,_T("!endif"),0,0,_T(""),TP_ALL},
 {TOK_P_DEFINE,_T("!define"),1,5,_T("[/ifndef | /redef] ([/date|/utcdate] symbol [value]) | (/file symbol filename) | (/math symbol val1 OP val2)\n    OP=(+ - * / % << >> >>> & | ^ ~ ! && ||)"),TP_ALL},
-{TOK_P_UNDEF,_T("!undef"),1,0,_T("symbol"),TP_ALL},
+{TOK_P_UNDEF,_T("!undef"),1,-1,_T("[/noerrors] symbol [...]"),TP_ALL},
 {TOK_P_ELSE,_T("!else"),0,-1,_T("[if[macro][n][def] ...]"),TP_ALL},
 {TOK_P_ECHO,_T("!echo"),1,0,_T("message"),TP_ALL},
 {TOK_P_WARNING,_T("!warning"),0,1,_T("[warning_message]"),TP_ALL},
 {TOK_P_ERROR,_T("!error"),0,1,_T("[error_message]"),TP_ALL},
 
 {TOK_P_VERBOSE,_T("!verbose"),1,-1,_T("verbose_level | push | pop [...]"),TP_ALL},
-{TOK_P_PRAGMA,_T("!pragma"),2,-1,_T("warning <enable|disable|default> number | warning <push|pop>"),TP_ALL},
+{TOK_P_PRAGMA,_T("!pragma"),1,-1,_T("warning <enable|disable|default|error|warning> <code|all> | warning <push|pop>"),TP_ALL},
 
 {TOK_P_MACRO,_T("!macro"),1,-1,_T("macroname [parms ...]"),TP_ALL},
 {TOK_P_MACROEND,_T("!macroend"),0,0,_T(""),TP_ALL},
@@ -325,22 +327,30 @@ const TCHAR* CEXEBuild::get_commandtoken_name(int tok)
   return 0;
 }
 
-void CEXEBuild::print_help(const TCHAR *commandname)
+bool CEXEBuild::print_cmdhelp(const TCHAR *commandname, bool cmdhelp)
 {
+  // Print function chosen at run time because of bug #1203, -CMDHELP to stdout.
+  void (CEXEBuild::*printer)(const TCHAR *s, ...) const = cmdhelp ? &CEXEBuild::INFO_MSG : &CEXEBuild::ERROR_MSG;
   UINT x;
   for (x = 0; x < TOK__LAST; ++x)
   {
     if (!commandname || !_tcsicmp(tokenlist[x].name,commandname))
     {
-      ERROR_MSG(_T("%") NPRIs _T("%") NPRIs _T(" %") NPRIs _T("\n"),commandname?_T("Usage: "):_T(""),tokenlist[x].name,tokenlist[x].usage_str);
+      (this->*printer)(_T("%") NPRIs _T("%") NPRIs _T(" %") NPRIs _T("\n"),commandname?_T("Usage: "):_T(""),tokenlist[x].name,tokenlist[x].usage_str);
       if (commandname) break;
     }
   }
   if (x == TOK__LAST && commandname)
   {
     ERROR_MSG(_T("Invalid command \"%") NPRIs _T("\"\n"),commandname);
+    return false;
   }
+  return true;
+}
 
+void CEXEBuild::print_help(const TCHAR *commandname)
+{
+  print_cmdhelp(commandname);
 }
 
 bool CEXEBuild::is_ppbranch_token(const TCHAR *s)

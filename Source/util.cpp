@@ -740,6 +740,33 @@ char* create_file_view_readonly(const TCHAR *filepath, FILEVIEW&mmfv)
 #endif
 }
 
+TCHAR* create_tempfile_path()
+{
+  TCHAR *tfpath = NULL;
+#ifdef _WIN32
+  TCHAR buftmpdir[MAX_PATH], buf[MAX_PATH];
+  DWORD cch = GetTempPath(COUNTOF(buftmpdir), buftmpdir);
+  if (cch && cch < COUNTOF(buftmpdir) && GetTempFileName(buftmpdir, _T("nst"), 0, buf))
+    tfpath = _tcsdup(buf);
+#else //! _WIN32
+  char narrowpath[] = ("/tmp/makensisXXXXXX");
+  const mode_t org_umask = umask(0077);
+  int fd = mkstemp(narrowpath);
+  umask(org_umask);
+  if (fd != -1)
+  {
+#ifdef _UNICODE
+    assert(NSISRT_free_is_STDC_free());
+    tfpath = NSISRT_mbtowc(narrowpath);
+#else
+    tfpath = _tcsdup(narrowpath);
+#endif
+    close(fd);
+  }
+#endif //~ _WIN32
+  return tfpath;
+}
+
 tstring get_full_path(const tstring &path) {
 #ifdef _WIN32
   TCHAR real_path[1024], *fnpart;
@@ -1023,14 +1050,14 @@ int RunChildProcessRedirected(LPCWSTR cmdprefix, LPCWSTR cmdmain, bool ForceUTF8
   {
     bool fullbuf = false, utf8 = CP_UTF8 == cp, okt;
     char iobuf[512];
-    DWORD cbRead, cbOfs = 0, cchwb = 0;
+    DWORD cbRead, cbOfs = 0, cchwb = 0, i;
     WCHAR wbuf[100], wchbuf[2+1]; // A surrogate pair + \0
     for(;;)
     {
       BOOL okr = ReadFile(hSORd, iobuf+cbOfs, sizeof(iobuf)-cbOfs, &cbRead, 0);
       cbRead += cbOfs, cbOfs = 0;
       unsigned char cbTrail, cch;
-      for(DWORD i = 0; i < cbRead;)
+      for(i = 0; i < cbRead;)
       {
         cch = 0;
         if (utf8)
@@ -1156,12 +1183,6 @@ bool GetFileSize64(HANDLE hFile, ULARGE_INTEGER &uli)
   uli.LowPart = GetFileSize(hFile, &uli.HighPart);
   return INVALID_FILE_SIZE != uli.LowPart || !GetLastError();
 }
-static HANDLE NSISRT_GetConsoleScreenHandle()
-{
-  DWORD cm;
-  HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
-  return GetConsoleMode(hCon, &cm) ? hCon : GetStdHandle(STD_ERROR_HANDLE);
-}
 #endif //~ _WIN32
 #if defined(_WIN32) && defined(_UNICODE) && defined(MAKENSIS)
 #include <io.h> // for _get_osfhandle
@@ -1272,6 +1293,12 @@ bool NSISRT_Initialize() // Init function for MakeNSIS Win32
 #elif defined(_WIN32)
 #define NSISRT_FastGetConsoleScreenHandle NSISRT_GetConsoleScreenHandle
 bool NSISRT_Initialize() { return true; } // Init function for non-MakeNSIS Win32 (NSISRT_DEFINEGLOBALS sets g_output and g_errout)
+static HANDLE NSISRT_GetConsoleScreenHandle()
+{
+  DWORD cm;
+  HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+  return GetConsoleMode(hCon, &cm) ? hCon : GetStdHandle(STD_ERROR_HANDLE);
+}
 #endif
 
 void PrintColorFmtErrMsg(const TCHAR *fmtstr, va_list args)
@@ -1354,5 +1381,5 @@ void *operator new[](size_t size) NSIS_CXX_THROWSPEC(bad_alloc)
 {
   return operator new(size);
 }
-void operator delete(void *p) throw() { if (p) free(p); }
-void operator delete [](void *p) throw() { if (p) free(p); }
+void operator delete(void *p) NSIS_CXX_NOEXCEPT() { if (p) free(p); }
+void operator delete [](void *p) NSIS_CXX_NOEXCEPT() { if (p) free(p); }

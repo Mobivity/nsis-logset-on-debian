@@ -44,16 +44,31 @@ NRESIZEDATA g_resize;
 NFINDREPLACE g_find;
 TCHAR g_findbuf[128];
 extern NTOOLBAR g_toolbar;
-int g_symbol_set_mode;
+void* g_ModalDlgData;
 
 NSIS_ENTRYPOINT_SIMPLEGUI
 int WINAPI _tWinMain(HINSTANCE hInst,HINSTANCE hOldInst,LPTSTR CmdLineParams,int ShowCmd) {
 
-  HMODULE hK32 = LoadLibraryA("KERNEL32");
   // We can be associated with .nsi files and when launched from the shell we inherit the current directory so 
   // we need to prevent LoadLibrary from searching the current directory because it can contain untrusted DLLs!
-  FARPROC SDDA = GetProcAddress(hK32, "SetDllDirectoryA"); // WinXP.SP1+
+  FARPROC SDDA = GetSysProcAddr("KERNEL32", "SetDllDirectoryA"); // WinXP.SP1+
   if (SDDA) ((BOOL(WINAPI*)(LPCSTR))SDDA)(""); // Remove the current directory from the default DLL search order
+
+  // Try to register the SysLink class
+  DWORD iccestruct[2] = { 8, 0x8000 }; // ICC_LINK_CLASS (ComCtl32v6)
+  FARPROC icce = SupportsW95() ? GetSysProcAddr("COMCTL32", "InitCommonControlsEx") : (FARPROC) InitCommonControlsEx;
+  BOOL succ = ((BOOL(WINAPI*)(const void*))icce)(iccestruct);
+  if (!succ && (sizeof(void*) > 4 || LOBYTE(GetVersion()) >= 5))
+  {
+    FARPROC lwrc = GetSysProcAddr("SHELL32", (LPCSTR) 258); // LinkWindow_RegisterClass
+    if (lwrc) ((BOOL(WINAPI*)())lwrc)();
+    WNDCLASS wc;
+    if (GetClassInfo(NULL, _T("Link Window"), &wc))
+    {
+      wc.lpszClassName = _T("SysLink");
+      RegisterClass(&wc); // Superclass the old link window class if SysLink is not available
+    }
+  }
 
   memset(&g_sdata,0,sizeof(NSCRIPTDATA));
   memset(&g_resize,0,sizeof(NRESIZEDATA));
@@ -64,8 +79,7 @@ int WINAPI _tWinMain(HINSTANCE hInst,HINSTANCE hOldInst,LPTSTR CmdLineParams,int
   g_sdata.verbosity = (unsigned char) ReadRegSettingDW(REGVERBOSITY, 4);
   if (g_sdata.verbosity > 4) g_sdata.verbosity = 4;
   RestoreSymbols();
-
-  HMODULE hRichEditDLL = LoadLibraryA("RichEd20.dll");
+  LoadSysLibrary("RichEd20");
 
   if (!InitBranding()) {
     MessageBox(0,NSISERROR,ERRBOXTITLE,MB_ICONEXCLAMATION|MB_OK|MB_TASKMODAL);
@@ -95,7 +109,6 @@ int WINAPI _tWinMain(HINSTANCE hInst,HINSTANCE hOldInst,LPTSTR CmdLineParams,int
   if (g_sdata.script_cmd_args) GlobalFree(g_sdata.script_cmd_args);
   if (g_sdata.sigint_event) CloseHandle(g_sdata.sigint_event);
   if (g_sdata.sigint_event_legacy) CloseHandle(g_sdata.sigint_event_legacy);
-  FreeLibrary(hRichEditDLL);
   return (int) msg.wParam;
 }
 
@@ -193,6 +206,44 @@ DWORD CALLBACK SaveFileStreamCallback(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb
   return (*pcb = (LONG) cbio, !wop);
 }
 
+static void ToolBarSizeChanged(HWND hDlg)
+{
+  RECT r;
+  HWND hEd = GetDlgItem(hDlg, IDC_LOGWIN);
+  GetWindowRect(g_toolbar.hwnd, &r);
+  LONG tbh = RectH(r);
+  GetWindowRect(hEd, &r);
+  LONG oldh = RectH(r), margin = DlgUnitToPixelY(hDlg, 7), top = tbh + margin;
+  POINT pt = { r.left, r.top };
+  ScreenToClient(hDlg, &pt);
+  SetWindowPos(hEd, 0, pt.x, top, RectW(r), oldh + (pt.y - top), SWP_NOZORDER|SWP_NOACTIVATE); // Update IDC_LOGWIN position and size
+}
+
+static BOOL CALLBACK DialogResize(HWND hWnd, LPARAM /* unused */)
+{
+  RECT r, r2;
+  GetWindowRect(hWnd, &r);
+  ScreenToClient(g_sdata.hwnd, ((LPPOINT)&r)+0), ScreenToClient(g_sdata.hwnd, ((LPPOINT)&r)+1);
+  switch (GetDlgCtrlID(hWnd))
+  {
+  case IDC_TOOLBAR:
+    GetWindowRect(hWnd, &r2);
+    SetWindowPos(hWnd, 0, 0, 0, RectW(r) + g_resize.dx, RectH(r2), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+    break;
+  case IDC_LOGWIN:
+    SetWindowPos(hWnd, 0, r.left, r.top, RectW(r) + g_resize.dx, RectH(r) + g_resize.dy, SWP_NOZORDER|SWP_NOMOVE|SWP_NOACTIVATE);
+    break;
+  case IDC_TEST:
+  case IDCANCEL:
+    SetWindowPos(hWnd, 0, r.left + g_resize.dx, r.top + g_resize.dy, 0, 0, SWP_NOZORDER|SWP_NOSIZE|SWP_NOACTIVATE);
+    break;
+  default:
+    SetWindowPos(hWnd, 0, r.left, r.top + g_resize.dy, RectW(r) + g_resize.dx, RectH(r), SWP_NOZORDER|SWP_NOACTIVATE);
+    break;
+  }
+  RedrawWindow(hWnd,NULL,NULL,RDW_INVALIDATE);
+  return TRUE;
+}
 
 INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch (msg) {
@@ -203,7 +254,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       SetClassLongPtr(hwndDlg,GCLP_HICON,(LONG_PTR)hIcon);
       // Altered by Darren Owen (DrO) on 29/9/2003
       // Added in receiving of mouse and key events from the richedit control
-      SendMessage(GetDlgItem(hwndDlg,IDC_LOGWIN),EM_SETEVENTMASK,(WPARAM)NULL,ENM_SELCHANGE|ENM_MOUSEEVENTS|ENM_KEYEVENTS);
+      SendDlgItemMessage(hwndDlg,IDC_LOGWIN,EM_SETEVENTMASK,(WPARAM)NULL,ENM_SELCHANGE|ENM_MOUSEEVENTS|ENM_KEYEVENTS);
       DragAcceptFiles(g_sdata.hwnd,FALSE);
       g_sdata.menu = GetMenu(g_sdata.hwnd);
       g_sdata.fileSubmenu = FindSubMenu(g_sdata.menu, IDM_FILE);
@@ -213,13 +264,14 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       CreateToolBar();
       InitTooltips(g_sdata.hwnd);
       SetDlgItemText(g_sdata.hwnd,IDC_VERSION,g_sdata.branding);
-      HFONT hFont = CreateFont(14,FW_NORMAL,FIXED_PITCH|FF_DONTCARE,_T("Courier New"));
+      HFONT hFont = CreateFontPt(hwndDlg,8,FW_NORMAL,FIXED_PITCH|FF_DONTCARE,DEFAULT_CHARSET,_T("Courier New"));
       SendDlgItemMessage(hwndDlg,IDC_LOGWIN,WM_SETFONT,(WPARAM)hFont,0);
       RestoreWindowPos(g_sdata.hwnd);
       RestoreCompressor();
       SetScript(_T(""));
       g_sdata.compressor = COMPRESSOR_NONE_SELECTED;
       g_sdata.userSelectCompressor = FALSE;
+      ToolBarSizeChanged(hwndDlg);
 
       ProcessCommandLine();
 
@@ -228,7 +280,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       }
 
       if(g_sdata.userSelectCompressor) {
-        if (DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_COMPRESSOR),g_sdata.hwnd,(DLGPROC)CompressorProc)) {
+        if (DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_COMPRESSOR),g_sdata.hwnd,API_cast<DLGPROC>(CompressorProc))) {
           EnableItems(g_sdata.hwnd);
           return TRUE;
         }
@@ -242,7 +294,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       PAINTSTRUCT ps;
       GetGripperPos(hwndDlg, g_resize.griprect);
       HDC hdc = BeginPaint(hwndDlg, &ps);
-      DrawFrameControl(hdc, &g_resize.griprect, DFC_SCROLL, DFCS_SCROLLSIZEGRIP);
+      DrawGripper(hwndDlg, hdc, g_resize.griprect);
       EndPaint(hwndDlg, &ps);
       return TRUE;
     }
@@ -296,16 +348,12 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
     }
     case WM_SIZE:
     {
-      if ((wParam == SIZE_MAXHIDE)||(wParam == SIZE_MAXSHOW)) return TRUE;
-      RECT rSize;
-      if (hwndDlg == g_sdata.hwnd) {
-        GetClientRect(g_sdata.hwnd, &rSize);
-        if (((rSize.right==0)&&(rSize.bottom==0))||((g_resize.resizeRect.right==0)&&(g_resize.resizeRect.bottom==0)))  return TRUE;
-        g_resize.dx = rSize.right - g_resize.resizeRect.right;
-        g_resize.dy = rSize.bottom - g_resize.resizeRect.bottom;
-        EnumChildWindows(g_sdata.hwnd, DialogResize, (LPARAM)0);
-        g_resize.resizeRect = rSize;
-      }
+      if (wParam == SIZE_MAXHIDE || wParam == SIZE_MAXSHOW) return TRUE;
+      const LONG oldW = g_resize.resizeRect.right, oldH = g_resize.resizeRect.bottom;
+      GetClientRect(hwndDlg, &g_resize.resizeRect);
+      g_resize.dx = g_resize.resizeRect.right - oldW;
+      g_resize.dy = g_resize.resizeRect.bottom - oldH;
+      EnumChildWindows(g_sdata.hwnd, DialogResize, (LPARAM) 0);
       return TRUE;
     }
     case WM_SIZING:
@@ -318,7 +366,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
     {
       RECT r = g_resize.griprect;
       MapWindowPoints(hwndDlg, 0, (POINT*)&r, 2);
-      POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+      POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
       if (PtInRect(&r, pt))
       {
         SetWindowLongPtr(hwndDlg, DWLP_MSGRESULT, HTBOTTOMRIGHT);
@@ -445,12 +493,9 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
     case WM_NOTIFY:
       switch (((NMHDR*)lParam)->code ) {
         case EN_SELCHANGE:
-          SendDlgItemMessage(hwndDlg,IDC_LOGWIN, EM_EXGETSEL, 0, (LPARAM) &g_sdata.textrange);
-          {
-            BOOL enabled = (g_sdata.textrange.cpMax-g_sdata.textrange.cpMin<=0?FALSE:TRUE);
-            EnableMenuItem(g_sdata.menu,IDM_COPYSELECTED,(enabled?MF_ENABLED:MF_GRAYED));
-            EnableToolBarButton(IDM_COPY,enabled);
-          }
+          EnableMenuItem(g_sdata.menu, IDM_COPYSELECTED, RicheditHasSelection(GetDlgItem(hwndDlg, IDC_LOGWIN)) ? MF_ENABLED : MF_GRAYED);
+          break;
+        
         // Altered by Darren Owen (DrO) on 6/10/2003
         // Allows the detection of the right-click menu when running on OSes below Windows 2000
         // and will then simulate the effective WM_CONTEXTMENU message that would be received
@@ -458,10 +503,11 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
         // Windows 2000 and higher
         case EN_MSGFILTER:
           #define lpnmMsg ((MSGFILTER*)lParam)
-          if(WM_RBUTTONUP == lpnmMsg->msg || (WM_KEYUP == lpnmMsg->msg && lpnmMsg->wParam == VK_APPS)){
-          POINT pt;
-          HWND edit = GetDlgItem(g_sdata.hwnd,IDC_LOGWIN);
-          RECT r;
+          if(WM_RBUTTONUP == lpnmMsg->msg || (WM_KEYUP == lpnmMsg->msg && lpnmMsg->wParam == VK_APPS))
+          {
+            POINT pt;
+            HWND edit = GetDlgItem(g_sdata.hwnd,IDC_LOGWIN);
+            RECT r;
             GetCursorPos(&pt);
 
             // Added and altered by Darren Owen (DrO) on 29/9/2003
@@ -470,21 +516,19 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
             // from here...
             ScreenToClient(edit, &pt);
             GetClientRect(edit, &r);
-            if(!PtInRect(&r, pt))
-              pt.x = pt.y = 0;
+            if (!PtInRect(&r, pt)) pt.x = pt.y = 0;
             MapWindowPoints(edit, HWND_DESKTOP, &pt, 1);
             TrackPopupMenu(g_sdata.editSubmenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x, pt.y, 0, g_sdata.hwnd, 0);
           }
+          break;
         case TBN_DROPDOWN:
         {
           LPNMTOOLBAR pToolBar = (LPNMTOOLBAR) lParam;
-          if(pToolBar->hdr.hwndFrom == g_toolbar.hwnd && pToolBar->iItem == IDM_COMPRESSOR) {
-            ShowToolbarDropdownMenu();
+          if (pToolBar->hdr.hwndFrom == g_toolbar.hwnd && pToolBar->iItem == IDM_COMPRESSOR) {
+            ShowCompressorToolbarDropdownMenu(*pToolBar);
             return TBDDRET_DEFAULT;
           }
-          else {
-            return TBDDRET_NODEFAULT;
-          }
+          return TBDDRET_NODEFAULT;
         }
       }
       return TRUE;
@@ -494,8 +538,9 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       switch (cds->dwData) {
         case MakensisAPI::NOTIFY_SCRIPT:
           MemSafeFree(g_sdata.input_script);
-          g_sdata.input_script = (TCHAR*) MemAlloc(cds->cbData * sizeof(TCHAR));
-          lstrcpy(g_sdata.input_script, (TCHAR *)cds->lpData);
+          if ((g_sdata.input_script = (TCHAR*) MemAlloc(cds->cbData * sizeof(TCHAR))))
+            lstrcpy(g_sdata.input_script, (TCHAR*) cds->lpData);
+          EnableUICommand(IDM_BROWSESCR, !!g_sdata.input_script);
           break;
         case MakensisAPI::NOTIFY_WARNING:
           g_sdata.warnings++;
@@ -510,6 +555,17 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
       }
       return TRUE;
     }
+    case WM_INITMENU:
+      EnableMenuItem(g_sdata.menu, IDM_CANCEL, g_sdata.thread ? MF_ENABLED : MF_GRAYED);
+      break;
+    case WM_MAKENSIS_UPDATEUISTATE:
+    {
+      UINT i, emptylog = SendDlgItemMessage(hwndDlg, IDC_LOGWIN, WM_GETTEXTLENGTH, 0, 0) == 0;
+      static const PACKEDCMDID_T nonemptylogids [] = { PACKCMDID(IDM_COPY), PACKCMDID(IDM_COPYALL), PACKCMDID(IDM_CLEARLOG), PACKCMDID(IDM_SELECTALL) };
+      for (i = 0; i < COUNTOF(nonemptylogids); ++i) EnableUICommand(UNPACKCMDID(nonemptylogids[i]), !emptylog);
+      EnableUICommand(IDM_BROWSESCR, !!g_sdata.input_script);
+      break;
+    }
     case WM_COMMAND:
     {
       switch (LOWORD(wParam)) {
@@ -523,31 +579,14 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
           }
           return TRUE;
         }
-        case IDM_ABOUT:
-        {
-          return DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_ABOUT),hwndDlg,(DLGPROC)AboutProc);
-        }
-        case IDM_NSISHOME:
-        {
-          return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_URL);
-        }
-        case IDM_FORUM:
-        {
-          return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_FORUM_URL);
-        }
-        case IDM_NSISUPDATE:
-        {
-          CheckForUpdate();
-          return TRUE;
-        }
+        case IDM_DOCS: return (ShowDocs(), TRUE);
+        case IDM_NSISHOME: return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_URL);
+        case IDM_FORUM: return OpenUrlInDefaultBrowser(g_sdata.hwnd, NSIS_FORUM_URL);
+        case IDM_NSISUPDATE: return (CheckForUpdate(), TRUE);
+        case IDM_ABOUT: return ShowAboutDialog(hwndDlg)|TRUE;
         case IDM_SELECTALL:
         {
           SendDlgItemMessage(g_sdata.hwnd, IDC_LOGWIN, EM_SETSEL, 0, -1);
-          return TRUE;
-        }
-        case IDM_DOCS:
-        {
-          ShowDocs();
           return TRUE;
         }
         case IDM_LOADSCRIPT:
@@ -561,8 +600,6 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
             l.nMaxFile = MAX_STRING-1;
             l.lpstrTitle = _T("Load Script");
             l.lpstrDefExt = _T("log");
-            l.lpstrFileTitle = NULL;
-            l.lpstrInitialDir = NULL;
             l.Flags = OFN_HIDEREADONLY|OFN_EXPLORER|OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST;
             buf[0] = _T('\0');
             if (GetOpenFileName(&l)) {
@@ -610,8 +647,13 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
         }
         case IDM_SETTINGS:
         {
-          DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_SETTINGS),g_sdata.hwnd,(DLGPROC)SettingsProc);
+          DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_SETTINGS),g_sdata.hwnd,API_cast<DLGPROC>(SettingsProc));
           return TRUE;
+        }
+        case IDM_WNDSPY:
+        {
+          extern int ShowWndSpy(HWND hOwner);
+          return ShowWndSpy(g_sdata.hwnd);
         }
         case IDM_TEST:
         case IDC_TEST:
@@ -651,15 +693,14 @@ INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
           return TRUE;
         }
         case IDM_COPY:
-        {
+          if (RicheditHasSelection(GetDlgItem(hwndDlg, IDC_LOGWIN))) goto logwndcopysel;
+          // fall through
+        case IDM_COPYALL:
           CopyToClipboard(g_sdata.hwnd);
           return TRUE;
-        }
-        case IDM_COPYSELECTED:
-        {
-          SendDlgItemMessage(g_sdata.hwnd,IDC_LOGWIN, WM_COPY, 0, 0);
+        case IDM_COPYSELECTED: logwndcopysel:
+          SendDlgItemMessage(g_sdata.hwnd, IDC_LOGWIN, WM_COPY, 0, 0);
           return TRUE;
-        }
         case IDM_SAVE:
         {
           OPENFILENAME l={sizeof(l),};
@@ -803,67 +844,121 @@ logappendfinal:
   return 0;
 }
 
-BOOL CALLBACK DialogResize(HWND hWnd, LPARAM /* unused */)
-{
-  RECT r;
-  GetWindowRect(hWnd, &r);
-  ScreenToClient(g_sdata.hwnd, (LPPOINT)&r);
-  ScreenToClient(g_sdata.hwnd, ((LPPOINT)&r)+1);
-  if(hWnd != g_toolbar.hwnd) {
-    switch (GetDlgCtrlID(hWnd)) {
-      case IDC_LOGWIN:
-        SetWindowPos(hWnd, 0, r.left, r.top,r.right - r.left + g_resize.dx, r.bottom - r.top + g_resize.dy, SWP_NOZORDER|SWP_NOMOVE);
-        break;
-      case IDC_TEST:
-      case IDCANCEL:
-        SetWindowPos(hWnd, 0, r.left + g_resize.dx, r.top + g_resize.dy, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
-        break;
-      default:
-        SetWindowPos(hWnd, 0, r.left, r.top + g_resize.dy, r.right - r.left + g_resize.dx, r.bottom - r.top, SWP_NOZORDER);
-        break;
-    }
-  }
-  else {
-      RECT r2;
-      GetWindowRect(g_toolbar.hwnd, &r2);
-      SetWindowPos(hWnd, 0, 0, 0, r.right - r.left + g_resize.dx, r2.bottom-r2.top, SWP_NOMOVE|SWP_NOZORDER);
-  }
-  RedrawWindow(hWnd,NULL,NULL,RDW_INVALIDATE);
-  return TRUE;
-}
-
-INT_PTR CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+static INT_PTR CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+  ABOUTDLGDATA &dd = *(ABOUTDLGDATA*) g_ModalDlgData;
   switch(msg) {
+    case WM_DRAWITEM:
+      if (wParam == IDC_ABOUTHEADER)
+      {
+        DRAWITEMSTRUCT &dis = *(DRAWITEMSTRUCT*) lParam;
+        RECT r, r2;
+        const TCHAR txt[] = TEXT("MakeNSISW");
+        INT dt = DT_NOCLIP|DT_NOPREFIX|DT_SINGLELINE|DT_VCENTER, cch = COUNTOF(txt) - 1, line = DpiScaleY(dis.hwndItem, 2), shadow = 1;
+        GetClientRect(dis.hwndItem, &r);
+        if (!dd.hHeaderFont)
+          dd.hHeaderFont = CreateFont(0, CFF_RAWSIZE, r.bottom / 2, FW_BOLD, DEFAULT_PITCH|FF_DONTCARE, ANSI_CHARSET, _T("Trebuchet MS")); // IE4.01SP2+
+        HGDIOBJ hOrgFont = SelectObject(dis.hDC, dd.hHeaderFont);
+        DrawHorzGradient(dis.hDC, r.left, r.top, r.right, r.bottom - line, RGB(22, 77, 160), RGB(29, 100, 207));
+        DrawHorzGradient(dis.hDC, r.left, r.bottom - line, r.right, r.bottom, RGB(255, 142, 42), RGB(190, 90, 2));
+        SetBkMode(dis.hDC, TRANSPARENT);
+        if (!dd.FinalHeaderPos)
+        {
+          r2 = r;
+          DrawText(dis.hDC, txt, cch, &r2, dt|DT_CALCRECT);
+          dd.FinalHeaderPos = r.right - (r2.right - r2.left);
+          dd.FinalHeaderPos -= DlgUnitToPixelX(hwndDlg, 7); // Margin
+        }
+        r.left += dd.AnimPos;
+        SetTextColor(dis.hDC, RGB(0, 0, 0)), OffsetRect(&r, +shadow, +shadow);
+        DrawText(dis.hDC, txt, cch, &r, dt);
+        SetTextColor(dis.hDC, RGB(255, 255, 255)), OffsetRect(&r, -shadow, -shadow);
+        DrawText(dis.hDC, txt, cch, &r, dt);
+        SelectObject(dis.hDC, hOrgFont);
+        return TRUE;
+      }
+      break;
+    case WM_TIMER:
+      if (wParam == ABOUTDLGDATA::TID_HEADER)
+      {
+        INT finalpos = dd.FinalHeaderPos, dir;
+        if (dd.AnimSpeed >= 4)
+        {
+          dd.AnimPos += (dir = (dd.AnimPos >= finalpos)) ? -(INT)dd.AnimSpeed : +(INT)dd.AnimSpeed;
+          if (dd.AnimDir != dir) dd.AnimDir = dir, dd.AnimSpeed /= 2;
+        }
+        else
+        {
+          dd.AnimPos = finalpos;
+          SetTimer(hwndDlg, ABOUTDLGDATA::TID_HEADER, INFINITE, NULL);
+        }
+        InvalidateRect(GetDlgItem(hwndDlg, IDC_ABOUTHEADER), NULL, false);
+      }
+      break;
+    case WM_DESTROY:
+      DeleteObject(dd.hFont);
+      DeleteObject(dd.hBoldFont);
+      break;
     case WM_INITDIALOG:
     {
-      HFONT fontnorm = CreateFont(13, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, _T("Tahoma")),
-            fontbold = CreateFont(13, FW_BOLD, FIXED_PITCH|FF_DONTCARE, _T("Tahoma"));
-      if (!fontbold) {
-        fontnorm = CreateFont(12, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, _T("MS Shell Dlg"));
-        fontbold = CreateFont(12, FW_BOLD, FIXED_PITCH|FF_DONTCARE, _T("MS Shell Dlg"));
+      CenterOnParent(hwndDlg);
+      HFONT fontnorm = CreateFontPt(hwndDlg, 8, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, ANSI_CHARSET, _T("Tahoma")),
+            fontbold = CreateFontPt(hwndDlg, 8, FW_BOLD, FIXED_PITCH|FF_DONTCARE, ANSI_CHARSET, _T("Tahoma"));
+      if (!fontbold && (SupportsWNT4() || SupportsW95())) { // Tahoma shipped with 98+ and 2000+
+        fontnorm = CreateFontPt(hwndDlg, 8, FW_NORMAL, FIXED_PITCH|FF_DONTCARE, ANSI_CHARSET, _T("MS Shell Dlg"));
+        fontbold = CreateFontPt(hwndDlg, 8, FW_BOLD, FIXED_PITCH|FF_DONTCARE, ANSI_CHARSET, _T("MS Shell Dlg"));
       }
+      dd.hFont = fontnorm, dd.hBoldFont = fontbold;
       SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_SETFONT, (WPARAM)fontbold, FALSE);
-      SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_SETFONT, (WPARAM)fontnorm, FALSE);
-      SendDlgItemMessage(hwndDlg, IDC_ABOUTPORTIONS, WM_SETFONT, (WPARAM)fontnorm, FALSE);
-      SendDlgItemMessage(hwndDlg, IDC_NSISVER, WM_SETFONT, (WPARAM)fontnorm, FALSE);
-      SendDlgItemMessage(hwndDlg, IDC_OTHERCONTRIB, WM_SETFONT, (WPARAM)fontnorm, FALSE);
-      SetDlgItemText(hwndDlg, IDC_NSISVER, g_sdata.branding);
-      SetDlgItemText(hwndDlg, IDC_ABOUTVERSION, NSISW_VERSION);
+      static const BYTE fontnormctlids[] = { IDC_ABOUTCOPY, IDC_ABOUTPORTIONS, IDC_ABOUTDONATE, IDC_OTHERCONTRIB, IDC_NSISVER };
+      for (UINT i = 0; i < COUNTOF(fontnormctlids); ++i) SendDlgItemMessage(hwndDlg, fontnormctlids[i], WM_SETFONT, (WPARAM)fontnorm, FALSE);
+      SendMessage(hwndDlg, WM_APP, 0, 0); // Set IDC_ABOUTVERSION
       SetDlgItemText(hwndDlg, IDC_ABOUTCOPY, COPYRIGHT);
       SetDlgItemText(hwndDlg, IDC_OTHERCONTRIB, CONTRIB);
+      SetDlgItemText(hwndDlg, IDC_ABOUTDONATE, DONATE);
+      SetDlgItemText(hwndDlg, IDC_NSISVER, g_sdata.branding);
+      SetTimer(hwndDlg, ABOUTDLGDATA::TID_HEADER, 50, NULL);
       break;
     }
+    case WM_NOTIFY:
+      switch (((NMHDR*)lParam)->code)
+      {
+        case NM_CLICK:
+        // fall through
+        case NM_RETURN:
+          if (((NMHDR*)lParam)->idFrom == IDC_ABOUTDONATE)
+          {
+            static const BYTE x = 128, encurl[] = DONATEURL;
+            char url[COUNTOF(encurl)];
+            for (UINT i = 0;; ++i) if (!(url[i] = (char) (encurl[i] & ~x))) break; // "Decrypt" URL
+            OpenUrlInDefaultBrowser(hwndDlg, url);
+          }
+          break;
+      }
+      break;
     case WM_COMMAND:
+      if (wParam == MAKELONG(IDC_ABOUTVERSION, STN_DBLCLK)) goto showversion;
       if (IDOK != LOWORD(wParam)) break;
       // fall through
     case WM_CLOSE:
       return EndDialog(hwndDlg, TRUE);
-    case WM_DESTROY:
-      DeleteObject((HGDIOBJ)SendDlgItemMessage(hwndDlg, IDC_ABOUTVERSION, WM_GETFONT, 0, 0));
-      DeleteObject((HGDIOBJ)SendDlgItemMessage(hwndDlg, IDC_ABOUTCOPY, WM_GETFONT, 0, 0));
+    case WM_APP: showversion:
+      {
+        TCHAR buf[200], showver = wParam != 0;
+        wsprintf(buf, _T("MakeNSISW %s%s(NSIS Compiler Interface)"), showver ? NSISW_VERSION : _T(""), showver ? _T(" ") : _T(""));
+        SetDlgItemText(hwndDlg, IDC_ABOUTVERSION, buf);
+      }
       break;
   }
   return FALSE;
+}
+
+INT_PTR ShowAboutDialog(HWND hwndOwner)
+{
+  ABOUTDLGDATA dd;
+  g_ModalDlgData = &dd;
+  dd.hHeaderFont = NULL, dd.FinalHeaderPos = 0;
+  dd.AnimSpeed = 55, dd.AnimPos = 0, dd.AnimDir = 0;
+  return DialogBox(g_sdata.hInstance, MAKEINTRESOURCE(DLG_ABOUT), hwndOwner, API_cast<DLGPROC>(AboutProc));
 }
 
 static void EnableSymbolSetButtons(HWND hwndDlg)
@@ -918,6 +1013,7 @@ INT_PTR CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPar
   switch(msg) {
     case WM_INITDIALOG:
     {
+      CenterOnParent(hwndDlg);
       for(int i = (int)COMPRESSOR_SCRIPT; i <= (int)COMPRESSOR_BEST; i++)
         SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
       SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.default_compressor, (LPARAM)0);
@@ -1039,10 +1135,7 @@ INT_PTR CALLBACK SettingsProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPar
         break;
         case IDC_LOAD:
         case IDC_SAVE:
-        {
-          g_symbol_set_mode = IDC_LOAD == LOWORD(wParam) ? 1 : 2;
-          DialogBox(g_sdata.hInstance,MAKEINTRESOURCE(DLG_SYMBOLSET),hwndDlg,(DLGPROC)SymbolSetProc);
-        }
+          ShowSymbolSetDialog(hwndDlg, IDC_LOAD == LOWORD(wParam));
         break;
         case IDC_DEL:
         {
@@ -1086,9 +1179,8 @@ INT_PTR CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lP
   switch(msg) {
     case WM_INITDIALOG:
     {
-      int i=0;
-
-      for(i=(int)COMPRESSOR_SCRIPT; i<= (int)COMPRESSOR_BEST; i++) {
+      CenterOnParent(hwndDlg);
+      for(int i=(int)COMPRESSOR_SCRIPT; i <= (int)COMPRESSOR_BEST; i++) {
         SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_ADDSTRING, 0, (LPARAM)compressor_display_names[i]);
       }
       SendDlgItemMessage(hwndDlg, IDC_COMPRESSOR, CB_SETCURSEL, (WPARAM)g_sdata.compressor, (LPARAM)0);
@@ -1122,22 +1214,32 @@ INT_PTR CALLBACK CompressorProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lP
   return FALSE;
 }
 
-INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+static void FixSimpleComboBoxSizeBug(HWND hCombo) // Fix Win10 CBS_SIMPLE height drawing bug when DPI != 96
+{
+  RECT r;
+  GetWindowRect(hCombo, &r);
+  SetWindowPos(hCombo, 0, 0, 0, RectW(r), RectH(r)-1, SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOMOVE);
+  SetWindowPos(hCombo, 0, 0, 0, RectW(r), RectH(r), SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOMOVE|SWP_FRAMECHANGED);
+}
+
+#define SymbolSetDlgDpiChanged(hwndDlg) ( FixSimpleComboBoxSizeBug(GetDlgItem((hwndDlg), IDC_NAMES)) )
+
+static INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+  SYMSETDLGDATA &dd = *(SYMSETDLGDATA*) g_ModalDlgData;
   switch(msg) {
     case WM_INITDIALOG:
     {
-      HWND hwndEdit;
       HKEY hKey;
-
+      CenterOnParent(hwndDlg);
       EnableWindow(GetDlgItem(hwndDlg, IDC_DEL), FALSE);
       if (OpenRegSettingsKey(hKey)) {
         HKEY hSubKey;
 
-        if (RegOpenKeyEx(hKey,REGSYMSUBKEY,0,KEY_READ,&hSubKey) == ERROR_SUCCESS) {
+        if (RegOpenKeyEx(hKey, REGSYMSUBKEY, 0, KEY_READ, &hSubKey) == ERROR_SUCCESS) {
           TCHAR subkey[1024];
           int i=0;
 
-          while (RegEnumKey(hSubKey,i,subkey,sizeof(subkey)) == ERROR_SUCCESS) {
+          while (RegEnumKey(hSubKey, i, subkey, sizeof(subkey)) == ERROR_SUCCESS) {
             SendDlgItemMessage(hwndDlg, IDC_NAMES, CB_ADDSTRING, 0, (LPARAM)subkey);
             i++;
           }
@@ -1145,11 +1247,9 @@ INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPa
         }
         RegCloseKey(hKey);
       }
-
-      hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), 0, 0, 0); // Handle of list
-      hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), hwndEdit, 0, 0); //Handle of edit box
+      HWND hwndEdit = GetComboEdit(GetDlgItem(hwndDlg, IDC_NAMES));
       SendMessage(hwndEdit, EM_LIMITTEXT, (WPARAM)SYMSETNAME_MAXLEN, 0);
-      if(g_symbol_set_mode == 1) { //Load
+      if (dd.LoadingMode) {
         SetWindowText(hwndDlg, LOAD_SYMBOL_SET_DLG_NAME);
         SetWindowText(GetDlgItem(hwndDlg, IDOK), LOAD_BUTTON_TEXT);
         SendMessage(hwndEdit, EM_SETREADONLY, (WPARAM)TRUE, 0);
@@ -1158,6 +1258,7 @@ INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPa
         SetWindowText(hwndDlg, SAVE_SYMBOL_SET_DLG_NAME);
         SetWindowText(GetDlgItem(hwndDlg, IDOK), SAVE_BUTTON_TEXT);
       }
+      SymbolSetDlgDpiChanged(hwndDlg);
       break;
     }
     case WM_COMMAND:
@@ -1165,28 +1266,18 @@ INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPa
       switch (LOWORD(wParam)) {
         case IDOK:
         {
-          HWND hwndEdit;
           TCHAR name[SYMSETNAME_MAXLEN+1];
-
-          hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), 0, 0, 0); // Handle of list
-          hwndEdit = FindWindowEx(GetDlgItem(hwndDlg, IDC_NAMES), hwndEdit, 0, 0); //Handle of edit box
+          HWND hwndEdit = GetComboEdit(GetDlgItem(hwndDlg, IDC_NAMES));
           SendMessage(hwndEdit, WM_GETTEXT, (WPARAM)COUNTOF(name), (LPARAM)name);
-          if(!*name) {
-            if(g_symbol_set_mode == 1) { //Load
-              MessageBox(hwndDlg,LOAD_SYMBOL_SET_MESSAGE,LOAD_SYMBOL_SET_DLG_NAME,MB_OK|MB_ICONEXCLAMATION);
-            }
-            else {
-              MessageBox(hwndDlg,SAVE_SYMBOL_SET_MESSAGE,SAVE_SYMBOL_SET_DLG_NAME,MB_OK|MB_ICONEXCLAMATION);
-            }
+          if (!*name) {
+            LPCTSTR msg = dd.LoadingMode ? LOAD_SYMBOL_SET_MESSAGE : SAVE_SYMBOL_SET_MESSAGE;
+            LPCTSTR tit = dd.LoadingMode ? LOAD_SYMBOL_SET_DLG_NAME : SAVE_SYMBOL_SET_DLG_NAME;
+            MessageBox(hwndDlg, msg, tit, MB_OK|MB_ICONEXCLAMATION);
           }
           else {
             HWND hwndParent = GetParent(hwndDlg);
-            if(g_symbol_set_mode == 1) { //Load
-              SendMessage(hwndParent, WM_MAKENSIS_LOADSYMBOLSET, (WPARAM)name, (LPARAM)NULL);
-            }
-            else {
-              SendMessage(hwndParent, WM_MAKENSIS_SAVESYMBOLSET, (WPARAM)name, (LPARAM)NULL);
-            }
+            UINT msg = dd.LoadingMode ? WM_MAKENSIS_LOADSYMBOLSET : WM_MAKENSIS_SAVESYMBOLSET;
+            SendMessage(hwndParent, msg, (WPARAM)name, (LPARAM)NULL);
             EndDialog(hwndDlg, TRUE);
           }
           break;
@@ -1232,6 +1323,15 @@ INT_PTR CALLBACK SymbolSetProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPa
   return FALSE;
 }
 
+INT_PTR ShowSymbolSetDialog(HWND hwndOwner, BOOL LoadingSet)
+{
+  SYMSETDLGDATA dd = { g_ModalDlgData, LoadingSet };
+  g_ModalDlgData = &dd;
+  INT_PTR retval = DialogBox(g_sdata.hInstance, MAKEINTRESOURCE(DLG_SYMBOLSET), hwndOwner, API_cast<DLGPROC>(SymbolSetProc));
+  g_ModalDlgData = dd.pOldMDD; // Restore the old pointer
+  return retval;
+}
+
 void SetCompressor(NCOMPRESSOR compressor)
 {
   int i;
@@ -1263,4 +1363,3 @@ void SetCompressor(NCOMPRESSOR compressor)
     ResetObjects();
   }
 }
-

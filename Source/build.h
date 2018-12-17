@@ -91,8 +91,11 @@ typedef enum {
   DW_PLUGIN_NOUNLOAD_PLACEMENT = 6080, // reserved ..6099
   DW_PP_PRAGMA_UNKNOWN = 6100, // reserved ..6199
   DW_PP_PRAGMA_INVALID = 6101,
+  DW_PP_DELFILE_DELERROR = 6149,
+  DW_PP_DELFILE_NOMATCH = DW_PP_DELFILE_DELERROR,
   DW_PP_VERBOSE_POP_EMPTY_STACK = 6150,
   //DW_PP_VERBOSE_BAD_LEVEL = 6151?, // 2.x failed to issue a warning. 3.x currently aborts with hard error.
+  DW_PP_UNDEF_UNDEFINED = 6155,
   DW_INCLUDE_NONFATAL_NOT_FOUND = 7000, // reserved ..7009
   DW_FILE_NONFATAL_NOT_FOUND = 7010, // reserved ..7019
   DW_LANGSTRING_OVERLONGLENGTH = 7020, // reserved ..7024
@@ -167,18 +170,13 @@ namespace MakensisAPI {
 #define FLAG_OFFSET(flag) (FIELD_OFFSET(exec_flags_t, flag)/sizeof(int))
 
 class DiagState {
-  template<class M> struct mapped_type_helper { typedef typename M::value_type::second_type type; }; // VC6 uses referent_type and not mapped_type
   template<class C, class K, class V> void insert_or_assign(C&c, const K&k, V val)
   {
     typename C::value_type item(k, val);
-#if defined(_MSC_VER) && _MSC_VER <= 1200
-    std::pair<C::iterator, bool> ret = c.insert(item);
-#else
-    std::pair<typename C::iterator, bool> ret = c.insert(item);
-#endif
+    std::pair<NSIS_CXX_TYPENAME C::iterator, bool> ret = c.insert(item);
     if (!ret.second) ret.first->second = val;
   }
-  template<class C, class K> typename mapped_type_helper<C>::type get_paired_value(const C&c, const K&k, typename mapped_type_helper<C>::type defval) const
+  template<class C, class K> typename STL::mapped_type<C>::type get_paired_value(const C&c, const K&k, typename STL::mapped_type<C>::type defval) const
   {
     typename C::const_iterator it = c.find(k);
     return c.end() == it ? defval : it->second;
@@ -230,6 +228,7 @@ class CEXEBuild {
       TARGET_X86ANSI = TARGETFIRST,
       TARGET_X86UNICODE,
       TARGET_AMD64, // Always Unicode
+      TARGET_ARM64, // Always Unicode
       TARGET_UNKNOWN,
       TARGETCOUNT = (TARGET_UNKNOWN-TARGETFIRST)
     } TARGETTYPE;
@@ -238,7 +237,7 @@ class CEXEBuild {
     bool m_previous_x86_unicode;
     const TCHAR* get_target_suffix(CEXEBuild::TARGETTYPE tt, const TCHAR*defval = _T("?")) const;
     const TCHAR* get_target_suffix() const { return get_target_suffix(m_target_type); }
-    static bool is_targettype_64bit(TARGETTYPE tt) { return TARGET_AMD64 == tt; }
+    static bool is_targettype_64bit(TARGETTYPE tt) { return TARGET_AMD64 == tt || TARGET_ARM64 == tt; }
     bool is_target_64bit() const { return is_targettype_64bit(m_target_type); }
     void print_bad_targettype_parameter(const TCHAR*cmdname, const TCHAR*prefix = _T("")) const;
     unsigned int get_header_size() const { return (unsigned int)sizeof(header) + (is_target_64bit() ? (4 * BLOCKS_NUM) : 0); }
@@ -254,6 +253,7 @@ class CEXEBuild {
     int write_output(void);
 
     void print_help(const TCHAR *commandname=NULL);
+    bool print_cmdhelp(const TCHAR *commandname, bool cmdhelp=false);
 
     DefineList definedlist; // List of identifiers marked as "defined" like
                             // C++ macro definitions such as _UNICODE.
@@ -583,7 +583,10 @@ class CEXEBuild {
       struct postbuild_cmd*next;
       int cmpop, cmpval;
       TCHAR cmd[1];
+      void delete_all();
+      static postbuild_cmd* make(const TCHAR *cmdstr, int cmpop, int cmpval);
     } *postbuild_cmds;
+    int run_postbuild_cmds(const postbuild_cmd *cmds, const TCHAR *templatearg_pc1, const TCHAR* commandname);
     int check_external_exitcode(int exitcode, int op, int val);
 
     TCHAR build_packname[1024], build_packcmd[1024];
@@ -673,6 +676,7 @@ class CEXEBuild {
 #endif
 
     WORD PEDllCharacteristics, PESubsysVerMaj, PESubsysVerMin;
+    unsigned int manifest_flags;
     manifest::comctl manifest_comctl;
     manifest::exec_level manifest_exec_level;
     manifest::dpiaware manifest_dpiaware;

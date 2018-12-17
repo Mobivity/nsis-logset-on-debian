@@ -1037,9 +1037,19 @@ typedef struct tagVS_FIXEDFILEINFO {
 
 
 #if defined(__clang__) && defined(__cplusplus) && __cplusplus < 201103L
-#define NSIS_CXX_THROWSPEC(throwspec) throw(throwspec) // Use exception specifications to avoid operator new missing-exception-spec warning
+#  define NSIS_CXX_THROWSPEC(throwspec) throw(throwspec) // Use exception specifications to avoid operator new missing-exception-spec warning
 #else
-#define NSIS_CXX_THROWSPEC(ignoredthrowspec) // Ignore c++ exception specifications
+#  define NSIS_CXX_THROWSPEC(ignoredthrowspec) // Ignore c++ exception specifications
+#endif
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#  define NSIS_CXX_NOEXCEPT() noexcept(true)
+#else
+#  define NSIS_CXX_NOEXCEPT() throw() // Can't specialize __declspec(nothrow) because MSVC requires it before the function name
+#endif
+#if defined(_MSC_VER) && _MSC_VER <= 1200
+#  define NSIS_CXX_TYPENAME // VC6 can't handle typename in some places but GCC requires it
+#else
+#  define NSIS_CXX_TYPENAME typename
 #endif
 #define BUGBUG64TRUNCATE(cast,xpr) ( (cast) (xpr) )
 
@@ -1048,7 +1058,7 @@ _tprintf on Windows/MSVCRT treats %s as TCHAR* and on POSIX %s is always char*!
 Always use our NPRI* (NsisPRInt*[Narrow|Wide]) defines in format strings when calling 
 functions from tchar.h (Similar to the way <inttypes.h> works)
 
-Example: _tprintf(_T("Hello %") NPRIs _T("\n"), _T("World"));
+Example: _tprintf(_T("%") NPRIs _T(" %") NPRIws _T("\n"), _T("Hello"), L"World");
 */
 #ifdef _WIN32
 #  define NPRIs _T("s")
@@ -1084,5 +1094,13 @@ FORCEINLINE BOOL NoDepr_GetVersionExW(OSVERSIONINFOW*p) { __pragma(warning(push)
 #define GetVersionExW NoDepr_GetVersionExW
 #endif //~ _MSC_VER >= 1500
 #endif //~ _MSC_VER
+
+
+#ifdef __cplusplus
+namespace STL
+{
+  template<class M> struct mapped_type { typedef typename M::value_type::second_type type; }; // VC6 uses referent_type and not mapped_type
+}
+#endif //~ __cplusplus
 
 #endif // EOF
