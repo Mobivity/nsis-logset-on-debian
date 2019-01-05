@@ -1,3 +1,11 @@
+nsis (3.04-1) UNRELEASED; urgency=medium
+
+  * New 3.04 upstream release
+  * Provide decomposed version to indirectly set packed version
+  * Remove LibraryLocal from build following upstream
+
+ -- Thomas Gaugler <thomas@dadie.net>  Sat, 05 Jan 2019 21:48:13 +0100
+
 nsis (3.03-3) UNRELEASED; urgency=medium
 
   * d/changelog: Remove trailing whitespaces
