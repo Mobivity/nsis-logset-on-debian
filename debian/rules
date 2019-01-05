@@ -18,6 +18,15 @@ BUILDDIR=build
 UNICODE=yes
 TESTDIR=$(CURDIR)/$(BUILDDIR)/test
 
+# Decomposition of version string
+define SPLIT
+	$(if $(2),$(call SPLIT,$(subst $(firstword $(2)), ,$(1)),$(filter-out $(firstword $(2)), $(2))), $(1))
+endef
+VERSION_DECOMPOSED=$(call SPLIT,$(VERSION),. -)
+VER_MAJOR=$(firstword $(VERSION_DECOMPOSED))
+VER_MINOR=$(word 2,$(VERSION_DECOMPOSED))
+VER_REVISION=$(word 3,$(VERSION_DECOMPOSED))
+
 # Variables for Win32/Win64 cross compiler
 XGCC_W32_X86 = i686-w64-mingw32-gcc
 XGCC_W32_X86_PATH = $(abspath $(shell $(XGCC_W32_X86) -print-file-name=libkernel32.a)/../..)
@@ -40,7 +49,8 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="$(shell dpkg-buildflags --get CPPFLAGS) \
   $(shell dpkg-buildflags --get CFLAGS)" \
   APPEND_LINKFLAGS="$(shell dpkg-buildflags --get LDFLAGS)"
 
-SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
+SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) VER_MAJOR=$(VER_MAJOR) \
+  VER_MINOR=$(VER_MINOR) VER_REVISION=$(VER_REVISION) \
   PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
   STRIP_CP=no \
   $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
