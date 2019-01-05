@@ -73,14 +73,13 @@ endif
 
 COMMA := ,
 
-UTILS_ALL = 'Library/LibraryLocal,Library/RegTool,MakeLangId,Makensisw,NSIS Menu,UIs,SubStart,VPatch/Source/GenPat,zip2exe'
+UTILS_ALL = 'Library/RegTool,MakeLangId,Makensisw,NSIS Menu,UIs,SubStart,VPatch/Source/GenPat,zip2exe'
 
-# Only build the LibraryLocal and GenPat utils for the host system
-IGNORE_UTILS_NSIS   := $(subst Library/LibraryLocal$(COMMA),,$(UTILS_ALL))
-IGNORE_UTILS_NSIS   := $(subst $(COMMA)VPatch/Source/GenPat,,$(IGNORE_UTILS_NSIS))
+# Only build GenPat for the host system
+IGNORE_UTILS_NSIS   := $(subst $(COMMA)VPatch/Source/GenPat,,$(UTILS_ALL))
 
 # Build the win32 user interfaces (UIs) and RegTool
-IGNORE_UTILS_COMMON := $(subst $(COMMA)Library/RegTool,,$(UTILS_ALL))
+IGNORE_UTILS_COMMON := $(subst Library/RegTool,,$(UTILS_ALL))
 IGNORE_UTILS_COMMON := $(subst $(COMMA)UIs,,$(IGNORE_UTILS_COMMON))
 
 # Clean everything except zip2exe pulling in a dependency on win32 zlib dll
