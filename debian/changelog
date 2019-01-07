@@ -1,18 +1,17 @@
-nsis (3.04-1) UNRELEASED; urgency=medium
+nsis (3.04-1) unstable; urgency=medium
 
   * New 3.04 upstream release
+
+  [ Thomas Gaugler ]
   * Provide decomposed version to indirectly set packed version
   * Remove LibraryLocal from build following upstream
 
- -- Thomas Gaugler <thomas@dadie.net>  Sat, 05 Jan 2019 21:48:13 +0100
-
-nsis (3.03-3) UNRELEASED; urgency=medium
-
+  [ Ondřej Nový ]
   * d/changelog: Remove trailing whitespaces
   * d/rules: Remove trailing whitespaces
   * d/watch: Use https protocol
 
- -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:18:50 +0200
+ -- Thomas Gaugler <thomas@dadie.net>  Mon, 07 Jan 2019 08:40:25 +0100
 
 nsis (3.03-2) unstable; urgency=low
 
