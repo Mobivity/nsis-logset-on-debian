@@ -35,6 +35,8 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="-fgnu89-inline $(CFLAGS) $(CPPFLAGS)" \
   APPEND_LINKFLAGS="$(LDFLAGS)"
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) \
+  NSIS_CONFIG_LOG=yes \
+  NSIS_MAX_STRLEN=8192 \
   PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
   STRIP_CP=no \
   $(if $(findstring nostripfull,$(DEB_BUILD_OPTIONS)),STRIP_W32=no,)
@@ -178,7 +180,7 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 			|| exit 1; \
 		fi;; \
 		esac; \
-	done; 
+	done;
 	# Fail the build if libwinpthread is needed at runtime (see #722898)
 	test `find $(TESTDIR)$(DATADIR)/Plugins -iname "*.dll" -exec objdump -p {} \; | grep -E "file format|DLL Name" | grep -cim1 libwinpthread` -eq 0
 endif
