@@ -1,15 +1,15 @@
 /*
  * util.h
- * 
+ *
  * This file is a part of NSIS.
- * 
+ *
  * Copyright (C) 1999-2018 Nullsoft and Contributors
- * 
+ *
  * Licensed under the zlib/libpng license (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  * Licence details can be found in the file COPYING.
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty.
  *
@@ -19,6 +19,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include <stddef.h> // for longer strlen
 #include "tstring.h" // for std::string
 
 #include "boost/scoped_ptr.hpp" // for boost::scoped_ptr
@@ -209,7 +210,7 @@ public:
     char *in = (char*) inbuf, *out = (char*) outbuf;
     size_t orgOutLeft = outLeft;
     size_t ret = nsis_iconv_adaptor(iconv, *this, &in, pInLeft, &out, &outLeft);
-    if ((size_t)(-1) == ret) 
+    if ((size_t)(-1) == ret)
       ret = 0, *pInLeft = 1;
     else
       ret = orgOutLeft - outLeft;
@@ -304,7 +305,7 @@ template<class R, class T> inline R internaltruncate_cast(T t) {
   if (sizeof(T) > sizeof(R)) assert(t <= (T)(~((R)0))); // BUGBUG: What if R is a signed type?
   return (R) t;
 }
-template<class R, class T> inline R debugtruncate_cast(T t,const char*f,unsigned int l) { 
+template<class R, class T> inline R debugtruncate_cast(T t,const char*f,unsigned int l) {
 #ifdef MAKENSIS
   if (sizeof(T) > sizeof(R) && !( (t <= (T)(~((R)0))) )) {
     _tprintf(_T("unsafe truncate_cast: %") NPRIns _T(":%u\n"),f,l);

@@ -50,6 +50,8 @@ SCONSHOSTFLAGS = APPEND_CCFLAGS="$(shell dpkg-buildflags --get CPPFLAGS) \
   APPEND_LINKFLAGS="$(shell dpkg-buildflags --get LDFLAGS)"
 
 SCONSOPTS = $(SCONSFLAGS) VERSION=$(VERSION) VER_MAJOR=$(VER_MAJOR) \
+  NSIS_CONFIG_LOG=yes \
+  NSIS_MAX_STRLEN=8192 \
   VER_MINOR=$(VER_MINOR) VER_REVISION=$(VER_REVISION) \
   PREFIX=$(PREFIX) PREFIX_CONF=$(SYSCONF) CHMDOCS=0 \
   STRIP_CP=no \
@@ -167,7 +169,7 @@ override_dh_auto_build-arch: $(BUILDDIR)/NEWS $(BUILDDIR)/GenPat.1 $(BUILDDIR)/L
 override_dh_auto_build-indep: $(BUILDDIR)/NEWS
 	# nsis-common must be built on little-endian
 	[ "$(shell dpkg-architecture -qDEB_BUILD_ARCH_ENDIAN)" = "little" ]
-	
+
 	scons $(SCONSOPTS_HOST) makensis
 ifdef XGCC_W32_X86_PATH
 	scons $(SCONSOPTS_COMMON) $(SCONSOPTS_X86) stubs plugins utils
